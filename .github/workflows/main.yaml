@@ -1,0 +1,72 @@
+
+name: Create realase of nowCRM
+
+on:
+  pull_request:
+    types:
+      - closed
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  create_release:
+    name: Create Release Tag
+    if: github.event.pull_request.merged
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GT_TOKEN }} # the repository secret var name is like this, because can't start with GITHUB_
+    environment: production
+    outputs:
+      tag_name: ${{ steps.release.outputs.tag_name }}  # Explicitly declare the output from the 'release' step
+      body: ${{ steps.release.outputs.body }}
+    steps:
+      - id: release
+        name: Create release tag
+        uses: rymndhng/release-on-push-action@master # https://github.com/rymndhng/release-on-push-action/blob/master/LICENSE
+        with:
+          bump_version_scheme: patch
+          tag_prefix: v
+
+      - name: Check Output Parameters
+        run: |
+          echo "Got tag name ${{ steps.release.outputs.tag_name }}"
+          echo "Got release version ${{ steps.release.outputs.version }}"
+          echo "Upload release artifacts to ${{ steps.release.outputs.upload_url }}"
+    
+  notify_success:
+    name: Send Success Notification
+    if: github.event.pull_request.merged && success() 
+    needs: [create_release, build_nowcrm, build_strapi, build_nowbi, build_nowwiki, build_nowjobs, build_members, build_enricher, build_journeys, build_composer, build_nowscraper, build_dal, build_docs]  # Include all build jobs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Telegram Success Notification
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: "👌 Successful build nowCRM Open Source! version: ${{ needs.create_release.outputs.tag_name }}"
+
+  notify_failure:
+    name: Send Failure Notification
+    if: github.event.pull_request.merged && failure() 
+    needs: [create_release]  
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Telegram Failure Notification
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: "😡 Error build nowCRM Open Source! ${{ needs.create_release.outputs.tag_name }}"
+
+  release_created:
+    name: Send Release Created Notification
+    if: github.event.pull_request.merged && success() 
+    needs: [create_release] 
+    runs-on: ubuntu-latest
+    steps:
+      - name: 👌 Release Created
+        run: |
+          curl --header "Content-Type: application/xml" --header "Accept: application/xml" -u '${{ secrets.N8N_WEBHOOK_BASIC_AUTH_USERNAME }}:${{ secrets.N8N_WEBHOOK_BASIC_AUTH_PASSWORD }}' --request POST --data '<Request><Version>${{ needs.create_release.outputs.tag_name }} OSS</Version><Notes>nowCRM Open source https://github.com/nowtec/nowCRM ${{ needs.create_release.outputs.body }}</Notes></Request>' ${{ secrets.N8N_NT_RELEASE_WEBHOOK }}
