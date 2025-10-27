@@ -7,9 +7,6 @@
       "path": "./apps/nowcrm"
     },
     {
-      "path": "./apps/strapi"
-    },
-    {
       "path": "./libs/services"
     },
   ]

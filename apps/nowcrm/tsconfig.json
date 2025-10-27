@@ -1,4 +1,5 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "lib": [
       "dom",
@@ -34,10 +35,11 @@
       }
     ],
     "paths": {
-      "@/*": [
-        "./*"
-      ]
-    },
+      "@/*": ["./*"],
+      "@parse-me/services": ["../../libs/services/src/index.ts"],
+      "@parse-me/services/server": ["../../libs/services/src/server.ts"],
+      "@parse-me/services/client": ["../../libs/services/src/client.ts"]
+      },
     "target": "ES2017"
   },
   "include": [
@@ -49,10 +51,15 @@
     ".next/types/**/*.ts",
     "jest",
     "node",
-    "app/[locale]/debug/editor-test/plugins/AutoLinkPlugin.js"
-, "app/[locale]/crm/composer/calendar"  ],
+    "@parse-me/services",
+  ],
   "exclude": [
     "node_modules",
     "tests"
+  ],
+  "references": [
+    {
+      "path": "../../libs/services"
+    }
   ]
 }
