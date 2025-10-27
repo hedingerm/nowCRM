@@ -1,0 +1,49 @@
+{
+  "name": "@nowcrm/services",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "generate-index": "node --loader ts-node/esm scripts/generate_index.ts",
+    "lint": "biome check",
+    "lint:fix": "biome check --fix --unsafe",
+    "format": "biome format --fix"
+  },
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "@nowcrm/source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./server":{
+      "@nowcrm/source": "./src/server.ts",
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server.js",
+      "default": "./dist/server.js"
+    },
+    "./client": {
+      "@nowcrm/source": "./src/client.ts",
+      "types": "./dist/client.d.ts",
+      "import": "./dist/client.js",
+      "default": "./dist/client.js"
+    }
+  },
+  "dependencies": {
+    "dotenv": "^17.2.2",
+    "envalid": "^8.1.0",
+    "qs": "^6.14.0",
+    "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.2.4",
+    "@types/node": "^24.5.2",
+    "@types/qs": "^6.14.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
+  }
+}

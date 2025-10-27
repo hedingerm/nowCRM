@@ -1,0 +1,27 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+     /* Base Options: */
+     "esModuleInterop": true,
+     "skipLibCheck": true,
+     "allowJs": true,
+     "resolveJsonModule": true,
+     "moduleDetection": "auto",
+     "isolatedModules": false,
+     "baseUrl": "src",
+     /* Strictness */
+     "strict": true,
+     "noUncheckedIndexedAccess": true,
+     "noImplicitOverride": true,
+     "outDir": "dist",
+     "rootDir": "src",
+     "importsNotUsedAsValues": "remove",
+     "declaration": true,
+     "declarationMap": true,
+     "preserveConstEnums": true,
+     "forceConsistentCasingInFileNames": true,
+     "types": ["node"],
+  },
+  "include": ["src/index.ts", "src/**/*.ts"],
+  "exclude": ["**/*.test.*", "**/__mocks__/*", "**/__tests__/*"],
+}
