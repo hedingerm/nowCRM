@@ -3,15 +3,20 @@ name: "nowcrm"
 services:
   dbdt:
     container_name: strapidb
-    image: postgres:15.4
+    image: postgres:17.2
     restart: always
     command: -c 'max_connections=500'
     ports:
       - "5433:5432"
     environment:
-      POSTGRES_DB: ${STRAPI_DATABASE_NAME}
-      POSTGRES_PASSWORD: ${STRAPI_DATABASE_PASSWORD}
-      POSTGRES_USER: ${STRAPI_DATABASE_USERNAME}
+      POSTGRES_USER: ${STRAPI_DATABASE_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${STRAPI_DATABASE_PASSWORD:-postgres}
+      POSTGRES_DB: ${STRAPI_DATABASE_NAME:-postgres}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${STRAPI_DATABASE_USERNAME:-postgres} -d postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
     volumes:
       - postgres-data:/var/lib/postgresql/data
     networks:
@@ -39,8 +44,8 @@ services:
 
   strapi:
     container_name: strapi
-    image: nowtecstrapi
-    build: ./strapi-app/
+    image: nowcrm-strapi
+    build: ./apps/nowcrm-strapi/
     restart: unless-stopped
     ports:
       - "1337:1337"
@@ -82,7 +87,7 @@ services:
       STRAPI_SMTP_USER: ${STRAPI_SMTP_USER}
       STRAPI_STANDART_EMAIL_STRAPI: ${STRAPI_STANDART_EMAIL_STRAPI}
     volumes:
-      - ./strapi-app/src:/opt/app/src
+      - ./apps/nowcrm-strapi/src:/opt/app/src
     depends_on:
       - dbdt
     networks:

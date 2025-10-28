@@ -40,7 +40,6 @@ services:
   strapi:
     container_name: strapi
     image: nowtecstrapi
-    build: ./strapi-app/
     restart: unless-stopped
     ports:
       - "1337:1337"
