@@ -1,14 +1,14 @@
 import type { BaseFormType, BaseType, DocumentId } from "./common/base_type";
 import type { Contact } from "./contact";
 import type { User } from "./user";
-export interface Campaign extends Omit<BaseType, "name"> {
+export interface ActivityLog extends Omit<BaseType, "name"> {
 	action: string;
 	description: string;
 	contact: Contact;
 	user: User;
 }
 
-export interface Form_Campaign extends Omit<BaseFormType, "name"> {
+export interface Form_ActivityLog extends Omit<BaseFormType, "name"> {
 	action: string;
 	description: string;
 	contact: DocumentId;

@@ -1,4 +1,4 @@
-const ApiRoutesStrapi = {
+const API_ROUTES_STRAPI = {
 
 	//Actions
 	ACTIONS: "actions",
@@ -109,4 +109,4 @@ const ApiRoutesStrapi = {
 };
 
 
-export default ApiRoutesStrapi
+export default API_ROUTES_STRAPI
