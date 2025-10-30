@@ -1,4 +1,11 @@
-import type { BaseFormType, BaseType } from "./common/base_type";
-export interface Contact_Note extends BaseType {}
+import type { BaseFormType, BaseType, DocumentId } from "./common/base_type";
+import { Contact } from "./contact";
+export interface Contact_Note extends BaseType {
+    text: string
+    contact: Contact
+}
 
-export interface Form_Contact_Note extends BaseFormType {}
+export interface Form_Contact_Note extends BaseFormType {
+    text: string;
+    contact: DocumentId
+}

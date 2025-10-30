@@ -11,6 +11,9 @@
   },
   "pluginOptions": {},
   "attributes": {
+    "amount": {
+      "type": "decimal"
+    },
     "contact": {
       "type": "relation",
       "relation": "manyToOne",
@@ -22,9 +25,6 @@
     },
     "currency": {
       "type": "text"
-    },
-    "amount": {
-      "type": "decimal"
     },
     "payment_provider": {
       "type": "text"

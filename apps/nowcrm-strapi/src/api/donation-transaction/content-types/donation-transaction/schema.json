@@ -11,6 +11,9 @@
   },
   "pluginOptions": {},
   "attributes": {
+    "amount": {
+      "type": "decimal"
+    },
     "contact": {
       "type": "relation",
       "relation": "manyToOne",
@@ -28,9 +31,6 @@
     },
     "card_holder_name": {
       "type": "text"
-    },
-    "amount": {
-      "type": "decimal"
     },
     "payment_method": {
       "type": "text"

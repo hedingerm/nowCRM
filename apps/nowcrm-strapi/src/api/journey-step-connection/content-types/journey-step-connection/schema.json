@@ -14,6 +14,9 @@
     "priority": {
       "type": "integer"
     },
+    "condition_type": {
+      "type": "text"
+    },
     "target_step": {
       "type": "relation",
       "relation": "manyToOne",
@@ -25,9 +28,6 @@
       "relation": "manyToOne",
       "target": "api::journey-step.journey-step",
       "inversedBy": "connections_from_this_step"
-    },
-    "condition_type": {
-      "type": "text"
     },
     "journey_step_rules": {
       "type": "relation",

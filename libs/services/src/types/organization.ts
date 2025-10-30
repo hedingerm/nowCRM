@@ -1,4 +1,74 @@
-import type { BaseFormType, BaseType } from "./common/base_type";
-export interface Organization extends BaseType {}
+import { LanguageKeys } from "static/languages";
+import type { BaseFormType, BaseType, DocumentId } from "./common/base_type";
+import { Contact } from "./contact";
+import { Frequency } from "./frequncy";
+import { MediaType } from "./media-type";
+import { OrganizationType } from "./organization-type";
+import { Tag } from "./tag";
+import { Source } from "./source";
+import { Industry } from "./industry";
+import { StrapiConnect } from "./common/StrapiQuery";
+export interface Organization extends BaseType {
+    email: string;
+    contacts: Contact[];
+    address_line1: string;
+    contact_person: string;
+    location: string;
+    frequency: Frequency
+    media_type: MediaType
+    zip: string;
+    country: string;
+    url: string;
+    organization_type: OrganizationType;
+    twitter_url: string;
+    facebook_url: string;
+    whatsapp_channel: string;
+    linkedin_url: string;
+    telegram_url: string;
+    telegram_channel: string;
+    instagram_url: string;
+    tiktok_url: string;
+    whatsapp_phone: string;
+    phone: string;
+    tags: Tag[];
+    description: string;
+    canton: string;
+    language : LanguageKeys;
+    sources: Source;
+    industry: Industry;
+    city: string;
+    company_size: string;
 
-export interface Form_Organization extends BaseFormType {}
+}
+
+export interface Form_Organization extends BaseFormType {
+    email: string;
+    contacts: StrapiConnect;
+    address_line1: string;
+    contact_person: string;
+    location: string;
+    frequency: DocumentId
+    media_type: DocumentId
+    zip: string;
+    country: string;
+    url: string;
+    organization_type: DocumentId;
+    twitter_url: string;
+    facebook_url: string;
+    whatsapp_channel: string;
+    linkedin_url: string;
+    telegram_url: string;
+    telegram_channel: string;
+    instagram_url: string;
+    tiktok_url: string;
+    whatsapp_phone: string;
+    phone: string;
+    tags: StrapiConnect;
+    description: string;
+    canton: string;
+    language : LanguageKeys;
+    sources: DocumentId;
+    industry: DocumentId;
+    city: string;
+    company_size: string;
+}

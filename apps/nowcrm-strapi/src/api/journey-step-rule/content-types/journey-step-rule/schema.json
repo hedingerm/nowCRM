@@ -11,6 +11,9 @@
   },
   "pluginOptions": {},
   "attributes": {
+    "label": {
+      "type": "text"
+    },
     "condition": {
       "type": "text"
     },
@@ -34,9 +37,6 @@
       "relation": "oneToMany",
       "target": "api::journey-step-rule-score.journey-step-rule-score",
       "mappedBy": "journey_step_rule"
-    },
-    "label": {
-      "type": "text"
     },
     "ready_condition": {
       "type": "text"

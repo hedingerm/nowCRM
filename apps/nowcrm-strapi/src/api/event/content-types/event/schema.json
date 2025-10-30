@@ -14,6 +14,9 @@
     "action": {
       "type": "text"
     },
+    "source": {
+      "type": "text"
+    },
     "contact": {
       "type": "relation",
       "relation": "manyToOne",
@@ -21,9 +24,6 @@
       "inversedBy": "events"
     },
     "payload": {
-      "type": "text"
-    },
-    "source": {
       "type": "text"
     },
     "external_id": {

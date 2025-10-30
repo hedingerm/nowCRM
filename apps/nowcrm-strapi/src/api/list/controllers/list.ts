@@ -44,7 +44,7 @@ export default factories.createCoreController('api::list.list', ({ strapi }) => 
       const newListData = {
         ...baseData,
         name: `${original.name} (Copy)`,
-        title: `${original.title || original.name} (Copy)`,
+        title: `${original.name} (Copy)`,
         contacts: {
           connect: contacts.map(contact => contact.id),
         },

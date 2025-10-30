@@ -20,9 +20,6 @@
       "target": "api::contact.contact",
       "mappedBy": "lists"
     },
-    "title": {
-      "type": "text"
-    },
     "tags": {
       "type": "relation",
       "relation": "oneToMany",

@@ -14,6 +14,9 @@
     "name": {
       "type": "text"
     },
+    "active": {
+      "type": "boolean"
+    },
     "campaign": {
       "type": "relation",
       "relation": "manyToOne",
@@ -28,9 +31,6 @@
     },
     "flow": {
       "type": "json"
-    },
-    "active": {
-      "type": "boolean"
     },
     "journey_passed_steps": {
       "type": "relation",
