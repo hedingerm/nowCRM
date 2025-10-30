@@ -1,3 +1,4 @@
+import { CommunicationChannelKeys } from "static/communication-channel";
 import type { BaseFormType, BaseType } from "./common/base_type";
 
 export type EditorTextTypes = "text" | "html";
@@ -8,6 +9,7 @@ export function getFileUploadMimeType(type: FileUploadTypes): string {
 }
 
 export interface Channel extends BaseType {
+    name: CommunicationChannelKeys;
 	editor_text_type: EditorTextTypes;
 	removeHtml: boolean;
 	max_content_lenght: number;
@@ -18,6 +20,7 @@ export interface Channel extends BaseType {
 }
 
 export interface Form_Channel extends BaseFormType {
+    name: CommunicationChannelKeys;
 	editor_text_type: EditorTextTypes;
 	removeHtml: boolean;
 	max_content_lenght: number;
