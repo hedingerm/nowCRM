@@ -1,6 +1,6 @@
 // src/services/contact.service.ts
 
-import APIRoutes from "../api-routes/api-routes-crm";
+import APIRoutes from "../api-routes/api-routes-strapi";
 import type { ActionType, Form_ActionType } from "../types/action-type";
 import BaseService from "./common/base.service";
 
