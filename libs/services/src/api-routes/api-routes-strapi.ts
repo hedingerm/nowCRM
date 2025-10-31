@@ -18,6 +18,7 @@ const API_ROUTES_STRAPI = {
 
 	//Compositions
 	COMPOSITIONS: "compositions",
+	COMPOSITION_DUPLICATE: "compositions/duplicate",
 	COMPOSITION_SCHEDULEDS: "composition-scheduleds",
 	COMPOSITION_ITEM: "composition-items",
 

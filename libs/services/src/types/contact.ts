@@ -40,6 +40,7 @@ export type contactStatuses =
 export interface Contact extends Omit<BaseType, "name"> {
 	first_name: string;
 	last_name: string;
+	email: string;
 	function: string;
 	address_line1: string;
 	address_line2: string;
@@ -98,6 +99,7 @@ export interface Form_Contact extends Omit<BaseFormType, "name"> {
 	first_name: string;
 	last_name: string;
 	function: string;
+	email: string;
 	address_line1: string;
 	address_line2: string;
 	location: string;
