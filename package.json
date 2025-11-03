@@ -1,0 +1,30 @@
+{
+  "name": "nowcrm",
+  "version": "1.0.0",
+  "description": "your open source CRM with multichannel outreach capabilities and efficient data management at scale.",
+  "scripts": {
+    "build:libs": "pnpm --filter './libs/*' run build",
+    "build:apps": "pnpm --filter './apps/*' run build",
+    "build:all": "pnpm -r run build",
+    "lint:libs": "pnpm --filter './libs/*' run lint:fix",
+    "lint:apps": "pnpm --filter './apps/*' run lint:fix",
+    "lint:all": "pnpm -r run lint:fix",
+    "generate-index:services": "pnpm --filter @nowcrm/services run generate-index"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.19.0",
+  "workspaces": [
+    "apps/*",
+    "libs/*"
+  ],
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "20.19.9",
+    "@types/react": "19.0.0",
+    "@types/react-dom": "19.0.0",
+    "tslib": "^2.3.0",
+    "typescript": "~5.9.2"
+  }
+}

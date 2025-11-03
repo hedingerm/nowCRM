@@ -1,0 +1,58 @@
+# ---------- Build stage ----------
+FROM node:22-alpine AS build
+
+# Install build dependencies
+RUN apk update && apk add --no-cache build-base gcc autoconf automake zlib-dev libpng-dev vips-dev git curl > /dev/null 2>&1
+
+# Install pnpm
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+ARG NODE_ENV=production
+ENV NODE_ENV=${NODE_ENV}
+
+WORKDIR /opt/
+
+# Copy dependency files first for caching
+COPY package.json pnpm-lock.yaml ./
+
+# Install only production dependencies
+RUN pnpm install --frozen-lockfile --prod
+
+ENV PATH=/opt/node_modules/.bin:$PATH
+
+# Copy application source
+WORKDIR /opt/app
+COPY . .
+
+# Build application
+RUN pnpm run build
+
+
+# ---------- Final production image ----------
+FROM node:22-alpine
+
+# Install runtime dependencies
+RUN apk add --no-cache vips-dev
+
+ARG NODE_ENV=production
+ENV NODE_ENV=${NODE_ENV}
+
+# Enable pnpm via corepack
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+WORKDIR /opt/
+
+# Copy node_modules from build stage
+COPY --from=build /opt/node_modules ./node_modules
+
+# Copy application
+WORKDIR /opt/app
+COPY --from=build /opt/app ./
+
+ENV PATH=/opt/node_modules/.bin:$PATH
+
+# Permissions and startup
+RUN chown -R node:node /opt/app
+USER node
+EXPOSE 1337
+CMD ["pnpm", "start"]

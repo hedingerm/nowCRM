@@ -1,0 +1,19 @@
+import type { BaseFormType, BaseType, DocumentId } from "./common/base_type";
+import type { Contact } from "./contact";
+import type { User } from "./user";
+export interface ActivityLog extends Omit<BaseType, "name"> {
+	action: string;
+	description: string;
+	contact: Contact;
+	user: User;
+}
+
+export interface Form_ActivityLog extends Omit<BaseFormType, "name"> {
+	action: string;
+	description: string;
+	contact: DocumentId;
+	/**
+	 * User from user permissions user isnt migrated to document id so ensure that here you use default number id
+	 */
+	user: number;
+}

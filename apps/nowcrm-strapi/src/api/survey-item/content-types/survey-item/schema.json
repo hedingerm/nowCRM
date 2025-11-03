@@ -1,0 +1,37 @@
+{
+  "kind": "collectionType",
+  "collectionName": "survey_items",
+  "info": {
+    "singularName": "survey-item",
+    "pluralName": "survey-items",
+    "displayName": "SurveyItem"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "question": {
+      "type": "text"
+    },
+    "answer": {
+      "type": "text"
+    },
+    "file": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "survey": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::survey.survey",
+      "inversedBy": "survey_items"
+    }
+  }
+}
