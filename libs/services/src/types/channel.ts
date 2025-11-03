@@ -1,4 +1,4 @@
-import type { CommunicationChannelKeys } from "static/communication-channel";
+import type { CommunicationChannelKeys } from "../static/communication-channel";
 import type { BaseFormType, BaseType } from "./common/base_type";
 
 export type EditorTextTypes = "text" | "html";

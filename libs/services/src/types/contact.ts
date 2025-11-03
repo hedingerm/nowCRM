@@ -1,4 +1,4 @@
-import type { LanguageKeys } from "static/languages";
+import type { LanguageKeys } from "../static/languages";
 import type { Action } from "./action";
 import type { BaseFormType, BaseType, DocumentId } from "./common/base_type";
 import type { StrapiConnect } from "./common/StrapiQuery";

@@ -1,5 +1,5 @@
-import type { DocumentId } from "types/common/base_type";
-import type { UnipileIdentity } from "types/unipie-identity";
+import type { DocumentId } from "../common/base_type";
+import type { UnipileIdentity } from "../unipie-identity";
 import type { composerSendType } from "./composer-send-types";
 
 export interface sendToChannelsData {

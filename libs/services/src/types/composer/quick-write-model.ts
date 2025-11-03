@@ -1,5 +1,5 @@
-import type { aiModelKeys } from "static/ai-models";
-import type { LanguageKeys } from "static/languages";
+import type { aiModelKeys } from "../../static/ai-models";
+import type { LanguageKeys } from "../../static/languages";
 
 export interface QuickWriteModel {
 	model: aiModelKeys;
