@@ -67,13 +67,20 @@ jobs:
         continue-on-error: true
         uses: docker/build-push-action@v5
         with:
-          context: ./apps/composer
+          context: .
+          file: ./apps/composer/Dockerfile
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_REPO }}/composer:latest
             ${{ env.REGISTRY }}/${{ env.IMAGE_REPO }}/composer:${{ needs.create_release.outputs.tag_name }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Output docker build result
+        if: always()
+        run: |
+          echo "Docker Build Outcome: ${{ steps.docker-build.outcome }}"
+          echo "Docker Build Conclusion: ${{ steps.docker-build.conclusion }}"
 
       - name: Save build failure details
         if: steps.docker-build.outcome == 'failure'
@@ -86,9 +93,19 @@ jobs:
           Repository: ${{ github.repository }}
           Image: ${{ env.REGISTRY }}/${{ env.IMAGE_REPO }}/composer
           Tags: latest, ${{ needs.create_release.outputs.tag_name }}
+          Context: . (root)
+          Dockerfile: ./apps/composer/Dockerfile
 
-          Check GitHub Actions logs for detailed error information:
+          Build Outcome: ${{ steps.docker-build.outcome }}
+
+          See the full GitHub Actions logs for detailed build output:
           ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+          Common Docker build failures:
+          1. Missing dependencies in apps/composer/package.json
+          2. Failed pnpm install in the monorepo
+          3. TypeScript compilation errors (pnpm build)
+          4. Missing files in Dockerfile COPY commands
           EOF
 
       - name: Upload build logs
