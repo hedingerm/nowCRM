@@ -13,7 +13,6 @@ permissions:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME_COMPOSER: ${{ github.repository }}/composer
 
 jobs:
   create_release:
@@ -52,6 +51,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Set image name to lowercase
+        id: image-name
+        run: |
+          IMAGE_NAME=$(echo "${{ github.repository }}/composer" | tr '[:upper:]' '[:lower:]')
+          echo "image_name=${IMAGE_NAME}" >> $GITHUB_OUTPUT
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -63,15 +68,45 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push Docker image for Composer
+        id: docker-build
+        continue-on-error: true
         uses: docker/build-push-action@v5
         with:
           context: ./apps/composer
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_COMPOSER }}:latest
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_COMPOSER }}:${{ needs.create_release.outputs.tag_name }}
+            ${{ env.REGISTRY }}/${{ steps.image-name.outputs.image_name }}:latest
+            ${{ env.REGISTRY }}/${{ steps.image-name.outputs.image_name }}:${{ needs.create_release.outputs.tag_name }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Save build failure details
+        if: steps.docker-build.outcome == 'failure'
+        run: |
+          mkdir -p build-logs
+          cat > build-logs/error.txt << 'EOF'
+          Docker Build Failed
+          ===================
+
+          Repository: ${{ github.repository }}
+          Image: ${{ env.REGISTRY }}/${{ steps.image-name.outputs.image_name }}
+          Tags: latest, ${{ needs.create_release.outputs.tag_name }}
+
+          Check GitHub Actions logs for detailed error information:
+          ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          EOF
+
+      - name: Upload build logs
+        if: steps.docker-build.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-logs
+          path: build-logs/error.txt
+          retention-days: 30
+
+      - name: Fail job if build failed
+        if: steps.docker-build.outcome == 'failure'
+        run: exit 1
 
   notify_success:
     name: Send Success Notification
@@ -97,7 +132,13 @@ jobs:
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
-          message: "😡 Error build nowCRM Open Source! ${{ needs.create_release.outputs.tag_name }}"
+          message: |
+            😡 Error build nowCRM Open Source! version: ${{ needs.create_release.outputs.tag_name }}
+
+            🔗 View full logs:
+            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            📋 Check the "build-and-push" job for Docker build error details
 
   release_created:
     name: Send Release Created Notification
