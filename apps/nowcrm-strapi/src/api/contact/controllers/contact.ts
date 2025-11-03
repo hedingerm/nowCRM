@@ -65,7 +65,7 @@ export default factories.createCoreController('api::contact.contact', ({ strapi 
             lists: {
               connect: [],
             },
-          },
+          } as any //needed cause strapi has typing error here,
         });
       }
 
@@ -236,7 +236,7 @@ export default factories.createCoreController('api::contact.contact', ({ strapi 
           media_types: [],
           createdBy: null,
           updatedBy: null,
-        },
+        } as any //needed cause strapi has typing error here,
       });
 
       await strapi.documents('api::activity-log.activity-log').create({
