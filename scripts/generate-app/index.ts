@@ -3,14 +3,10 @@
 import { mkdir, readFile, writeFile, readdir } from 'fs/promises';
 import { existsSync } from 'fs';
 import { join, dirname, resolve, relative } from 'path';
-import { fileURLToPath } from 'url';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 
 const execAsync = promisify(exec);
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 interface AppConfig {
 	name: string;
@@ -20,11 +16,6 @@ interface AppConfig {
 
 const TEMPLATE_DIR = join(__dirname, 'templates', 'node');
 const APPS_DIR = resolve(process.cwd(), 'apps');
-
-async function loadTemplate(templatePath: string): Promise<string> {
-	const fullPath = join(TEMPLATE_DIR, templatePath);
-	return await readFile(fullPath, 'utf-8');
-}
 
 function processTemplate(content: string, config: AppConfig, filePath: string): string {
 	let processed = content
