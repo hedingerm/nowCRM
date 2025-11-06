@@ -6,7 +6,7 @@ import pLimit from "p-limit";
 import { pino } from "pino";
 // contactWorker.ts
 import { env } from "@/common/utils/env-config";
-import { relationsQueue } from "@/lib/workers/relationWorker";
+import { relationsQueue } from "@/lib/workers/relation-worker";
 import { cleanEmptyStringsToNull } from "../functions/contacts/clean";
 import { formatDateTimeFields } from "../functions/contacts/dates";
 import { validateEnumerations } from "../functions/contacts/enumerations";
@@ -14,7 +14,7 @@ import { validateIntegerFields } from "../functions/contacts/integer";
 import { getCachedContactId } from "../functions/contacts/iscache";
 import { sanitizeContacts } from "../functions/contacts/sanitize";
 import { relationCache } from "../functions/helpers/cache";
-import { waitForStrapi } from "../functions/helpers/checkStrapi";
+import { waitForStrapi } from "../functions/helpers/check-strapi";
 
 function buildFullContactsArray(
 	originalContacts: any[],

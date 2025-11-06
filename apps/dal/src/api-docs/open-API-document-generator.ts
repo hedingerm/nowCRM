@@ -2,7 +2,7 @@ import {
 	OpenAPIRegistry,
 	OpenApiGeneratorV3,
 } from "@asteasolutions/zod-to-openapi";
-import { queueRegistry } from "@/api/queue/queueRouter";
+import { queueRegistry } from "@/api/queue/queue-router";
 
 export function generateOpenAPIDocument() {
 	const registry = new OpenAPIRegistry([queueRegistry]);

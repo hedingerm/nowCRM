@@ -10,8 +10,8 @@ import type {
 	MassExportPayload,
 	MassUpdatePayload,
 	MassUpdateSubscriptionPayload,
-} from "./massActionsModel";
-import { massActionsServiceApi } from "./massActionsService";
+} from "./mass-actions-model";
+import { massActionsServiceApi } from "./mass-actions-service";
 
 class MassActionsController {
 	public delete: RequestHandler = async (req: Request, res: Response) => {

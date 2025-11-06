@@ -1,8 +1,8 @@
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
 import express, { type Router } from "express";
 import { z } from "zod";
-import { createApiResponse } from "@/api-docs/openAPIResponseBuilders";
-import { massActionsController } from "./massActionsController";
+import { createApiResponse } from "@/api-docs/open-API-responseBuilders";
+import { massActionsController } from "./mass-actions-controller";
 import {
 	MassAddToJourneySchema,
 	MassAddToListSchema,
@@ -12,7 +12,7 @@ import {
 	MassExportSchema,
 	MassUpdateSchema,
 	MassUpdateSubscriptionSchema,
-} from "./massActionsModel";
+} from "./mass-actions-model";
 
 export const massActionsRegistry = new OpenAPIRegistry();
 export const massActionsRouter: Router = express.Router();

@@ -1,8 +1,8 @@
 import express, { type Request, type Response } from "express";
 import multer from "multer";
 
-import { csvContactsQueue } from "../../lib/queues/csvContactsQueue";
-import { csvOrganizationsQueue } from "../../lib/queues/csvOrganizationsQueue";
+import { csvContactsQueue } from "../../lib/queues/csv-contacts-queue";
+import { csvOrganizationsQueue } from "../../lib/queues/csv-organizations-queue";
 import { APIRoutesDAL } from "@nowcrm/services";
 
 const router = express.Router();

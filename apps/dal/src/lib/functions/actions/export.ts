@@ -3,7 +3,7 @@ import { stringify } from "csv-stringify";
 import fs from "fs-extra";
 import nodemailer from "nodemailer";
 import { env } from "@/common/utils/env-config";
-import { fetchPage } from "@/lib/workers/MassActionsWorker";
+import { fetchPage } from "@/lib/workers/mass-actions-worker";
 import { logger } from "@/server";
 
 type ExportResult = {

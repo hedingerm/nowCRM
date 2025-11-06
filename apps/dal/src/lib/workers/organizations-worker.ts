@@ -6,9 +6,9 @@ import pLimit from "p-limit";
 import { pino } from "pino";
 // orgsWorker.ts
 import { env } from "@/common/utils/envConfig";
-import { orgRelationsQueue } from "@/lib/workers/relationWorkerOrg";
+import { orgRelationsQueue } from "@/lib/workers/relation-worker-org";
 import { relationCache } from "../functions/helpers/cache";
-import { waitForStrapi } from "../functions/helpers/checkStrapi";
+import { waitForStrapi } from "../functions/helpers/check-strapi";
 import { cleanEmptyStringsToNull } from "../functions/organizations/clean";
 import { validateEnumerations } from "../functions/organizations/enumerations";
 import { isOrganizationInCache } from "../functions/organizations/iscache";

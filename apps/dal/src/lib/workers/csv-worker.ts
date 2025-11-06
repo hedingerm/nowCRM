@@ -2,10 +2,10 @@ import { Worker } from "bullmq";
 import { env } from "@/common/utils/env-config";
 import { createList } from "../functions/contacts/list";
 import { loadRelationDictionaries } from "../functions/helpers/cache";
-import { contactsQueue } from "../queues/contactsQueue";
-import { organizationsQueue } from "../queues/organizationsQueue";
-import { parseCSV } from "../services/parseCSV";
-import { initProgress } from "./progressTracker";
+import { contactsQueue } from "../queues/contacts-queue";
+import { organizationsQueue } from "../queues/organizations-queue";
+import { parseCSV } from "../services/parse-csv";
+import { initProgress } from "./progress-tracker";
 import { logger } from "@/logger";
 
 const redisConnection = {

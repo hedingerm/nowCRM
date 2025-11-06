@@ -1,7 +1,7 @@
 import type { Request, RequestHandler, Response } from "express";
 import { handleServiceResponse } from "@/common/utils/http-handlers";
 import { logger } from "@/server";
-import { queueServiceApi } from "./queueService";
+import { queueServiceApi } from "./queue-service";
 
 class QueueController {
 	public getQueueData: RequestHandler = async (req: Request, res: Response) => {

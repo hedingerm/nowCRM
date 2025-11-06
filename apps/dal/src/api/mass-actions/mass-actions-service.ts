@@ -1,5 +1,5 @@
 import { StatusCodes } from "http-status-codes";
-import { csvMassActionsQueue } from "@/lib/queues/csvMassActionsQueue";
+import { csvMassActionsQueue } from "@/lib/queues/csv-mass-actions-queue";
 import type {
 	MassAddToJourneyPayload,
 	MassAddToListPayload,
@@ -9,7 +9,7 @@ import type {
 	MassExportPayload,
 	MassUpdatePayload,
 	MassUpdateSubscriptionPayload,
-} from "./massActionsModel";
+} from "./mass-actions-model";
 import { ServiceResponse } from "@nowcrm/services";
 
 class MassActionsServiceApi {

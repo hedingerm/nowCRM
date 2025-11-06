@@ -3,14 +3,14 @@ import { Worker as BullWorker } from "bullmq";
 import { pino } from "pino";
 import qs from "qs";
 import { env } from "@/common/utils/env-config";
-import { addToJourneyQueue } from "@/lib/queues/addToJourneyQueue";
-import { addToListQueue } from "@/lib/queues/addToListQueue";
-import { addToOrganizationQueue } from "@/lib/queues/addToOrganizationQueue";
-import { anonymizeQueue } from "@/lib/queues/anonymizeQueue";
-import { deletionQueue } from "@/lib/queues/deletionQueue";
-import { exportQueue } from "@/lib/queues/exportQueue";
-import { updateQueue } from "../queues/updateQueue";
-import { updateSubscriptionQueue } from "../queues/updateSubscription";
+import { addToJourneyQueue } from "@/lib/queues/add-to-journey-queue";
+import { addToListQueue } from "@/lib/queues/add-to-list-queue";
+import { addToOrganizationQueue } from "@/lib/queues/add-to-organization-queue";
+import { anonymizeQueue } from "@/lib/queues/anonymize-queue";
+import { deletionQueue } from "@/lib/queues/deletion-queue";
+import { exportQueue } from "@/lib/queues/export-queue";
+import { updateQueue } from "../queues/update-queue";
+import { updateSubscriptionQueue } from "../queues/update-subscription";
 
 type MassActionType =
 	| "delete"

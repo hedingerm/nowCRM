@@ -1,9 +1,9 @@
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
 import express, { type Router } from "express";
 import { z } from "zod";
-import { createApiResponse } from "@/api-docs/openAPIResponseBuilders";
-import { queueController } from "./queueController";
-import { QueueDataQuerySchema, QueueJobSchema } from "./queueModel";
+import { createApiResponse } from "@/api-docs/open-API-responseBuilders";
+import { queueController } from "./queue-controller";
+import { QueueDataQuerySchema, QueueJobSchema } from "./queue-model";
 
 export const queueRegistry = new OpenAPIRegistry();
 export const queueRouter: Router = express.Router();
