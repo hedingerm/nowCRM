@@ -1,26 +1,27 @@
 import { createBullBoard } from "@bull-board/api";
-import { ExpressAdapter } from "@bull-board/express";
-import { addToListQueue } from "@/lib/queues/add-to-list-queue";
-import { addToOrganizationQueue } from "@/lib/queues/add-to-organization-queue";
-import { anonymizeQueue } from "@/lib/queues/anonymize-queue";
-import { csvMassActionsQueue } from "@/lib/queues/csv-mass-actions-queue";
-import { deletionQueue } from "@/lib/queues/deletion-queue";
-import { exportQueue } from "@/lib/queues/export-queue";
-import { organizationsQueue } from "@/lib/queues/organizations-queue";
-import { relationsQueue } from "@/lib/queues/relations-queue";
-import { addToJourneyQueue } from "../lib/queues/add-to-journey-queue";
-import { contactsQueue } from "../lib/queues/contacts-queue";
-import { csvContactsQueue } from "../lib/queues/csv-contacts-queue";
-import { csvOrganizationsQueue } from "../lib/queues/csv-organizations-queue";
-import { orgRelationsQueue } from "../lib/queues/relations-queue-org";
-import { updateQueue } from "../lib/queues/update-queue";
 import { BullMQAdapter } from "@bull-board/api/bullMQAdapter";
+import { ExpressAdapter } from "@bull-board/express";
+import { addToListQueue } from "@/jobs_pipeline/add-to-list/add-to-list-queue";
+import { addToOrganizationQueue } from "@/jobs_pipeline/add-to-organization/add-to-organization-queue";
+import { anonymizeQueue } from "@/jobs_pipeline/anonymize/anonymize-queue";
+import { csvMassActionsQueue } from "@/jobs_pipeline/common/mass-actions/csv-mass-actions-queue";
+import { relationsQueue } from "@/jobs_pipeline/common/relation/contacts/relations-queue";
+import { organizationsQueue } from "@/jobs_pipeline/csv-import/orgs/organizations-queue";
+import { deletionQueue } from "@/jobs_pipeline/delete/deletion-queue";
+import { exportQueue } from "@/jobs_pipeline/export/export-queue";
+import { addToJourneyQueue } from "../jobs_pipeline/add-to-journey/add-to-journey-queue";
+import { orgRelationsQueue } from "../jobs_pipeline/common/relation/orgs/relations-queue-org";
+import { contactsQueue } from "../jobs_pipeline/csv-import/contacts/contacts-queue";
+import { csvContactsQueue } from "../jobs_pipeline/csv-import/contacts/csv-contacts-queue";
+import { csvOrganizationsQueue } from "../jobs_pipeline/csv-import/orgs/csv-organizations-queue";
+import { updateQueue } from "../jobs_pipeline/update/update-queue";
 
 export const serverAdapter: ExpressAdapter = new ExpressAdapter();
 serverAdapter.setBasePath("/admin/queues");
 
 export const bullBoard = createBullBoard({
-	queues: [new BullMQAdapter(csvContactsQueue),
+	queues: [
+		new BullMQAdapter(csvContactsQueue),
 		new BullMQAdapter(contactsQueue),
 		new BullMQAdapter(csvOrganizationsQueue),
 		new BullMQAdapter(organizationsQueue),
@@ -33,6 +34,7 @@ export const bullBoard = createBullBoard({
 		new BullMQAdapter(orgRelationsQueue),
 		new BullMQAdapter(exportQueue),
 		new BullMQAdapter(anonymizeQueue),
-		new BullMQAdapter(updateQueue),],
+		new BullMQAdapter(updateQueue),
+	],
 	serverAdapter,
 });

@@ -2,11 +2,13 @@ import express, { type Express } from "express";
 import helmet from "helmet";
 import { pino } from "pino";
 import { healthCheckRouter } from "@/api/health-check/health-check-router";
+import { openAPIRouter } from "@/api-docs/open-API-router";
 import errorHandler from "@/common/middleware/error-handler";
 import rateLimiter from "@/common/middleware/rate-limiter";
 import requestLogger from "@/common/middleware/request-logger";
-import { openAPIRouter } from "@/api-docs/open-API-router";
+
 const logger = pino({ name: "server start" });
+
 import path from "node:path";
 
 const __dirname = path.resolve();

@@ -1,8 +1,7 @@
+import { APIRoutesDAL } from "@nowcrm/services";
 import express from "express";
 import Redis from "ioredis";
 import { env } from "@/common/utils/env-config";
-import {APIRoutesDAL} from "@nowcrm/services";
-
 
 const redis = new Redis({ host: env.DAL_REDIS_HOST, port: env.DAL_REDIS_PORT });
 const router = express.Router();

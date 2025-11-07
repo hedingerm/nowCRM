@@ -1,5 +1,6 @@
+import { ServiceResponse } from "@nowcrm/services";
 import { StatusCodes } from "http-status-codes";
-import { csvMassActionsQueue } from "@/lib/queues/csv-mass-actions-queue";
+import { csvMassActionsQueue } from "@/jobs_pipeline/common/mass-actions/csv-mass-actions-queue";
 import type {
 	MassAddToJourneyPayload,
 	MassAddToListPayload,
@@ -10,7 +11,6 @@ import type {
 	MassUpdatePayload,
 	MassUpdateSubscriptionPayload,
 } from "./mass-actions-model";
-import { ServiceResponse } from "@nowcrm/services";
 
 class MassActionsServiceApi {
 	async deleteItems(payload: MassDeletePayload) {

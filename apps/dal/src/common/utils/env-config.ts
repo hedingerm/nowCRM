@@ -16,6 +16,9 @@ export const env = cleanEnv(process.env, {
 	DAL_STRAPI_API_TOKEN: str({ devDefault: testOnly("") }),
 	DAL_CHECK_TIME: num({ devDefault: testOnly(1440) }),
 	DAL_REDIS_PORT: port({ devDefault: testOnly(6379) }),
+	DAL_STRAPI_API_URL: str({
+		devDefault: testOnly("http://localhost:1337/api/"),
+	}),
 	DAL_JOB_CONCURRENCY: num({ devDefault: testOnly(1) }),
 	DAL_WORKER_COUNT: num({ devDefault: testOnly(4) }),
 	DAL_REDIS_HOST: host({ devDefault: testOnly("localhost") }),
@@ -40,7 +43,9 @@ export const env = cleanEnv(process.env, {
 	DAL_SMTP_FROM: str({ devDefault: testOnly("") }),
 	STRAPI_URL: str({ devDefault: testOnly("http://localhost:1337/api/") }),
 	COMPOSER_URL: str({ devDefault: testOnly("http://localhost:3020/") }),
-	RABBITMQ_URL: str({ devDefault: testOnly("amqp://guest:guest@localhost:5672") }),
+	RABBITMQ_URL: str({
+		devDefault: testOnly("amqp://guest:guest@localhost:5672"),
+	}),
 });
 
 // Construct the Authorization header correctly

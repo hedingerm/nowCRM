@@ -1,9 +1,8 @@
+import { APIRoutesDAL } from "@nowcrm/services";
 import express, { type Request, type Response } from "express";
 import multer from "multer";
-
-import { csvContactsQueue } from "../../lib/queues/csv-contacts-queue";
-import { csvOrganizationsQueue } from "../../lib/queues/csv-organizations-queue";
-import { APIRoutesDAL } from "@nowcrm/services";
+import { csvContactsQueue } from "../../jobs_pipeline/csv-import/contacts/csv-contacts-queue";
+import { csvOrganizationsQueue } from "../../jobs_pipeline/csv-import/orgs/csv-organizations-queue";
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });

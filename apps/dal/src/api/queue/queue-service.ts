@@ -1,9 +1,6 @@
-import axios from "axios";
-import { wrapper } from "axios-cookiejar-support";
-import { CookieJar } from "tough-cookie";
-
-import { env } from "@/common/utils/env-config";
 import { ServiceResponse } from "@nowcrm/services";
+import { env } from "@/common/utils/env-config";
+
 function prettifyOp(op: string): string {
 	const map: Record<string, string> = {
 		$containsi: "contains",
@@ -48,15 +45,8 @@ function parseSearchMaskToString(mask: any): string {
 
 class QueueServiceApi {
 	public async getQueueData(query: any) {
-		const jar = new CookieJar();
-
-		const client = wrapper(
-			axios.create({
-				baseURL: `http://${env.DAL_HOST}:${env.DAL_PORT}`,
-				jar,
-				withCredentials: true,
-			}),
-		);
+		const baseUrl = `http://${env.DAL_HOST}:${env.DAL_PORT}`;
+		let cookieHeader = "";
 
 		try {
 			const page = Number.parseInt(query.page as string, 10) || 1;
@@ -69,21 +59,42 @@ class QueueServiceApi {
 			} else if (type === "mass-actions") {
 				queueName = "csvMassActionsQueue";
 			}
-			await client.post("/login", {
-				username: env.DAL_BASIC_AUTH_USERNAME,
-				password: env.DAL_BASIC_AUTH_PASSWORD,
+
+			const loginRes = await fetch(`${baseUrl}/login`, {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					username: env.DAL_BASIC_AUTH_USERNAME,
+					password: env.DAL_BASIC_AUTH_PASSWORD,
+				}),
+				credentials: "include",
 			});
 
-			const response = await client.get("/admin/queues/api/queues", {
-				params: {
-					activeQueue: queueName,
-					status: "latest",
-					page,
-					jobsPerPage,
+			if (!loginRes.ok) throw new Error(`Login failed: ${loginRes.statusText}`);
+
+			const cookies = loginRes.headers.get("set-cookie");
+			if (cookies) cookieHeader = cookies;
+
+			const params = new URLSearchParams({
+				activeQueue: queueName,
+				status: "latest",
+				page: String(page),
+				jobsPerPage: String(jobsPerPage),
+			});
+
+			const response = await fetch(
+				`${baseUrl}/admin/queues/api/queues?${params}`,
+				{
+					headers: { Cookie: cookieHeader },
+					credentials: "include",
 				},
-			});
+			);
 
-			const queues = response.data?.queues || [];
+			if (!response.ok)
+				throw new Error(`Failed to load queues: ${response.statusText}`);
+			const data = await response.json();
+
+			const queues = data?.queues || [];
 			const csvQueue = queues.find((q: any) => q.name === queueName);
 
 			if (!csvQueue) {
@@ -110,13 +121,22 @@ class QueueServiceApi {
 					};
 
 					try {
-						const logsResponse = await client.get(
-							`/admin/queues/api/queues/${queueName}/${job.id}/logs`,
+						const logsRes = await fetch(
+							`${baseUrl}/admin/queues/api/queues/${queueName}/${job.id}/logs`,
+							{
+								headers: { Cookie: cookieHeader },
+								credentials: "include",
+							},
 						);
 
-						const logs = Array.isArray(logsResponse.data)
-							? logsResponse.data
-							: logsResponse.data?.logs || [];
+						if (!logsRes.ok)
+							throw new Error(`Failed to fetch logs: ${logsRes.statusText}`);
+
+						const logsData = await logsRes.json();
+
+						const logs = Array.isArray(logsData)
+							? logsData
+							: logsData?.logs || [];
 
 						jobInfo.logs = logs;
 
