@@ -2,10 +2,10 @@
 import { format } from "date-fns";
 import { useCallback, useEffect, useState } from "react";
 import { getEventsByCompositionId } from "@/lib/actions/events/get-event";
-import type { DateRange } from "@/lib/types/new_type/composition";
+import { DateRange, DocumentId } from "@nowcrm/services";
 
 export function useChannelAnalytics(
-	compositionItemId: number,
+	compositionItemId: DocumentId,
 	channelName: string,
 ) {
 	const [selectedRange, setSelectedRange] = useState<DateRange>("total");

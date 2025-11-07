@@ -12,6 +12,7 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { unsubscribeUser } from "@/lib/actions/unsubscribe-user";
+import { DocumentId } from "@nowcrm/services";
 
 export default function UnsubscribeComponent({
 	email,
@@ -20,7 +21,7 @@ export default function UnsubscribeComponent({
 }: {
 	email: string;
 	channel?: string;
-	compositionId?: number;
+	compositionId?: DocumentId;
 }) {
 	const [status, setStatus] = useState<{
 		success: boolean;

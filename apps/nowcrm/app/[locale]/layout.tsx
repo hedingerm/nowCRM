@@ -40,6 +40,7 @@ export default async function RootLayout(props: {
 					disableTransitionOnChange
 				>
 					<NextIntlClientProvider messages={messages}>
+						{/* @ts-ignore */}
 						{children}
 					</NextIntlClientProvider>
 				</ThemeProvider>

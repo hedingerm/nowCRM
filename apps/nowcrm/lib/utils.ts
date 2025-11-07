@@ -2,8 +2,7 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import type { Option } from "@/components/autoComplete/autoComplete";
 import type { CalendarEventType } from "@/components/event-calendar/types";
-import type { ScheduledComposition } from "@/lib/types/new_type/sceduled_composition";
-
+import { CompositionScheduled } from "@nowcrm/services";
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
 }
@@ -74,12 +73,12 @@ export function fromCalendarEventToForm(event: Omit<CalendarEventType, "id">) {
 }
 
 export function mapToCalendarEvents(
-	data: ScheduledComposition[],
+	data: CompositionScheduled[],
 ): CalendarEventType[] {
 	return data.map((item) => ({
 		id: String(item.id),
 		name: item.name,
-		status: item.status ?? "scheduled",
+		status: item.scheduled_status ?? "scheduled",
 		description: item.description ?? "",
 		color: item.color ?? "#999999",
 		publish_date: new Date(item.publish_date),

@@ -72,3 +72,12 @@ export interface Form_Composition extends BaseFormType {
 	composition_items?: StrapiConnect;
 	campaign?: StrapiConnect;
 }
+
+
+// used for calendar metrics
+export type DateRange =
+	| "today"
+	| "yesterday"
+	| "last7days"
+	| "custom"
+	| "total";
