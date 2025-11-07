@@ -6,7 +6,7 @@ import { Contact, DocumentId, Form_Contact } from "@nowcrm/services";
 import { channelsService, contactInterestsService, contactsService, subscriptionsService, StandardResponse } from "@nowcrm/services/server";
 
 export interface ItemProps {
-	value: number;
+	value: DocumentId;
 	label: string;
 }
 
@@ -14,8 +14,8 @@ export interface ItemProps {
 async function fetchAllChannels(): Promise<ItemProps[]> {
 	const response = await channelsService.find(env.CRM_STRAPI_API_TOKEN, { sort: ["id:asc"] });
 	return (
-		response.data?.map((channel: any) => ({
-			value: channel.id,
+		response.data?.map((channel) => ({
+			value: channel.documentId,
 			label: channel.name,
 		})) || []
 	);
@@ -29,7 +29,7 @@ async function fetchAllInterests(): Promise<ItemProps[]> {
 
 	return (
 		response.data?.map((interest) => ({
-			value: interest.id,
+			value: interest.documentId,
 			label: interest.name,
 		})) || []
 	);
@@ -45,7 +45,7 @@ export async function getInterests(): Promise<ItemProps[]> {
 
 // to test with http://localhost:3000/en/signup?unsubscribe_token=f2bbcc56-b17d-4937-933f-12d0acac47c7
 export async function upsertSubscription(
-	contact_data: Form_Contact,
+	contact_data: Partial<Form_Contact>,
 	channel_ids: DocumentId[],
 ): Promise<StandardResponse<Contact>> {
 	try {
