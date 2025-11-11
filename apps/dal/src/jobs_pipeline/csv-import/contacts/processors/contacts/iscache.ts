@@ -1,4 +1,4 @@
-// functions/helpers/isContactInCache.ts
+import { DocumentId } from "@nowcrm/services";
 import { relationCache } from "../helpers/cache";
 
 export function isContactInCache(contact: any): boolean {
@@ -26,9 +26,12 @@ export function isContactInCache(contact: any): boolean {
 	return false;
 }
 
-export function getCachedContactId(contact: any): number | null {
+export function getCachedContactId(
+	contact: any,
+): { id: number | null; documentId: DocumentId | null } {
 	const contactsCache = relationCache.contacts;
-	if (!contactsCache) return null;
+	if (!contactsCache)
+		return { id: null, documentId: null };
 
 	const identifiers = [
 		contact.email,
@@ -39,14 +42,18 @@ export function getCachedContactId(contact: any): number | null {
 		.filter(Boolean)
 		.map((v: string) => v.trim().toLowerCase());
 
-	if (identifiers.length === 0) return null;
+	if (identifiers.length === 0)
+		return { id: null, documentId: null };
 
-	for (const [cachedKey, cachedId] of contactsCache.entries()) {
+	for (const [cachedKey, cached] of contactsCache.entries()) {
 		const normalizedCachedKey = cachedKey.trim().toLowerCase();
 		if (identifiers.includes(normalizedCachedKey)) {
-			return cachedId;
+			return {
+				id: cached?.id ?? null,
+				documentId: cached?.documentId ?? null,
+			};
 		}
 	}
 
-	return null;
+	return { id: null, documentId: null };
 }

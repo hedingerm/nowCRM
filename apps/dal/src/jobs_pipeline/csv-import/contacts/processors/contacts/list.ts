@@ -1,6 +1,6 @@
 import path from "node:path";
-import axios from "axios";
 import { env } from "@/common/utils/env-config";
+import { fetchJson } from "@/common/utils/fetch-json";
 import { listContactsMap, relationCache } from "../helpers/cache";
 
 export const createList = async (
@@ -47,25 +47,26 @@ export const createList = async (
 	}
 
 	try {
-		const listResponse = await axios.post(
-			`${env.DAL_STRAPI_API_URL}/api/lists`,
-			{ data: finalListData },
-			{
-				headers: {
-					Authorization: `Bearer ${env.DAL_STRAPI_API_TOKEN}`,
-					"Content-Type": "application/json",
-				},
+		const listResponse = await fetchJson<{
+			data: { id: number; attributes: any };
+		}>(`${env.DAL_STRAPI_API_URL}/api/lists`, {
+			method: "POST",
+			headers: {
+				Authorization: `Bearer ${env.DAL_STRAPI_API_TOKEN}`,
+				"Content-Type": "application/json",
 			},
-		);
+			body: JSON.stringify({ data: finalListData }),
+		});
 
-		const createdList = listResponse.data;
+		const createdList = listResponse;
 		const listId = createdList.data.id;
 		const linkedContacts: any[] = [];
 
 		if (!relationCache.lists) {
 			relationCache.lists = new Map();
 		}
-		relationCache.lists.set(finalListData.name, listId);
+		//check here
+		relationCache.lists.set(finalListData.name, { id: listId, documentId: null });
 
 		if (contactIds.length > 0) {
 			const updatePromises = contactIds.map(async (contactId) => {
@@ -76,20 +77,18 @@ export const createList = async (
 				const updatedListIds = Array.from(new Set([...existingLists, listId]));
 
 				try {
-					const response = await axios.put(
-						`${env.DAL_STRAPI_API_URL}/api/contacts/${contactId}`,
-						{
-							data: {
-								lists: updatedListIds,
-							},
+					const response = await fetchJson<{
+						data: any;
+					}>(`${env.DAL_STRAPI_API_URL}/api/contacts/${contactId}`, {
+						method: "PUT",
+						headers: {
+							Authorization: `Bearer ${env.DAL_STRAPI_API_TOKEN}`,
+							"Content-Type": "application/json",
 						},
-						{
-							headers: {
-								Authorization: `Bearer ${env.DAL_STRAPI_API_TOKEN}`,
-								"Content-Type": "application/json",
-							},
-						},
-					);
+						body: JSON.stringify({
+							data: { lists: updatedListIds },
+						}),
+					});
 
 					for (const id of updatedListIds) {
 						if (!listContactsMap.has(id)) listContactsMap.set(id, []);
@@ -100,7 +99,7 @@ export const createList = async (
 
 					return response.data;
 				} catch (err: any) {
-					console.error(` Failed to link contact ${contactId}:`, err.message);
+					console.error(`Failed to link contact ${contactId}: ${err.message}`);
 					return null;
 				}
 			});
@@ -110,7 +109,7 @@ export const createList = async (
 		}
 
 		console.log(
-			` List "${finalListData.name}" (ID: ${listId}) created and linked with contact IDs`,
+			`List "${finalListData.name}" (ID: ${listId}) created and linked with contact IDs`,
 		);
 
 		return {
@@ -118,17 +117,7 @@ export const createList = async (
 			linkedContacts: linkedContacts.length > 0 ? linkedContacts : undefined,
 		};
 	} catch (error: any) {
-		console.error(
-			` Error creating list "${finalListData.name}": ${error.message}`,
-		);
-
-		if (axios.isAxiosError(error) && error.response) {
-			console.error(`Strapi response status: ${error.response.status}`);
-			console.error(
-				`Strapi response data: ${JSON.stringify(error.response.data, null, 2)}`,
-			);
-		}
-
+		console.error(`Error creating list "${finalListData.name}": ${error.message}`);
 		throw error;
 	}
 };

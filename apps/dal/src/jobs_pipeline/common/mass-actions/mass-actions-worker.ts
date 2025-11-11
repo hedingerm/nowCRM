@@ -45,6 +45,7 @@ type StrapiItem = {
 	documentId: DocumentId;
 };
 
+//check if it returns id and document_id
 export const fetchPage = async (
 	entity: string,
 	searchMask: Record<string, any>,
@@ -57,6 +58,7 @@ export const fetchPage = async (
 			filters: searchMask,
 			pagination: { pageSize, page },
 			populate: "*",
+			publicationState: "live", //check
 		},
 		{ encodeValuesOnly: true },
 	);
@@ -155,7 +157,7 @@ const massActionHandlers: Record<
 			);
 		}
 
-		const contactIds = items.map((it) => it.documentId);
+		const contactIds = items.map((it) => it.id);
 
 		console.log(
 			`[update_subscription] Enqueuing ${contactIds.length} contacts for channel ${channelId}, isSubscribe=${isSubscribe}, addEvent=${addEvent}`,

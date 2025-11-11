@@ -211,7 +211,7 @@ massActionsRouter.post("/add-to-journey", (req, res, next) => {
 
 massActionsRouter.post("/update-subscription", (req, res, next) => {
 	try {
-		return massActionsController.addToList(req, res, next);
+		return massActionsController.updateSubscription(req, res, next);
 	} catch (error) {
 		res.status(400).send({ error });
 	}

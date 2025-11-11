@@ -11,25 +11,26 @@ import { relationCache } from "../contacts/processors/helpers/cache";
 import { waitForStrapi } from "../contacts/processors/helpers/check-strapi";
 import { cleanEmptyStringsToNull } from "./processors/organizations/clean";
 import { validateEnumerations } from "./processors/organizations/enumerations";
-import { isOrganizationInCache } from "./processors/organizations/iscache";
+import { getCachedOrganizationId } from "./processors/organizations/iscache";
 import { sanitizeOrganizations } from "./processors/organizations/sanitize";
+import { DocumentId } from "@nowcrm/services";
 
 function buildFullOrgsArray(
 	originalOrgs: any[],
 	updateOrgs: any[],
-	existingOrgIds: number[],
+	existingOrgIds: DocumentId[],
 	newOrgs: any[],
-	createdIds: number[],
-): Array<any & { id: number }> {
-	const full: Array<any & { id: number }> = [];
+	createdIds: DocumentId[],
+):  Array<any & { documentId: DocumentId }> {
+	const full: Array<any & { documentId: DocumentId }> = [];
 	let newIdx = 0;
 	let existingIdx = 0;
 
 	for (const org of originalOrgs) {
 		if (updateOrgs.includes(org)) {
-			full.push({ ...org, id: existingOrgIds[existingIdx++] });
+			full.push({ ...org, documentId: existingOrgIds[existingIdx++] });
 		} else {
-			full.push({ ...newOrgs[newIdx], id: createdIds[newIdx] });
+			full.push({ ...newOrgs[newIdx], documentId: createdIds[newIdx] });
 			newIdx++;
 		}
 	}
@@ -235,34 +236,18 @@ export const startOrganizationsWorkers = () => {
 				await sleep(300);
 
 				const newOrgs: any[] = [];
-				const existingOrgIds: number[] = [];
+				const existingOrgIds: DocumentId[] = [];
 				const updateOrgs: any[] = [];
 
 				for (const org of uniqueOrgs) {
-					if (isOrganizationInCache(org)) {
-						updateOrgs.push(org);
-						const orgCache = relationCache.organizations;
-						let cached: number | undefined;
-						if (orgCache) {
-							if (org.id != null) cached = orgCache.get(String(org.id));
-							if (cached == null && org.name) {
-								const ln = org.name.trim().toLowerCase();
-								for (const [k, v] of orgCache)
-									if (k.toLowerCase() === ln) {
-										cached = v;
-										break;
-									}
-							}
-						}
-						if (typeof cached === "number") {
-							existingOrgIds.push(cached);
-						} else {
-							newOrgs.push(org);
-							updateOrgs.pop();
-						}
-					} else newOrgs.push(org);
+					const cached = getCachedOrganizationId(org);
+					if (cached.documentId) {
+					  updateOrgs.push(org);
+					  existingOrgIds.push(cached.documentId);
+					} else {
+					  newOrgs.push(org);
+					}
 				}
-
 				logger.info(
 					`[${workerId}] Cache filter: ${newOrgs.length} new, ${updateOrgs.length} updated`,
 				);
@@ -271,7 +256,7 @@ export const startOrganizationsWorkers = () => {
 					.map(cleanEmptyStringsToNull)
 					.map(validateEnumerations);
 				const BULK_SIZE = 1000;
-				const createdIds: number[] = [];
+				const createdIds: DocumentId[] = [];
 				let successCount = 0;
 
 				if (toCreate.length === 0)
@@ -286,7 +271,7 @@ export const startOrganizationsWorkers = () => {
 						const body = await postWithRetry<{
 							success: boolean;
 							count: number;
-							ids?: number[];
+							ids?: Array<{ documentId: DocumentId }>;
 							message?: string;
 						}>(
 							ORG_CREATE_URL,
@@ -299,16 +284,21 @@ export const startOrganizationsWorkers = () => {
 
 						if (!body.success)
 							throw new Error(`Strapi bulk-create failed: ${body.message}`);
-						const ids = Array.isArray(body.ids) ? body.ids : [];
+						const docs = Array.isArray(body.ids) ? body.ids : [];
+						const ids = docs.map((d) => d.documentId);
 						const cacheMap =
-							relationCache.organizations || new Map<string, number>();
+						relationCache.organizations ||
+						new Map<string, { id: number | null; documentId: DocumentId | null }>();
+					  
 						for (let i = 0; i < ids.length && i < batch.length; i++) {
-							const key = String(newOrgs[offset + i]?.id || ids[i]);
-							if (key && !cacheMap.has(key)) cacheMap.set(key, ids[i]);
+							const name = (batch[i].name || "").trim().toLowerCase();
+							if (name && !cacheMap.has(name)) {
+							cacheMap.set(name, { id: null, documentId: ids[i] });
+							}
 						}
 						relationCache.organizations = cacheMap;
-
-						createdIds.push(...ids);
+					  
+					  createdIds.push(...ids);
 						successCount += ids.length;
 						recordResponseTime(Date.now() - batchStart, false);
 						onHttpSuccess();
@@ -331,7 +321,7 @@ export const startOrganizationsWorkers = () => {
 						.map(cleanEmptyStringsToNull)
 						.map(validateEnumerations)
 						.map((o, i) => ({
-							id: existingOrgIds[i] ?? updateOrgs[i]?.id,
+							documentId: existingOrgIds[i] ?? updateOrgs[i]?.id,
 							...o,
 						}));
 
@@ -392,17 +382,20 @@ export const startOrganizationsWorkers = () => {
 				await orgRelationsQueue.add("ensureRelations", {
 					organizations: fullOrgs,
 					listId,
-				});
-
-				if (updateOrgs.length) {
+				  });
+				  
+				  if (updateOrgs.length) {
 					const updatedFullOrgs = fullOrgs.filter((o) =>
-						existingOrgIds.includes(o.id),
+					  updateOrgs.includes(
+						organizations.find((org) => org === o || org.name === o.name),
+					  ),
 					);
+				  
 					await orgRelationsQueue.add("replaceOrgRelations", {
-						organizations: updatedFullOrgs,
-						listId,
+					  organizations: updatedFullOrgs,
+					  listId,
 					});
-				}
+				  }
 
 				return {
 					successCount,

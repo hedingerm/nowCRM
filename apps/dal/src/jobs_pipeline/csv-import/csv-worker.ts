@@ -2,11 +2,11 @@ import { Worker } from "bullmq";
 import { env } from "@/common/utils/env-config";
 import { logger } from "@/logger";
 import { parseCSV } from "../common/helpers/parse-csv";
-import { initProgress } from "../common/mass-actions/start/progress-tracker";
 import { contactsQueue } from "./contacts/contacts-queue";
 import { createList } from "./contacts/processors/contacts/list";
 import { loadRelationDictionaries } from "./contacts/processors/helpers/cache";
 import { organizationsQueue } from "./orgs/organizations-queue";
+import { DocumentId } from "@nowcrm/services";
 
 const redisConnection = {
 	host: env.DAL_REDIS_HOST,
@@ -46,19 +46,18 @@ const processCsvJob = async (job: any) => {
 
 	const batchSize = 1000;
 	const totalBatches = Math.ceil(records.length / batchSize);
-	await initProgress(job.id as string, totalBatches);
 
-	let listId: number | undefined;
+	let listId: DocumentId | undefined;
 	if (type === "contacts") {
 		if (listMode === "existing" && existingListId) {
-			listId = Number(existingListId);
-			logger.info(`Using existing contact list (ID: ${listId})`);
+			listId = existingListId as DocumentId;
+			logger.info(`Using existing contact list (documentId: ${listId})`);
 		} else {
 			try {
 				const { list } = await createList({}, [], filename);
-				listId = list.data.id;
+				listId = list.data.documentId;
 				logger.info(
-					`Created empty contact list "${list.data.attributes.name}" (ID: ${listId})`,
+					`Created empty contact list "${list.data.attributes.name}" (documentId: ${listId})`,
 				);
 			} catch (err: any) {
 				logger.error(`Failed to create empty contact list: ${err.message}`);

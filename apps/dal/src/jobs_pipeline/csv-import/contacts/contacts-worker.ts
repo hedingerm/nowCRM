@@ -15,23 +15,24 @@ import { getCachedContactId } from "./processors/contacts/iscache";
 import { sanitizeContacts } from "./processors/contacts/sanitize";
 import { relationCache } from "./processors/helpers/cache";
 import { waitForStrapi } from "./processors/helpers/check-strapi";
+import { DocumentId } from "@nowcrm/services";
 
 function buildFullContactsArray(
 	originalContacts: any[],
 	updateContacts: any[],
-	existingContactIds: number[],
+	existingContactIds: DocumentId[],
 	newContacts: any[],
-	createdIds: number[],
-): Array<any & { id: number }> {
-	const full: Array<any & { id: number }> = [];
+	createdIds: DocumentId[],
+): Array<any & { documentId: DocumentId }> {
+	const full: Array<any & { documentId: DocumentId }> = [];
 	let newIdx = 0;
 	let existingIdx = 0;
 
 	for (const contact of originalContacts) {
 		if (updateContacts.includes(contact)) {
-			full.push({ ...contact, id: existingContactIds[existingIdx++] });
+			full.push({ ...contact, documentId: existingContactIds[existingIdx++] });
 		} else {
-			full.push({ ...newContacts[newIdx], id: createdIds[newIdx] });
+			full.push({ ...newContacts[newIdx], documentId: createdIds[newIdx] });
 			newIdx++;
 		}
 	}
@@ -240,18 +241,18 @@ export const startContactsWorkers = () => {
 				await sleep(300);
 
 				const newContacts: any[] = [];
-				const existingContactIds: number[] = [];
+				const existingContactIds: DocumentId[] = [];
 				const updateContacts: any[] = [];
 
 				for (const contact of contacts) {
-					const cachedId = getCachedContactId(contact);
-					if (cachedId !== null) {
-						updateContacts.push(contact);
-						existingContactIds.push(cachedId);
+					const cached = getCachedContactId(contact);
+					if (cached.documentId) {
+					  updateContacts.push(contact);
+					  existingContactIds.push(cached.documentId);
 					} else {
-						newContacts.push(contact);
+					  newContacts.push(contact);
 					}
-				}
+				  }
 
 				logger.info(
 					`[${workerId}] Cache filter: ${newContacts.length} new, ${updateContacts.length} updated (${existingContactIds.length} IDs found)`,
@@ -273,7 +274,7 @@ export const startContactsWorkers = () => {
 				}
 
 				const BULK_SIZE = 1000;
-				const createdIds: number[] = [];
+				const createdIds: DocumentId[] = [];
 				let successCount = 0;
 
 				for (let offset = 0; offset < toCreate.length; offset += BULK_SIZE) {
@@ -288,7 +289,7 @@ export const startContactsWorkers = () => {
 						const body = await postWithRetry<{
 							success: boolean;
 							count: number;
-							ids?: number[];
+							ids?: Array<{ documentId: DocumentId }>;
 							message?: string;
 						}>(
 							"/api/contacts/bulk-create",
@@ -305,13 +306,14 @@ export const startContactsWorkers = () => {
 							);
 						}
 
-						const ids = Array.isArray(body.ids) ? body.ids : [];
+						const docs = Array.isArray(body.ids) ? body.ids : [];
+						const ids = docs.map((d) => d.documentId);
 						const cacheMap =
 							relationCache.contacts || new Map<string, number>();
 						for (let i = 0; i < ids.length && i < batch.length; i++) {
 							const email = (batch[i].email || "").trim();
 							if (email && !cacheMap.has(email)) {
-								cacheMap.set(email, ids[i]);
+								cacheMap.set(email, { id: null, documentId: ids[i] });
 							}
 						}
 						relationCache.contacts = cacheMap;
@@ -365,7 +367,7 @@ export const startContactsWorkers = () => {
 							}
 							return c;
 						})
-						.map((c, i) => ({ id: existingContactIds[i], ...c }));
+						.map((c, i) => ({ documentId: existingContactIds[i], ...c }));
 
 					const UPDATED_BATCH = 1000;
 					let updatedCount = 0;

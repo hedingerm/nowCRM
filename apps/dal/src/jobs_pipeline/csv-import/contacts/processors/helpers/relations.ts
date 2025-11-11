@@ -8,72 +8,72 @@ export const contactsJoinConfig: Record<
 	{ table: string; leftCol: string; relCol: string }
 > = {
 	organizations: {
-		table: "contacts_organization_links",
+		table: "contacts_organization_lnk",
 		leftCol: "contact_id",
 		relCol: "organization_id",
 	},
 	"contact-interests": {
-		table: "contacts_contact_interests_links",
+		table: "contacts_contact_interests_lnk",
 		leftCol: "contact_id",
 		relCol: "contact_interest_id",
 	},
 	departments: {
-		table: "contacts_department_links",
+		table: "contacts_department_lnk",
 		leftCol: "contact_id",
 		relCol: "department_id",
 	},
 	keywords: {
-		table: "keywords_contacts_links",
+		table: "keywords_contacts_lnk",
 		leftCol: "contact_id",
 		relCol: "keyword_id",
 	},
 	job_titles: {
-		table: "contacts_job_title_links",
+		table: "contacts_job_title_lnk",
 		leftCol: "contact_id",
 		relCol: "job_title_id",
 	},
 	tags: {
-		table: "contacts_tags_links",
+		table: "contacts_tags_lnk",
 		leftCol: "contact_id",
 		relCol: "tag_id",
 	},
 	sources: {
-		table: "sources_contacts_links",
+		table: "sources_contacts_lnk",
 		leftCol: "contact_id",
 		relCol: "source_id",
 	},
-	notes: {
-		table: "notes_contact_links",
+	contact_notes: {
+		table: "notes_contact_lnk",
 		leftCol: "contact_id",
 		relCol: "note_id",
 	},
-	ranks: {
-		table: "ranks_contacts_links",
+	contact_ranks: {
+		table: "ranks_contacts_lnk",
 		leftCol: "contact_id",
 		relCol: "rank_id",
 	},
 	"contact-types": {
-		table: "contacts_contact_types_links",
+		table: "contacts_contact_types_lnk",
 		leftCol: "contact_id",
 		relCol: "contact_type_id",
 	},
 	industries: {
-		table: "contacts_industry_links",
+		table: "contacts_industry_lnk",
 		leftCol: "contact_id",
 		relCol: "industry_id",
 	},
 	"contact-titles": {
-		table: "contacts_title_links",
+		table: "contacts_title_lnk",
 		leftCol: "contact_id",
 		relCol: "contact_title_id",
 	},
 	"contact-salutations": {
-		table: "contacts_salutation_links",
+		table: "contacts_salutation_lnk",
 		leftCol: "contact_id",
 		relCol: "contact_salutation_id",
 	},
 	lists: {
-		table: "contacts_lists_links",
+		table: "contacts_lists_lnk",
 		leftCol: "contact_id",
 		relCol: "list_id",
 	},
@@ -84,57 +84,57 @@ export const orgsJoinConfig: Record<
 	{ table: string; leftCol: string; relCol: string }
 > = {
 	contacts: {
-		table: "contacts_organization_links",
+		table: "contacts_organization_lnk",
 		leftCol: "organization_id",
 		relCol: "contact_id",
 	},
 	keywords: {
-		table: "keywords_organizations_links",
+		table: "keywords_organizations_lnk",
 		leftCol: "organization_id",
 		relCol: "keyword_id",
 	},
 	industries: {
-		table: "organizations_industry_links",
+		table: "organizations_industry_lnk",
 		leftCol: "organization_id",
 		relCol: "industry_id",
 	},
 	sources: {
-		table: "sources_organizations_links",
+		table: "sources_organizations_lnk",
 		leftCol: "organization_id",
 		relCol: "source_id",
 	},
-	notes: {
-		table: "notes_organization_links",
+	contact_notes: {
+		table: "notes_organization_lnk",
 		leftCol: "organization_id",
 		relCol: "note_id",
 	},
 	ranks: {
-		table: "ranks_organizations_links",
+		table: "ranks_organizations_lnk",
 		leftCol: "organization_id",
 		relCol: "rank_id",
 	},
 	lists: {
-		table: "organizations_lists_links",
+		table: "organizations_lists_lnk",
 		leftCol: "organization_id",
 		relCol: "list_id",
 	},
 	"organization-types": {
-		table: "organizations_organization_type_links",
+		table: "organizations_organization_type_lnk",
 		leftCol: "organization_id",
 		relCol: "organization_type_id",
 	},
 	"media-types": {
-		table: "organizations_media_type_links",
+		table: "organizations_media_type_lnk",
 		leftCol: "organization_id",
 		relCol: "media_type_id",
 	},
 	frequencies: {
-		table: "organizations_frequency_links",
+		table: "organizations_frequency_lnk",
 		leftCol: "organization_id",
 		relCol: "frequency_id",
 	},
 	departments: {
-		table: "organizations_department_links",
+		table: "organizations_department_lnk",
 		leftCol: "organization_id",
 		relCol: "department_id",
 	},
@@ -145,14 +145,14 @@ export const relationFields = {
 	contact_interests: "contact-interests",
 	department: "departments",
 	consent: "consents",
-	contact_extra_fields: "contact-extra-fields",
+	// contact_extra_fields: "contact-extra-fields",
 	keywords: "keywords",
 	job_title: "job_titles",
 	tags: "tags",
-	ranks: "ranks",
+	contact_ranks: "contact_ranks",
 	contact_types: "contact-types",
 	sources: "sources",
-	notes: "notes",
+	contact_notes: "contact_notes",
 	industry: "industries",
 	title: "contact-titles",
 	salutation: "contact-salutations",
@@ -237,7 +237,7 @@ export async function handleRelations(contact: any): Promise<any> {
 					const searchValue = getSearchValue(val);
 					if (!searchValue) return null;
 
-					const id = cache.get(searchValue);
+					const id = cache.get(searchValue)?.id; //check
 					if (id) relationStats.resolved++;
 					else relationStats.missing++;
 
@@ -251,7 +251,7 @@ export async function handleRelations(contact: any): Promise<any> {
 
 			const searchValue = getSearchValue(rawValue);
 			if (searchValue) {
-				const id = cache.get(searchValue);
+				const id = cache.get(searchValue)?.id; //check
 				if (id) {
 					relationStats.resolved++;
 					contact[fieldKey] = id;

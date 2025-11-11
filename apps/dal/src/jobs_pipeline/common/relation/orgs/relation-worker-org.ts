@@ -98,7 +98,7 @@ export const startOrgRelationsWorkers = async () => {
 							try {
 								const resp = await fetchJson<{
 									success: boolean;
-									ids?: number[];
+									items?: { id: number; documentId: string }[];
 									message?: string;
 								}>(`${env.STRAPI_URL}/api/contacts/bulk-create`, {
 									method: "POST",
@@ -114,13 +114,18 @@ export const startOrgRelationsWorkers = async () => {
 										`bulkCreate failed for ${entity}: ${resp?.message || "no message"}`,
 									);
 								}
-								const ids = Array.isArray(resp.ids) ? resp.ids : [];
-								if (ids.length !== batch.length) {
-									throw new Error(
-										`returned ${ids.length} ids for ${batch.length} items`,
-									);
+								 const items = Array.isArray(resp.items) ? resp.items : [];
+								if (items.length !== batch.length) {
+								logger.warn(
+									`bulkCreate for ${entity}: returned ${items.length}/${batch.length} items`
+								);
 								}
-								batch.forEach((n, idx) => cache.set(n, ids[idx]));
+								batch.forEach((n, idx) => {
+								const created = items[idx];
+								if (created) {
+									cache.set(n, { id: created.id, documentId: created.documentId });
+								}
+							});
 							} catch (err: any) {
 								logger.error(
 									{
@@ -179,26 +184,26 @@ export const startOrgRelationsWorkers = async () => {
 					const joinConfig: Record<string, { table: string; relCol: string }> =
 						{
 							sources: {
-								table: "sources_organizations_links",
+								table: "sources_organizations_lnk",
 								relCol: "source_id",
 							},
 							industries: {
-								table: "organizations_industry_links",
+								table: "organizations_industry_lnk",
 								relCol: "industry_id",
 							},
 							frequencies: {
-								table: "organizations_frequency_links",
+								table: "organizations_frequency_lnk",
 								relCol: "frequency_id",
 							},
 							"media-types": {
-								table: "organizations_media_type_links",
+								table: "organizations_media_type_lnk",
 								relCol: "media_type_id",
 							},
 							"organization-types": {
-								table: "organizations_organization_type_links",
+								table: "organizations_organization_type_lnk",
 								relCol: "organization_type_id",
 							},
-							lists: { table: "organizations_lists_links", relCol: "list_id" },
+							lists: { table: "organizations_lists_lnk", relCol: "list_id" },
 						};
 
 					for (const [endpoint, pairs] of Object.entries(linkMap)) {

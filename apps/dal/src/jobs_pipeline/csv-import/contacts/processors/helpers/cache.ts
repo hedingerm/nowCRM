@@ -1,16 +1,16 @@
 import { pool } from "./db";
 
-export const relationCache: Record<string, Map<string, number>> = {};
+export const relationCache: Record<string, Map<string, { id: number | null; documentId: string | null }>> = {};
 export const listContactsMap: Map<number, number[]> = new Map();
 
 const relationFields: Record<string, string> = {
 	contact_types: "contact_types",
 	sources: "sources",
-	contact_extra_fields: "contact_extra_fields",
-	notes: "notes",
+	// contact_extra_fields: "contact_extra_fields",
+	contact_notes: "contact_notes",
 	departments: "departments",
 	contact_interests: "contact_interests",
-	ranks: "ranks",
+	contact_ranks: "contact_ranks",
 	keywords: "keywords",
 	job_titles: "job_titles",
 	tags: "tags",
@@ -46,7 +46,7 @@ export async function loadRelationDictionaries() {
 					return;
 				}
 
-				const map = new Map<string, number>();
+				const map = new Map<string, { id: number; documentId: string | null }>();
 
 				for (const row of res.rows) {
 					if (table === "contacts") {
@@ -62,7 +62,7 @@ export async function loadRelationDictionaries() {
 						for (const key of keys) {
 							const normalizedKey = key.trim().toLowerCase();
 							if (!map.has(normalizedKey)) {
-								map.set(normalizedKey, row.id);
+								map.set(normalizedKey, { id: row.id, documentId: row.document_id ?? null });
 							}
 						}
 					} else {
@@ -73,7 +73,7 @@ export async function loadRelationDictionaries() {
 							name.trim() !== "" &&
 							!map.has(name)
 						) {
-							map.set(name, row.id);
+							map.set(name, { id: row.id, documentId: row.document_id ?? null });
 						} else if (table === "job_titles") {
 						}
 					}

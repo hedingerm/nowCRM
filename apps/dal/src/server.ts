@@ -6,6 +6,7 @@ import { openAPIRouter } from "@/api-docs/open-API-router";
 import errorHandler from "@/common/middleware/error-handler";
 import rateLimiter from "@/common/middleware/rate-limiter";
 import requestLogger from "@/common/middleware/request-logger";
+import "./jobs_pipeline/start-workers";
 
 const logger = pino({ name: "server start" });
 

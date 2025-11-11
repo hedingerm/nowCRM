@@ -96,7 +96,7 @@ export const startRelationsWorkers = async () => {
 							try {
 								const resp = await fetchJson<{
 									success: boolean;
-									ids?: number[];
+									items?: { id: number; documentId: string }[];
 									message?: string;
 								}>(`${env.STRAPI_URL}/api/contacts/bulk-create`, {
 									method: "POST",
@@ -113,14 +113,23 @@ export const startRelationsWorkers = async () => {
 									);
 								}
 
-								const ids = Array.isArray(resp.ids) ? resp.ids : [];
-								if (ids.length !== batchNames.length) {
-									throw new Error(
-										`bulkCreate returned ${ids.length} ids for ${batchNames.length} items`,
-									);
+								const items = Array.isArray(resp.items) ? resp.items : [];
+								if (items.length !== batchNames.length) {
+								logger.warn(
+									`bulkCreate for ${entity}: returned ${items.length}/${batchNames.length} items`,
+								);
 								}
-								batchNames.forEach((n, idx) => cache.set(n, ids[idx]));
-							} catch (err: any) {
+								//сheck here
+								batchNames.forEach((name, idx) => {
+								const created = items[idx];
+									if (created) {
+									  cache.set(name, {
+										id: created.id,
+										documentId: created.documentId,
+									  });
+									}
+								  });
+								} catch (err: any) {
 								logger.error(
 									{
 										jobId: job.id,
@@ -203,46 +212,46 @@ export const startRelationsWorkers = async () => {
 					const joinConfig: Record<string, { table: string; relCol: string }> =
 						{
 							organizations: {
-								table: "contacts_organization_links",
+								table: "contacts_organization_lnk",
 								relCol: "organization_id",
 							},
 							"contact-interests": {
-								table: "contacts_contact_interests_links",
+								table: "contacts_contact_interests_lnk",
 								relCol: "contact_interest_id",
 							},
 							departments: {
-								table: "contacts_department_links",
+								table: "contacts_department_lnk",
 								relCol: "department_id",
 							},
 							keywords: {
-								table: "keywords_contacts_links",
+								table: "keywords_contacts_lnk",
 								relCol: "keyword_id",
 							},
 							job_titles: {
-								table: "contacts_job_title_links",
+								table: "contacts_job_title_lnk",
 								relCol: "job_title_id",
 							},
-							tags: { table: "contacts_tags_links", relCol: "tag_id" },
-							sources: { table: "sources_contacts_links", relCol: "source_id" },
-							notes: { table: "notes_contact_links", relCol: "note_id" },
-							ranks: { table: "ranks_contacts_links", relCol: "rank_id" },
+							tags: { table: "contacts_tags_lnk", relCol: "tag_id" },
+							sources: { table: "sources_contacts_lnk", relCol: "source_id" },
+							contact_notes: { table: "notes_contact_lnk", relCol: "note_id" },
+							contact_ranks: { table: "ranks_contacts_lnk", relCol: "rank_id" },
 							"contact-types": {
-								table: "contacts_contact_types_links",
+								table: "contacts_contact_types_lnk",
 								relCol: "contact_type_id",
 							},
 							industries: {
-								table: "contacts_industry_links",
+								table: "contacts_industry_lnk",
 								relCol: "industry_id",
 							},
 							"contact-salutations": {
-								table: "contacts_salutation_links",
+								table: "contacts_salutation_lnk",
 								relCol: "contact_salutation_id",
 							},
 							"contact-titles": {
-								table: "contacts_title_links",
+								table: "contacts_title_lnk",
 								relCol: "contact_title_id",
 							},
-							lists: { table: "contacts_lists_links", relCol: "list_id" },
+							lists: { table: "contacts_lists_lnk", relCol: "list_id" },
 						};
 
 					for (const [endpoint, pairs] of Object.entries(linkMap)) {
