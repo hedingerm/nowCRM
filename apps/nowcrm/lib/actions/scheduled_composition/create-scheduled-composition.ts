@@ -6,7 +6,7 @@ import { compositionScheduledsService, handleError, StandardResponse } from "@no
 
 
 export async function createScheduledCompositions(
-	values: Form_CompositionScheduled,
+	values: Partial<Form_CompositionScheduled>,
 ): Promise<StandardResponse<CompositionScheduled>> {
 	const session = await auth();
 	if (!session) {

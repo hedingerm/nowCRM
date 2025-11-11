@@ -8,7 +8,6 @@ export * from './services/channels.service';
 export * from './services/common/base.service';
 export * from './services/common/factory';
 export * from './services/common/response.service';
-export * from './services/common/typeList';
 export * from './services/composer/composer.service';
 export * from './services/composition-items.service';
 export * from './services/composition-scheduleds.service';

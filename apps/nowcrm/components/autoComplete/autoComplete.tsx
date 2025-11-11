@@ -140,7 +140,7 @@ export const AutoComplete = ({
 		<CommandPrimitive onKeyDown={handleKeyDown}>
 			<div ref={containerRef} className={cn("relative", className)}>
 				<CommandInput
-					ref={inputRef}
+					ref={inputRef as any}
 					value={inputValue}
 					onValueChange={handleChange}
 					onBlur={handleBlur}

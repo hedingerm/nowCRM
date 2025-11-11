@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { StandardResponse } from "@/lib/services/common/response.service";
+import type { StandardResponse } from "@nowcrm/services";
 
 interface InfoContent {
 	title?: string;

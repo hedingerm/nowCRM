@@ -268,7 +268,7 @@ export default function DataTable<TData, TValue>({
 		getCoreRowModel: getCoreRowModel(),
 		getSortedRowModel: getSortedRowModel(),
 		getExpandedRowModel: getExpandedRowModel(),
-		getRowId: (row) => (row as any).id,
+		getRowId: (row) => (row as any).documentId,
 		meta: { session: session ? session : null },
 		state: {
 			sorting: sortingState,

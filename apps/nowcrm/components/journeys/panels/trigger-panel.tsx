@@ -583,7 +583,7 @@ export function TriggerPanel({
 														</label>
 														<AsyncSelect
 															presetOption={config.attribute as any}
-															serviceName="formService"
+															serviceName="formsService"
 															onValueChange={(value) =>
 																handleConfigChange({ attribute: value })
 															}

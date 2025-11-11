@@ -19,10 +19,11 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { CommunicationChannel } from "@/lib/static/channel-icons";
+import { CommunicationChannel } from "@nowcrm/services";
+import { DocumentId } from "@nowcrm/services";
 
 export interface WordpressChannelContentProps {
-	composition_id: number;
+	composition_id: DocumentId;
 	closeOnSubmit: () => void;
 }
 

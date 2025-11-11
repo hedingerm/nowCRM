@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/select";
 import { RouteConfig } from "@/lib/config/RoutesConfig";
 import type { Condition } from "../connection-panel"; // adjust the path if your types live elsewhere
+import { DocumentId } from "@nowcrm/services";
 
 interface FormCompleteRuleProps {
 	condition: Condition;
@@ -25,7 +26,7 @@ export function FormAnswerRule({
 	condition,
 	updateCondition,
 }: FormCompleteRuleProps) {
-	const [formId, setFormId] = useState<number | undefined>(
+	const [formId, setFormId] = useState<DocumentId | undefined>(
 		condition.additional_data?.form?.value,
 	);
 	const [conditionValue, setConditionValue] = useState<string>(
@@ -38,11 +39,11 @@ export function FormAnswerRule({
 				<label className="mb-1 block text-muted-foreground text-sm">Form</label>
 				<AsyncSelect
 					key="form"
-					serviceName="formService"
+					serviceName="formsService"
 					presetOption={condition.additional_data?.form as Option | undefined}
 					onValueChange={(value) => {
 						value
-							? setFormId(Number.parseInt(value.value))
+							? setFormId((value.value))
 							: setFormId(undefined);
 						updateCondition(condition.id, {
 							additional_data: {
@@ -56,7 +57,7 @@ export function FormAnswerRule({
 				{formId != null && (
 					<div className="mt-1 text-sm">
 						<Link
-							href={`${RouteConfig.forms.single(Number(formId))}`}
+							href={`${RouteConfig.forms.single((formId))}`}
 							target="_blank"
 							rel="noopener noreferrer"
 							className="flex items-center text-yellow-600 hover:underline"
@@ -74,7 +75,7 @@ export function FormAnswerRule({
 				</label>
 				<AsyncSelect
 					key="formAnswer"
-					serviceName="formItemService"
+					serviceName="formItemsService"
 					presetOption={
 						condition?.additional_data?.formAnswer as Option | undefined
 					}

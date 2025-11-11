@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 
 interface SendToChannelsProps {
-	step_id: number;
+	step_id: DocumentId;
 	refreshData: () => void;
 }
 
@@ -25,10 +25,11 @@ import Spinner from "@/components/Spinner";
 import { DialogClose } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { DocumentId } from "@nowcrm/services";
 
 export interface addContactsToStepData {
-	step_id: number;
-	contacts?: number | number[] | string | string[];
+	step_id: DocumentId;
+	contacts?: DocumentId | DocumentId[] | string | string[];
 	type?: "list" | "contact" | "organization";
 }
 
@@ -36,19 +37,19 @@ export interface addContactsToStepData {
 const formSchema = z.object({
 	email: z
 		.object({
-			value: z.number(),
+			value: z.string(),
 			label: z.string(),
 		})
 		.optional(),
 	list: z
 		.object({
-			value: z.number(),
+			value: z.string(),
 			label: z.string(),
 		})
 		.optional(),
 	organization: z
 		.object({
-			value: z.number(),
+			value: z.string(),
 			label: z.string(),
 		})
 		.optional(),
@@ -168,7 +169,7 @@ export default function AddContactsToStepDialog({
 									name="email"
 									filterKey="email"
 									label="Contact"
-									serviceName="contactService"
+									serviceName="contactsService"
 									form={form}
 									useFormClear={false}
 								/>
@@ -178,7 +179,7 @@ export default function AddContactsToStepDialog({
 								<AsyncSelectField
 									name="list"
 									label="List"
-									serviceName="listService"
+									serviceName="listsService"
 									form={form}
 									useFormClear={false}
 								/>
@@ -188,7 +189,7 @@ export default function AddContactsToStepDialog({
 								<AsyncSelectField
 									name="organization"
 									label="Organization"
-									serviceName="organizationService"
+									serviceName="organizationsService"
 									form={form}
 									useFormClear={false}
 								/>

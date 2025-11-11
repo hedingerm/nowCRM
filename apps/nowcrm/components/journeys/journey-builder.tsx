@@ -43,10 +43,10 @@ import { WaitPanel } from "./panels/wait-panel";
 import { StepSelectorPanel } from "./step-selector";
 
 const nodeTypes: NodeTypes = {
-	channel: ChannelNode,
-	trigger: TriggerNode,
-	"scheduler-trigger": SchedulerTriggerNode,
-	wait: WaitNode,
+	channel: ChannelNode as any,
+	trigger: TriggerNode as any,
+	"scheduler-trigger": SchedulerTriggerNode as any,
+	wait: WaitNode as any,
 };
 
 // Update the JourneyBuilderProps interface to include the new callback
@@ -1447,6 +1447,7 @@ function JourneyBuilderContent({
 				}`}
 				ref={reactFlowWrapper}
 			>
+				{/* @ts-ignore */}
 				<style jsx global>{`
   .edge-label-hover-container .react-flow__edge:not(.has-conditions):hover .react-flow__edge-textbg {
     fill: #22c55e !important;

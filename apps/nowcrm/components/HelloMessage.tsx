@@ -161,7 +161,7 @@ export const HelloMessage: React.FC = () => {
 		(async () => {
 			try {
 				const contact = await findRandomContact();
-				const link = `${RouteConfig.contacts.single.base(contact?.id || 1)}`;
+				const link = `${RouteConfig.contacts.single.base(contact?.documentId ?? "")}`;
 
 				const replacements: Record<string, string> = {
 					"{contact_name}":

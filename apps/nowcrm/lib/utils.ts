@@ -53,10 +53,10 @@ export function fromCalendarEventToForm(event: Omit<CalendarEventType, "id">) {
 				? event.status
 				: "scheduled",
 		channel: event.channel
-			? { connect: [Number(event.channel.value)] }
+			? event.channel.value
 			: undefined,
 		composition: event.composition
-			? { connect: [Number(event.composition.value)] }
+			? event.composition.value
 			: undefined,
 		send_to: event.send_to
 			? {

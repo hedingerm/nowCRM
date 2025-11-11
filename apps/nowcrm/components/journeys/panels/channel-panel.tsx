@@ -542,7 +542,7 @@ export function ChannelPanel({
 											</label>
 											<AsyncSelect
 												presetOption={config.channel}
-												serviceName="channelService"
+												serviceName="channelsService"
 												fetchFilters={{
 													$or: [
 														{ name: { $eqi: "email" } },
@@ -588,7 +588,7 @@ export function ChannelPanel({
 											</label>
 											<AsyncSelect
 												presetOption={config.composition}
-												serviceName="composerService"
+												serviceName="compositionsService"
 												onValueChange={(value) =>
 													handleConfigChange({ composition: value })
 												}
@@ -606,7 +606,7 @@ export function ChannelPanel({
 														<Button variant="outline" size="sm" asChild>
 															<Link
 																href={`${RouteConfig.composer.single(
-																	Number(config.composition.value),
+																	(config.composition.value),
 																)}`}
 																target="_blank"
 																rel="noopener noreferrer"
@@ -646,7 +646,7 @@ export function ChannelPanel({
 												</label>
 												<AsyncSelect
 													presetOption={config.identity}
-													serviceName="identityService"
+													serviceName="identitiesService"
 													onValueChange={(value) => {
 														handleConfigChange({ identity: value });
 														setHasIdentity(!!value);
@@ -689,7 +689,7 @@ export function ChannelPanel({
 									<CardContent>
 										<ContactsPageClient
 											key={node.data.stepId}
-											step_id={Number.parseInt(node.data.stepId)}
+											step_id={(node.data.stepId)}
 										/>
 									</CardContent>
 								</Card>

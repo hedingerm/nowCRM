@@ -12,7 +12,7 @@ import {
 	ChannelThrottleField,
 	throttleUtils,
 } from "@/components/ChannelThrottleField";
-import Spinner from "@/components/Spinner";
+import Spinner from "@/components/Spinner";		
 import { Button } from "@/components/ui/button";
 import { DialogClose } from "@/components/ui/dialog";
 import {
@@ -38,13 +38,13 @@ import {
 } from "@/lib/actions/channels/get-channel-throttle";
 import { getComposition } from "@/lib/actions/composer/get-composition";
 import { normalizePhone } from "@/lib/normalizePhone";
-import { CommunicationChannel } from "@/lib/static/channel-icons";
-import type { CompositionItem } from "@/lib/types/new_type/composition";
-import type { sendToChannelsData } from "../sendToChannelType";
+import { CommunicationChannel } from "@nowcrm/services";
+import { DocumentId } from "@nowcrm/services";
+import type { CommunicationChannelKeys, CompositionItem, sendToChannelsData } from "@nowcrm/services/client";
 
 export interface WhatsAppChannelContentProps {
 	mode?: "composer" | "mass_actions";
-	composition_id?: number;
+	composition_id?: DocumentId;
 	contacts?: string;
 	closeOnSubmit: () => void;
 	setSelectedOption?: (opt: sendToChannelsData) => void;
@@ -71,7 +71,7 @@ export function WhatsAppChannelContent({
 	const [defaultThrottle, setDefaultThrottle] =
 		useState<ChannelThrottleResponse | null>(null);
 	React.useEffect(() => {
-		getChannelThrottle(currentChannel.toLowerCase()).then((res) => {
+		getChannelThrottle(currentChannel.toLowerCase() as CommunicationChannelKeys).then((res) => {
 			if (res.success && res.data) {
 				const safeThrottle = res.data.throttle > 0 ? res.data.throttle : 20;
 				const safeMaxRate =
@@ -102,26 +102,26 @@ export function WhatsAppChannelContent({
 		.object({
 			composition: z
 				.object({
-					value: z.number(),
+					value: z.string(),
 					label: z.string(),
 				})
 				.optional(),
 			contact: z
 				.object({
-					value: z.number(),
+					value: z.string(),
 					label: z.string(),
 				})
 				.optional(),
 			phone: z.string().optional(),
 			list: z
 				.object({
-					value: z.number(),
+					value: z.string(),
 					label: z.string(),
 				})
 				.optional(),
 			organization: z
 				.object({
-					value: z.number(),
+					value: z.string(),
 					label: z.string(),
 				})
 				.optional(),
@@ -239,8 +239,8 @@ export function WhatsAppChannelContent({
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		let submissionData: sendToChannelsData | undefined;
 		// determine composition ID
-		let compId: number;
-		let compositionItemId: number | null = null;
+		let compId: DocumentId;
+		let compositionItemId: DocumentId | null = null;
 
 		if (isMassAction) {
 			if (!values.composition) {
@@ -301,7 +301,7 @@ export function WhatsAppChannelContent({
 					return;
 				}
 
-				compositionItemId = matchingItem.id;
+				compositionItemId = matchingItem.documentId;
 				console.log("Found compositionItemId:", compositionItemId);
 				console.groupEnd();
 			} catch (err) {
@@ -356,7 +356,7 @@ export function WhatsAppChannelContent({
 					submissionData = {
 						composition_id: compId,
 						channels: [CommunicationChannel.WHATSAPP.toLowerCase()],
-						to: Number(values.contact.value),
+						to: (values.contact.value),
 						type: "contact",
 						throttle: throttlePerMin,
 						interval: intervalMs,
@@ -448,7 +448,7 @@ export function WhatsAppChannelContent({
 					<AsyncSelectField
 						name="composition"
 						label="Composition"
-						serviceName="compositionService"
+						serviceName="compositionsService"
 						form={form}
 						useFormClear={false}
 					/>
@@ -472,7 +472,7 @@ export function WhatsAppChannelContent({
 							<AsyncSelectField
 								name="contact"
 								label="Select contact"
-								serviceName="contactService"
+								serviceName="contactsService"
 								form={form}
 								useFormClear={true}
 								filterKey={["first_name", "last_name"]}
@@ -535,7 +535,7 @@ export function WhatsAppChannelContent({
 							<AsyncSelectField
 								name="list"
 								label="List"
-								serviceName="listService"
+								serviceName="listsService"
 								form={form}
 								useFormClear={false}
 							/>
@@ -545,7 +545,7 @@ export function WhatsAppChannelContent({
 							<AsyncSelectField
 								name="organization"
 								label="Organization"
-								serviceName="organizationService"
+								serviceName="organizationsService"
 								form={form}
 								useFormClear={false}
 							/>

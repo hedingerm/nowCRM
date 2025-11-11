@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import type React from "react";
 import type { ComponentType } from "react";
-import type { CommunicationChannel } from "@/lib/static/channel-icons";
+import type { CommunicationChannel } from "@nowcrm/services";
 
 import type { EmailChannelContentProps } from "../components/send-to-channels/content/email-channel-content";
 import type { LinkedinInvitesChannelContentProps } from "../components/send-to-channels/content/linkedin-invitations-channel-content";
@@ -46,10 +46,10 @@ const LinkedInInvitationsChannelContent =
 const channelMap: Partial<
 	Record<Lowercase<CommunicationChannel>, ComponentType<any>>
 > = {
-	email: EmailChannelContent,
-	sms: SmsChannelContent,
-	whatsapp: WhatsappChannelContent,
-	linkedin_invitations: LinkedInInvitationsChannelContent,
+	email: EmailChannelContent as any,
+	sms: SmsChannelContent as any,
+	whatsapp: WhatsappChannelContent as any,
+	linkedin_invitations: LinkedInInvitationsChannelContent as any,
 };
 
 interface ChannelContentProps {

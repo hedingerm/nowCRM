@@ -18,16 +18,17 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
+import { DocumentId } from "@nowcrm/services";
 
 interface DataTableViewOptionsProps<TData> {
 	table: Table<TData>;
 	table_name: string;
-	step_id: number;
+	step_id: DocumentId;
 	onDownloadCSV: () => void;
 	showStatusModal: boolean;
 	refreshData: () => void;
 	createDialog?: React.ComponentType<{
-		step_id: number;
+		step_id: DocumentId;
 		refreshData: () => void;
 	}>;
 	hiddenExport?: boolean;

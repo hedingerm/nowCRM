@@ -1,13 +1,10 @@
 import { API_ROUTES_COMPOSER } from "../../api-routes/api-routes-composer";
-import { createComposition } from "../../client";
+import { createComposition, sendToChannelsData } from "../../client";
 import { envServices } from "../../envConfig";
 import { DocumentId } from "../../types/common/base_type";
-import { composerSendType } from "../../types/composer/composer-send-types";
-import { Contact } from "../../types/contact";
-import { JourneyStep } from "../../types/journey-step";
+
 import { ServiceResponse } from "../../types/microservices/service-response";
 import {  handleError, StandardResponse } from "../common/response.service";
-import { journeyStepsService } from "../journey-steps.service";
 
 class ComposerService {
 
@@ -80,76 +77,40 @@ class ComposerService {
 	}
 
     async sendComposition(
-		token: string,
-		step: JourneyStep,
-		contact: Contact,
-		type: composerSendType,
-		ignoreSubscription?: boolean,
+		payload: sendToChannelsData
 	): Promise<StandardResponse<null>> {
-		let passed_step = false;
-		if (!step.composition) {
+		try {
+		const base = envServices.COMPOSER_URL;
+		const url = new URL(API_ROUTES_COMPOSER.SEND_TO_CHANNELS, base);
+
+		const response = await fetch(url, {
+			method: "POST",
+			headers: {
+				"content-type": "application/json",
+				accept: "application/json",
+			},
+			body: JSON.stringify(payload),
+		});
+		const data = (await response.json()) as ServiceResponse<null>;
+
+		if (!data.success) {
 			return {
-				errorMessage: "Step is missing composition",
+				errorMessage: `Failed to send composition:${data.message} - ${data.statusCode}`,
 				data: null,
-				status: 400,
+				status: data.statusCode,
 				success: false,
 			};
 		}
 
-		const payload = {
-			composition_id: step.composition.id,
-			channels: [step.channel?.name.toLowerCase()],
-			to: contact.email,
-			type: type,
-			subject: step.composition.subject || step.composition.name,
-			from: step.identity.name,
-			ignoreSubscription,
-		};
-
-		passed_step = (
-			await journeyStepsService.checkPassedStep(
-				token,
-				step.id,
-				contact.id,
-				step.composition.id,
-			)
-		).data as boolean;
-
-		if (!passed_step) {
-			const base = envServices.COMPOSER_URL;
-			const url = new URL(API_ROUTES_COMPOSER.SEND_TO_CHANNELS, base);
-
-			const response = await fetch(url, {
-				method: "POST",
-				headers: {
-					"content-type": "application/json",
-					accept: "application/json",
-				},
-				body: JSON.stringify(payload),
-			});
-			const data = (await response.json()) as ServiceResponse<null>;
-
-			if (!data.success) {
-				return {
-					errorMessage: `Failed to send composition:${data.message} - ${data.statusCode}`,
-					data: null,
-					status: data.statusCode,
-					success: false,
-				};
-			}
-
-			return {
-				data: null,
-				status: data.statusCode,
-				success: true,
-			};
-		}
-
 		return {
-			data: null,
-			status: 200,
-			success: true,
+			data: data.responseObject,
+			status: data.statusCode,
+			success: data.success,
+			errorMessage: data.message,
 		};
+	} catch (error: any) {
+		return handleError(error);
+	}
 	}
 
 

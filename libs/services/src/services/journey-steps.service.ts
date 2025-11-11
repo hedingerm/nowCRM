@@ -13,16 +13,16 @@ class JourneyStepsService extends BaseService<JourneyStep, Form_JourneyStep> {
 
 	async checkPassedStep(
 		token: string,
-		stepId: number,
-		contactId: number,
-		compositionId: number,
+		stepId: DocumentId,
+		contactId: DocumentId,
+		compositionId: DocumentId,
 	): Promise<StandardResponse<boolean>> {
 		try {
 			const data = await journeyPassedStepService.find(token, {
 				filters: {
-					journey_step: { id: { $eq: stepId } },
-					composition: { id: { $eq: compositionId } },
-					contact: { id: { $eq: contactId } },
+					journey_step: { documentId: { $eq: stepId } },
+					composition: { documentId: { $eq: compositionId } },
+					contact: { documentId: { $eq: contactId } },
 				},
 			});
 

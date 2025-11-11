@@ -8,7 +8,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import type { StandardResponse } from "@/lib/services/common/response.service";
+import type { StandardResponse } from "@nowcrm/services";
 
 interface ErrorMessageProps {
 	response: StandardResponse<any>;

@@ -108,7 +108,7 @@ const MyEventCalendar = ({ initialEvents }: MyEventCalendarProps) => {
 	): Promise<CalendarEventType> => {
 		const payload = fromCalendarEventToForm(event);
 		const response = await updateScheduledCompositions(
-			Number(event.id),
+			(event.documentId ?? ""),
 			payload,
 		);
 		if (!response.success || !response.data) {
@@ -118,7 +118,7 @@ const MyEventCalendar = ({ initialEvents }: MyEventCalendarProps) => {
 	};
 
 	const handleEventDelete = async (eventId: string): Promise<void> => {
-		const response = await deleteScheduledCompositions(Number(eventId));
+		const response = await deleteScheduledCompositions(eventId);
 		if (!response.success) {
 			throw new Error(response.errorMessage ?? "Failed to delete event");
 		}

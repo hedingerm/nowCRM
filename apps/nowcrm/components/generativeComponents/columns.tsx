@@ -4,7 +4,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
 //EXIST BECAUSE OF NOT ALL COLUMNS NEEDED INSIDE PREVIEW
 import { RouteConfig } from "@/lib/config/RoutesConfig";
-import type { Contact } from "@/lib/types/new_type/contact";
+import { Contact } from "@nowcrm/services";
 
 export const columns: ColumnDef<Contact>[] = [
 	{
@@ -14,7 +14,7 @@ export const columns: ColumnDef<Contact>[] = [
 			const contact = row.original;
 			return (
 				<Link
-					href={`${RouteConfig.contacts.single.base(contact.id)}`}
+					href={`${RouteConfig.contacts.single.base(contact.documentId)}`}
 					className="font-medium"
 				>
 					{cell.renderValue() as any}

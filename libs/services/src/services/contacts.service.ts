@@ -123,6 +123,43 @@ class ContactsService extends BaseService<Contact, Form_Contact> {
 			return handleError(error)
 		}
 	}
+
+	async fetchWithFilters(
+		filters: any,
+		page = 1,
+		pageSize = 5,
+		token: string,
+		sortBy?: string,
+		sortOrder: "asc" | "desc" = "desc",
+
+	): Promise<{ data: Contact[]; totalCount: number }> {
+		try {
+			const response = await this.find(token, {
+				filters,
+				pagination: {
+					page,
+					pageSize,
+				},
+				populate: {
+					subscriptions: { populate: ["id", "channel", "subscribedAt"] },
+					contact_interests: "*",
+					lists: "*",
+					keywords: "*",
+					tags: "*",
+					journeys: "*",
+					journey_steps: "*",
+				},
+				sort: sortBy ? [`${sortBy}:${sortOrder}` as any] : undefined,
+			});
+			return {
+				data: response.data || [],
+				totalCount: response.meta?.pagination?.total || 0,
+			};
+		} catch (error) {
+			console.error("Error fetching contacts with filters:", error);
+			throw error;
+		}
+	}
 }
 
 export const contactsService = new ContactsService();

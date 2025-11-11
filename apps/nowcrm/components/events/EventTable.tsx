@@ -114,12 +114,12 @@ const defaultPagination: PaginationState = {
 
 function groupEventsByContact(events: Event[], action: string) {
 	const grouped: Record<
-		number,
+		DocumentId,
 		{ contact: Event["contact"]; count: number; lastEvent: Event }
 	> = {};
 
 	for (const e of events) {
-		const contactId = e.contact?.id;
+		const contactId = e.contact?.documentId;
 		if (!contactId) continue;
 
 		if (!grouped[contactId]) {

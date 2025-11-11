@@ -43,8 +43,10 @@ export interface Form_FormEntity extends BaseFormType {
 
 
 export interface CustomForm_FormItemEntity
-	extends Omit<BaseType, "publishedAt"> {
-	type: FormEntityItemType;
+	extends Omit<BaseFormType, "publishedAt"> {
+	id?: number;
+	name: string;
+	type: string;
 	label: string;
 	rank?: number;
 	hidden?: boolean;

@@ -10,7 +10,7 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
-import { CommunicationChannel } from "@/lib/static/channel-icons";
+import { CommunicationChannel } from "@nowcrm/services";
 import { EmailChannelContent } from "./content/email-channel-content";
 import { LinkedInChannelContent } from "./content/linkedin-channel-content";
 import { LinkedinInvitesChannelContent } from "./content/linkedin-invitations-channel-content";

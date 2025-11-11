@@ -3,9 +3,10 @@
 import { useParams } from "next/navigation";
 import { InfoMarkdownDisplay } from "@/components/infoPages/infoMarkdownDisplay";
 import { getLatestConsents } from "@/lib/actions/consent/get-latest-consents";
+import { DocumentId } from "@nowcrm/services";
 
 type PrivacyPolicyDisplayProps = {
-	id?: number;
+	id?: DocumentId;
 };
 export function PrivacyPolicyDisplay({ id }: PrivacyPolicyDisplayProps) {
 	const params = useParams();

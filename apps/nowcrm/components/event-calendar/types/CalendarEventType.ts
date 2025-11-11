@@ -3,7 +3,7 @@ import type { EventCalendarTranslations } from "./EventCalendarTranslations"
 
 export const eventFormSchema = (translations: EventCalendarTranslations) => {
   return z.object({
-    id: z.string().optional(),
+    documentId: z.string().optional(),
     name: z.string().min(1, translations.validations.eventNameRequired),
     description: z.string().optional(),
     status: z.string().optional(),

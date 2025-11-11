@@ -8,10 +8,10 @@ import Spinner from "@/components/Spinner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { DialogClose } from "@/components/ui/dialog";
-import { CommunicationChannel } from "@/lib/static/channel-icons";
+import { CommunicationChannel, DocumentId } from "@nowcrm/services";
 
 export interface LinkedInChannelContentProps {
-	composition_id: number;
+	composition_id: DocumentId;
 	closeOnSubmit: () => void;
 }
 

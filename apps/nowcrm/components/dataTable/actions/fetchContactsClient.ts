@@ -2,7 +2,7 @@
 
 import { auth } from "@/auth";
 import { transformFilters } from "@/lib/actions/filters/filters-search";
-import contactsService from "@/lib/services/new_type/contacts.service";
+import { contactsService } from "@nowcrm/services/server";
 
 type FetchContactsParams = {
 	page?: number;
@@ -48,6 +48,7 @@ export async function fetchContactsAction({
 			combinedFilters,
 			page,
 			pageSize,
+			session?.jwt,
 		);
 
 		return {

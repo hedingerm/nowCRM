@@ -58,6 +58,7 @@ import {
 	getRandomPersona,
 	WRITING_PERSONAS,
 } from "./quick-write-constants";
+import { LanguageKeys } from "@nowcrm/services";
 
 const quickWriteSchema = z.object({
 	model: z.enum(["gpt-4o-mini", "claude"]),
@@ -143,6 +144,7 @@ export function QuickWriteDialog({
 
 			const response = await quickWrite({
 				...data,
+				language: data.language as LanguageKeys,
 				additional_context: enhancedContext,
 			});
 

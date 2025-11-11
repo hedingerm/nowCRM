@@ -24,8 +24,7 @@ import {
 	getImportProgressMap,
 	getPreviousImports,
 } from "@/lib/actions/import/fetch-import";
-import type { JobCompositionRecord } from "@/lib/types/new_type/composition";
-import type { ImportRecord } from "@/lib/types/new_type/import";
+import { JobCompositionRecord, ImportRecord } from "@nowcrm/services";
 
 interface PreviousJobsModalProps {
 	isOpen: boolean;

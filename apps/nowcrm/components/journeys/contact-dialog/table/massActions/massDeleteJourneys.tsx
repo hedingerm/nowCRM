@@ -2,12 +2,14 @@
 "use server";
 
 import { auth } from "@/auth";
-import type { StandardResponse } from "@/lib/services/common/response.service";
-import journeyStepsService from "@/lib/services/new_type/journeySteps.service";
+
+import { DocumentId, StandardResponse } from "@nowcrm/services";
+import { journeyStepsService } from "@nowcrm/services/server";
+import { handleError } from "@nowcrm/services/server";
 
 export async function massDeleteJourneys(
-	contactIds: number[],
-	journeyStepId: number,
+	contactIds: DocumentId[],
+	journeyStepId: DocumentId,
 ): Promise<StandardResponse<null>> {
 	console.log(contactIds, journeyStepId);
 	const session = await auth();
@@ -19,22 +21,17 @@ export async function massDeleteJourneys(
 		};
 	}
 	try {
-		await journeyStepsService.update(journeyStepId, {
+		await journeyStepsService.update(journeyStepId,  {
 			contacts: {
 				disconnect: contactIds,
 			},
-		});
+		}, session.jwt);
 		return {
 			data: null,
 			status: 200,
 			success: true,
 		};
 	} catch (error) {
-		console.error("Error during removing contact:", error);
-		return {
-			data: null,
-			status: 500,
-			success: false,
-		};
+		return handleError(error);
 	}
 }

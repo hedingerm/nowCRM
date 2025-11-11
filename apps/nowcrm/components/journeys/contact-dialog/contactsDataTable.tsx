@@ -12,14 +12,14 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
-import type { Contact } from "@/lib/types/new_type/contact";
+import { Contact, DocumentId } from "@nowcrm/services";
 import createContactDialog from "./add-contacts-dialog";
 import { fetchContactsAction } from "./fetchContacts";
 import { columns } from "./table/columns/columns";
 import DataTable from "./table/DataTable";
 import MassActionsContacts from "./table/massActions/massActions";
 
-export default function ContactsPageClient({ step_id }: { step_id: number }) {
+export default function ContactsPageClient({ step_id }: { step_id: DocumentId }) {
 	const searchParams = useSearchParams();
 	const router = useRouter();
 	const [data, setData] = useState<Contact[]>([]);
