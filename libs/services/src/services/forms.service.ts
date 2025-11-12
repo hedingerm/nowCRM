@@ -17,7 +17,7 @@ class FormsService extends BaseService<FormEntity, Form_FormEntity> {
 
 	public async submit(
 		payload: {
-			formId?: DocumentId;
+			formId: DocumentId;
 			identifier: string;
 			formData: Record<string, any>; // might include File[]
 		},

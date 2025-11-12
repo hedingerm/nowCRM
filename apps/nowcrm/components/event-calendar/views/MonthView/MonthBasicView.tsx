@@ -116,16 +116,16 @@ const MonthBasicView: React.FC<MonthBasicViewProps> = ({
           <div className="flex items-center justify-between gap-1">
             <div className="font-semibold truncate">{event.name || "Untitled Event"}</div>
 
-            {event.status && (
+            {event.scheduled_status && (
               <span
                 className={cn(
                   "inline-block px-1 py-[1px] rounded text-[8px] font-semibold whitespace-nowrap",
-                  event.status === "published" && "bg-green-100 text-green-700 dark:bg-green-800/40 dark:text-green-300",
-                  event.status === "scheduled" && "bg-yellow-100 text-yellow-700 dark:bg-yellow-800/40 dark:text-yellow-300",
-                  event.status === "processing" && "bg-blue-100 text-blue-700 dark:bg-blue-800/40 dark:text-blue-300",
+                  event.scheduled_status === "published" && "bg-green-100 text-green-700 dark:bg-green-800/40 dark:text-green-300",
+                  event.scheduled_status === "scheduled" && "bg-yellow-100 text-yellow-700 dark:bg-yellow-800/40 dark:text-yellow-300",
+                  event.scheduled_status === "processing" && "bg-blue-100 text-blue-700 dark:bg-blue-800/40 dark:text-blue-300",
                 )}
               >
-                {event.status}
+                {event.scheduled_status}
               </span>
             )}
           </div>

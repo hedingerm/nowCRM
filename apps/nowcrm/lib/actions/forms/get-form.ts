@@ -78,7 +78,7 @@ export async function getFormBySlugOrId(
  * @returns Success status and message
  */
 export async function submitFormData(formData: {
-	formId: DocumentId | undefined;
+	formId: DocumentId;
 	identifier: string;
 	formData: Record<string, any>;
 }): Promise<{ success: boolean; message?: string }> {

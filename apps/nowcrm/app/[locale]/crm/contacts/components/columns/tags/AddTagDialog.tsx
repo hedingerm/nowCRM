@@ -39,7 +39,6 @@ import { Tag } from "@nowcrm/services";
 
 
 interface AddTagDialogProps {
-	contactId: number;
 	currentTags: Tag[];
 	onTagAdded: (tag: Tag) => void;
 }
@@ -53,7 +52,6 @@ const createTagSchema = z.object({
 });
 
 export function AddTagDialog({
-	contactId,
 	currentTags,
 	onTagAdded,
 }: AddTagDialogProps) {

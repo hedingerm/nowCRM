@@ -53,7 +53,6 @@ export function TagsCell({
 		return (
 			<div className="flex items-center gap-2">
 				<AddTagDialog
-					contactId={entityId}
 					currentTags={tags}
 					onTagAdded={handleTagAdded}
 				/>
@@ -95,7 +94,6 @@ export function TagsCell({
 				</div>
 			))}
 			<AddTagDialog
-				contactId={entityId}
 				currentTags={tags}
 				onTagAdded={handleTagAdded}
 			/>

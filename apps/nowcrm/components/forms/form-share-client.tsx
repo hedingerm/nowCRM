@@ -106,7 +106,7 @@ const FormShareClient: React.FC<FormShareClientProps> = ({
 	// ===== STATE MANAGEMENT =====
 	// Form data and loading states
 	const [loading, setLoading] = useState(true);
-	const [formId, setFormId] = useState<DocumentId | undefined>(undefined);
+	const [formId, setFormId] = useState<DocumentId>("");
 	const [submitSuccess, setSubmitSuccess] = useState(false);
 	const [submitDisabled, setSubmitDisabled] = useState(false);
 	const [formData, setFormData] = useState<FormEntity>({} as FormEntity);
