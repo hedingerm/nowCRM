@@ -63,7 +63,7 @@ export const fetchPage = async (
 		{ encodeValuesOnly: true },
 	);
 
-	const url = `${env.STRAPI_URL}/api/${entity}?${query}`;
+	const url = `${env.STRAPI_URL}${entity}?${query}`;
 	try {
 		const response = await fetch(url, {
 			method: "GET",

@@ -98,7 +98,7 @@ export const startRelationsWorkers = async () => {
 									success: boolean;
 									items?: { id: number; documentId: string }[];
 									message?: string;
-								}>(`${env.STRAPI_URL}/api/contacts/bulk-create`, {
+								}>(`${env.STRAPI_URL}contacts/bulk-create`, {
 									method: "POST",
 									headers,
 									body: JSON.stringify({

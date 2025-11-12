@@ -16,7 +16,7 @@ export const anonymizeEntityItems = async (
 	let failedCount = 0;
 	const failedItems: { id: DocumentId; error: string }[] = [];
 
-	const url = `${env.STRAPI_URL}/api/contacts/anonymize-user`;
+	const url = `${env.STRAPI_URL}contacts/anonymize-user`;
 
 	for (const item of items) {
 		try {
