@@ -140,7 +140,6 @@ const MyEventCalendar = ({ initialEvents }: MyEventCalendarProps) => {
 				start.toISOString(),
 				end.toISOString(),
 			);
-
 			if (!response.success || !response.data) {
 				throw new Error(
 					response.errorMessage ?? "Failed to fetch scheduled compositions",

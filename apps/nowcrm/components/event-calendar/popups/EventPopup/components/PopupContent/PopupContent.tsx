@@ -62,6 +62,7 @@ export const EventPopupContent: React.FC<EventPopupContent> = ({
   const [datetimeOpen, setDatetimeOpen] = useState(false)
   const [activeTab, setActiveTab] = useState("contact");
   const [isDeleting, setIsDeleting] = useState(false)
+
   const getDefaultValues = (): CalendarEventType => ({
     documentId: event?.documentId || "",
     name: event?.name || "",
@@ -98,8 +99,6 @@ export const EventPopupContent: React.FC<EventPopupContent> = ({
     setIsSaving(true)
     try {
       if (!event?.documentId) {
-        // New event
-        console.log(values)
         const newEvent: Omit<CalendarEventType, "id"> = {
           name: values.name,
           description: values.description,
@@ -158,16 +157,16 @@ export const EventPopupContent: React.FC<EventPopupContent> = ({
         <DialogTitle className="text-lg sm:text-xl flex items-center gap-2">
           <CalendarPlus className="h-5 w-5" />
           {event?.documentId ? translations.editEvent : translations.addEvent}
-          {event?.status && (
+          {event?.scheduled_status && (
             <span
               className={cn(
                 "px-2 py-[2px] rounded text-[13px] font-semibold  tracking-wide",
-                event.status === "published" && "bg-green-100 text-green-700 dark:bg-green-800/40 dark:text-green-300",
-                event.status === "scheduled" && "bg-yellow-100 text-yellow-700 dark:bg-yellow-800/40 dark:text-yellow-300",
-                event.status === "processing" && "bg-blue-100 text-blue-700 dark:bg-blue-800/40 dark:text-blue-300",
+                event.scheduled_status === "published" && "bg-green-100 text-green-700 dark:bg-green-800/40 dark:text-green-300",
+                event.scheduled_status === "scheduled" && "bg-yellow-100 text-yellow-700 dark:bg-yellow-800/40 dark:text-yellow-300",
+                event.scheduled_status === "processing" && "bg-blue-100 text-blue-700 dark:bg-blue-800/40 dark:text-blue-300",
               )}
             >
-              {event.status}
+              {event.scheduled_status}
             </span>
           )}
         </DialogTitle>
@@ -211,9 +210,19 @@ export const EventPopupContent: React.FC<EventPopupContent> = ({
           label="channel"
           presetOption={field.value}
           formValue={field.value}
-          onValueChange={(opt) =>
+          onValueChange={(opt) => {
             field.onChange(opt ? { label: opt.label, value: String(opt.value) } : undefined)
-          }
+          
+            const channelValue = opt?.label?.toLowerCase?.() || ""
+            const isSocial = ["blog", "twitter", "linkedin", "telegram"].includes(channelValue)
+          
+            const currentSendTo = form.getValues("send_to")
+          
+            form.setValue("send_to", {
+              ...currentSendTo,
+              type: isSocial ? "contact" : currentSendTo?.type,
+            })
+          }}
           useFormClear={false}
         />
       </FormControl>
@@ -266,7 +275,12 @@ export const EventPopupContent: React.FC<EventPopupContent> = ({
                     type="email"
                     placeholder="Enter contact email..."
                     {...field}
-                    value={field.value as string}
+                    defaultValue={ sendToType === "contact"
+                    ? sendToData as string
+                    : ''}
+                    value={ sendToType === "contact"
+                    ? sendToData as string
+                    : ''}
                     onChange={(e) => {
                       form.setValue("send_to", {
                         type: "contact",
@@ -294,7 +308,7 @@ export const EventPopupContent: React.FC<EventPopupContent> = ({
                   <AsyncSelect
                     serviceName="listsService"
                     label="List"
-                    presetOption={ sendToType === "organization"
+                    presetOption={ sendToType === "list"
                     ? field.value?.send_data as Option
                     : undefined}
                     formValue={
@@ -372,8 +386,8 @@ export const EventPopupContent: React.FC<EventPopupContent> = ({
                 formValue={field.value?.identity}
                 onValueChange={(opt) =>field.onChange(
                   opt
-                  ? { type: "organization", send_data: sendToData ? sendToData : undefined, identity: opt }
-                  : { type: "organization", send_data: sendToData ? sendToData : undefined, identity: undefined }
+                  ? { type: sendToType ? sendToType : undefined, send_data: sendToData ? sendToData : undefined, identity: opt }
+                  : { type: sendToType ? sendToType : undefined, send_data: sendToData ? sendToData : undefined, identity: undefined }
                 )}
               />
             </FormControl>

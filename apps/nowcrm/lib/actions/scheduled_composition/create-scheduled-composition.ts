@@ -38,7 +38,7 @@ export async function createScheduledCompositions(
 		}
 		const created = await compositionScheduledsService.findOne(
 			res.data.documentId,
-			res.data.documentId,
+			session.jwt,
 			{
 				populate: ["composition", "channel"],
 			},

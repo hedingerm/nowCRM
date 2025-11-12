@@ -250,7 +250,7 @@ export function useEventCalendar({
           endDate,
           abortController.signal
         );
-
+        console.log(fetchedEvents)
         // Only update state if this is still the current fetch
         if (currentFetchRef.current === abortController) {
           setEvents((prev) => {
