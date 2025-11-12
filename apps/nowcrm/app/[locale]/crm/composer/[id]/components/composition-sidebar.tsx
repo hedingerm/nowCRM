@@ -1,5 +1,6 @@
 "use client";
 
+import type { CommunicationChannelKeys } from "@nowcrm/services";
 import { RefreshCcw } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMessages } from "next-intl";
@@ -8,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { getChannelIcon } from "@/lib/static/channel-icons";
 import { AddChannelButton } from "./add-channel-button";
-import { CommunicationChannelKeys } from "@nowcrm/services";
 
 interface ChannelTab {
 	id: string;

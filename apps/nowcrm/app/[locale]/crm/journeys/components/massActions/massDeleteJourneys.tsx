@@ -1,9 +1,13 @@
 // actions/deleteContactAction.ts
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	handleError,
+	journeysService,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { DocumentId } from "@nowcrm/services";
-import { handleError, journeysService, StandardResponse } from "@nowcrm/services/server";
 export async function massDeleteJourneys(
 	journeys: DocumentId[],
 ): Promise<StandardResponse<null>> {
@@ -16,7 +20,9 @@ export async function massDeleteJourneys(
 		};
 	}
 	try {
-		const unpublishPromises = journeys.map((id) => journeysService.fullDelete(id, session.jwt));
+		const unpublishPromises = journeys.map((id) =>
+			journeysService.fullDelete(id, session.jwt),
+		);
 		await Promise.all(unpublishPromises);
 		return {
 			data: null,

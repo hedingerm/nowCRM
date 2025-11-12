@@ -1,5 +1,6 @@
 "use client";
 
+import type { SurveyItem } from "@nowcrm/services";
 import type { ColumnDef } from "@tanstack/react-table";
 import { FileText, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
@@ -20,7 +21,6 @@ import {
 import { RouteConfig } from "@/lib/config/RoutesConfig";
 import { formatDateTimeStrapi } from "@/lib/strapiDate";
 import { deleteSurveyItemAction } from "./deleteSurveyItem";
-import { SurveyItem } from "@nowcrm/services";
 
 const DeleteAction: React.FC<{ surveryItem: SurveyItem }> = ({
 	surveryItem,

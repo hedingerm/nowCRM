@@ -151,7 +151,7 @@ const ListView: React.FC<ListViewProps> = ({
             const { dateInfo, timeInfo } = getEventDateInfo(event)
             return (
               <motion.div
-                key={event.id}
+                key={event.documentId}
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, height: 0 }}

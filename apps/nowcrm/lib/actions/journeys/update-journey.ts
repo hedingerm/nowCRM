@@ -1,8 +1,12 @@
 // actions/deleteContactAction.ts
 "use server";
+import type { DocumentId, Form_Journey, Journey } from "@nowcrm/services";
+import {
+	handleError,
+	journeysService,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { DocumentId, Form_Journey, Journey } from "@nowcrm/services";
-import { handleError, journeysService, StandardResponse } from "@nowcrm/services/server";
 
 export async function updateJourney(
 	id: DocumentId,
@@ -17,7 +21,7 @@ export async function updateJourney(
 		};
 	}
 	try {
-		const res = await journeysService.update(id, values,session.jwt);
+		const res = await journeysService.update(id, values, session.jwt);
 		return res;
 	} catch (error) {
 		return handleError(error);

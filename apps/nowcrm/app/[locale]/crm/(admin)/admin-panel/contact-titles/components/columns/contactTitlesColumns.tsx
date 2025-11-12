@@ -1,4 +1,5 @@
 "use client";
+import type { ContactTitle } from "@nowcrm/services";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 import { useMessages } from "next-intl";
@@ -11,7 +12,6 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ContactTitle } from "@nowcrm/services";
 import EditContactTitleDialog from "./editDialog";
 
 const DeleteAction: React.FC<{ contactTitle: ContactTitle }> = ({
@@ -34,7 +34,7 @@ const DeleteAction: React.FC<{ contactTitle: ContactTitle }> = ({
 							"./deleteContactTitle"
 						);
 						const res = await deleteContactTitleAction(contactTitle.documentId);
-						if(!res.success) {
+						if (!res.success) {
 							toast.error(res.errorMessage ?? "Failed to delete contact title");
 							return;
 						}

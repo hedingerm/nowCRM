@@ -1,10 +1,13 @@
 // actions/deleteContactAction.ts
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	compositionsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { DocumentId } from "@nowcrm/services";
-import { handleError, StandardResponse } from "@nowcrm/services/server";
-import { compositionsService } from "@nowcrm/services/server";
 export async function deleteCompositionAction(
 	compositionId: DocumentId,
 ): Promise<StandardResponse<null>> {
@@ -17,7 +20,10 @@ export async function deleteCompositionAction(
 		};
 	}
 	try {
-		const response = await compositionsService.delete(compositionId, session.jwt);
+		const response = await compositionsService.delete(
+			compositionId,
+			session.jwt,
+		);
 		return response;
 	} catch (error) {
 		return handleError(error);

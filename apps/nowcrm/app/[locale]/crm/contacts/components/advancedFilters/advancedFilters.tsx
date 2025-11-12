@@ -1,6 +1,11 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type {
+	DocumentId,
+	SearchHistoryTemplate,
+	SearchHistoryType,
+} from "@nowcrm/services";
 import {
 	Edit3,
 	Filter,
@@ -56,10 +61,9 @@ import { createSearch } from "@/lib/actions/search_history/create-search";
 import { deleteSearch } from "@/lib/actions/search_history/delete-search";
 import { getSearchHistory } from "@/lib/actions/search_history/get-search-history";
 import { makeFavorite } from "@/lib/actions/search_history/make-favorite-search";
+import { updateSearchHistoryTemplate } from "@/lib/actions/search_history/update-search-history-template";
 import FilterGroupComponent from "./FilterGroupComponents";
 import { SaveDialog } from "./SaveSearchDialog";
-import { SearchHistoryType, SearchHistoryTemplate, DocumentId } from "@nowcrm/services";
-import { updateSearchHistoryTemplate } from "@/lib/actions/search_history/update-search-history-template";
 
 // Enhanced filter schema with grouping and logic
 const filterGroupSchema = z.object({
@@ -415,7 +419,7 @@ const AdvancedFilters = forwardRef(function AdvancedFilters(
 	}
 
 	async function toggleFavorite(searchId: DocumentId) {
-		const searchIdNum = (searchId);
+		const searchIdNum = searchId;
 		const currentSearch = saved.find((s) => s.documentId === searchIdNum);
 		if (!currentSearch) return;
 
@@ -456,12 +460,12 @@ const AdvancedFilters = forwardRef(function AdvancedFilters(
 
 	// apply a saved search to the table
 	function applySavedById(idStr: string) {
-		const item = saved.find((s) => (s.documentId) === idStr);
+		const item = saved.find((s) => s.documentId === idStr);
 		if (!item) return;
 
 		let stored: any = {};
 		try {
-			stored = JSON.parse(item.filters as string || "{}");
+			stored = JSON.parse((item.filters as string) || "{}");
 		} catch {}
 
 		const ui: FilterValues = stored.ui ?? {
@@ -490,7 +494,7 @@ const AdvancedFilters = forwardRef(function AdvancedFilters(
 			const strapiFilters = transformFilters(ui);
 			const payload = JSON.stringify({ ui, strapiFilters });
 
-			const res = await updateSearchHistoryTemplate((selectedSavedId), {
+			const res = await updateSearchHistoryTemplate(selectedSavedId, {
 				filters: payload,
 				query: currentSearchTerm || "",
 			});
@@ -512,7 +516,7 @@ const AdvancedFilters = forwardRef(function AdvancedFilters(
 	async function handleRename(searchId: string, newName: string) {
 		if (
 			!newName.trim() ||
-			newName === saved.find((s) => (s.documentId) === searchId)?.name
+			newName === saved.find((s) => s.documentId === searchId)?.name
 		) {
 			setEditingSearchId(null);
 			setEditingName("");
@@ -522,7 +526,7 @@ const AdvancedFilters = forwardRef(function AdvancedFilters(
 		setRenameLoading((prev) => new Set(prev).add(searchId));
 
 		try {
-			const res = await updateSearchHistoryTemplate((searchId), {
+			const res = await updateSearchHistoryTemplate(searchId, {
 				name: newName.trim(),
 			});
 
@@ -530,7 +534,7 @@ const AdvancedFilters = forwardRef(function AdvancedFilters(
 				// Update local state immediately for better UX
 				setSaved((prevSaved) =>
 					prevSaved.map((search) =>
-						search.documentId === (searchId)
+						search.documentId === searchId
 							? { ...search, name: newName.trim() }
 							: search,
 					),
@@ -605,7 +609,10 @@ const AdvancedFilters = forwardRef(function AdvancedFilters(
 										</p>
 									) : (
 										filteredSaved.map((search) => (
-											<SavedSearchItem key={search.documentId} search={search} />
+											<SavedSearchItem
+												key={search.documentId}
+												search={search}
+											/>
 										))
 									)}
 								</div>
@@ -621,7 +628,10 @@ const AdvancedFilters = forwardRef(function AdvancedFilters(
 										</p>
 									) : (
 										favoriteSaved.map((search) => (
-											<SavedSearchItem key={search.documentId} search={search} />
+											<SavedSearchItem
+												key={search.documentId}
+												search={search}
+											/>
 										))
 									)}
 								</div>
@@ -636,7 +646,7 @@ const AdvancedFilters = forwardRef(function AdvancedFilters(
 					<div className="flex items-center gap-2 rounded-md bg-muted/50 p-3">
 						<div className="flex-1">
 							<p className="font-medium text-sm">
-								{saved.find((s) => (s.documentId) === selectedSavedId)?.name}
+								{saved.find((s) => s.documentId === selectedSavedId)?.name}
 							</p>
 							<p className="text-muted-foreground text-xs">Currently loaded</p>
 						</div>
@@ -682,10 +692,10 @@ const AdvancedFilters = forwardRef(function AdvancedFilters(
 
 	const SavedSearchItem = ({ search }: { search: SearchHistoryTemplate }) => {
 		const isFavorite = search.favorite === true;
-		const isSelected = selectedSavedId === (search.documentId);
-		const isEditing = editingSearchId === (search.documentId);
-		const isFavoriteLoading = favoriteLoading.has((search.documentId));
-		const isRenameLoading = renameLoading.has((search.documentId));
+		const isSelected = selectedSavedId === search.documentId;
+		const isEditing = editingSearchId === search.documentId;
+		const isFavoriteLoading = favoriteLoading.has(search.documentId);
+		const isRenameLoading = renameLoading.has(search.documentId);
 
 		return (
 			<div
@@ -700,7 +710,7 @@ const AdvancedFilters = forwardRef(function AdvancedFilters(
 								variant="ghost"
 								size="sm"
 								className="h-6 w-6 p-0"
-								onClick={() => toggleFavorite((search.documentId))}
+								onClick={() => toggleFavorite(search.documentId)}
 								disabled={isFavoriteLoading}
 							>
 								{isFavoriteLoading ? (
@@ -728,11 +738,11 @@ const AdvancedFilters = forwardRef(function AdvancedFilters(
 							value={editingName}
 							onChange={(e) => setEditingName(e.target.value)}
 							onBlur={() => {
-								handleRename((search.documentId), editingName);
+								handleRename(search.documentId, editingName);
 							}}
 							onKeyDown={(e) => {
 								if (e.key === "Enter") {
-									handleRename((search.documentId), editingName);
+									handleRename(search.documentId, editingName);
 								}
 								if (e.key === "Escape") {
 									setEditingSearchId(null);
@@ -746,7 +756,7 @@ const AdvancedFilters = forwardRef(function AdvancedFilters(
 					) : (
 						<button
 							type="button"
-							onClick={() => applySavedById((search.documentId))}
+							onClick={() => applySavedById(search.documentId)}
 							className="w-full text-left"
 						>
 							<div className="flex items-center gap-2">
@@ -777,7 +787,7 @@ const AdvancedFilters = forwardRef(function AdvancedFilters(
 					<DropdownMenuContent align="end">
 						<DropdownMenuItem
 							onClick={() => {
-								setEditingSearchId((search.documentId));
+								setEditingSearchId(search.documentId);
 								setEditingName(search.name);
 							}}
 							disabled={isRenameLoading}
@@ -801,7 +811,7 @@ const AdvancedFilters = forwardRef(function AdvancedFilters(
 										if (listed?.success && Array.isArray(listed.data)) {
 											setSaved(listed.data);
 										}
-										if (selectedSavedId === (search.documentId)) {
+										if (selectedSavedId === search.documentId) {
 											setSelectedSavedId(undefined);
 											const blank = {
 												groups: [{ id: "group-1", logic: "AND", filters: {} }],

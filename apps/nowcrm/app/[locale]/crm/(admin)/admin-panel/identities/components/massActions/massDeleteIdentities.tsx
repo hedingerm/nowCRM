@@ -1,10 +1,13 @@
 // actions/deleteContactAction.ts
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	handleError,
+	identitiesService,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-
-import { DocumentId } from "@nowcrm/services";
-import { handleError, identitiesService, StandardResponse } from "@nowcrm/services/server";
 export async function MassDeleteIdentities(
 	identities: DocumentId[],
 ): Promise<StandardResponse<null>> {

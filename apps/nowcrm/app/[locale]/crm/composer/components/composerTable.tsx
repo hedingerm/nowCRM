@@ -1,9 +1,9 @@
+import type { PaginationParams } from "@nowcrm/services";
+import { compositionsService } from "@nowcrm/services/server";
 import type { Session } from "next-auth";
 import { auth } from "@/auth";
 import DataTable from "@/components/dataTable/dataTable";
 import ErrorMessage from "@/components/ErrorMessage";
-import { PaginationParams } from "@nowcrm/services";
-import { compositionsService } from "@nowcrm/services/server";
 import { columns } from "./columns/composerColumns";
 import MassActionsLists from "./massActions/massActions";
 

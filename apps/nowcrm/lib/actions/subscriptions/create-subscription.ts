@@ -1,8 +1,12 @@
 // actions/deleteContactAction.ts
 "use server";
+import type { DocumentId, Subscription } from "@nowcrm/services";
+import {
+	handleError,
+	type StandardResponse,
+	subscriptionsService,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { DocumentId, Subscription } from "@nowcrm/services";
-import { handleError, StandardResponse, subscriptionsService } from "@nowcrm/services/server";
 
 export async function createSubscription(
 	channel: DocumentId,
@@ -17,13 +21,16 @@ export async function createSubscription(
 		};
 	}
 	try {
-		const res = await subscriptionsService.create({
-			channel: channel,
-			contact: contact,
-			active: false,
-			subscribed_at: new Date(),
-			publishedAt: new Date(),
-		},session.jwt);
+		const res = await subscriptionsService.create(
+			{
+				channel: channel,
+				contact: contact,
+				active: false,
+				subscribed_at: new Date(),
+				publishedAt: new Date(),
+			},
+			session.jwt,
+		);
 		return res;
 	} catch (error) {
 		return handleError(error);

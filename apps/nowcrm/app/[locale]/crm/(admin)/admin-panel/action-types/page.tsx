@@ -1,14 +1,13 @@
+import type { PaginationParams } from "@nowcrm/services";
+import { actionTypeService } from "@nowcrm/services/server";
 import type { Session } from "next-auth";
 import { getTranslations } from "next-intl/server";
 import { auth } from "@/auth";
 import DataTable from "@/components/dataTable/dataTable";
 import ErrorMessage from "@/components/ErrorMessage";
-
 import { columns } from "./components/columns/organizationTypesColumns";
 import CreateOrganizationTypeDialog from "./components/createDialog";
 import OrganizationTypeMassActions from "./components/massActions/massActions";
-import { PaginationParams } from "@nowcrm/services";
-import { actionTypeService } from "@nowcrm/services/server";
 export default async function Page(props: {
 	searchParams: Promise<PaginationParams>;
 }) {

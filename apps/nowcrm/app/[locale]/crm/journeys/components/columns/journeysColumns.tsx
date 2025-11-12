@@ -1,4 +1,5 @@
 "use client";
+import type { Journey } from "@nowcrm/services";
 import type { ColumnDef } from "@tanstack/react-table";
 import { ChevronDown, ChevronUp, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
@@ -20,7 +21,6 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { RouteConfig } from "@/lib/config/RoutesConfig";
 import { formatDateTimeStrapi } from "@/lib/strapiDate";
-import type { Journey } from "@nowcrm/services";
 import { activateJourney } from "../../[id]/actions";
 
 type Props = {

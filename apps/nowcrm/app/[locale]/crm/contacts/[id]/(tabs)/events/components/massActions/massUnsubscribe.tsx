@@ -1,10 +1,15 @@
 // massUnsubscribe.ts
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	contactsService,
+	handleError,
+	type StandardResponse,
+	subscriptionsService,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { DocumentId } from "@nowcrm/services";
-import { contactsService, handleError, StandardResponse, subscriptionsService } from "@nowcrm/services/server";
-	export async function massUnsubscribeContacts(
+export async function massUnsubscribeContacts(
 	contacts: DocumentId[],
 ): Promise<StandardResponse<null>> {
 	console.log("[Server] massUnsubscribeContacts called with:", contacts);
@@ -40,9 +45,13 @@ import { contactsService, handleError, StandardResponse, subscriptionsService } 
 				`[Server] Updating subscription ${subscriptionId} (contact ${contactId}) -> active = false`,
 			);
 
-			const res = await subscriptionsService.update(subscriptionId, {
-				active: false,
-			}, session.jwt);
+			const res = await subscriptionsService.update(
+				subscriptionId,
+				{
+					active: false,
+				},
+				session.jwt,
+			);
 
 			console.log("[Server] Result for subscription", subscriptionId, ":", res);
 			return res;

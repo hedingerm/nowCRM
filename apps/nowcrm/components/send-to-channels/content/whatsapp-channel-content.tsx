@@ -1,6 +1,12 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { CommunicationChannel, type DocumentId } from "@nowcrm/services";
+import type {
+	CommunicationChannelKeys,
+	CompositionItem,
+	sendToChannelsData,
+} from "@nowcrm/services/client";
 import { Info, Mail } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -12,7 +18,7 @@ import {
 	ChannelThrottleField,
 	throttleUtils,
 } from "@/components/ChannelThrottleField";
-import Spinner from "@/components/Spinner";		
+import Spinner from "@/components/Spinner";
 import { Button } from "@/components/ui/button";
 import { DialogClose } from "@/components/ui/dialog";
 import {
@@ -38,9 +44,6 @@ import {
 } from "@/lib/actions/channels/get-channel-throttle";
 import { getComposition } from "@/lib/actions/composer/get-composition";
 import { normalizePhone } from "@/lib/normalizePhone";
-import { CommunicationChannel } from "@nowcrm/services";
-import { DocumentId } from "@nowcrm/services";
-import type { CommunicationChannelKeys, CompositionItem, sendToChannelsData } from "@nowcrm/services/client";
 
 export interface WhatsAppChannelContentProps {
 	mode?: "composer" | "mass_actions";
@@ -71,7 +74,9 @@ export function WhatsAppChannelContent({
 	const [defaultThrottle, setDefaultThrottle] =
 		useState<ChannelThrottleResponse | null>(null);
 	React.useEffect(() => {
-		getChannelThrottle(currentChannel.toLowerCase() as CommunicationChannelKeys).then((res) => {
+		getChannelThrottle(
+			currentChannel.toLowerCase() as CommunicationChannelKeys,
+		).then((res) => {
 			if (res.success && res.data) {
 				const safeThrottle = res.data.throttle > 0 ? res.data.throttle : 20;
 				const safeMaxRate =
@@ -356,7 +361,7 @@ export function WhatsAppChannelContent({
 					submissionData = {
 						composition_id: compId,
 						channels: [CommunicationChannel.WHATSAPP.toLowerCase()],
-						to: (values.contact.value),
+						to: values.contact.value,
 						type: "contact",
 						throttle: throttlePerMin,
 						interval: intervalMs,

@@ -1,6 +1,7 @@
 // ContactsMassActions.tsx
 "use client";
 
+import type { DocumentId } from "@nowcrm/services";
 import {
 	type ActionsConfig,
 	massActionsGenerator,
@@ -23,7 +24,7 @@ const actionsConfig: ActionsConfig = {
 			/>
 		),
 		dialogSubmitLabel: "Add to list",
-		onAction: async (selectedRows: number[], selectedOption: any) => {
+		onAction: async (selectedRows: DocumentId[], selectedOption: any) => {
 			return await MassAddToList(selectedRows, selectedOption.value);
 		},
 		successMessage: "Contact added to list",
@@ -31,11 +32,8 @@ const actionsConfig: ActionsConfig = {
 	},
 	deleteContacts: {
 		label: "Remove", // e.g., "Delete"
-		onAction: async (selectedRows: number[], listId: string) => {
-			return await MassDisconnectContacts(
-				Number.parseInt(listId),
-				selectedRows,
-			);
+		onAction: async (selectedRows: DocumentId[], listId: DocumentId) => {
+			return await MassDisconnectContacts(listId, selectedRows);
 		},
 		successMessage: "Contacts removed from organization",
 		errorMessage: "Error during removing contacts",

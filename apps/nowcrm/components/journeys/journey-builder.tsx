@@ -25,6 +25,7 @@ import ReactFlow, {
 	useNodesState,
 } from "reactflow";
 import "reactflow/dist/style.css";
+import type { DocumentId } from "@nowcrm/services";
 import { Info, Trash2, X } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { Button } from "@/components/ui/button";
@@ -70,10 +71,10 @@ interface JourneyBuilderProps {
 		condition_type: "all" | "any",
 	) => Promise<boolean>;
 	onConnectionPrioritiesUpdate?: (
-		connectionPriorities: { connectionId: number; priority: number }[],
+		connectionPriorities: { connectionId: DocumentId; priority: number }[],
 	) => Promise<boolean>;
 	onRulePrioritiesUpdate?: (
-		rulePriorities: { ruleId: number; priority: number }[],
+		rulePriorities: { ruleId: DocumentId; priority: number }[],
 	) => Promise<boolean>;
 	isSaving?: boolean;
 	journeyTitle: string;

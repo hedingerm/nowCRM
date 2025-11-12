@@ -1,6 +1,7 @@
 // ContactsMassActions.tsx
 "use client";
 
+import type { DocumentId } from "@nowcrm/services";
 import {
 	type ActionsConfig,
 	massActionsGenerator,
@@ -8,7 +9,6 @@ import {
 import AssignToListDialog from "./dialogs/addToList";
 import { MassDeleteOrganizations } from "./MassDeleteOrganizations";
 import { MassAddToList } from "./massAddToList";
-import { DocumentId } from "@nowcrm/services";
 
 // Define the actions configuration for contacts
 const actionsConfig: ActionsConfig = {

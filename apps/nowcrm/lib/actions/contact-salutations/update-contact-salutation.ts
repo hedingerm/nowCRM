@@ -1,7 +1,11 @@
 "use server";
+import type { ContactSalutation, DocumentId } from "@nowcrm/services";
+import {
+	contactSalutationsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { ContactSalutation, DocumentId } from "@nowcrm/services";
-import { contactSalutationsService, handleError, StandardResponse } from "@nowcrm/services/server";
 export async function updateContactSalutation(
 	id: DocumentId,
 	name: string,
@@ -15,9 +19,13 @@ export async function updateContactSalutation(
 		};
 	}
 	try {
-		const res = await contactSalutationsService.update(id, {
-			name: name,
-		},session.jwt);
+		const res = await contactSalutationsService.update(
+			id,
+			{
+				name: name,
+			},
+			session.jwt,
+		);
 		return res;
 	} catch (error) {
 		return handleError(error);

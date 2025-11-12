@@ -1,12 +1,15 @@
 // actions/deleteContactAction.ts
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	eventsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import type { StandardResponse } from "@/lib/services/common/response.service";
-import eventsService from "@/lib/services/new_type/events.service";
-
 export async function deleteEventAction(
-	event: number,
+	event: DocumentId,
 ): Promise<StandardResponse<null>> {
 	const session = await auth();
 	if (!session) {
@@ -17,10 +20,9 @@ export async function deleteEventAction(
 		};
 	}
 	try {
-		const response = await eventsService.unPublish(event);
+		const response = await eventsService.delete(event, session.jwt);
 		return response;
 	} catch (error) {
-		console.log(error);
-		throw new Error("Failed to delete event");
+		return handleError(error);
 	}
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { DocumentId } from "@nowcrm/services";
 import { useParams, useRouter } from "next/navigation";
 import * as React from "react";
 import { useForm } from "react-hook-form";
@@ -26,7 +27,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { createSurveyItem } from "@/lib/actions/surveyItems/create-survey-items";
-import { DocumentId } from "@nowcrm/services";
 
 const formSchema = z.object({
 	question: z.object({
@@ -54,7 +54,7 @@ export default function CreateSurveyItemDialog() {
 		const finalValues = {
 			...values,
 			question: values.question.label,
-			survey: (params.id),
+			survey: params.id,
 		};
 
 		const res = await createSurveyItem(finalValues);

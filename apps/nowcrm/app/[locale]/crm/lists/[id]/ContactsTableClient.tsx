@@ -140,7 +140,7 @@ export default function ContactsTableClient({
 				sortBy: params.sortBy ?? sortBy,
 				sortOrder: params.sortOrder ?? sortOrder,
 				filters: params.filters ?? effectiveFilters,
-				serviceName: "contactService",
+				serviceName: "contactsService",
 			});
 			if (res?.success) {
 				setData(res.data ?? []);

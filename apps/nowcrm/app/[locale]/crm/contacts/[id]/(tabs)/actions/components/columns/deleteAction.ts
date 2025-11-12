@@ -1,9 +1,13 @@
 // actions/deleteContactAction.ts
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	actionsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { DocumentId } from "@nowcrm/services";
-import { actionsService, handleError, StandardResponse } from "@nowcrm/services/server";
 
 export async function deleteAction(
 	action: DocumentId,

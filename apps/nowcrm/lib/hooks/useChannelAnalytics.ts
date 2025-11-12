@@ -1,8 +1,9 @@
 // lib/hooks/useChannelAnalytics.ts
+
+import type { DateRange, DocumentId } from "@nowcrm/services";
 import { format } from "date-fns";
 import { useCallback, useEffect, useState } from "react";
 import { getEventsByCompositionId } from "@/lib/actions/events/get-event";
-import { DateRange, DocumentId } from "@nowcrm/services";
 
 export function useChannelAnalytics(
 	compositionItemId: DocumentId,

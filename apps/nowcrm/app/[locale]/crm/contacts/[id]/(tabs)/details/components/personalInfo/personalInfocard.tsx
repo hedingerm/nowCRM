@@ -1,5 +1,6 @@
 "use client";
 
+import type { Contact } from "@nowcrm/services";
 import {
 	Download,
 	Info,
@@ -14,7 +15,6 @@ import {
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -38,9 +38,7 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-
 import { formatDateStrapi } from "@/lib/strapiDate";
-import { Contact } from "@nowcrm/services";
 import { EditDialog } from "./editDialog";
 import { EnrichDialog } from "./enrichDialog";
 import { PersonalDetailsDialog } from "./personalDetails";

@@ -1,5 +1,6 @@
 "use client";
 
+import type { DocumentId, Survey, SurveyItem } from "@nowcrm/services";
 import type { ColumnDef, Row } from "@tanstack/react-table";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -25,7 +26,6 @@ import {
 } from "@/components/ui/table";
 import { getSurveyItemsBySurveyId } from "@/lib/actions/surveyItems/get-survey-items";
 import { formatDateTimeStrapi } from "@/lib/strapiDate";
-import { DocumentId, Survey, SurveyItem } from "@nowcrm/services";
 
 const DeleteAction: React.FC<{ survey: Survey }> = ({ survey }) => {
 	const router = useRouter();
@@ -41,8 +41,8 @@ const DeleteAction: React.FC<{ survey: Survey }> = ({ survey }) => {
 					onClick={async () => {
 						const { default: toast } = await import("react-hot-toast");
 						const { deleteSurveyAction } = await import("./deleteSurvey");
-						const res =await deleteSurveyAction(survey.documentId);
-						if(!res.success) {
+						const res = await deleteSurveyAction(survey.documentId);
+						if (!res.success) {
 							toast.error(res.errorMessage ?? "Failed to delete survey");
 							return;
 						}
@@ -226,7 +226,6 @@ const SurveyItemsTable: React.FC<{ surveyId: DocumentId }> = ({ surveyId }) => {
 									<span className="text-muted-foreground text-sm">N/A</span>
 								)}
 							</TableCell>
-
 						</TableRow>
 					))}
 				</TableBody>

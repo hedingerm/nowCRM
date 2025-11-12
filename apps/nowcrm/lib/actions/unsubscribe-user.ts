@@ -1,8 +1,8 @@
 "use server";
 
-import { logUnsubscribeEvent } from "@/lib/actions/events/log-event";
-import { Contact, DocumentId } from "@nowcrm/services";
+import type { Contact, DocumentId } from "@nowcrm/services";
 import { contactsService, subscriptionsService } from "@nowcrm/services/server";
+import { logUnsubscribeEvent } from "@/lib/actions/events/log-event";
 import { env } from "../config/envConfig";
 
 export async function unsubscribeUser(
@@ -10,7 +10,6 @@ export async function unsubscribeUser(
 	channelName: string = "Email",
 	compositionId?: DocumentId,
 ): Promise<{ message: string; success: boolean }> {
-
 	let contact: Contact | null = null;
 	const normalizedEmail = email.trim().toLowerCase();
 
@@ -27,7 +26,6 @@ export async function unsubscribeUser(
 	if (Array.isArray(response.data) && response.data.length > 0) {
 		contact = response.data[0];
 	}
-
 
 	if (!contact) {
 		return {
@@ -66,7 +64,11 @@ export async function unsubscribeUser(
 				console.log(
 					`[unsubscribeUser] Updating subscription id=${sub.id}, channel=${sub.channel?.name}`,
 				);
-				await subscriptionsService.update(sub.documentId, { active: false }, env.CRM_STRAPI_API_TOKEN);
+				await subscriptionsService.update(
+					sub.documentId,
+					{ active: false },
+					env.CRM_STRAPI_API_TOKEN,
+				);
 				console.log(
 					`[unsubscribeUser] Subscription ${sub.id} updated to inactive.`,
 				);

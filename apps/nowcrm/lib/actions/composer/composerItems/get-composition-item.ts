@@ -1,8 +1,12 @@
 // actions/deleteContactAction.ts
 "use server";
+import type { CompositionItem } from "@nowcrm/services";
+import {
+	compositionItemsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { CompositionItem } from "@nowcrm/services";
-import { compositionItemsService, handleError, StandardResponse } from "@nowcrm/services/server";
 
 export async function getCompositionItems(): Promise<
 	StandardResponse<CompositionItem[]>

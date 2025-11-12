@@ -1,5 +1,7 @@
 // app/page.tsx //
 
+import type { PaginationParams } from "@nowcrm/services";
+import { contactsService } from "@nowcrm/services/server";
 import type { Metadata } from "next";
 import type { Session } from "next-auth";
 import { getTranslations } from "next-intl/server";
@@ -7,8 +9,6 @@ import { auth } from "@/auth";
 import ErrorMessage from "@/components/ErrorMessage";
 import { HelloMessage } from "@/components/HelloMessage";
 import ContactsTableClient from "./ContactsTableClient";
-import { contactsService } from "@nowcrm/services/server";
-import { PaginationParams } from "@nowcrm/services";
 
 export const metadata: Metadata = { title: "Contacts" };
 

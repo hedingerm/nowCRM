@@ -1,5 +1,7 @@
 "use client";
 
+import type { DocumentId } from "@nowcrm/services";
+import type { StandardResponse } from "@nowcrm/services/server";
 import { ListPlus, Search } from "lucide-react";
 import * as React from "react";
 import { massAddContactsToList } from "@/app/[locale]/crm/contacts/[id]/(tabs)/events/components/massActions/massAddToList";
@@ -15,10 +17,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { createList } from "@/lib/actions/lists/create-list";
-import { StandardResponse } from "@nowcrm/services/server";
 import { getContactIdByEventId } from "./massActions/getContactIdByEvent";
 import { currentEvents } from "./massActions/massActions";
-import { DocumentId } from "@nowcrm/services";
 
 interface AddToListDialogProps {
 	selectedContacts: DocumentId[];
@@ -108,7 +108,7 @@ export default function AddToListDialog({
 
 					<TabsContent value="select" className="mt-4 space-y-4">
 						<AsyncSelect
-							serviceName="listService"
+							serviceName="listsService"
 							label="List"
 							onValueChange={setSelectedOption}
 							presetOption={selectedOption}

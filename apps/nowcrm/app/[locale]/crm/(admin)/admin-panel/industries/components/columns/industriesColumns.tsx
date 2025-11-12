@@ -1,4 +1,5 @@
 "use client";
+import type { Industry } from "@nowcrm/services";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 import { useMessages } from "next-intl";
@@ -11,7 +12,6 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Industry } from "@nowcrm/services";
 
 const DeleteAction: React.FC<{ industry: Industry }> = ({ industry }) => {
 	const t = useMessages();
@@ -29,7 +29,7 @@ const DeleteAction: React.FC<{ industry: Industry }> = ({ industry }) => {
 						const { default: toast } = await import("react-hot-toast");
 						const { deleteIndustryAction } = await import("./deleteIndustry");
 						const res = await deleteIndustryAction(industry.documentId);
-						if(!res.success) {
+						if (!res.success) {
 							toast.error(res.errorMessage ?? "Failed to delete industry");
 							return;
 						}

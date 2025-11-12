@@ -1,5 +1,5 @@
-import type Asset from "./common/asset";
-import type { BaseFormType, BaseType } from "./common/base_type";
+import type { Asset } from "./common/asset";
+import type { BaseFormType, BaseType, DocumentId } from "./common/base_type";
 import type { StrapiConnect } from "./common/StrapiQuery";
 import type { FormEntityItem, FormEntityItemType } from "./form-item";
 
@@ -41,12 +41,12 @@ export interface Form_FormEntity extends BaseFormType {
 	form_view: boolean;
 }
 
-
 export interface CustomForm_FormItemEntity
 	extends Omit<BaseFormType, "publishedAt"> {
 	id?: number;
+	documentId?: DocumentId;
 	name: string;
-	type: string;
+	type: FormEntityItemType;
 	label: string;
 	rank?: number;
 	hidden?: boolean;

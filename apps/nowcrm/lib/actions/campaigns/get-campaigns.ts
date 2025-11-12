@@ -1,7 +1,11 @@
 "use server";
+import type { Campaign } from "@nowcrm/services";
+import {
+	campaignsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { type Campaign } from "@nowcrm/services";
-import { campaignsService, handleError, StandardResponse } from "@nowcrm/services/server";
 
 export async function getCampaigns(): Promise<StandardResponse<Campaign[]>> {
 	const session = await auth();

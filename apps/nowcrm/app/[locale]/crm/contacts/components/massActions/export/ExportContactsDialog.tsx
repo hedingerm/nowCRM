@@ -1,4 +1,5 @@
 "use client";
+import type { DocumentId } from "@nowcrm/services";
 import {
 	DialogDescription,
 	DialogHeader,
@@ -8,7 +9,7 @@ import {
 export default function ExportContactsDialog({
 	selectedRows,
 }: {
-	selectedRows: number[];
+	selectedRows: DocumentId[];
 }) {
 	return (
 		<div>

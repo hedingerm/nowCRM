@@ -1,10 +1,10 @@
 "use client";
 
+import type { Contact } from "@nowcrm/services";
 import type { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
 //EXIST BECAUSE OF NOT ALL COLUMNS NEEDED INSIDE PREVIEW
 import { RouteConfig } from "@/lib/config/RoutesConfig";
-import { Contact } from "@nowcrm/services";
 
 export const columns: ColumnDef<Contact>[] = [
 	{

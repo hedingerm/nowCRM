@@ -1,7 +1,11 @@
 "use server";
+import type { Contact, DocumentId } from "@nowcrm/services";
+import {
+	contactsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { Contact, DocumentId } from "@nowcrm/services";
-import { contactsService, handleError, StandardResponse } from "@nowcrm/services/server";
 
 export async function exportContact(
 	contactId: DocumentId,
@@ -15,9 +19,9 @@ export async function exportContact(
 		};
 	}
 	try {
-		const res = await contactsService.exportUserData(contactId,session.jwt);
-		return res
+		const res = await contactsService.exportUserData(contactId, session.jwt);
+		return res;
 	} catch (error) {
-		return handleError(error)
+		return handleError(error);
 	}
 }

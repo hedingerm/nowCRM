@@ -1,9 +1,12 @@
 "use server";
 
+import type { CompositionScheduled, StrapiQuery } from "@nowcrm/services";
+import {
+	compositionScheduledsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { CompositionScheduled, StrapiQuery } from "@nowcrm/services";
-import { handleError, StandardResponse } from "@nowcrm/services/server";
-import { compositionScheduledsService } from "@nowcrm/services/server";
 
 export async function fetchScheduledCompositions(
 	start?: string,
@@ -33,7 +36,10 @@ export async function fetchScheduledCompositions(
 					} as unknown as StrapiQuery<CompositionScheduled>)
 				: undefined;
 
-		const response = await compositionScheduledsService.find(session.jwt,filters);
+		const response = await compositionScheduledsService.find(
+			session.jwt,
+			filters,
+		);
 		return response;
 	} catch (error) {
 		return handleError(error);

@@ -1,5 +1,6 @@
 "use client";
 
+import type { Organization } from "@nowcrm/services";
 import { MapPin } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -10,7 +11,6 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { Organization } from "@nowcrm/services";
 import { EditDialogOrganizationAddress } from "./editDialogAddress";
 
 interface OrganizationAddressCardProps {

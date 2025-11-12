@@ -1,3 +1,5 @@
+import type { DocumentId, PaginationParams } from "@nowcrm/services";
+import { contactsService, organizationsService } from "@nowcrm/services/server";
 import type { Session } from "next-auth";
 import { auth } from "@/auth";
 import DataTable from "@/components/dataTable/dataTable";
@@ -11,8 +13,6 @@ import MassActionsContacts from "../contacts/components/massActions/MassActions"
 import { OrganizationAddressCard } from "./components/adressInfo/addressCard";
 import { OrganizationGeneralInfoCard } from "./components/generalInfo/generalInfoCard";
 import { OrganizationProfessionalInfoCard } from "./components/professionalInfo/professionalInfoCard";
-import { DocumentId, PaginationParams } from "@nowcrm/services";
-import { contactsService, organizationsService } from "@nowcrm/services/server";
 
 export default async function Home(props: {
 	params: Promise<{ id: DocumentId }>;
@@ -31,7 +31,10 @@ export default async function Home(props: {
 	const transformedFilters = transformFilters(rawFilters);
 
 	const session = await auth();
-	const organization = await organizationsService.findOne(params.id, session?.jwt);
+	const organization = await organizationsService.findOne(
+		params.id,
+		session?.jwt,
+	);
 	if (!organization.success || !organization.data || !organization.meta) {
 		return <ErrorMessage response={organization} />;
 	}

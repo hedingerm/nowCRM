@@ -1,9 +1,15 @@
 // contactsapp/lib/actions/signup/dataFetch.ts
 "use server";
 
+import type { Contact, DocumentId, Form_Contact } from "@nowcrm/services";
+import {
+	channelsService,
+	contactInterestsService,
+	contactsService,
+	type StandardResponse,
+	subscriptionsService,
+} from "@nowcrm/services/server";
 import { env } from "@/lib/config/envConfig";
-import { Contact, DocumentId, Form_Contact } from "@nowcrm/services";
-import { channelsService, contactInterestsService, contactsService, subscriptionsService, StandardResponse } from "@nowcrm/services/server";
 
 export interface ItemProps {
 	value: DocumentId;
@@ -12,7 +18,9 @@ export interface ItemProps {
 
 // Internal helper functions that do the actual fetching.
 async function fetchAllChannels(): Promise<ItemProps[]> {
-	const response = await channelsService.find(env.CRM_STRAPI_API_TOKEN, { sort: ["id:asc"] });
+	const response = await channelsService.find(env.CRM_STRAPI_API_TOKEN, {
+		sort: ["id:asc"],
+	});
 	return (
 		response.data?.map((channel) => ({
 			value: channel.documentId,
@@ -70,7 +78,8 @@ export async function upsertSubscription(
 				Array.isArray(contact_data.contact_interests.connect) &&
 				contact_data.contact_interests.connect.length > 0
 					? contact_data.contact_interests.connect.filter(
-							(documentId): documentId is DocumentId => documentId !== undefined,
+							(documentId): documentId is DocumentId =>
+								documentId !== undefined,
 						)
 					: [];
 		}
@@ -78,7 +87,7 @@ export async function upsertSubscription(
 
 		// ----- Normalize & Deduplicate the new channel IDs -----
 		const newChannelIds: DocumentId[] = Array.from(
-			new Set(channel_ids.map((documentId) => (documentId))),
+			new Set(channel_ids.map((documentId) => documentId)),
 		);
 		console.log("Normalized channel IDs:", newChannelIds);
 
@@ -86,12 +95,15 @@ export async function upsertSubscription(
 		// CASE 1: Existing Contact Found
 		// ------------------------------
 		if (contact_data.unsubscribe_token) {
-			const findResponse = await contactsService.find(env.CRM_STRAPI_API_TOKEN,{
-				filters: {
-					unsubscribe_token: { $eqi: contact_data.unsubscribe_token },
+			const findResponse = await contactsService.find(
+				env.CRM_STRAPI_API_TOKEN,
+				{
+					filters: {
+						unsubscribe_token: { $eqi: contact_data.unsubscribe_token },
+					},
+					populate: { subscriptions: "*", contact_interests: "*" },
 				},
-				populate: { subscriptions: "*", contact_interests: "*" },
-			});
+			);
 
 			if (findResponse.data && findResponse.data.length > 0) {
 				const existingContact = findResponse.data[0];
@@ -136,10 +148,14 @@ export async function upsertSubscription(
 					for (const subs of subsByChannel.values()) {
 						for (const sub of subs) {
 							if (sub.active) {
-								const updatedSub = await subscriptionsService.update(sub.id, {
-									active: false,
-									unsubscribed_at: new Date(),
-								},env.CRM_STRAPI_API_TOKEN);
+								const updatedSub = await subscriptionsService.update(
+									sub.id,
+									{
+										active: false,
+										unsubscribed_at: new Date(),
+									},
+									env.CRM_STRAPI_API_TOKEN,
+								);
 								subscriptionsUpdate.disconnect.push(updatedSub);
 							}
 						}
@@ -154,10 +170,14 @@ export async function upsertSubscription(
 						if (!newChannelIds.includes(cid)) {
 							for (const sub of subs) {
 								if (sub.active) {
-									const updatedSub = await subscriptionsService.update(sub.id, {
-										active: false,
-										unsubscribed_at: new Date(),
-									},env.CRM_STRAPI_API_TOKEN);
+									const updatedSub = await subscriptionsService.update(
+										sub.id,
+										{
+											active: false,
+											unsubscribed_at: new Date(),
+										},
+										env.CRM_STRAPI_API_TOKEN,
+									);
 									subscriptionsUpdate.disconnect.push(updatedSub);
 								}
 							}
@@ -176,26 +196,37 @@ export async function upsertSubscription(
 							});
 							let activeSub = mainSub;
 							if (!activeSub.active) {
-								activeSub = await subscriptionsService.update(activeSub.id, {
-									active: true,
-									subscribed_at: new Date(),
-									publishedAt: new Date(),
-								},env.CRM_STRAPI_API_TOKEN);
+								activeSub = await subscriptionsService.update(
+									activeSub.id,
+									{
+										active: true,
+										subscribed_at: new Date(),
+										publishedAt: new Date(),
+									},
+									env.CRM_STRAPI_API_TOKEN,
+								);
 							}
 							subscriptionsUpdate.connect.push(activeSub);
 							// Deactivate any duplicate subscriptions for this channel.
 							for (const sub of subs) {
 								if (sub.id !== activeSub.id && sub.active) {
-									const updatedSub = await subscriptionsService.update(sub.id, {
-										active: false,
-										unsubscribed_at: new Date(),
-									},env.CRM_STRAPI_API_TOKEN);
+									const updatedSub = await subscriptionsService.update(
+										sub.id,
+										{
+											active: false,
+											unsubscribed_at: new Date(),
+										},
+										env.CRM_STRAPI_API_TOKEN,
+									);
 									subscriptionsUpdate.disconnect.push(updatedSub);
 								}
 							}
 						} else {
 							// No subscription exists for this channel; create one.
-							const channel = await channelsService.findOne(c_id,env.CRM_STRAPI_API_TOKEN);
+							const channel = await channelsService.findOne(
+								c_id,
+								env.CRM_STRAPI_API_TOKEN,
+							);
 							const newSubscription = await subscriptionsService.create(
 								{
 									channel: channel.data?.documentId,
@@ -204,7 +235,7 @@ export async function upsertSubscription(
 									publishedAt: new Date(),
 									contact: existingContact.documentId,
 								},
-								env.CRM_STRAPI_API_TOKEN
+								env.CRM_STRAPI_API_TOKEN,
 							);
 							subscriptionsUpdate.connect.push(newSubscription);
 						}
@@ -213,9 +244,10 @@ export async function upsertSubscription(
 				console.log("Subscriptions update process:", subscriptionsUpdate);
 
 				// Process interests (contact_interests) using connect/disconnect logic.
-				const existingInterestIds: DocumentId[] = existingContact.contact_interests
-					? existingContact.contact_interests.map((i: any) => i.documentId)
-					: [];
+				const existingInterestIds: DocumentId[] =
+					existingContact.contact_interests
+						? existingContact.contact_interests.map((i: any) => i.documentId)
+						: [];
 				const interestsToDisconnect = existingInterestIds.filter(
 					(id: DocumentId) => !newInterestIds.includes(id),
 				);
@@ -228,7 +260,11 @@ export async function upsertSubscription(
 						disconnect: interestsToDisconnect,
 					},
 				};
-				await contactsService.update(existingContact.documentId, interestUpdateData,env.CRM_STRAPI_API_TOKEN);
+				await contactsService.update(
+					existingContact.documentId,
+					interestUpdateData,
+					env.CRM_STRAPI_API_TOKEN,
+				);
 				console.log(
 					"Interests update - connect:",
 					interestsToConnect,
@@ -243,10 +279,16 @@ export async function upsertSubscription(
 		// ------------------------------
 		// CASE 2: New Contact (or no matching unsubscribe token)
 		// ------------------------------
-		contactResponse = await contactsService.create(contact_data,env.CRM_STRAPI_API_TOKEN);
+		contactResponse = await contactsService.create(
+			contact_data,
+			env.CRM_STRAPI_API_TOKEN,
+		);
 		if (newChannelIds.length > 0) {
 			for (const c_id of newChannelIds) {
-				const channel = await channelsService.findOne(c_id,env.CRM_STRAPI_API_TOKEN);
+				const channel = await channelsService.findOne(
+					c_id,
+					env.CRM_STRAPI_API_TOKEN,
+				);
 				const newSubscription = await subscriptionsService.create(
 					{
 						channel: channel.data?.documentId,
@@ -255,7 +297,7 @@ export async function upsertSubscription(
 						publishedAt: new Date(),
 						contact: contactResponse.data!.documentId,
 					},
-					env.CRM_STRAPI_API_TOKEN
+					env.CRM_STRAPI_API_TOKEN,
 				);
 				subscriptionsUpdate.connect.push(newSubscription);
 			}
@@ -270,7 +312,7 @@ export async function upsertSubscription(
 			{
 				contact_interests: { connect: newInterestIds },
 			},
-			env.CRM_STRAPI_API_TOKEN
+			env.CRM_STRAPI_API_TOKEN,
 		);
 
 		return contactResponse;

@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { Identity } from "@nowcrm/services";
 import { HelpCircle, ListPlus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMessages } from "next-intl";
@@ -31,7 +32,6 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Identity } from "@nowcrm/services";
 
 interface EditIdentityDialogProps {
 	identity: Identity;

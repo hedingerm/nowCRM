@@ -1,7 +1,11 @@
 "use server";
+import type { Campaign, DocumentId } from "@nowcrm/services";
+import {
+	campaignsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { type Campaign, DocumentId } from "@nowcrm/services";
-import { campaignsService, handleError, StandardResponse } from "@nowcrm/services/server";
 
 export async function createCampaign(
 	name: string,
@@ -17,14 +21,17 @@ export async function createCampaign(
 		};
 	}
 	try {
-		const res = await campaignsService.create({
-			name: name,
-			description: description,
-			campaign_category: campaignCategoryId
-				? { connect: [campaignCategoryId] }
-				: undefined,
-			publishedAt: new Date(),
-		},session.jwt);
+		const res = await campaignsService.create(
+			{
+				name: name,
+				description: description,
+				campaign_category: campaignCategoryId
+					? { connect: [campaignCategoryId] }
+					: undefined,
+				publishedAt: new Date(),
+			},
+			session.jwt,
+		);
 		return res;
 	} catch (error) {
 		return handleError(error);

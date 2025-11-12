@@ -1,15 +1,16 @@
 // actions/deleteContactAction.ts
 "use server";
+import {
+	dalService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { dalService, handleError, StandardResponse } from "@nowcrm/services/server";
 export async function exportContactsByFilters(payload: {
-    entity: string;
-    searchMask: any;
-    mass_action: string;
+	entity: string;
+	searchMask: any;
+	mass_action: string;
 }): Promise<StandardResponse<any>> {
-
-
-
 	const session = await auth();
 	if (!session) {
 		return {
@@ -19,11 +20,11 @@ export async function exportContactsByFilters(payload: {
 		};
 	}
 
-    const userEmail = session.user?.email ?? "unknown@unknown.com";
+	const userEmail = session.user?.email ?? "unknown@unknown.com";
 	try {
-        const res = await dalService.exportContactsByFilters(payload, userEmail);
+		const res = await dalService.exportContactsByFilters(payload, userEmail);
 
-        return res;
+		return res;
 	} catch (error) {
 		return handleError(error);
 	}

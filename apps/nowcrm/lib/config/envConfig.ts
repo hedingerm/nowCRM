@@ -7,10 +7,10 @@ const processEnv = {
 	AUTH_SECRET: process.env.AUTH_SECRET || "",
 	AUTH_URL: process.env.AUTH_URL || "",
 	AUTH_TRUST_HOST: process.env.AUTH_TRUST_HOST || false,
-	CRM_STRAPI_API_URL: process.env.CRM_STRAPI_API_URL || "",
+	STRAPI_URL: process.env.STRAPI_URL || "",
 	CRM_STRAPI_API_TOKEN: process.env.CRM_STRAPI_API_TOKEN || "",
-	CRM_COMPOSER_API_URL: process.env.CRM_COMPOSER_API_URL || "",
-	CRM_DAL_API_URL: process.env.CRM_DAL_API_URL || "",
+	COMPOSER_URL: process.env.COMPOSER_URL || "",
+	DAL_URL: process.env.DAL_URL || "",
 	CRM_TOTP_ENCRYPTION_KEY: process.env.CRM_TOTP_ENCRYPTION_KEY || "",
 	NT_STACK_VERSION: process.env.NT_STACK_VERSION || "",
 	TEST_RUN: process.env.TEST_RUN || false,
@@ -54,16 +54,16 @@ export const env = cleanEnv(processEnv, {
 
 	TEST_RUN: bool({ devDefault: testOnly(false) }),
 	// envs for strapi connection
-	CRM_STRAPI_API_URL: URLValidator({
+	STRAPI_URL: URLValidator({
 		devDefault: testOnly("http://localhost:1337/api/"),
 	}),
-	CRM_COMPOSER_API_URL: URLValidator({
+	COMPOSER_URL: URLValidator({
 		devDefault: testOnly("http://localhost:3020/"),
 	}),
 	CRM_STRAPI_API_TOKEN: NotEmptyStringValidator(),
 	CRM_TOTP_ENCRYPTION_KEY: NotEmptyStringValidator(),
 	NT_STACK_VERSION: NotEmptyStringValidator(),
-	CRM_DAL_API_URL: URLValidator({
+	DAL_URL: URLValidator({
 		devDefault: testOnly("http://localhost:6001/api/"),
 	}),
 	// ✅ Optional S3 settings (no error if not set)

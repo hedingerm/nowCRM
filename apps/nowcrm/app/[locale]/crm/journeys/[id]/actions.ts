@@ -1,8 +1,27 @@
 "use server";
 
+import {
+	CommunicationChannel,
+	checkDocumentId,
+	type DocumentId,
+	type Form_Journey,
+	type Form_JourneyStep,
+	type Form_JourneyStepConnection,
+	type Form_JourneyStepRule,
+	type Form_JourneyStepRuleScore,
+	type Journey,
+	type JourneyStep,
+} from "@nowcrm/services";
+import {
+	handleError,
+	journeyStepConnectionsService,
+	journeyStepRuleScoresService,
+	journeyStepRulesService,
+	journeyStepsService,
+	journeysService,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { checkDocumentId, CommunicationChannel, DocumentId, Form_Journey, Form_JourneyStep, Form_JourneyStepConnection, Form_JourneyStepRule, Form_JourneyStepRuleScore, Journey, JourneyStep } from "@nowcrm/services";
-import { handleError, journeysService, journeyStepConnectionsService, journeyStepRuleScoresService, journeyStepRulesService, journeyStepsService, StandardResponse } from "@nowcrm/services/server";
 
 export async function updateJourney(
 	journeyId: DocumentId,
@@ -18,7 +37,7 @@ export async function updateJourney(
 	}
 
 	try {
-		return await journeysService.update(journeyId,data, session.jwt);
+		return await journeysService.update(journeyId, data, session.jwt);
 	} catch (error) {
 		return handleError(error);
 	}
@@ -230,7 +249,11 @@ export async function updateConnectionPriorities(
 		// Update each connection with its new priority
 		const updatePromises = connectionPriorities.map(
 			({ connectionId, priority }) =>
-				journeyStepConnectionsService.update(connectionId, { priority }, session.jwt),
+				journeyStepConnectionsService.update(
+					connectionId,
+					{ priority },
+					session.jwt,
+				),
 		);
 
 		await Promise.all(updatePromises);
@@ -285,7 +308,11 @@ export async function updateConnection(
 	}
 
 	try {
-		return await journeyStepConnectionsService.update(connectionId, data, session.jwt);
+		return await journeyStepConnectionsService.update(
+			connectionId,
+			data,
+			session.jwt,
+		);
 	} catch (error) {
 		return handleError(error);
 	}
@@ -305,7 +332,10 @@ export async function deleteConnection(
 	}
 
 	try {
-		return await journeyStepConnectionsService.delete(connectionId, session.jwt);
+		return await journeyStepConnectionsService.delete(
+			connectionId,
+			session.jwt,
+		);
 	} catch (error) {
 		return handleError(error);
 	}
@@ -401,12 +431,17 @@ export async function updateConnectionRules(
 		}
 
 		// Get existing rules for this connection
-		const existingRulesResponse = await journeyStepRulesService.findAll(session.jwt, {
-			filters: { journeys_step_connection: { documentId: { $eq: connectionId } } },
-			populate: {
-				journey_step_rule_scores: true,
+		const existingRulesResponse = await journeyStepRulesService.findAll(
+			session.jwt,
+			{
+				filters: {
+					journeys_step_connection: { documentId: { $eq: connectionId } },
+				},
+				populate: {
+					journey_step_rule_scores: true,
+				},
 			},
-		});
+		);
 
 		if (!existingRulesResponse.success || !existingRulesResponse.data) {
 			return {
@@ -420,25 +455,31 @@ export async function updateConnectionRules(
 		const existingRules = existingRulesResponse.data;
 
 		// Create a map of existing rule IDs
-		const existingRuleIds = new Set(existingRules.map((rule) => rule.documentId));
+		const existingRuleIds = new Set(
+			existingRules.map((rule) => rule.documentId),
+		);
 
 		// Process each rule
 		for (const rule of rules) {
 			if (rule.documentId && checkDocumentId(rule.documentId)) {
 				// Rule exists, update it
 				existingRuleIds.delete(rule.documentId);
-				await journeyStepRulesService.update(rule.documentId, {
-					condition: rule.condition,
-					condition_operator: rule.condition_operator,
-					ready_condition: rule.ready_condition,
-					additional_data: rule.additional_data,
-					additional_condition: rule.additional_condition,
-					condition_value:
-						typeof rule.condition_value === "object"
-							? JSON.stringify(rule.condition_value)
-							: rule.condition_value,
-					label: rule.label,
-				}, session.jwt);
+				await journeyStepRulesService.update(
+					rule.documentId,
+					{
+						condition: rule.condition,
+						condition_operator: rule.condition_operator,
+						ready_condition: rule.ready_condition,
+						additional_data: rule.additional_data,
+						additional_condition: rule.additional_condition,
+						condition_value:
+							typeof rule.condition_value === "object"
+								? JSON.stringify(rule.condition_value)
+								: rule.condition_value,
+						label: rule.label,
+					},
+					session.jwt,
+				);
 
 				// Handle scores for this rule
 				if (rule.scores && rule.scores.length > 0) {
@@ -457,18 +498,25 @@ export async function updateConnectionRules(
 							// Score exists, update it
 							existingScoreIds.delete(score.documentId);
 
-							await journeyStepRuleScoresService.update(score.documentId, {
-								name: score.attribute,
-								value: score.value,
-							}, session.jwt);
+							await journeyStepRuleScoresService.update(
+								score.documentId,
+								{
+									name: score.attribute,
+									value: score.value,
+								},
+								session.jwt,
+							);
 						} else {
 							// Create new score
-							await journeyStepRuleScoresService.create({
-								journey_step_rule: rule.documentId,
-								name: score.attribute,
-								value: score.value,
-								publishedAt: new Date(),
-							}, session.jwt);
+							await journeyStepRuleScoresService.create(
+								{
+									journey_step_rule: rule.documentId,
+									name: score.attribute,
+									value: score.value,
+									publishedAt: new Date(),
+								},
+								session.jwt,
+							);
 						}
 					}
 
@@ -483,22 +531,28 @@ export async function updateConnectionRules(
 							?.journey_step_rule_scores || [];
 
 					for (const score of existingScores) {
-						await journeyStepRuleScoresService.delete(score.documentId, session.jwt);
+						await journeyStepRuleScoresService.delete(
+							score.documentId,
+							session.jwt,
+						);
 					}
 				}
 			} else {
 				// Create new rule
-				const newRuleResult = await journeyStepRulesService.create({
-					journeys_step_connection: connectionId,
-					condition: rule.condition,
-					condition_operator: rule.condition_operator,
-					condition_value: rule.condition_value,
-					label: rule.label,
-					ready_condition: rule.ready_condition,
-					additional_data: rule.additional_data,
-					additional_condition: rule.additional_condition,
-					publishedAt: new Date(),
-				}, session.jwt);
+				const newRuleResult = await journeyStepRulesService.create(
+					{
+						journeys_step_connection: connectionId,
+						condition: rule.condition,
+						condition_operator: rule.condition_operator,
+						condition_value: rule.condition_value,
+						label: rule.label,
+						ready_condition: rule.ready_condition,
+						additional_data: rule.additional_data,
+						additional_condition: rule.additional_condition,
+						publishedAt: new Date(),
+					},
+					session.jwt,
+				);
 
 				if (
 					newRuleResult.success &&
@@ -508,12 +562,15 @@ export async function updateConnectionRules(
 				) {
 					// Create scores for the new rule
 					for (const score of rule.scores) {
-						await journeyStepRuleScoresService.create({
-							journey_step_rule: newRuleResult.data.documentId,
-							name: score.attribute,
-							value: score.value,
-							publishedAt: new Date(),
-						}, session.jwt);
+						await journeyStepRuleScoresService.create(
+							{
+								journey_step_rule: newRuleResult.data.documentId,
+								name: score.attribute,
+								value: score.value,
+								publishedAt: new Date(),
+							},
+							session.jwt,
+						);
 					}
 				}
 			}

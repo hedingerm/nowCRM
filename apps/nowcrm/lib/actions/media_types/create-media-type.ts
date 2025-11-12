@@ -1,8 +1,12 @@
 // actions/deleteContactAction.ts
 "use server";
+import type { MediaType } from "@nowcrm/services";
+import {
+	handleError,
+	mediaTypesService,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { MediaType } from "@nowcrm/services";
-import { handleError, mediaTypesService, StandardResponse } from "@nowcrm/services/server";
 
 export async function createMediaType(
 	name: string,
@@ -17,10 +21,13 @@ export async function createMediaType(
 	}
 
 	try {
-		const res = await mediaTypesService.create({
-			name,
-			publishedAt: new Date(),
-		},session.jwt);
+		const res = await mediaTypesService.create(
+			{
+				name,
+				publishedAt: new Date(),
+			},
+			session.jwt,
+		);
 		return res;
 	} catch (error) {
 		return handleError(error);

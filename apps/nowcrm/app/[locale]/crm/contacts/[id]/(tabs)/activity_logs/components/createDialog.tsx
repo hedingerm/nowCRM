@@ -44,7 +44,7 @@ export default function CreateTaskDialog() {
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			contact: (params.id),
+			contact: params.id,
 			action: "",
 			description: "",
 		},

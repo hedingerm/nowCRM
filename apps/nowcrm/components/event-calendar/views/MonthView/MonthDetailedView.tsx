@@ -178,7 +178,7 @@ const MonthDetailedView: React.FC<MonthDetailedViewProps> = ({
                         {dayEvents.slice(0, dayEvents.length > 4 ? 3 : 4).map((event, index) => {
                           return (
                             <motion.div
-                              key={`${event.id}-${index}`}
+                              key={`${event.documentId}-${index}`}
                               initial={{ opacity: 0, y: -10 }}
                               animate={{ opacity: 1, y: 0 }}
                               transition={{ duration: 0.2, delay: index * 0.05 }}

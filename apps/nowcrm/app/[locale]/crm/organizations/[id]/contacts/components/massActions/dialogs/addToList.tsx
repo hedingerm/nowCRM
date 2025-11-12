@@ -99,7 +99,7 @@ export default function AssignToListDialog({
 				<TabsContent value="select" className="space-y-4">
 					<div className="mt-4">
 						<AsyncSelect
-							serviceName="listService"
+							serviceName="listsService"
 							label="list"
 							onValueChange={setSelectedOption}
 							presetOption={selectedOption}

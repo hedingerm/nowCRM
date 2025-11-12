@@ -1,8 +1,12 @@
 // actions/deleteContactAction.ts
 "use server";
+import type { DocumentId, UnipileIdentity } from "@nowcrm/services";
+import {
+	handleError,
+	type StandardResponse,
+	unipileIdentitiesService,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { DocumentId, UnipileIdentity } from "@nowcrm/services";
-import { handleError, StandardResponse, unipileIdentitiesService } from "@nowcrm/services/server";
 
 export async function getUnipileIdentity(
 	id: DocumentId,

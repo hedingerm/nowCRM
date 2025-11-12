@@ -1,5 +1,6 @@
 "use client";
 
+import type { OrganizationType } from "@nowcrm/services";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 import { useMessages } from "next-intl";
@@ -12,7 +13,6 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { OrganizationType } from "@nowcrm/services";
 
 const DeleteAction: React.FC<{ organizationType: OrganizationType }> = ({
 	organizationType,
@@ -32,9 +32,13 @@ const DeleteAction: React.FC<{ organizationType: OrganizationType }> = ({
 						const { deleteOrganizationTypeAction } = await import(
 							"./deleteOrganizationType"
 						);
-						const res = await deleteOrganizationTypeAction(organizationType.documentId);
-						if(!res.success) {
-							toast.error(res.errorMessage ?? "Failed to delete organization type");
+						const res = await deleteOrganizationTypeAction(
+							organizationType.documentId,
+						);
+						if (!res.success) {
+							toast.error(
+								res.errorMessage ?? "Failed to delete organization type",
+							);
 							return;
 						}
 						toast.success(t.Admin.MediaType.toast.delete);

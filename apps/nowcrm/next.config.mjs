@@ -5,7 +5,6 @@ const withNextIntl = createNextIntlPlugin();
 const nextConfig = {
   output: 'standalone',
   transpilePackages: ['@nowcrm/services'],
-
   images: {
     remotePatterns: [
       {

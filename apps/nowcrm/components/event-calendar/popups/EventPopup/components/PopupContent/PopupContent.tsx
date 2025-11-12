@@ -63,7 +63,7 @@ export const EventPopupContent: React.FC<EventPopupContent> = ({
   const [activeTab, setActiveTab] = useState("contact");
   const [isDeleting, setIsDeleting] = useState(false)
   const getDefaultValues = (): CalendarEventType => ({
-    id: event?.id || "",
+    documentId: event?.documentId || "",
     name: event?.name || "",
     description: event?.description || "",
     publish_date: event?.publish_date || dateFromViewClick || new Date(),
@@ -97,7 +97,7 @@ export const EventPopupContent: React.FC<EventPopupContent> = ({
   const onSubmit = async (values: z.infer<ReturnType<typeof eventFormSchema>>) => {
     setIsSaving(true)
     try {
-      if (!event?.id) {
+      if (!event?.documentId) {
         // New event
         console.log(values)
         const newEvent: Omit<CalendarEventType, "id"> = {
@@ -137,14 +137,14 @@ export const EventPopupContent: React.FC<EventPopupContent> = ({
   }
 
   const handleDelete = async () => {
-    if (!event?.id) {
+    if (!event?.documentId) {
       throw Error("Missing Event Id")
     }
 
     setIsDeleting(true)
     try {
       if (onDeleteEvent) {
-        await Promise.resolve(onDeleteEvent(event.id))
+        await Promise.resolve(onDeleteEvent(event.documentId))
       }
     } finally {
       setIsDeleting(false)
@@ -157,7 +157,7 @@ export const EventPopupContent: React.FC<EventPopupContent> = ({
       <DialogHeader>
         <DialogTitle className="text-lg sm:text-xl flex items-center gap-2">
           <CalendarPlus className="h-5 w-5" />
-          {event?.id ? translations.editEvent : translations.addEvent}
+          {event?.documentId ? translations.editEvent : translations.addEvent}
           {event?.status && (
             <span
               className={cn(
@@ -173,7 +173,7 @@ export const EventPopupContent: React.FC<EventPopupContent> = ({
         </DialogTitle>
 
         <DialogDescription className="text-sm sm:text-base">
-          {event?.id ? translations.editEventDescription : translations.createEventDescription}
+          {event?.documentId ? translations.editEventDescription : translations.createEventDescription}
         </DialogDescription>
       </DialogHeader>
 
@@ -187,7 +187,7 @@ export const EventPopupContent: React.FC<EventPopupContent> = ({
                 <FormLabel>Composition</FormLabel>
                 <FormControl>
                   <AsyncSelect
-                    serviceName="compositionService"
+                    serviceName="compositionsService"
                     label="composition"
                     onValueChange={(opt) => field.onChange(opt ? { label: opt.label, value: String(opt.value) } : undefined)}
                     useFormClear={false}
@@ -207,7 +207,7 @@ export const EventPopupContent: React.FC<EventPopupContent> = ({
       <FormLabel>Channel</FormLabel>
       <FormControl>
         <AsyncSelect
-          serviceName="channelService"
+          serviceName="channelsService"
           label="channel"
           presetOption={field.value}
           formValue={field.value}
@@ -232,8 +232,8 @@ export const EventPopupContent: React.FC<EventPopupContent> = ({
   console.log(sendToType)
   const identityServiceName =
     selectedChannel === "Linkedin_Invitations"
-      ? "unipileIdentityService"
-      : "identityService";
+      ? "unipileIdentitiesService"
+      : "identitiesService";
   return (
     <div className="pt-3 space-y-4">
       <Tabs
@@ -292,7 +292,7 @@ export const EventPopupContent: React.FC<EventPopupContent> = ({
                 <FormLabel>List</FormLabel>
                 <FormControl>
                   <AsyncSelect
-                    serviceName="listService"
+                    serviceName="listsService"
                     label="List"
                     presetOption={ sendToType === "organization"
                     ? field.value?.send_data as Option
@@ -329,7 +329,7 @@ export const EventPopupContent: React.FC<EventPopupContent> = ({
                 <FormLabel>Organization</FormLabel>
                 <FormControl>
                   <AsyncSelect
-                    serviceName="organizationService"
+                    serviceName="organizationsService"
                     label="Organization"
                     presetOption={ sendToType === "organization"
                     ? field.value?.send_data as Option
@@ -507,7 +507,7 @@ export const EventPopupContent: React.FC<EventPopupContent> = ({
           />
 
           <DialogFooter className="flex flex-col space-y-3 sm:space-y-0 sm:flex-row sm:justify-between items-center w-full">
-            {event?.id && (
+            {event?.documentId && (
               <div className="w-full sm:w-auto">
                 <AlertDialog>
                   <AlertDialogTrigger asChild>

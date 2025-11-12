@@ -1,5 +1,6 @@
 "use client";
 
+import type { Tag } from "@nowcrm/services";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 import { useMessages } from "next-intl";
@@ -12,7 +13,6 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Tag } from "@nowcrm/services";
 
 const DeleteAction: React.FC<{ tag: Tag }> = ({ tag }) => {
 	const t = useMessages();
@@ -29,7 +29,7 @@ const DeleteAction: React.FC<{ tag: Tag }> = ({ tag }) => {
 						const { default: toast } = await import("react-hot-toast");
 						const { deleteTag } = await import("./deleteTag");
 						const res = await deleteTag(tag.documentId);
-						if(!res.success) {
+						if (!res.success) {
 							toast.error(res.errorMessage ?? "Failed to delete tag");
 							return;
 						}

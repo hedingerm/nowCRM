@@ -1,14 +1,13 @@
 "use client";
+import { CommunicationChannel, type DocumentId } from "@nowcrm/services";
 import { Linkedin } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
-
 import Spinner from "@/components/Spinner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { DialogClose } from "@/components/ui/dialog";
-import { CommunicationChannel, DocumentId } from "@nowcrm/services";
 
 export interface LinkedInChannelContentProps {
 	composition_id: DocumentId;

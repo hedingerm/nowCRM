@@ -1,5 +1,6 @@
 "use client";
 
+import type { DocumentId } from "@nowcrm/services";
 import React from "react";
 import {
 	type ActionsConfig,
@@ -10,7 +11,6 @@ import AddToListDialog from "../AddToListDialog";
 import { getContactIdByEventId } from "./getContactIdByEvent";
 import { massDeleteEvents } from "./massDeleteEvents";
 import { massUnsubscribeContacts } from "./massUnsubscribe";
-import { DocumentId } from "@nowcrm/services";
 
 export let currentEvents: any[] = [];
 export function setEventsForMassActions(events: any[]) {

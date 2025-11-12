@@ -1,14 +1,17 @@
 // actions/deleteContactAction.ts
 "use server";
 
+import type {
+	DocumentId,
+	Organization,
+	StandardResponse,
+} from "@nowcrm/services";
+import { handleError, organizationsService } from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import type { StandardResponse } from "@/lib/services/common/response.service";
-import organizationService from "@/lib/services/new_type/organizations.service";
-import type { Organization } from "@/lib/types/new_type/organization";
 
 export async function MassAddToOrganization(
-	contactIds: number[],
-	organization_id: number,
+	contactIds: DocumentId[],
+	organization_id: DocumentId,
 ): Promise<StandardResponse<Organization>> {
 	const session = await auth();
 	if (!session) {
@@ -19,17 +22,15 @@ export async function MassAddToOrganization(
 		};
 	}
 	try {
-		const res = await organizationService.update(organization_id, {
-			contacts: { connect: contactIds },
-		});
+		const res = await organizationsService.update(
+			organization_id,
+			{
+				contacts: { connect: contactIds },
+			},
+			session.jwt,
+		);
 		return res;
 	} catch (error) {
-		console.error("Error adding to list:", error);
-		return {
-			data: null,
-			status: 500,
-			success: false,
-			errorMessage: `${error}`,
-		};
+		return handleError(error);
 	}
 }

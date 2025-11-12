@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { taskStatuses } from "@nowcrm/services";
 import { ListPlus } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -35,7 +36,6 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { taskStatuses } from "@nowcrm/services";
 
 const formSchema = z.object({
 	contact: z.string(),
@@ -59,7 +59,7 @@ export default function CreateTaskDialog() {
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			contact: (params.id),
+			contact: params.id,
 			name: "",
 			assigned_to: undefined,
 			description: "",
@@ -76,7 +76,7 @@ export default function CreateTaskDialog() {
 			...values,
 			task_status: values.status as taskStatuses,
 			due_date: new Date(),
-			assigned_to:Number.parseInt(values.assigned_to.value),
+			assigned_to: Number.parseInt(values.assigned_to.value),
 		};
 		const res = await createTask({
 			...updated_values,

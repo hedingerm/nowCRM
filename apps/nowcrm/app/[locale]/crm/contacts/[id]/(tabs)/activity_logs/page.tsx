@@ -1,3 +1,5 @@
+import type { DocumentId, PaginationParams } from "@nowcrm/services";
+import { activityLogsService } from "@nowcrm/services/server";
 import { Info } from "lucide-react";
 import type { Metadata } from "next";
 import type { Session } from "next-auth";
@@ -6,12 +8,9 @@ import { auth } from "@/auth";
 import DataTable from "@/components/dataTable/dataTable";
 import ErrorMessage from "@/components/ErrorMessage";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-
 import { columns } from "./components/columns/tasksColumns";
 import createActivityLogDialog from "./components/createDialog";
 import MassActionsActivityLogs from "./components/massActions/massActions";
-import { DocumentId, PaginationParams } from "@nowcrm/services";
-import { activityLogsService } from "@nowcrm/services/server";
 
 export const metadata: Metadata = {
 	title: "Logs",

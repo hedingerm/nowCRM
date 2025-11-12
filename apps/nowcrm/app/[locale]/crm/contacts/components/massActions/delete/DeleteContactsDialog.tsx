@@ -1,4 +1,5 @@
 "use client";
+import type { DocumentId } from "@nowcrm/services";
 import {
 	DialogDescription,
 	DialogHeader,
@@ -9,7 +10,7 @@ export default function DeleteContactsDialog({
 	selectedRows,
 	count,
 }: {
-	selectedRows?: number[];
+	selectedRows?: DocumentId[];
 	count?: number;
 }) {
 	const howMany =

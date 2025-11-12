@@ -90,7 +90,7 @@ export const API_ROUTES_STRAPI = {
 	REGISTER: "auth/local/register",
 	RESET_PASSWORD: "auth/reset-password",
 	AUTH_LOGIN: "auth/local",
-	
+
 	// Uploads
 	UPLOAD: "upload",
 	UPLOAD_FILES: "upload/files",

@@ -1,9 +1,13 @@
 // actions/deleteContactAction.ts
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	activityLogsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { DocumentId } from "@nowcrm/services";
-import { activityLogsService, handleError, StandardResponse } from "@nowcrm/services/server";
 
 export async function MassRemoveActivityLogs(
 	activity_logs: DocumentId[],
@@ -17,7 +21,9 @@ export async function MassRemoveActivityLogs(
 		};
 	}
 	try {
-		const deletePromises = activity_logs.map(async (id) => await activityLogsService.delete(id, session.jwt));
+		const deletePromises = activity_logs.map(
+			async (id) => await activityLogsService.delete(id, session.jwt),
+		);
 		await Promise.all(deletePromises);
 		return {
 			data: null,

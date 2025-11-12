@@ -68,10 +68,7 @@ export default function AddToListDialog() {
 			"@/lib/actions/lists/add-contact-to-list"
 		);
 
-		const res = await addContactToList(
-			(params.id),
-			selectedOption.value,
-		);
+		const res = await addContactToList(params.id, selectedOption.value);
 
 		if (!res.success) {
 			toast.error("Failed to add contact to the list.");
@@ -133,7 +130,7 @@ export default function AddToListDialog() {
 
 					<TabsContent value="select" className="mt-4 space-y-4">
 						<AsyncSelect
-							serviceName="listService"
+							serviceName="listsService"
 							label="List"
 							onValueChange={setSelectedOption}
 							presetOption={selectedOption}

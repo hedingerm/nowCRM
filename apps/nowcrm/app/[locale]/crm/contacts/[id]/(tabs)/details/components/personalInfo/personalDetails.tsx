@@ -1,5 +1,6 @@
 "use client";
 
+import type { Contact, DocumentId } from "@nowcrm/services";
 import { Calendar, Clock, KeyRound, List } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
@@ -14,7 +15,6 @@ import {
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { RouteConfig } from "@/lib/config/RoutesConfig";
-import { Contact, DocumentId } from "@nowcrm/services";
 
 interface ListItem {
 	id: DocumentId;
@@ -107,7 +107,10 @@ export function PersonalDetailsDialog({
 						{/* For Lists, provide a href function that uses the list item's id */}
 						{renderList(
 							t("AdvancedFilters.fields.lists"),
-							contact.lists?.map((item) => ({ id: item.documentId, name: item.name })),
+							contact.lists?.map((item) => ({
+								id: item.documentId,
+								name: item.name,
+							})),
 							(item) => RouteConfig.lists.single(item.id),
 							<List className="size-4" />,
 						)}

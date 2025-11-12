@@ -1,12 +1,11 @@
 import { API_ROUTES_DAL } from "../../api-routes/api-routes-dal";
 import { envServices } from "../../envConfig";
-import { DocumentId } from "../../types/common/base_type";
-import { ImportRecord } from "../../types/dal/import-record";
-import { ServiceResponse } from "../../types/microservices/service-response";
-import { handleError, StandardResponse } from "../common/response.service";
+import type { DocumentId } from "../../types/common/base_type";
+import type { ImportRecord } from "../../types/dal/import-record";
+import type { ServiceResponse } from "../../types/microservices/service-response";
+import { handleError, type StandardResponse } from "../common/response.service";
 
 class DalService {
-
 	async fetchPreviousImports(
 		page = 1,
 		jobsPerPage = 20,
@@ -25,7 +24,9 @@ class DalService {
 				throw new Error("Failed to load data");
 			}
 
-			const data = await response.json() as ServiceResponse<{ jobs: ImportRecord[] }>;
+			const data = (await response.json()) as ServiceResponse<{
+				jobs: ImportRecord[];
+			}>;
 			const jobsRaw = data.responseObject?.jobs;
 
 			if (!Array.isArray(jobsRaw)) {
@@ -61,7 +62,7 @@ class DalService {
 				success: true,
 			};
 		} catch (error: any) {
-            return handleError(error);
+			return handleError(error);
 		}
 	}
 
@@ -97,22 +98,25 @@ class DalService {
 		upstreamFormData.append("listMode", listMode);
 		upstreamFormData.append("listId", listId);
 
-        try {
-		const res = await fetch(`${envServices.DAL_URL}${API_ROUTES_DAL.UPLOAD}`, {
-			method: "POST",
-			body: upstreamFormData,
-			cache: "no-store",
-		});
+		try {
+			const res = await fetch(
+				`${envServices.DAL_URL}${API_ROUTES_DAL.UPLOAD}`,
+				{
+					method: "POST",
+					body: upstreamFormData,
+					cache: "no-store",
+				},
+			);
 
-		if (!res.ok) {
-			console.error(await res.text());
-			throw new Error("DAL API failed");
+			if (!res.ok) {
+				console.error(await res.text());
+				throw new Error("DAL API failed");
+			}
+
+			return await res.json();
+		} catch (error: any) {
+			return handleError(error);
 		}
-
-		return await res.json();
-        } catch (error: any) {
-            return handleError(error);
-        }
 	}
 
 	async deleteContactsByFilters(payload: {
@@ -153,15 +157,18 @@ class DalService {
 				success: true,
 			};
 		} catch (error: any) {
-            return handleError(error);
+			return handleError(error);
 		}
 	}
 
-	async exportContactsByFilters(payload: {
-		entity: string;
-		searchMask: any;
-		mass_action: string;
-	}, userEmail: string): Promise<StandardResponse<any>> {
+	async exportContactsByFilters(
+		payload: {
+			entity: string;
+			searchMask: any;
+			mass_action: string;
+		},
+		userEmail: string,
+	): Promise<StandardResponse<any>> {
 		try {
 			const transformedFilters = payload.searchMask;
 
@@ -196,7 +203,7 @@ class DalService {
 				success: true,
 			};
 		} catch (error: any) {
-            return handleError(error);
+			return handleError(error);
 		}
 	}
 
@@ -237,12 +244,11 @@ class DalService {
 				success: true,
 			};
 		} catch (error: any) {
-            return handleError(error);
+			return handleError(error);
 		}
 	}
 
 	async fetchProgressMap(): Promise<StandardResponse<Map<string, number>>> {
-
 		try {
 			const response = await fetch(
 				`${envServices.DAL_URL}${API_ROUTES_DAL.PROGRESS}`,
@@ -255,7 +261,7 @@ class DalService {
 				throw new Error("Failed to fetch progress map");
 			}
 
-			const data = await response.json() as any;
+			const data = (await response.json()) as any;
 			const progressMap = new Map<string, number>(
 				data.progress.map((item: any) => [
 					item.jobId,
@@ -269,7 +275,7 @@ class DalService {
 				success: true,
 			};
 		} catch (error: any) {
-            return handleError(error);
+			return handleError(error);
 		}
 	}
 
@@ -313,7 +319,7 @@ class DalService {
 				success: true,
 			};
 		} catch (error: any) {
-            return handleError(error);
+			return handleError(error);
 		}
 	}
 
@@ -321,7 +327,6 @@ class DalService {
 		filters: Record<string, any>,
 		listId: DocumentId,
 	): Promise<StandardResponse<any>> {
-		
 		try {
 			const payload = {
 				entity: "contacts",
@@ -358,7 +363,7 @@ class DalService {
 				success: true,
 			};
 		} catch (error: any) {
-            return handleError(error);
+			return handleError(error);
 		}
 	}
 
@@ -406,7 +411,7 @@ class DalService {
 				success: true,
 			};
 		} catch (error: any) {
-            return handleError(error);
+			return handleError(error);
 		}
 	}
 
@@ -447,7 +452,7 @@ class DalService {
 				success: true,
 			};
 		} catch (error: any) {
-            return handleError(error);
+			return handleError(error);
 		}
 	}
 
@@ -489,7 +494,7 @@ class DalService {
 				success: true,
 			};
 		} catch (error: any) {
-            return handleError(error);
+			return handleError(error);
 		}
 	}
 }

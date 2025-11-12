@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { Contact, LanguageKeys } from "@nowcrm/services";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import type React from "react";
@@ -52,7 +53,6 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Contact, LanguageKeys } from "@nowcrm/services";
 
 const handlePhoneInput = (e: React.ChangeEvent<HTMLInputElement>) => {
 	const value = e.target.value;
@@ -93,7 +93,7 @@ export function EditDialog({ contact, isOpen, onClose }: EditDialogProps) {
 			const { findData } = await import("@/components/autoComplete/findData");
 
 			try {
-				const res = await findData("contactTypeService", {
+				const res = await findData("contactTypesService", {
 					pagination: { pageSize: 15 },
 				});
 				const mapped = (res?.data ?? []).map((item: any) => ({
@@ -192,7 +192,7 @@ export function EditDialog({ contact, isOpen, onClose }: EditDialogProps) {
 			...values,
 			language: values.language as LanguageKeys,
 			contact_types: values.contact_types
-				? {set : [values.contact_types.value] }
+				? { set: [values.contact_types.value] }
 				: undefined,
 			title: values.title?.value,
 			salutation: values.salutation?.value,

@@ -1,5 +1,10 @@
 // contactsapp/app/[locale]/crm/lists/[id]/components/columns/ContactColumns.tsx
 "use client";
+import type {
+	CommunicationChannelKeys,
+	Contact,
+	DocumentId,
+} from "@nowcrm/services";
 import type { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
@@ -19,7 +24,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { RouteConfig } from "@/lib/config/RoutesConfig";
 import { formatDateTimeStrapi } from "@/lib/strapiDate";
-import { CommunicationChannelKeys, Contact, DocumentId } from "@nowcrm/services";
 import { toNames } from "@/lib/utils";
 import { removeContactFromListAction } from "./removeContactFromListAction";
 
@@ -34,12 +38,14 @@ const DeleteAction: React.FC<{ contact: Contact }> = ({ contact }) => {
 			<DropdownMenuContent>
 				<DropdownMenuItem
 					onClick={async () => {
-						const res =await removeContactFromListAction(
-							(path.split("/").pop() as DocumentId),
+						const res = await removeContactFromListAction(
+							path.split("/").pop() as DocumentId,
 							contact.documentId,
 						);
 						if (!res.success) {
-							toast.error(res.errorMessage ?? "Failed to remove contact from list");
+							toast.error(
+								res.errorMessage ?? "Failed to remove contact from list",
+							);
 							return;
 						}
 						toast.success("Contact removed from list");
@@ -176,7 +182,9 @@ export const columns: ColumnDef<Contact>[] = [
 				row.original.subscriptions
 					?.filter((sub) => !!sub?.active)
 					.map((sub) => sub?.channel?.name ?? null)
-					.filter((n): n is CommunicationChannelKeys => !!n && n.trim().length > 0)
+					.filter(
+						(n): n is CommunicationChannelKeys => !!n && n.trim().length > 0,
+					)
 					.join(", ") || "None";
 			return <p>{names}</p>;
 		},

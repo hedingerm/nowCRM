@@ -1,5 +1,6 @@
 "use client";
 
+import type { DocumentId } from "@nowcrm/services";
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -15,7 +16,6 @@ import {
 } from "@/components/ui/select";
 import { RouteConfig } from "@/lib/config/RoutesConfig";
 import type { Condition } from "../connection-panel"; // adjust the path if your types live elsewhere
-import { DocumentId } from "@nowcrm/services";
 
 interface FormCompleteRuleProps {
 	condition: Condition;
@@ -42,9 +42,7 @@ export function FormAnswerRule({
 					serviceName="formsService"
 					presetOption={condition.additional_data?.form as Option | undefined}
 					onValueChange={(value) => {
-						value
-							? setFormId((value.value))
-							: setFormId(undefined);
+						value ? setFormId(value.value) : setFormId(undefined);
 						updateCondition(condition.id, {
 							additional_data: {
 								form: value,
@@ -57,7 +55,7 @@ export function FormAnswerRule({
 				{formId != null && (
 					<div className="mt-1 text-sm">
 						<Link
-							href={`${RouteConfig.forms.single((formId))}`}
+							href={`${RouteConfig.forms.single(formId)}`}
 							target="_blank"
 							rel="noopener noreferrer"
 							className="flex items-center text-yellow-600 hover:underline"

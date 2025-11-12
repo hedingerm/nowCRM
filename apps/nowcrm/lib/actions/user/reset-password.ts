@@ -1,7 +1,7 @@
 "use server";
 
-import { env } from "@/lib/config/envConfig";
 import { usersService } from "@nowcrm/services/server";
+import { env } from "@/lib/config/envConfig";
 
 type ResetPasswordValues = {
 	code: string;

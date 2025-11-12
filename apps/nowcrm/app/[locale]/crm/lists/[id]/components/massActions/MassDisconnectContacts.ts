@@ -1,9 +1,13 @@
 // actions/deleteContactAction.ts
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	handleError,
+	listsService,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { DocumentId } from "@nowcrm/services";
-import { handleError, listsService, StandardResponse } from "@nowcrm/services/server";
 
 export async function MassDisconnectContacts(
 	listId: DocumentId,
@@ -18,7 +22,11 @@ export async function MassDisconnectContacts(
 		};
 	}
 	try {
-		await listsService.update(listId, { contacts: { disconnect: contacts } }, session.jwt);
+		await listsService.update(
+			listId,
+			{ contacts: { disconnect: contacts } },
+			session.jwt,
+		);
 		return {
 			data: null,
 			status: 200,

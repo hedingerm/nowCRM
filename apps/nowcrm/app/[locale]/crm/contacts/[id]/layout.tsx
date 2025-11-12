@@ -1,16 +1,15 @@
+import type { DocumentId } from "@nowcrm/services";
+import { contactsService } from "@nowcrm/services/server";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { FaEnvelope, FaUser } from "react-icons/fa";
+import { auth } from "@/auth";
 import DeleteButton from "@/components/deleteButton/deleteButton";
 import ErrorMessage from "@/components/ErrorMessage";
 import { TypographyH4 } from "@/components/Typography";
 import { Separator } from "@/components/ui/separator";
 import { RouteConfig } from "@/lib/config/RoutesConfig";
-
 import TopBarContacts from "./components/topbar";
-import { contactsService } from "@nowcrm/services/server";
-import { auth } from "@/auth";
-import { DocumentId } from "@nowcrm/services";
 
 interface LayoutProps {
 	children: React.ReactNode;
@@ -29,7 +28,7 @@ export default async function Layout(props: LayoutProps) {
 	const t = await getTranslations();
 	const { children } = props;
 
-	const contactId = (params.id as DocumentId);
+	const contactId = params.id as DocumentId;
 	const session = await auth();
 	const contact = await contactsService.findOne(contactId, session?.jwt);
 	if (!contact.data) {

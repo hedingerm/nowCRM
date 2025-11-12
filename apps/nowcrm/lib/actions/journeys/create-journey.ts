@@ -1,8 +1,12 @@
 // actions/deleteContactAction.ts
 "use server";
+import type { Journey } from "@nowcrm/services";
+import {
+	handleError,
+	journeysService,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { Journey } from "@nowcrm/services";
-import { handleError, journeysService, StandardResponse } from "@nowcrm/services/server";
 
 export async function createJourney(
 	name: string,
@@ -16,11 +20,14 @@ export async function createJourney(
 		};
 	}
 	try {
-		const res = await journeysService.create({
-			name: name,
-			active: false,
-			publishedAt: new Date(),
-		},	session.jwt);
+		const res = await journeysService.create(
+			{
+				name: name,
+				active: false,
+				publishedAt: new Date(),
+			},
+			session.jwt,
+		);
 		return res;
 	} catch (error) {
 		return handleError(error);

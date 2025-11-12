@@ -1,10 +1,13 @@
 // actions/deleteContactAction.ts
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	handleError,
+	type StandardResponse,
+	subscriptionsService,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { DocumentId } from "@nowcrm/services";
-import { handleError, StandardResponse } from "@nowcrm/services/server";
-import { subscriptionsService } from "@nowcrm/services/server";
 export async function deleteSubscriptionAction(
 	subscriptionId: DocumentId,
 ): Promise<StandardResponse<null>> {
@@ -17,7 +20,10 @@ export async function deleteSubscriptionAction(
 		};
 	}
 	try {
-		const response = await subscriptionsService.delete(subscriptionId, session.jwt);
+		const response = await subscriptionsService.delete(
+			subscriptionId,
+			session.jwt,
+		);
 		return response;
 	} catch (error) {
 		return handleError(error);

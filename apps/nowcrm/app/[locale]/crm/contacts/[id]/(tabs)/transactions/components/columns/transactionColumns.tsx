@@ -1,4 +1,5 @@
 "use client";
+import type { DonationTransaction } from "@nowcrm/services";
 import type { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -14,11 +15,10 @@ import {
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuLabel,
-	DropdownMenuSeparator,	
+	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { formatDateTimeStrapi } from "@/lib/strapiDate";
-import { DonationTransaction } from "@nowcrm/services";
 import EditTransactionDialog from "./editTransactionDialog";
 
 const DeleteAction: React.FC<{ transaction: DonationTransaction }> = ({
@@ -39,7 +39,7 @@ const DeleteAction: React.FC<{ transaction: DonationTransaction }> = ({
 							"./deleteTransaction"
 						);
 						const res = await deleteTransactionAction(transaction.documentId);
-						if(!res.success) {
+						if (!res.success) {
 							toast.error(res.errorMessage ?? "Failed to delete transaction");
 							return;
 						}

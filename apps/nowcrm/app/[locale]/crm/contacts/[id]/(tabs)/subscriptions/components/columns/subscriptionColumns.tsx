@@ -1,4 +1,5 @@
 "use client";
+import type { Subscription } from "@nowcrm/services";
 import type { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -15,7 +16,6 @@ import { Switch } from "@/components/ui/switch";
 import { updateSubscription } from "@/lib/actions/subscriptions/update-subscription";
 import { RouteConfig } from "@/lib/config/RoutesConfig";
 import { formatDateTimeStrapi } from "@/lib/strapiDate";
-import { Subscription } from "@nowcrm/services";
 
 const DeleteAction: React.FC<{ subscription: Subscription }> = ({
 	subscription,
@@ -35,7 +35,7 @@ const DeleteAction: React.FC<{ subscription: Subscription }> = ({
 							"./deleteSubscription"
 						);
 						const res = await deleteSubscriptionAction(subscription.documentId);
-						if(!res.success) {
+						if (!res.success) {
 							toast.error(res.errorMessage || "Failed to delete subscription");
 							return;
 						}
@@ -61,8 +61,10 @@ const SwitchAction: React.FC<{ subscription: Subscription }> = ({
 			checked={!!subscription.active}
 			onCheckedChange={async (value) => {
 				const { default: toast } = await import("react-hot-toast");
-				const res = await updateSubscription(subscription.documentId, { active: value });
-				if(!res.success) {
+				const res = await updateSubscription(subscription.documentId, {
+					active: value,
+				});
+				if (!res.success) {
 					toast.error(res.errorMessage || "Failed to update subscription");
 					return;
 				}
@@ -142,7 +144,7 @@ export const columns: ColumnDef<Subscription>[] = [
 				<div>
 					{consent?.version ? (
 						<Link
-							href={`${RouteConfig.policy.single((consent.version))}`}
+							href={`${RouteConfig.policy.single(consent.version)}`}
 							target="_blank"
 							rel="noopener noreferrer"
 							className="flex items-center font-medium hover:text-red-800"

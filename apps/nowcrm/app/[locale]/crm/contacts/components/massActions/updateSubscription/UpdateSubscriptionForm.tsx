@@ -90,7 +90,7 @@ export function UpdateSubscriptionForm({
 							<FormControl>
 								<div>
 									<AsyncSelect
-										serviceName="channelService"
+										serviceName="channelsService"
 										label="channel"
 										presetOption={field.value}
 										useFormClear={false}

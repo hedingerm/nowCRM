@@ -1,13 +1,16 @@
 // actions/deleteContactAction.ts
 "use server";
+import type { DocumentId } from "@nowcrm/services";
+import {
+	dalService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { DocumentId } from "@nowcrm/services";
-import { dalService, handleError, StandardResponse } from "@nowcrm/services/server";
 export async function addContactsToOrganizationByFilters(
-    filters: Record<string, any>,
-    organizationId: DocumentId,
+	filters: Record<string, any>,
+	organizationId: DocumentId,
 ): Promise<StandardResponse<any>> {
-
 	const session = await auth();
 	if (!session) {
 		return {
@@ -18,8 +21,11 @@ export async function addContactsToOrganizationByFilters(
 	}
 
 	try {
-        const res = await dalService.addContactsToOrganizationByFilters(filters, organizationId);
-        return res;
+		const res = await dalService.addContactsToOrganizationByFilters(
+			filters,
+			organizationId,
+		);
+		return res;
 	} catch (error) {
 		return handleError(error);
 	}

@@ -1,8 +1,12 @@
 // src/lib/actions/contacts/getCountries.ts
 "use server";
 
+import {
+	contactsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { contactsService, handleError, StandardResponse } from "@nowcrm/services/server";
 
 type CountryWithCount = { name: string; count: number };
 
@@ -22,7 +26,7 @@ export async function getCountries(): Promise<
 	}
 
 	try {
-		const res = await contactsService.find(session.jwt,{
+		const res = await contactsService.find(session.jwt, {
 			fields: ["country"],
 			pagination: { pageSize: 1000 }, // adjust if more than 1000
 		});

@@ -1,4 +1,5 @@
 "use client";
+import type { Campaign } from "@nowcrm/services";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 import { useMessages } from "next-intl";
@@ -12,7 +13,6 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import EditCampaignDialog from "./editDialog";
-import { Campaign } from "@nowcrm/services";
 
 const DeleteAction: React.FC<{ campaign: Campaign }> = ({ campaign }) => {
 	const t = useMessages();
@@ -30,7 +30,7 @@ const DeleteAction: React.FC<{ campaign: Campaign }> = ({ campaign }) => {
 						const { default: toast } = await import("react-hot-toast");
 						const { deleteCampaignAction } = await import("./deleteCampaign");
 						const res = await deleteCampaignAction(campaign.documentId);
-						if(!res.success) {
+						if (!res.success) {
 							toast.error(res.errorMessage ?? "Failed to delete campaign");
 							return;
 						}

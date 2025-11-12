@@ -1,5 +1,6 @@
 "use client";
 
+import type { Contact } from "@nowcrm/services";
 import { Check, Sparkles, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -24,7 +25,6 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { Contact } from "@nowcrm/services";
 
 interface EnrichDialogProps {
 	contact: Contact;

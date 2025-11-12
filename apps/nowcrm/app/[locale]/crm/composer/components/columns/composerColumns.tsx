@@ -1,4 +1,5 @@
 "use client";
+import type { Composition } from "@nowcrm/services";
 import type { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
@@ -18,7 +19,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { RouteConfig } from "@/lib/config/RoutesConfig";
 import { formatDateTimeStrapi } from "@/lib/strapiDate";
-import { Composition } from "@nowcrm/services";
 import { cn } from "@/lib/utils";
 import { deleteCompositionAction } from "./deleteComposition";
 
@@ -49,7 +49,9 @@ const ViewActions: React.FC<{ composition: Composition }> = ({
 						const { duplicateCompositionAction } = await import(
 							"@/lib/actions/composer/duplicate-composition"
 						);
-						const res = await duplicateCompositionAction(composition.documentId);
+						const res = await duplicateCompositionAction(
+							composition.documentId,
+						);
 						if (!res.success) {
 							toast.error(
 								res.errorMessage ?? "Failed to duplicate composition",

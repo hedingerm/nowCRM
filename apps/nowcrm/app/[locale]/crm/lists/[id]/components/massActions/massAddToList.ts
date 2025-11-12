@@ -1,9 +1,13 @@
 // actions/deleteContactAction.ts
 "use server";
 
+import type { DocumentId, List } from "@nowcrm/services";
+import {
+	handleError,
+	listsService,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { DocumentId, List } from "@nowcrm/services";
-import { handleError, listsService, StandardResponse } from "@nowcrm/services/server";
 
 export async function MassAddToList(
 	contactIds: DocumentId[],
@@ -18,9 +22,13 @@ export async function MassAddToList(
 		};
 	}
 	try {
-		const res = await listsService.update(listId, {
-			contacts: { connect: contactIds },
-		}, session.jwt);
+		const res = await listsService.update(
+			listId,
+			{
+				contacts: { connect: contactIds },
+			},
+			session.jwt,
+		);
 		return res;
 	} catch (error) {
 		return handleError(error);

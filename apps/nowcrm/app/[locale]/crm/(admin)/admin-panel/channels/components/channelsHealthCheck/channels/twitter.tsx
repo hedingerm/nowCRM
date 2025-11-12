@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { SettingCredential } from "@nowcrm/services";
 import {
 	AlertCircle,
 	ChevronDown,
@@ -57,7 +58,6 @@ import {
 	getStatusColor,
 	getStatusIcon,
 } from "@/lib/static/healthCheckStatuses";
-import { SettingCredential } from "@nowcrm/services";
 
 interface LinkedInHealthCheckProps {
 	twitter_credential: Omit<SettingCredential, "setting">;
@@ -125,13 +125,16 @@ export function TwitterHealthCheck({
 	async function handleSubmit(values: z.infer<typeof formSchema>) {
 		setIsSubmitting(true);
 		try {
-			const res = await updateSettingCredentials(twitter_credential.documentId, {
-				...values,
-				credential_status: "disconnected",
-				error_message: "Please at first refresh your access token",
-				access_token: "",
-				refresh_token: "",
-			});
+			const res = await updateSettingCredentials(
+				twitter_credential.documentId,
+				{
+					...values,
+					credential_status: "disconnected",
+					error_message: "Please at first refresh your access token",
+					access_token: "",
+					refresh_token: "",
+				},
+			);
 			if (res.success) {
 				toast.success(t.twitter.toast.success.credentialsUpdated);
 				router.refresh();

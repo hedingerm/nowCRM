@@ -1,4 +1,5 @@
 "use client";
+import type { Action } from "@nowcrm/services";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 import { useMessages } from "next-intl";
@@ -20,8 +21,6 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { formatDateTimeStrapi } from "@/lib/strapiDate";
-import { Action } from "@nowcrm/services";
-
 
 const DeleteAction: React.FC<{ action: Action }> = ({ action }) => {
 	const router = useRouter();
@@ -37,7 +36,7 @@ const DeleteAction: React.FC<{ action: Action }> = ({ action }) => {
 						const { default: toast } = await import("react-hot-toast");
 						const { deleteAction } = await import("./deleteAction");
 						const res = await deleteAction(action.documentId);
-						if(!res.success) {
+						if (!res.success) {
 							toast.error(res.errorMessage || "Failed to delete action");
 							return;
 						}

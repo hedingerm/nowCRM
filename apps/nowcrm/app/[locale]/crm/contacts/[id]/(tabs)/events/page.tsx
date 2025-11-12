@@ -1,14 +1,13 @@
+import type { DocumentId, PaginationParams } from "@nowcrm/services";
+import { eventsService } from "@nowcrm/services/server";
 import type { Metadata } from "next";
 import type { Session } from "next-auth";
 import { getTranslations } from "next-intl/server";
 import { auth } from "@/auth";
 import DataTable from "@/components/dataTable/dataTable";
 import ErrorMessage from "@/components/ErrorMessage";
-
 import { columns } from "./components/columns/eventColumns";
 import EventsMassActions from "./components/massActions/massActions";
-import { DocumentId, PaginationParams } from "@nowcrm/services";
-import { eventsService } from "@nowcrm/services/server";
 
 export const metadata: Metadata = {
 	title: "Communication History",

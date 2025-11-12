@@ -108,7 +108,7 @@ const MyEventCalendar = ({ initialEvents }: MyEventCalendarProps) => {
 	): Promise<CalendarEventType> => {
 		const payload = fromCalendarEventToForm(event);
 		const response = await updateScheduledCompositions(
-			(event.documentId ?? ""),
+			event.documentId ?? "",
 			payload,
 		);
 		if (!response.success || !response.data) {

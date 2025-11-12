@@ -1,5 +1,6 @@
 "use client";
 
+import type { DocumentId, Event } from "@nowcrm/services";
 import {
 	AlertCircle,
 	BellOff,
@@ -30,8 +31,6 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getEventsByCompositionId } from "@/lib/actions/events/get-event";
-import { Event } from "@nowcrm/services";
-import { DocumentId } from "@nowcrm/services";
 
 interface EventTableProps {
 	compositionItemId: DocumentId;

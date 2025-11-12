@@ -1,30 +1,28 @@
 "use server";
 
-import { auth } from "@/auth";
-import { Filters } from "@nowcrm/services";
+import type { Contact, Filters } from "@nowcrm/services";
 import { contactsService, handleError } from "@nowcrm/services/server";
-import { Contact } from "@nowcrm/services";
-
+import { auth } from "@/auth";
 
 export async function getContactsPreview(filters: Filters<Contact>) {
 	try {
-	const session = await auth();
-	if (!session) {
-		return {
-			success: false,
-			status: 403,
-			data: null,
-		};
-	}
-	const result = await contactsService.find(session.jwt,{
-		populate: "*",
-		sort: ["id:desc"],
-		pagination: { page: 1, pageSize: 5 },
-		filters,
-	});
+		const session = await auth();
+		if (!session) {
+			return {
+				success: false,
+				status: 403,
+				data: null,
+			};
+		}
+		const result = await contactsService.find(session.jwt, {
+			populate: "*",
+			sort: ["id:desc"],
+			pagination: { page: 1, pageSize: 5 },
+			filters,
+		});
 
-	return result;
-} catch (error) {
-	return handleError(error);
-}
+		return result;
+	} catch (error) {
+		return handleError(error);
+	}
 }

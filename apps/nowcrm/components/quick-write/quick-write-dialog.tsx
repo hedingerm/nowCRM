@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { LanguageKeys } from "@nowcrm/services";
 import {
 	Check,
 	ChevronsUpDown,
@@ -58,7 +59,6 @@ import {
 	getRandomPersona,
 	WRITING_PERSONAS,
 } from "./quick-write-constants";
-import { LanguageKeys } from "@nowcrm/services";
 
 const quickWriteSchema = z.object({
 	model: z.enum(["gpt-4o-mini", "claude"]),

@@ -1,8 +1,15 @@
 // actions/deleteContactAction.ts
 "use server";
+import type {
+	SearchHistoryTemplate,
+	SearchHistoryType,
+} from "@nowcrm/services";
+import {
+	handleError,
+	type StandardResponse,
+	searchHistoryTemplatesService,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { SearchHistoryTemplate, SearchHistoryType } from "@nowcrm/services";
-import { handleError, searchHistoryTemplatesService, StandardResponse } from "@nowcrm/services/server";
 
 export async function getSearchHistory(
 	type: SearchHistoryType,
@@ -16,7 +23,7 @@ export async function getSearchHistory(
 		};
 	}
 	try {
-		const res = await searchHistoryTemplatesService.find(session.jwt,{
+		const res = await searchHistoryTemplatesService.find(session.jwt, {
 			sort: ["id:desc"],
 			filters: { type: { $eq: type } },
 			pagination: { page: 1, pageSize: 10 },

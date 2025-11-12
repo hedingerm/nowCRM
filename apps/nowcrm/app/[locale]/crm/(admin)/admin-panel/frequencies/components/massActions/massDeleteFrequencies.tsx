@@ -1,9 +1,13 @@
 // actions/deleteContactAction.ts
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	frequenciesService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { DocumentId } from "@nowcrm/services";
-import { handleError, frequenciesService, StandardResponse } from "@nowcrm/services/server";
 export async function MassDeleteFrequencies(
 	frequencies: DocumentId[],
 ): Promise<StandardResponse<null>> {

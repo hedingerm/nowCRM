@@ -1,5 +1,6 @@
 "use client";
 
+import type { BaseServiceName } from "@nowcrm/services";
 import { format } from "date-fns";
 import { X } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -17,7 +18,6 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { BaseServiceName } from "@nowcrm/services";
 import cantons from "@/lib/static/cantons.json";
 import countries from "@/lib/static/countries.json";
 import type { FilterValues } from "./advancedFilters";

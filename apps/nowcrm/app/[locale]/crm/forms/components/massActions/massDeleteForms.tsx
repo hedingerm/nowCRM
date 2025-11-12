@@ -1,9 +1,13 @@
 // actions/deleteContactAction.ts
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	formsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { DocumentId } from "@nowcrm/services";
-import { formsService, handleError, StandardResponse } from "@nowcrm/services/server";
 
 export async function massDeleteForms(
 	forms: DocumentId[],
@@ -17,7 +21,9 @@ export async function massDeleteForms(
 		};
 	}
 	try {
-		const unpublishPromises = forms.map((id) => formsService.delete(id, session.jwt));
+		const unpublishPromises = forms.map((id) =>
+			formsService.delete(id, session.jwt),
+		);
 		await Promise.all(unpublishPromises);
 		return {
 			data: null,

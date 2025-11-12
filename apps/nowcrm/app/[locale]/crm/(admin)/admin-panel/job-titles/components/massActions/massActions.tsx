@@ -1,12 +1,12 @@
 // JobTitlesMassActions.tsx
 "use client";
 
+import type { DocumentId } from "@nowcrm/services";
 import {
 	type ActionsConfig,
 	massActionsGenerator,
 } from "@/components/generativeComponents/MassActionsGenerator";
 import { MassDeleteJobTitles } from "./massDeleteJobTitles";
-import { DocumentId } from "@nowcrm/services";
 
 // Define the actions configuration for job titles
 const actionsConfig: ActionsConfig = {

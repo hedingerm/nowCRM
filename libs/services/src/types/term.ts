@@ -1,6 +1,6 @@
 //contactsapp/lib/types/new_type/term.ts
 
-import { BaseFormType, BaseType } from "./common/base_type";
+import type { BaseFormType, BaseType } from "./common/base_type";
 
 export interface Term extends Omit<BaseType, "name"> {
 	version?: string;

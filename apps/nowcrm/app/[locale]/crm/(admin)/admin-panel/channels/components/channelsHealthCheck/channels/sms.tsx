@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { SettingCredential } from "@nowcrm/services";
 import {
 	AlertCircle,
 	DollarSign,
@@ -53,7 +54,6 @@ import {
 	getStatusColor,
 	getStatusIcon,
 } from "@/lib/static/healthCheckStatuses";
-import { SettingCredential } from "@nowcrm/services";
 
 interface LinkedInHealthCheckProps {
 	sns_credential: Omit<SettingCredential, "setting">;

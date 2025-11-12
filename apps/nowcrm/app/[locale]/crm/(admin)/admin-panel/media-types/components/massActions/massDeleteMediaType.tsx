@@ -1,11 +1,13 @@
 // actions/deleteContactAction.ts
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	handleError,
+	mediaTypesService,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-
-import { DocumentId } from "@nowcrm/services";
-
-import { handleError, mediaTypesService, StandardResponse } from "@nowcrm/services/server";
 
 export async function MassDeleteMediaTypes(
 	mediaTypes: DocumentId[],

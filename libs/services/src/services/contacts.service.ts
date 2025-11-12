@@ -1,10 +1,14 @@
-import {API_ROUTES_STRAPI} from "../api-routes/api-routes-strapi";
+import { API_ROUTES_STRAPI } from "../api-routes/api-routes-strapi";
 import { envServices } from "../envConfig";
 import type { CommunicationChannelKeys } from "../static/communication-channel";
-import { DocumentId } from "../types/common/base_type";
+import type { DocumentId } from "../types/common/base_type";
 import type { Contact, Form_Contact } from "../types/contact";
 import BaseService from "./common/base.service";
-import { handleError, handleResponse, type StandardResponse } from "./common/response.service";
+import {
+	handleError,
+	handleResponse,
+	type StandardResponse,
+} from "./common/response.service";
 import { settingsService } from "./settings.service";
 
 class ContactsService extends BaseService<Contact, Form_Contact> {
@@ -85,8 +89,10 @@ class ContactsService extends BaseService<Contact, Form_Contact> {
 		}
 	}
 
-	async duplicate(contactId: DocumentId, token: string): Promise<StandardResponse<null>> {
-
+	async duplicate(
+		contactId: DocumentId,
+		token: string,
+	): Promise<StandardResponse<null>> {
 		try {
 			const url = `${envServices.STRAPI_URL}${API_ROUTES_STRAPI.CONTACTS_DUPLICATE}`;
 
@@ -106,7 +112,7 @@ class ContactsService extends BaseService<Contact, Form_Contact> {
 
 	async exportUserData(
 		contactId: DocumentId,
-		token: string
+		token: string,
 	): Promise<StandardResponse<Contact>> {
 		const url = `${envServices.STRAPI_URL}${API_ROUTES_STRAPI.CONTACT_EXPORT_DATA}`;
 		try {
@@ -117,10 +123,10 @@ class ContactsService extends BaseService<Contact, Form_Contact> {
 			});
 			console.log(response);
 
-			const result = await handleResponse<Contact>(response)
-			return result
+			const result = await handleResponse<Contact>(response);
+			return result;
 		} catch (error: any) {
-			return handleError(error)
+			return handleError(error);
 		}
 	}
 
@@ -131,7 +137,6 @@ class ContactsService extends BaseService<Contact, Form_Contact> {
 		token: string,
 		sortBy?: string,
 		sortOrder: "asc" | "desc" = "desc",
-
 	): Promise<{ data: Contact[]; totalCount: number }> {
 		try {
 			const response = await this.find(token, {
@@ -159,6 +164,51 @@ class ContactsService extends BaseService<Contact, Form_Contact> {
 			console.error("Error fetching contacts with filters:", error);
 			throw error;
 		}
+	}
+
+	async exportCsv(ids: DocumentId[], token: string): Promise<string> {
+		const formatCell = (raw: any): string => {
+			if (raw == null) {
+				return "";
+			}
+			if (Array.isArray(raw)) {
+				return raw
+					.map((item) =>
+						typeof item === "object"
+							? (item.name ?? item.label ?? JSON.stringify(item))
+							: String(item),
+					)
+					.join("; ");
+			}
+			if (typeof raw === "object") {
+				return raw.name ?? raw.label ?? JSON.stringify(raw);
+			}
+			return String(raw);
+		};
+
+		const response = await this.find(token, {
+			filters: { documentId: { $in: ids } },
+			populate: "*",
+		});
+		const data: Contact[] = response.data || [];
+
+		if (!data.length) {
+			return "";
+		}
+
+		const headers = Object.keys(data[0] as any);
+
+		const rows = data.map((contact) =>
+			headers
+				.map((key) => {
+					const raw = (contact as any)[key];
+					const cell = formatCell(raw);
+					return `"${cell.replace(/"/g, '""')}"`;
+				})
+				.join(","),
+		);
+
+		return [headers.join(","), ...rows].join("\r\n");
 	}
 }
 

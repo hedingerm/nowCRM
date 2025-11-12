@@ -1,8 +1,12 @@
 // actions/deleteContactAction.ts
 "use server";
+import type { Form_Organization, Organization } from "@nowcrm/services";
+import {
+	handleError,
+	organizationsService,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { Form_Organization, Organization } from "@nowcrm/services";
-import { handleError, organizationsService, StandardResponse } from "@nowcrm/services/server";
 
 export async function createOrganization(
 	values: Partial<Form_Organization>,
@@ -16,7 +20,7 @@ export async function createOrganization(
 		};
 	}
 	try {
-		const res = await organizationsService.create(values,session.jwt);
+		const res = await organizationsService.create(values, session.jwt);
 		return res;
 	} catch (error) {
 		return handleError(error);

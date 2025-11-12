@@ -1,11 +1,11 @@
 "use client";
 
+import type { DocumentId } from "@nowcrm/services";
 import { SlidersHorizontal } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import type { JSX } from "react";
 import { useState } from "react";
 import toast from "react-hot-toast";
-
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
 import {
@@ -15,7 +15,6 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { DocumentId } from "@nowcrm/services";
 
 // Define the props type for the MassActionsComponent.
 // This type will be used by the getExtraData function in ActionConfig.

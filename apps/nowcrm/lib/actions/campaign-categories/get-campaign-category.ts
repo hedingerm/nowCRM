@@ -1,10 +1,15 @@
 "use server";
+import type { CampaignCategory } from "@nowcrm/services";
+import {
+	campaignCategoriesService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { type CampaignCategory } from "@nowcrm/services";
-import { handleError, StandardResponse } from "@nowcrm/services/server";
-import { campaignCategoriesService } from "@nowcrm/services/server";
 
-export async function getCampaignCategories(): Promise<StandardResponse<CampaignCategory[]>> {
+export async function getCampaignCategories(): Promise<
+	StandardResponse<CampaignCategory[]>
+> {
 	const session = await auth();
 	if (!session) {
 		return {
@@ -14,10 +19,10 @@ export async function getCampaignCategories(): Promise<StandardResponse<Campaign
 		};
 	}
 	try {
-			const res = await campaignCategoriesService.find(session.jwt, {
-				pagination: { page: 1, pageSize: 100 },
-				sort: ["name:asc"],
-			});
+		const res = await campaignCategoriesService.find(session.jwt, {
+			pagination: { page: 1, pageSize: 100 },
+			sort: ["name:asc"],
+		});
 		return res;
 	} catch (error) {
 		return handleError(error);

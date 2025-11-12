@@ -1,4 +1,5 @@
 "use client";
+import type { Contact, DocumentId } from "@nowcrm/services";
 import type { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
@@ -19,11 +20,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { RouteConfig } from "@/lib/config/RoutesConfig";
 import { formatDateTimeStrapi } from "@/lib/strapiDate";
-import type { Contact } from "@/lib/types/new_type/contact";
 
 const DeleteAction: React.FC<{
 	contact: Contact;
-	stepId: number;
+	stepId: DocumentId;
 	refreshData: () => void;
 }> = ({ contact, stepId, refreshData }) => {
 	const t = useMessages();
@@ -38,7 +38,13 @@ const DeleteAction: React.FC<{
 						const { removeFromStepContact } = await import(
 							"./remove_from_step"
 						);
-						await removeFromStepContact(contact.id, stepId);
+						const res = await removeFromStepContact(contact.documentId, stepId);
+						if (!res.success) {
+							toast.error(
+								res.errorMessage ?? "Failed to remove contact from step",
+							);
+							return;
+						}
 						toast.success("Contact removed from step");
 						refreshData();
 					}}
@@ -65,7 +71,7 @@ const ViewActions: React.FC<{ contact: Contact }> = ({ contact }) => {
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align="end">
 				<DropdownMenuLabel>{t.common.actions.actions}</DropdownMenuLabel>
-				<Link href={`${RouteConfig.contacts.single.base(contact.id)}`}>
+				<Link href={`${RouteConfig.contacts.single.base(contact.documentId)}`}>
 					<DropdownMenuItem>{t.common.actions.view}</DropdownMenuItem>
 				</Link>
 				<DropdownMenuSeparator />
@@ -74,7 +80,7 @@ const ViewActions: React.FC<{ contact: Contact }> = ({ contact }) => {
 						const { duplicateContactAction } = await import(
 							"@/lib/actions/contacts/duplicate-contact"
 						);
-						const res = await duplicateContactAction(contact.id);
+						const res = await duplicateContactAction(contact.documentId);
 						if (!res.success) {
 							toast.error(res.errorMessage ?? "Failed to duplicate contact");
 							return;
@@ -146,7 +152,7 @@ export const columns: ColumnDef<Contact>[] = [
 			const contact = row.original;
 			return (
 				<Link
-					href={`${RouteConfig.contacts.single.base(contact.id)}`}
+					href={`${RouteConfig.contacts.single.base(contact.documentId)}`}
 					className="font-medium"
 				>
 					{cell.renderValue() as any}
@@ -404,7 +410,7 @@ export const columns: ColumnDef<Contact>[] = [
 			return (
 				<DeleteAction
 					contact={contact}
-					stepId={stepId as number}
+					stepId={stepId as DocumentId}
 					refreshData={refreshData as any}
 				/>
 			);

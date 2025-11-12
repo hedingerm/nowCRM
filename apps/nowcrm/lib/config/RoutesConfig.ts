@@ -1,6 +1,6 @@
 // contactsapp/lib/config/RoutesConfig.ts
 
-import { DocumentId } from "@nowcrm/services";
+import type { DocumentId } from "@nowcrm/services";
 
 const BASE_URL = "/crm";
 
@@ -25,16 +25,19 @@ export const RouteConfig = {
 		base: `${BASE_URL}/contacts`,
 		single: {
 			base: (id: DocumentId) => `${BASE_URL}/contacts/${id}/details`,
-			subscriptions: (id: DocumentId) => `${BASE_URL}/contacts/${id}/subscriptions`,
+			subscriptions: (id: DocumentId) =>
+				`${BASE_URL}/contacts/${id}/subscriptions`,
 			lists: (id: DocumentId) => `${BASE_URL}/contacts/${id}/lists`,
-			transactions: (id: DocumentId) => `${BASE_URL}/contacts/${id}/transactions`,
+			transactions: (id: DocumentId) =>
+				`${BASE_URL}/contacts/${id}/transactions`,
 			transaction_subscriptions: (id: DocumentId) =>
 				`${BASE_URL}/contacts/${id}/transaction-subscriptions`,
 			surveys: (id: DocumentId) => `${BASE_URL}/contacts/${id}/surveys`,
 			events: (id: DocumentId) => `${BASE_URL}/contacts/${id}/events`,
 			tasks: (id: DocumentId) => `${BASE_URL}/contacts/${id}/tasks`,
 			actions: (id: DocumentId) => `${BASE_URL}/contacts/${id}/actions`,
-			activity_logs: (id: DocumentId) => `${BASE_URL}/contacts/${id}/activity_logs`,
+			activity_logs: (id: DocumentId) =>
+				`${BASE_URL}/contacts/${id}/activity_logs`,
 			documents: (id: DocumentId) => `${BASE_URL}/contacts/${id}/documents`,
 		},
 	},

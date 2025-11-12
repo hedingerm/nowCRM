@@ -1,3 +1,5 @@
+import type { DocumentId, PaginationParams } from "@nowcrm/services";
+import { contactDocumentsService } from "@nowcrm/services/server";
 import type { Metadata } from "next";
 import type { Session } from "next-auth";
 import { getTranslations } from "next-intl/server";
@@ -6,8 +8,6 @@ import DataTable from "@/components/dataTable/dataTable";
 import ErrorMessage from "@/components/ErrorMessage";
 import { columns } from "./components/columns/documentColumns";
 import DocumentsMassActions from "./components/massActions/massActions";
-import { DocumentId, PaginationParams } from "@nowcrm/services";
-import { contactDocumentsService } from "@nowcrm/services/server";
 
 export const metadata: Metadata = {
 	title: "Contact documents",

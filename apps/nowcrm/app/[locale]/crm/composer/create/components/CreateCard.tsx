@@ -1,5 +1,11 @@
 "use client";
 
+import type {
+	aiModelKeys,
+	DocumentId,
+	LanguageKeys,
+	ReferenceComposition,
+} from "@nowcrm/services";
 import { useRouter } from "next/navigation";
 import { useMessages } from "next-intl";
 import { useState } from "react";
@@ -12,7 +18,6 @@ import ChannelAdditions from "./steps/channel-additions";
 import InitialForm from "./steps/initial-form";
 import ProcessingScreen from "./steps/processing-screen";
 import TextEditor from "./steps/text-editor";
-import { aiModelKeys, DocumentId, LanguageKeys, ReferenceComposition } from "@nowcrm/services";
 
 export type ChannelCustomization = {
 	channel: string;

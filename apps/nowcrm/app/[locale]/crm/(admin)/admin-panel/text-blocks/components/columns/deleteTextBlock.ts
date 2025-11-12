@@ -1,10 +1,13 @@
 // actions/deleteContactAction.ts
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	handleError,
+	type StandardResponse,
+	textblocksService,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-
-import { DocumentId } from "@nowcrm/services";
-import { handleError, textblocksService, StandardResponse } from "@nowcrm/services/server";
 export async function deleteTextBlock(
 	textblockId: DocumentId,
 ): Promise<StandardResponse<null>> {

@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { Contact } from "@nowcrm/services";
 import { useRouter } from "next/navigation";
 import { useMessages } from "next-intl";
 import { useEffect } from "react";
@@ -41,7 +42,6 @@ import {
 } from "@/components/ui/tooltip";
 import cantons from "@/lib/static/cantons.json";
 import countries from "@/lib/static/countries.json";
-import { Contact } from "@nowcrm/services";
 
 const formSchema = z.object({
 	address_line1: z.string().optional(),

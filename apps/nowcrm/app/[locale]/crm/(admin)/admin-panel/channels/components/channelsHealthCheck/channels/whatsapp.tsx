@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { SettingCredential } from "@nowcrm/services";
 import {
 	AlertCircle,
 	DollarSign,
@@ -47,7 +48,6 @@ import {
 	getStatusColor,
 	getStatusIcon,
 } from "@/lib/static/healthCheckStatuses";
-import { SettingCredential } from "@nowcrm/services";
 
 interface LinkedInHealthCheckProps {
 	whatsapp_credential: Omit<SettingCredential, "setting">;
@@ -84,11 +84,14 @@ export function WhatsAppHealthCheck({
 		const { default: toast } = await import("react-hot-toast");
 		setIsSubmitting(true);
 		try {
-			const res = await updateSettingCredentials(whatsapp_credential.documentId, {
-				...values,
-				credential_status: "disconnected",
-				error_message: "Please run health check to verify channel status",
-			});
+			const res = await updateSettingCredentials(
+				whatsapp_credential.documentId,
+				{
+					...values,
+					credential_status: "disconnected",
+					error_message: "Please run health check to verify channel status",
+				},
+			);
 			if (res.success) {
 				toast.success(t.whatsApp.toast.success.credentialsUpdated);
 				router.refresh();

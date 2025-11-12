@@ -1,8 +1,12 @@
 // actions/deleteContactAction.ts
 "use server";
+import type { DocumentId, Organization } from "@nowcrm/services";
+import {
+	handleError,
+	organizationsService,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { DocumentId, Organization } from "@nowcrm/services";
-import { handleError, organizationsService, StandardResponse } from "@nowcrm/services/server";
 
 export async function addContactToOrganization(
 	organizationId: DocumentId,
@@ -18,9 +22,13 @@ export async function addContactToOrganization(
 	}
 	console.log(organizationId, contactId);
 	try {
-		const res = await organizationsService.update(organizationId, {
-			contacts: { connect: [contactId] },
-		},session.jwt);
+		const res = await organizationsService.update(
+			organizationId,
+			{
+				contacts: { connect: [contactId] },
+			},
+			session.jwt,
+		);
 		return res;
 	} catch (error) {
 		return handleError(error);

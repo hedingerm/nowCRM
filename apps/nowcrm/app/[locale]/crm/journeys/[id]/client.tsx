@@ -1,10 +1,15 @@
 "use client";
 
+import type {
+	DocumentId,
+	Form_JourneyStep,
+	Form_JourneyStepConnection,
+	JourneyStepTypes,
+} from "@nowcrm/services";
 import { useCallback, useState } from "react";
 import { toast } from "react-hot-toast";
 import type { Edge, Node } from "reactflow";
 import JourneyBuilder from "@/components/journeys/journey-builder";
-import { DocumentId, Form_JourneyStep, Form_JourneyStepConnection, JourneyStepTypes } from "@nowcrm/services";
 import {
 	activateJourney,
 	createConnection,
@@ -220,15 +225,15 @@ export default function JourneyClient({
 
 			if (node.data.type === "channel") {
 				composition = node.data.config.composition?.value
-					? (node.data.config.composition.value)
+					? node.data.config.composition.value
 					: undefined;
 
 				channel = node.data.config.channel?.value
-					? (node.data.config.channel.value)
+					? node.data.config.channel.value
 					: undefined;
 
 				identity = node.data.config.identity?.value
-					? (node.data.config.identity.value)
+					? node.data.config.identity.value
 					: undefined;
 			} else if (node.data.type === "trigger") {
 				additional_data = {

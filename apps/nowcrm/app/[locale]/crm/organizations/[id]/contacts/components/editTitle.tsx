@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { DocumentId } from "@nowcrm/services";
 import { Check, Pencil, X } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import type React from "react";
@@ -19,7 +20,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { updateList } from "@/lib/actions/lists/update-list";
-import { DocumentId } from "@nowcrm/services";
 
 interface EditableTitleProps {
 	title: string;

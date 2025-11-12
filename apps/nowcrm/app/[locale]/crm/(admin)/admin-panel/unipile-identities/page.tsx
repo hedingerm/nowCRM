@@ -1,12 +1,12 @@
+import type { PaginationParams } from "@nowcrm/services";
+import { unipileIdentitiesService } from "@nowcrm/services/server";
 import type { Session } from "next-auth";
 import { auth } from "@/auth";
 import DataTable from "@/components/dataTable/dataTable";
 import ErrorMessage from "@/components/ErrorMessage";
-import { PaginationParams } from "@nowcrm/services";
 import { columns } from "./components/columns/unipileIdentityColumns";
 import CreateIdentityDialog from "./components/createDialog";
 import IdentitityMassActions from "./components/massActions/massActions";
-import { unipileIdentitiesService } from "@nowcrm/services/server";
 
 export default async function Page(props: {
 	searchParams: Promise<PaginationParams>;

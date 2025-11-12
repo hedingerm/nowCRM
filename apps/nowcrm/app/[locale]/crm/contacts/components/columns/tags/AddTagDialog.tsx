@@ -1,5 +1,6 @@
 "use client";
 
+import type { DocumentId, Tag } from "@nowcrm/services";
 import { Plus, TagIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -21,8 +22,6 @@ import {
 	DialogTrigger,
 } from "@/components/ui/dialog";
 import { fetchTags } from "@/lib/actions/tags/fetch-tags";
-import { DocumentId, Tag } from "@nowcrm/services";
-
 
 interface AddTagDialogProps {
 	contactId: DocumentId;

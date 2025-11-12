@@ -1,9 +1,12 @@
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	contactJobTitlesService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-
-import { DocumentId } from "@nowcrm/services";
-import { handleError, contactJobTitlesService, StandardResponse } from "@nowcrm/services/server";
 export async function MassDeleteJobTitles(
 	jobTitles: DocumentId[],
 ): Promise<StandardResponse<null>> {

@@ -1,4 +1,6 @@
 "use client";
+import type { DocumentId } from "@nowcrm/services";
+import type { BaseServiceName } from "@nowcrm/services/client";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import {
@@ -9,8 +11,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "../ui/button";
 import { DeleteData } from "./deleteData";
-import { BaseServiceName } from "@nowcrm/services/client";
-import { DocumentId } from "@nowcrm/services";
 
 interface deleteButtonProps {
 	label: string;

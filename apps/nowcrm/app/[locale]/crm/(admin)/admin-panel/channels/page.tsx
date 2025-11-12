@@ -1,13 +1,15 @@
+import { settingsService } from "@nowcrm/services/server";
+import { auth } from "@/auth";
 import ErrorMessage from "@/components/ErrorMessage";
 import { env } from "@/lib/config/envConfig";
-import { settingsService } from "@nowcrm/services/server";
 import { ChannelHealthCheck } from "./components/channelsHealthCheck/channelsHealthCheck";
 import { ChannelSettingsForm } from "./components/channelsSettings";
-import { auth } from "@/auth";
 
 export default async function Page() {
 	const session = await auth();
-	const settings_item = await settingsService.find(session?.jwt, { populate: "*" });
+	const settings_item = await settingsService.find(session?.jwt, {
+		populate: "*",
+	});
 	if (!settings_item.success || !settings_item.data || !settings_item.meta) {
 		return <ErrorMessage response={settings_item} />;
 	}

@@ -1,11 +1,9 @@
 // actions/deleteContactAction.ts
 "use server";
-import { auth } from "@/auth";
-import { handleError } from "@nowcrm/services/server";
 import type { StandardResponse } from "@nowcrm/services";
 import type { sendToChannelsData } from "@nowcrm/services/client";
-import { composerService } from "@nowcrm/services/server";
-
+import { composerService, handleError } from "@nowcrm/services/server";
+import { auth } from "@/auth";
 
 export async function sendToChannelAction(
 	data: sendToChannelsData,
@@ -21,7 +19,7 @@ export async function sendToChannelAction(
 
 	try {
 		const response = await composerService.sendComposition(data);
-		return response
+		return response;
 	} catch (_error: any) {
 		return handleError(_error);
 	}

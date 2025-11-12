@@ -1,7 +1,7 @@
 "use server";
-import { auth } from "@/auth";
-import { DocumentId } from "@nowcrm/services";
+import type { DocumentId } from "@nowcrm/services";
 import { subscriptionsService } from "@nowcrm/services/server";
+import { auth } from "@/auth";
 
 export async function getSubscription(
 	contactId: DocumentId,
@@ -11,7 +11,7 @@ export async function getSubscription(
 	if (!session) return false;
 
 	try {
-		const existing = await subscriptionsService.find(session.jwt,{
+		const existing = await subscriptionsService.find(session.jwt, {
 			filters: {
 				contact: {
 					documentId: { $eq: contactId },

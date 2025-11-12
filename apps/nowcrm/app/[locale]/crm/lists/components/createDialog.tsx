@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { List } from "@nowcrm/services";
 import { ListPlus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import * as React from "react";
@@ -28,7 +29,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { createList } from "@/lib/actions/lists/create-list";
 import { updateList } from "@/lib/actions/lists/update-list";
-import { List } from "@nowcrm/services";
+
 const formSchema = z.object({
 	name: z.string().min(2, {
 		message: "List name must be at least 2 characters.",

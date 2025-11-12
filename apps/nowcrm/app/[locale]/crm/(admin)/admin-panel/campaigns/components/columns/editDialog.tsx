@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { Campaign, CampaignCategory } from "@nowcrm/services";
 import { ListPlus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMessages } from "next-intl";
@@ -37,7 +38,6 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { getCampaignCategories } from "@/lib/actions/campaign-categories/get-campaign-category";
 import { updateCampaign } from "@/lib/actions/campaigns/update-campaigns";
-import { Campaign, CampaignCategory } from "@nowcrm/services";
 
 interface EditCampaignDialogProps {
 	campaign: Campaign;
@@ -87,9 +87,7 @@ export default function EditCampaignDialog({
 			campaign.documentId,
 			values.name,
 			values.description,
-			values.campaignCategoryId
-				? (values.campaignCategoryId)
-				: undefined,
+			values.campaignCategoryId ? values.campaignCategoryId : undefined,
 		);
 		if (!res.success) {
 			toast.error(`${t.Admin.Campaign.toast.createError}: ${res.errorMessage}`);

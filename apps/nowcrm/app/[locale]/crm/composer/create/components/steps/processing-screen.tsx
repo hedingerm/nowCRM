@@ -1,5 +1,6 @@
 "use client";
 
+import type { DocumentId } from "@nowcrm/services";
 import { CheckCircle, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMessages } from "next-intl";
@@ -7,7 +8,6 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { RouteConfig } from "@/lib/config/RoutesConfig";
-import { DocumentId } from "@nowcrm/services";
 
 interface ProcessingScreenProps {
 	onSubmit: () => Promise<string | null>;
@@ -103,7 +103,9 @@ export default function ProcessingScreen({
 						</div>
 						<Button
 							onClick={() =>
-								router.push(RouteConfig.composer.single(compositionId as string))
+								router.push(
+									RouteConfig.composer.single(compositionId as string),
+								)
 							}
 						>
 							{t.Composer.channelContent.viewComposition}

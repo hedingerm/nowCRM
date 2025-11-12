@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { SettingCredential } from "@nowcrm/services";
 import {
 	AlertCircle,
 	DollarSign,
@@ -47,7 +48,6 @@ import {
 	getStatusColor,
 	getStatusIcon,
 } from "@/lib/static/healthCheckStatuses";
-import { SettingCredential } from "@nowcrm/services";
 
 interface UnipileHealthCheckProps {
 	unipile_credential: Omit<SettingCredential, "setting">;
@@ -83,10 +83,13 @@ export function UnipileHealthCheck({
 	async function handleSubmit(values: z.infer<typeof formSchema>) {
 		setIsSubmitting(true);
 		try {
-			const res = await updateSettingCredentials(unipile_credential.documentId, {
-				...values,
-				credential_status: "active",
-			});
+			const res = await updateSettingCredentials(
+				unipile_credential.documentId,
+				{
+					...values,
+					credential_status: "active",
+				},
+			);
 			if (res.success) {
 				toast.success("LinkedIn credentials updated successfully");
 				router.refresh();

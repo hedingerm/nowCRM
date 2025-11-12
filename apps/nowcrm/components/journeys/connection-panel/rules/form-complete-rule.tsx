@@ -67,7 +67,7 @@ export function FormCompleteRule({
 				{condition.value != null && (
 					<div className="mt-1 text-sm">
 						<Link
-							href={`${RouteConfig.forms.single((condition.value as string))}`}
+							href={`${RouteConfig.forms.single(condition.value as string)}`}
 							target="_blank"
 							rel="noopener noreferrer"
 							className="flex items-center text-yellow-600 hover:underline"

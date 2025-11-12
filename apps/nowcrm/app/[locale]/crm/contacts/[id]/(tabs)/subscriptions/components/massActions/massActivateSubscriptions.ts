@@ -1,10 +1,13 @@
 // actions/deleteContactAction.ts
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	handleError,
+	type StandardResponse,
+	subscriptionsService,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { DocumentId } from "@nowcrm/services";
-import { handleError, StandardResponse } from "@nowcrm/services/server";
-import { subscriptionsService } from "@nowcrm/services/server";
 export async function massActivateSubscriptions(
 	subscriptions: DocumentId[],
 ): Promise<StandardResponse<null>> {

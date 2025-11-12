@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { DonationSubscription } from "@nowcrm/services";
 import { ListPlus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -28,7 +29,6 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { DonationSubscription } from "@nowcrm/services";
 
 // Updated schema
 const formSchema = z.object({
@@ -76,7 +76,10 @@ export default function EditSubscriptionTransactionDialog({
 		const { updateDonationSubscription } = await import(
 			"@/lib/actions/donationSubscriptions/update-donation-subscription"
 		);
-		const res = await updateDonationSubscription(subscription.documentId, values);
+		const res = await updateDonationSubscription(
+			subscription.documentId,
+			values,
+		);
 		if (!res.success) {
 			toast.error(
 				`${t("Contacts.transactionSubscription.error")} ${res.errorMessage}`,

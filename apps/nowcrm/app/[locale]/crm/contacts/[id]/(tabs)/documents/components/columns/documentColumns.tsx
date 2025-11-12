@@ -1,4 +1,5 @@
 "use client";
+import type { ContactDocument } from "@nowcrm/services";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -13,9 +14,10 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { formatDateTimeStrapi } from "@/lib/strapiDate";
-import { ContactDocument } from "@nowcrm/services";
 
-const DeleteAction: React.FC<{ document: ContactDocument }> = ({ document }) => {
+const DeleteAction: React.FC<{ document: ContactDocument }> = ({
+	document,
+}) => {
 	const router = useRouter();
 	const t = useTranslations();
 	return (
@@ -41,7 +43,9 @@ const DeleteAction: React.FC<{ document: ContactDocument }> = ({ document }) => 
 	);
 };
 
-export const ViewAction: React.FC<{ document: ContactDocument }> = ({ document }) => {
+export const ViewAction: React.FC<{ document: ContactDocument }> = ({
+	document,
+}) => {
 	const t = useTranslations();
 
 	const handleCopyLink = async () => {

@@ -1,9 +1,9 @@
 // massAddContactsToList.ts
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import { listsService, type StandardResponse } from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { DocumentId } from "@nowcrm/services";
-import { listsService, StandardResponse } from "@nowcrm/services/server";
 
 export async function massAddContactsToList(
 	contacts: DocumentId[],
@@ -27,9 +27,13 @@ export async function massAddContactsToList(
 	}
 
 	try {
-		const res = await listsService.update(listId, {
-			contacts: { connect: contacts },
-		}, session.jwt);
+		const res = await listsService.update(
+			listId,
+			{
+				contacts: { connect: contacts },
+			},
+			session.jwt,
+		);
 
 		if (!res.success) {
 			console.warn("[Server] Failed to add contacts to list:", res);

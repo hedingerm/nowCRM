@@ -1,12 +1,12 @@
 // actions/exportContactAction.ts
 "use server";
 
+import type { DocumentId, StandardResponse } from "@nowcrm/services";
+import { contactsService, handleError } from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import type { StandardResponse } from "@/lib/services/common/response.service";
-import contactsService from "@/lib/services/new_type/contacts.service";
 
 export async function MassExportContacts(
-	contacts: number[],
+	contacts: DocumentId[],
 ): Promise<StandardResponse<string>> {
 	const session = await auth();
 	if (!session) {
@@ -14,10 +14,9 @@ export async function MassExportContacts(
 	}
 
 	try {
-		const csv = await contactsService.exportCsv(contacts);
+		const csv = await contactsService.exportCsv(contacts, session.jwt);
 		return { data: csv, status: 200, success: true };
 	} catch (error) {
-		console.error("Error exporting Contacts:", error);
-		return { data: null, status: 500, success: false };
+		return handleError(error);
 	}
 }

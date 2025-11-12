@@ -1,12 +1,13 @@
 // actions/deleteContactAction.ts
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	handleError,
+	type StandardResponse,
+	tagsService,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-
-import { DocumentId } from "@nowcrm/services";
-
-import { tagsService, StandardResponse } from "@nowcrm/services/server";
-import { handleError } from "@nowcrm/services/server";
 
 export async function MassDeleteTags(
 	tags: DocumentId[],

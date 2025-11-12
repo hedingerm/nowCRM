@@ -4,5 +4,5 @@ export interface CampaignCategory extends BaseType {
 }
 
 export interface Form_CampaignCategory extends BaseFormType {
-    description?: string;
+	description?: string;
 }

@@ -1,4 +1,5 @@
 "use client";
+import type { List } from "@nowcrm/services";
 import type { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
@@ -21,11 +22,9 @@ import {
 import { getListCount } from "@/lib/actions/lists/get-list-count";
 import { RouteConfig } from "@/lib/config/RoutesConfig";
 import { formatDateTimeStrapi } from "@/lib/strapiDate";
-import { List } from "@nowcrm/services";
 import { TagsCell } from "../../../contacts/components/columns/tags/TagCell";
 import { TagFilterHeader } from "../../../contacts/components/columns/tags/TagFilterHeader";
 import CreateListDialog from "../createDialog";
-
 
 const ViewActions: React.FC<{ list: List }> = ({ list }) => {
 	const router = useRouter();

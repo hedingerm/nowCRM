@@ -1,15 +1,16 @@
 // actions/deleteContactAction.ts
 "use server";
+import {
+	dalService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { dalService, handleError, StandardResponse } from "@nowcrm/services/server";
 export async function deleteContactsByFilters(payload: {
-    entity: string;
-    searchMask: any;
-    mass_action: string;
+	entity: string;
+	searchMask: any;
+	mass_action: string;
 }): Promise<StandardResponse<any>> {
-
-
-
 	const session = await auth();
 	if (!session) {
 		return {
@@ -20,8 +21,8 @@ export async function deleteContactsByFilters(payload: {
 	}
 
 	try {
-        const res = await dalService.deleteContactsByFilters(payload);
-        return res;
+		const res = await dalService.deleteContactsByFilters(payload);
+		return res;
 	} catch (error) {
 		return handleError(error);
 	}

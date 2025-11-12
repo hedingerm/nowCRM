@@ -2,8 +2,8 @@
 
 "use server";
 
+import type { Contact } from "@nowcrm/services";
 import { contactsService } from "@nowcrm/services/server";
-import { Contact } from "@nowcrm/services";
 import { auth } from "@/auth";
 
 export async function getContactByEmail(
@@ -13,10 +13,10 @@ export async function getContactByEmail(
 		throw new Error("Invalid email provided");
 	}
 
-    const session = await auth();
-    if (!session) {
-        throw new Error("Unauthorized");
-    }
+	const session = await auth();
+	if (!session) {
+		throw new Error("Unauthorized");
+	}
 	const normalizedEmail = email.trim().toLowerCase();
 
 	const response = await contactsService.find(session.jwt, {

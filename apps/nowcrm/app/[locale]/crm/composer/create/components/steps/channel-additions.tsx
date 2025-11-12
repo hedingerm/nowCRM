@@ -1,5 +1,6 @@
 "use client";
 
+import type { DocumentId } from "@nowcrm/services";
 import { HelpCircle, Loader2 } from "lucide-react";
 import { useMessages } from "next-intl";
 import { useState } from "react";
@@ -14,7 +15,6 @@ import {
 } from "@/components/ui/tooltip";
 import { getChannelIcon } from "@/lib/static/channel-icons";
 import { cn } from "@/lib/utils";
-import { DocumentId } from "@nowcrm/services";
 export interface ChannelCustomization {
 	channel: string;
 	additional_prompt: string;

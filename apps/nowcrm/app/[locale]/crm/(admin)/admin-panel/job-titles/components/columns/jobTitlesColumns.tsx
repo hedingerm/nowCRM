@@ -1,4 +1,5 @@
 "use client";
+import type { ContactJobTitle } from "@nowcrm/services";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 import { useMessages } from "next-intl";
@@ -11,10 +12,11 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ContactJobTitle } from "@nowcrm/services";
 import EditJobTitleDialog from "./editDialog";
 
-const DeleteAction: React.FC<{ jobTitle: ContactJobTitle }> = ({ jobTitle }) => {
+const DeleteAction: React.FC<{ jobTitle: ContactJobTitle }> = ({
+	jobTitle,
+}) => {
 	const t = useMessages();
 
 	const router = useRouter();
@@ -30,7 +32,7 @@ const DeleteAction: React.FC<{ jobTitle: ContactJobTitle }> = ({ jobTitle }) => 
 						const { default: toast } = await import("react-hot-toast");
 						const { deleteJobTitleAction } = await import("./deleteJobTitle");
 						const res = await deleteJobTitleAction(jobTitle.documentId);
-						if(!res.success) {
+						if (!res.success) {
 							toast.error(res.errorMessage ?? "Failed to delete job title");
 							return;
 						}

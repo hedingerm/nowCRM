@@ -1,20 +1,19 @@
 "use client";
 
+import type { DocumentId } from "@nowcrm/services";
 import {
 	type ActionsConfig,
 	massActionsGenerator,
 } from "@/components/generativeComponents/MassActionsGenerator";
-import {
-	addContactsToJourneyByFilters,
-	addContactsToListByFilters,
-	addContactsToOrganizationByFilters,
-	anonymizeContactsByFilters,
-	deleteContactsByFilters,
-	exportContactsByFilters,
-	sendCompositionByFilters,
-	UpdateSubscriptionContactsByFilters,
-	updateContactsByFilters,
-} from "@/lib/actions/filters/massActions";
+import { addContactsToOrganizationByFilters } from "@/lib/actions/filters/mass-actions/add-contact-to-organization";
+import { addContactsToListByFilters } from "@/lib/actions/filters/mass-actions/add-contacts-by-filter";
+import { addContactsToJourneyByFilters } from "@/lib/actions/filters/mass-actions/add-contacts-to-journey-by-filters";
+import { anonymizeContactsByFilters } from "@/lib/actions/filters/mass-actions/anonymize-contact-by-filter";
+import { deleteContactsByFilters } from "@/lib/actions/filters/mass-actions/delete-contacts-by-filters";
+import { exportContactsByFilters } from "@/lib/actions/filters/mass-actions/export-contacts-by-filter";
+import { sendCompositionByFilters } from "@/lib/actions/filters/mass-actions/send-composition-by-filters";
+import { updateContactsByFilters } from "@/lib/actions/filters/mass-actions/update-contacts-by-filters";
+import { UpdateSubscriptionContactsByFilters } from "@/lib/actions/filters/mass-actions/update-subscription-by-filters";
 import AddToJourneyDialog from "./addToJourney/addToJourney";
 import AddToJourneyWithFiltersDialog from "./addToJourney/addToJourneyWithFilters";
 import { MassAddToJourney } from "./addToJourney/MassAddToJourney";
@@ -56,7 +55,7 @@ const actionsConfig: ActionsConfig = {
 				selectedRows={selectedRows?.length}
 			/>
 		),
-		onAction: async (selectedRows: number[], selectedOption: any) => {
+		onAction: async (selectedRows: DocumentId[], selectedOption: any) => {
 			return await MassAddToList(selectedRows, selectedOption.value);
 		},
 
@@ -78,7 +77,7 @@ const actionsConfig: ActionsConfig = {
 		),
 		onFilterAction: async (
 			filters: Record<string, any>,
-			selectedOption: { value: number },
+			selectedOption: { value: DocumentId },
 		) => {
 			return await addContactsToListByFilters(filters, selectedOption.value);
 		},
@@ -93,7 +92,7 @@ const actionsConfig: ActionsConfig = {
 		dialogContent: ({ selectedRows }) => (
 			<DeleteContactsDialog selectedRows={selectedRows} />
 		),
-		onAction: async (selectedRows: number[]) => {
+		onAction: async (selectedRows: DocumentId[]) => {
 			return await MassDeleteContacts(selectedRows);
 		},
 
@@ -129,7 +128,7 @@ const actionsConfig: ActionsConfig = {
 		dialogContent: ({ selectedRows }) => (
 			<AnonymizeContactsDialog selectedRows={selectedRows} />
 		),
-		onAction: async (selectedRows: number[]) => {
+		onAction: async (selectedRows: DocumentId[]) => {
 			return await MassAnonymizeContacts(selectedRows);
 		},
 		labelWithFilters: "Anonymize with filters",
@@ -164,7 +163,7 @@ const actionsConfig: ActionsConfig = {
 		dialogContent: ({ selectedRows }) => (
 			<ExportContactsDialog selectedRows={selectedRows} />
 		),
-		onAction: async (selectedRows: number[]) => {
+		onAction: async (selectedRows: DocumentId[]) => {
 			const res = await MassExportContacts(selectedRows);
 			if (!res.success || !res.data) throw new Error("Export failed");
 
@@ -218,7 +217,7 @@ const actionsConfig: ActionsConfig = {
 				setSelectedOption={setSelectedOption}
 			/>
 		),
-		onAction: async (selectedRows: number[], selectedOption: any) => {
+		onAction: async (selectedRows: DocumentId[], selectedOption: any) => {
 			return await MassUpdateContactField(
 				selectedRows,
 				selectedOption.field,
@@ -263,8 +262,8 @@ const actionsConfig: ActionsConfig = {
 			/>
 		),
 		onAction: async (
-			selectedRows: number[],
-			selectedOption: { value: number; isSubscribed?: boolean },
+			selectedRows: DocumentId[],
+			selectedOption: { value: DocumentId; isSubscribed?: boolean },
 		) => {
 			const isSubscribe = !!selectedOption.isSubscribed;
 			return await MassUpdateSubscription(
@@ -292,7 +291,7 @@ const actionsConfig: ActionsConfig = {
 		),
 		onFilterAction: async (
 			filters: Record<string, any>,
-			selectedOption: { value: number; isSubscribed?: boolean },
+			selectedOption: { value: DocumentId; isSubscribed?: boolean },
 		) => {
 			const isSubscribe = !!selectedOption.isSubscribed;
 			return await UpdateSubscriptionContactsByFilters(
@@ -317,7 +316,7 @@ const actionsConfig: ActionsConfig = {
 				defaultThrottle={null}
 			/>
 		),
-		onAction: async (selectedRows: number[], selectedOption: any) => {
+		onAction: async (selectedRows: DocumentId[], selectedOption: any) => {
 			const compositionId = selectedOption.composition_id;
 			const channels = selectedOption.channels;
 			const subject = selectedOption.subject;
@@ -356,7 +355,7 @@ const actionsConfig: ActionsConfig = {
 		onFilterAction: async (
 			filters: Record<string, any>,
 			selectedOption: {
-				composition_id: number;
+				composition_id: DocumentId;
 				channels: string[];
 				subject: string;
 				from: string;
@@ -393,7 +392,7 @@ const actionsConfig: ActionsConfig = {
 				setSelectedOption={setSelectedOption}
 			/>
 		),
-		onAction: async (selectedRows: number[], selectedOption: any) => {
+		onAction: async (selectedRows: DocumentId[], selectedOption: any) => {
 			return await MassAddToJourney(selectedRows, selectedOption.value);
 		},
 		labelWithFilters: "Add to journey step with filters",
@@ -414,7 +413,7 @@ const actionsConfig: ActionsConfig = {
 		),
 		onFilterAction: async (
 			filters: Record<string, any>,
-			selectedOption: { value: number },
+			selectedOption: { value: DocumentId },
 		) => {
 			return await addContactsToJourneyByFilters(filters, selectedOption.value);
 		},
@@ -433,7 +432,7 @@ const actionsConfig: ActionsConfig = {
 				setSelectedOption={setSelectedOption}
 			/>
 		),
-		onAction: async (selectedRows: number[], selectedOption: any) => {
+		onAction: async (selectedRows: DocumentId[], selectedOption: any) => {
 			return await MassAddToOrganization(selectedRows, selectedOption.value);
 		},
 
@@ -455,7 +454,7 @@ const actionsConfig: ActionsConfig = {
 		),
 		onFilterAction: async (
 			filters: Record<string, any>,
-			selectedOption: { value: number },
+			selectedOption: { value: DocumentId },
 		) => {
 			return await addContactsToOrganizationByFilters(
 				filters,

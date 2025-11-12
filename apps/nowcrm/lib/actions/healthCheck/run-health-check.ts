@@ -1,8 +1,8 @@
 // actions/deleteContactAction.ts
 "use server";
+import { handleError, type StandardResponse } from "@nowcrm/services/server";
 import { auth } from "@/auth";
 import { env } from "@/lib/config/envConfig";
-import { handleError, StandardResponse } from "@nowcrm/services/server";
 
 export async function runHealthCheck(): Promise<StandardResponse<null>> {
 	const session = await auth();
@@ -14,7 +14,7 @@ export async function runHealthCheck(): Promise<StandardResponse<null>> {
 		};
 	}
 	try {
-		const url = `${env.CRM_COMPOSER_API_URL}send-to-channels/health-check`;
+		const url = `${env.COMPOSER_URL}send-to-channels/health-check`;
 		await fetch(url, {
 			method: "GET",
 			headers: {

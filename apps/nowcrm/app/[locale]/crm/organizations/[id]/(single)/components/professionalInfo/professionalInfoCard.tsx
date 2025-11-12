@@ -1,5 +1,6 @@
 "use client";
 
+import type { Organization } from "@nowcrm/services";
 import { Facebook, Globe, Link2 } from "lucide-react";
 import { useState } from "react";
 import { FaXTwitter } from "react-icons/fa6";
@@ -12,7 +13,6 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { ensureValidUrl } from "@/lib/ensureValidUrl";
-import { Organization } from "@nowcrm/services";
 import { EditDialogOrganizationProfessional } from "./editDialogProfessional";
 
 interface OrganizationProfessionalInfoCardProps {

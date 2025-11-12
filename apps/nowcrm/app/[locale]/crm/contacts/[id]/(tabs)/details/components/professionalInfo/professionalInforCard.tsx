@@ -1,4 +1,5 @@
 "use client";
+import type { Contact } from "@nowcrm/services";
 import {
 	Briefcase,
 	Check,
@@ -21,7 +22,6 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { RouteConfig } from "@/lib/config/RoutesConfig";
-import { Contact } from "@nowcrm/services";
 import { EditDialogProfessional } from "./editDialogProfessional";
 
 interface ProfessionalInfoCardProps {

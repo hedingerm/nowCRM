@@ -1,8 +1,12 @@
 // actions/deleteContactAction.ts
 "use server";
+import type { Industry } from "@nowcrm/services";
+import {
+	handleError,
+	industriesService,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { Industry } from "@nowcrm/services";
-import { handleError,industriesService, StandardResponse } from "@nowcrm/services/server";
 
 export async function createIndustry(
 	name: string,
@@ -16,10 +20,13 @@ export async function createIndustry(
 		};
 	}
 	try {
-		const res = await industriesService.create({
-			name: name,
-			publishedAt: new Date(),
-		},session.jwt);
+		const res = await industriesService.create(
+			{
+				name: name,
+				publishedAt: new Date(),
+			},
+			session.jwt,
+		);
 		return res;
 	} catch (error) {
 		return handleError(error);

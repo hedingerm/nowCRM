@@ -1,8 +1,12 @@
 // actions/deleteContactAction.ts
 "use server";
+import type { Tag } from "@nowcrm/services";
+import {
+	handleError,
+	type StandardResponse,
+	tagsService,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { Tag } from "@nowcrm/services";
-import { handleError, StandardResponse, tagsService } from "@nowcrm/services/server";
 
 export async function createTag(
 	name: string,
@@ -18,11 +22,14 @@ export async function createTag(
 	}
 
 	try {
-		const res = await tagsService.create({
-			name,
-			color,
-			publishedAt: new Date(),
-		}, session.jwt);
+		const res = await tagsService.create(
+			{
+				name,
+				color,
+				publishedAt: new Date(),
+			},
+			session.jwt,
+		);
 		return res;
 	} catch (error) {
 		return handleError(error);

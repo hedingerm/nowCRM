@@ -1,11 +1,15 @@
 // actions/deleteContactAction.ts
 "use server";
+import type { Contact, StrapiQuery } from "@nowcrm/services";
+import {
+	contactsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { Contact, StrapiQuery } from "@nowcrm/services";
-import { contactsService, handleError, StandardResponse } from "@nowcrm/services/server";
 
 export async function getContacts(
-	filters: StrapiQuery<Contact>
+	filters: StrapiQuery<Contact>,
 ): Promise<StandardResponse<Contact[]>> {
 	const session = await auth();
 	if (!session) {
@@ -16,7 +20,7 @@ export async function getContacts(
 		};
 	}
 	try {
-		const res = await contactsService.find(session.jwt,filters);
+		const res = await contactsService.find(session.jwt, filters);
 		return res;
 	} catch (error) {
 		return handleError(error);

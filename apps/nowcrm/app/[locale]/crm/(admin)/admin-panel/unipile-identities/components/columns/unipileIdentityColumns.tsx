@@ -1,4 +1,5 @@
 "use client";
+import type { UnipileIdentity } from "@nowcrm/services";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 import type React from "react";
@@ -15,7 +16,6 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { AddNewIdentityUnipile } from "@/lib/actions/healthCheck/refresh-unipile";
-import { UnipileIdentity } from "@nowcrm/services";
 import { deleteUnipileIdentityAction } from "./deleteIdentity";
 
 const DeleteAction: React.FC<{ identity: UnipileIdentity }> = ({
@@ -31,7 +31,7 @@ const DeleteAction: React.FC<{ identity: UnipileIdentity }> = ({
 				<DropdownMenuItem
 					onClick={async () => {
 						const res = await deleteUnipileIdentityAction(identity.documentId);
-						if(!res.success) {
+						if (!res.success) {
 							toast.error(res.errorMessage || "Failed to delete identity");
 							return;
 						}

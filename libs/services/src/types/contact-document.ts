@@ -1,4 +1,4 @@
-import type Asset from "./common/asset";
+import type { Asset } from "./common/asset";
 import type { BaseFormType, BaseType, DocumentId } from "./common/base_type";
 import type { Contact } from "./contact";
 export interface ContactDocument extends BaseType {

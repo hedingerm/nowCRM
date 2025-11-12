@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { SettingCredential } from "@nowcrm/services";
 import {
 	AlertCircle,
 	DollarSign,
@@ -48,7 +49,6 @@ import {
 	getStatusColor,
 	getStatusIcon,
 } from "@/lib/static/healthCheckStatuses";
-import { SettingCredential } from "@nowcrm/services";
 
 interface WordPressHealthCheckProps {
 	wordpress_credential: Omit<SettingCredential, "setting">;
@@ -89,11 +89,14 @@ export function WordpressHealthCheck({
 		const { default: toast } = await import("react-hot-toast");
 		setIsSubmitting(true);
 		try {
-			const res = await updateSettingCredentials(wordpress_credential.documentId, {
-				...values,
-				credential_status: "disconnected",
-				error_message: "Try to run health check so we can verify status",
-			});
+			const res = await updateSettingCredentials(
+				wordpress_credential.documentId,
+				{
+					...values,
+					credential_status: "disconnected",
+					error_message: "Try to run health check so we can verify status",
+				},
+			);
 			if (res.success) {
 				toast.success(t.wordPress.toast.success.credentialsUpdated);
 				router.refresh();

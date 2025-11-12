@@ -1,9 +1,16 @@
 "use server";
 
+import type {
+	CompositionScheduled,
+	DocumentId,
+	Form_CompositionScheduled,
+} from "@nowcrm/services";
+import {
+	compositionScheduledsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { CompositionScheduled, DocumentId, Form_CompositionScheduled } from "@nowcrm/services";
-import { compositionScheduledsService, handleError, StandardResponse } from "@nowcrm/services/server";
-
 
 export async function updateScheduledCompositions(
 	id: DocumentId,
@@ -20,7 +27,11 @@ export async function updateScheduledCompositions(
 	}
 
 	try {
-		const res = await compositionScheduledsService.update(id, values,session.jwt);
+		const res = await compositionScheduledsService.update(
+			id,
+			values,
+			session.jwt,
+		);
 		return res;
 	} catch (error) {
 		return handleError(error);

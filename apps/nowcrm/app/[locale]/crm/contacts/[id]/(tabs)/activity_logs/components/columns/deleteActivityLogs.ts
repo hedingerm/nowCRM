@@ -1,9 +1,13 @@
 // actions/deleteContactAction.ts
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	activityLogsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { DocumentId } from "@nowcrm/services";
-import { activityLogsService, handleError, StandardResponse } from "@nowcrm/services/server";
 
 export async function deleteActivityLogAction(
 	activity_log: DocumentId,
@@ -17,7 +21,10 @@ export async function deleteActivityLogAction(
 		};
 	}
 	try {
-		const response = await activityLogsService.delete(activity_log, session.jwt);
+		const response = await activityLogsService.delete(
+			activity_log,
+			session.jwt,
+		);
 		return response;
 	} catch (error) {
 		return handleError(error);

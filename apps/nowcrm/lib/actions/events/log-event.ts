@@ -1,9 +1,13 @@
 // lib/actions/events/logUnsubscribeEvent.ts
 "use server";
 
+import type { Contact, DocumentId, Event, Form_Event } from "@nowcrm/services";
+import {
+	eventsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { Contact, DocumentId, Event, Form_Event } from "@nowcrm/services";
-import { eventsService, handleError, StandardResponse } from "@nowcrm/services/server";
 
 export async function logUnsubscribeEvent(
 	contact: Contact,
@@ -27,7 +31,7 @@ export async function logUnsubscribeEvent(
 			composition_item: compositionId,
 			external_id: "",
 			destination: contact.mobile_phone || contact.phone || "",
-			event_status: 'unsubscribed',
+			event_status: "unsubscribed",
 			action: "unsubscribe",
 			source: "Unsubscribe",
 			channel: channelId,
@@ -36,7 +40,7 @@ export async function logUnsubscribeEvent(
 			title: "Unsubscribe event",
 		};
 
-		return await eventsService.create(data as Form_Event,session.jwt);
+		return await eventsService.create(data as Form_Event, session.jwt);
 	} catch (e) {
 		return handleError(e);
 	}

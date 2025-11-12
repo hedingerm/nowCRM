@@ -1,9 +1,9 @@
 "use client";
 
+import type { CommunicationChannel } from "@nowcrm/services";
 import dynamic from "next/dynamic";
 import type React from "react";
 import type { ComponentType } from "react";
-import type { CommunicationChannel } from "@nowcrm/services";
 
 import type { EmailChannelContentProps } from "../components/send-to-channels/content/email-channel-content";
 import type { LinkedinInvitesChannelContentProps } from "../components/send-to-channels/content/linkedin-invitations-channel-content";

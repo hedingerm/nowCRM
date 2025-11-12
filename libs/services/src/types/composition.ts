@@ -43,8 +43,6 @@ export interface JobCompositionRecord {
 	publicationDate?: string | null;
 }
 
-
-
 export interface Composition extends BaseType {
 	composition_status: CompositionStatusKeys;
 	category: string;
@@ -73,7 +71,6 @@ export interface Form_Composition extends BaseFormType {
 	campaign?: StrapiConnect;
 }
 
-
 // used for calendar metrics
 export type DateRange =
 	| "today"
@@ -81,7 +78,6 @@ export type DateRange =
 	| "last7days"
 	| "custom"
 	| "total";
-
 
 export interface MetricConfig {
 	label: string;

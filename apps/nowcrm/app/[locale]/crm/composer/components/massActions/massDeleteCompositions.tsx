@@ -1,9 +1,13 @@
 // actions/deleteContactAction.ts
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	compositionsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { compositionsService, handleError, StandardResponse } from "@nowcrm/services/server";
-import { DocumentId } from "@nowcrm/services";
 
 export async function MassDeleteCompositions(
 	compositions: DocumentId[],

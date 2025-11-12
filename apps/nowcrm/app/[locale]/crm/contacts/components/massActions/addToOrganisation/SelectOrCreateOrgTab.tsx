@@ -95,7 +95,7 @@ export default function SelectOrCreateOrganizationTabs({
 			<TabsContent value="select" className="space-y-4">
 				<div className="mt-4">
 					<AsyncSelect
-						serviceName="organizationService"
+						serviceName="organizationsService"
 						label="organization"
 						onValueChange={setSelectedOption}
 						presetOption={selectedOption}

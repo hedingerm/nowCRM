@@ -1,8 +1,7 @@
 "use server";
 
-import { ImportRecord } from "@nowcrm/services";
-import { dalService, StandardResponse } from "@nowcrm/services/server";
-
+import type { ImportRecord } from "@nowcrm/services";
+import { dalService, type StandardResponse } from "@nowcrm/services/server";
 
 export async function getPreviousImports(
 	page = 1,

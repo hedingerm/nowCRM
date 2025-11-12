@@ -1,7 +1,7 @@
 "use client";
+import type { BaseServiceName } from "@nowcrm/services";
 import { debounce } from "lodash";
 import { useEffect, useState } from "react";
-import { BaseServiceName } from "@nowcrm/services";
 import { Checkbox } from "../ui/checkbox";
 import { AutoComplete, type Option } from "./autoComplete";
 import { findData } from "./findData";
@@ -109,11 +109,11 @@ export const AsyncSelect = ({
 								? labelBuilder(item)
 								: (item?.[keys[0]] as string);
 
-							const value = item.id;
+							const value = item.documentId;
 
 							return label && value != null ? { label, value } : null;
 						})
-						.filter((opt : any): opt is Option => !!opt);
+						.filter((opt: any): opt is Option => !!opt);
 
 					setOptions((prev) => {
 						const combined = append ? [...prev, ...newOptions] : newOptions;

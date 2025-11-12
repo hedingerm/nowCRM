@@ -1,8 +1,8 @@
+import type { CompositionScheduled } from "@nowcrm/services";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import type { Option } from "@/components/autoComplete/autoComplete";
 import type { CalendarEventType } from "@/components/event-calendar/types";
-import { CompositionScheduled } from "@nowcrm/services";
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
 }
@@ -52,12 +52,8 @@ export function fromCalendarEventToForm(event: Omit<CalendarEventType, "id">) {
 			["scheduled", "processing", "published"].includes(event.status)
 				? event.status
 				: "scheduled",
-		channel: event.channel
-			? event.channel.value
-			: undefined,
-		composition: event.composition
-			? event.composition.value
-			: undefined,
+		channel: event.channel ? event.channel.value : undefined,
+		composition: event.composition ? event.composition.value : undefined,
 		send_to: event.send_to
 			? {
 					type: event.send_to.type as "contact" | "list" | "organization",

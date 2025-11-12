@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { CommunicationChannel } from "@nowcrm/services";
 import * as React from "react";
 import { useForm, useWatch } from "react-hook-form";
 import * as z from "zod";
@@ -15,7 +16,6 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import type { ChannelThrottleResponse } from "@/lib/actions/channels/get-channel-throttle";
-import type { CommunicationChannel } from "@/lib/static/channel-icons";
 
 export const sendCompositionSchema = (
 	defaultThrottle: ChannelThrottleResponse | null,
@@ -134,7 +134,7 @@ export function SendCompositionForm({
 							<FormLabel>Select Channel</FormLabel>
 							<FormControl>
 								<AsyncSelect
-									serviceName="channelService"
+									serviceName="channelsService"
 									label="channel"
 									fetchFilters={{ name: { $in: allowedChannels } }}
 									onValueChange={(opt) => {

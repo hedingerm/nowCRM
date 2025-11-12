@@ -1,8 +1,15 @@
 // actions/deleteContactAction.ts
 "use server";
+import type {
+	SearchHistoryTemplate,
+	SearchHistoryType,
+} from "@nowcrm/services";
+import {
+	handleError,
+	type StandardResponse,
+	searchHistoryTemplatesService,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { SearchHistoryTemplate, SearchHistoryType } from "@nowcrm/services";
-import { handleError, searchHistoryTemplatesService, StandardResponse } from "@nowcrm/services/server";
 
 export async function createSearch(
 	name: string,
@@ -19,13 +26,16 @@ export async function createSearch(
 		};
 	}
 	try {
-		const res = await searchHistoryTemplatesService.create({
-			name,
-			type,
-			filters,
-			query,
-			publishedAt: new Date(),
-		},session.jwt);
+		const res = await searchHistoryTemplatesService.create(
+			{
+				name,
+				type,
+				filters,
+				query,
+				publishedAt: new Date(),
+			},
+			session.jwt,
+		);
 		return res;
 	} catch (error) {
 		return handleError(error);

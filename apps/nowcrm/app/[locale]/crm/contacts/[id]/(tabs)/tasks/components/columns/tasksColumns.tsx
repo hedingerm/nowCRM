@@ -1,4 +1,5 @@
 "use client";
+import type { Task } from "@nowcrm/services";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -12,7 +13,6 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { formatDateTimeStrapi } from "@/lib/strapiDate";
-import { Task } from "@nowcrm/services";
 
 const DeleteAction: React.FC<{ task: Task }> = ({ task }) => {
 	const router = useRouter();
@@ -29,7 +29,7 @@ const DeleteAction: React.FC<{ task: Task }> = ({ task }) => {
 						const { default: toast } = await import("react-hot-toast");
 						const { deleteTaskAction } = await import("./deleteTask");
 						const res = await deleteTaskAction(task.documentId);
-						if(!res.success) {
+						if (!res.success) {
 							toast.error(res.errorMessage ?? "Failed to delete task");
 							return;
 						}

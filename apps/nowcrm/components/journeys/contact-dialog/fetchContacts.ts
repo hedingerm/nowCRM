@@ -1,9 +1,9 @@
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import { contactsService } from "@nowcrm/services/server";
 import { auth } from "@/auth";
 import { transformFilters } from "@/lib/actions/filters/filters-search";
-import { DocumentId } from "@nowcrm/services";
-import { contactsService } from "@nowcrm/services/server";
 
 type FetchContactsParams = {
 	page?: number;
@@ -58,7 +58,6 @@ export async function fetchContactsAction({
 			pageSize,
 			sortBy,
 			sortOrder,
-
 		);
 		return {
 			success: true,

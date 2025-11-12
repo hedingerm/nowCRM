@@ -1,9 +1,13 @@
 // src/actions/getThrottleAction.ts
 "use server";
 
+import type { CommunicationChannelKeys } from "@nowcrm/services";
+import {
+	channelsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { CommunicationChannelKeys } from "@nowcrm/services";
-import { channelsService, handleError, StandardResponse } from "@nowcrm/services/server";
 
 export interface ChannelThrottleResponse {
 	throttle: number;
@@ -25,13 +29,10 @@ export async function getChannelThrottle(
 	}
 
 	try {
-		const res = await channelsService.find(
-			session.jwt,
-			{
-				filters: { name: { $eqi: channelName } },
-				fields: ["throttle", "max_sending_quota", "max_sending_rate"],
-			},
-		);
+		const res = await channelsService.find(session.jwt, {
+			filters: { name: { $eqi: channelName } },
+			fields: ["throttle", "max_sending_quota", "max_sending_rate"],
+		});
 
 		if (!res.success) {
 			return {

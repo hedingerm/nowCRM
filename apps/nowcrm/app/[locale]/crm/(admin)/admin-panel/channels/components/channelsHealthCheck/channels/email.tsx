@@ -1,5 +1,6 @@
 "use client";
 
+import type { SettingCredential } from "@nowcrm/services";
 import { AlertCircle, DollarSign, Info, Mail, RefreshCw } from "lucide-react";
 import { useMessages } from "next-intl";
 import { useState } from "react";
@@ -23,7 +24,6 @@ import {
 	getStatusColor,
 	getStatusIcon,
 } from "@/lib/static/healthCheckStatuses";
-import { SettingCredential } from "@nowcrm/services";
 
 interface EmailHealthCheckProps {
 	email_credential: Omit<SettingCredential, "setting">;

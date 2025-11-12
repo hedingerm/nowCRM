@@ -1,6 +1,7 @@
 // components/AnalyticsSection.tsx
 "use client";
 
+import type { DateRange, DocumentId, MetricConfig } from "@nowcrm/services";
 import { Info } from "lucide-react";
 import { useEffect, useState } from "react";
 import { DateTimePicker } from "@/components/dateTimePicker";
@@ -20,10 +21,8 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useChannelAnalytics } from "@/lib/hooks/useChannelAnalytics";
-import { DateRange, MetricConfig } from "@nowcrm/services";
 import { makeCounter } from "./makeUniqueCounter";
 import { getMetricDescription, renderMetricThresholds } from "./metrics";
-import { DocumentId } from "@nowcrm/services";
 
 interface AnalyticsSectionProps {
 	compositionItemId: DocumentId;

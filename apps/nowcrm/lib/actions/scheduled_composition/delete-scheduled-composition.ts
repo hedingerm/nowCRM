@@ -1,8 +1,12 @@
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	compositionScheduledsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { DocumentId } from "@nowcrm/services";
-import { compositionScheduledsService, handleError, StandardResponse } from "@nowcrm/services/server";
 
 export async function deleteScheduledCompositions(
 	id: DocumentId,
@@ -17,7 +21,7 @@ export async function deleteScheduledCompositions(
 	}
 
 	try {
-		const res = await compositionScheduledsService.delete(id,session.jwt);
+		const res = await compositionScheduledsService.delete(id, session.jwt);
 		return res;
 	} catch (error) {
 		return handleError(error);

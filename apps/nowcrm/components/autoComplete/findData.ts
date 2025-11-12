@@ -1,9 +1,16 @@
 "use server";
 
+import type {
+	BaseServiceName,
+	DocumentId,
+	StrapiQuery,
+} from "@nowcrm/services";
+import {
+	handleError,
+	ServiceFactory,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { BaseServiceName, DocumentId } from "@nowcrm/services";
-import { StrapiQuery } from "@nowcrm/services";
-import { handleError, ServiceFactory, StandardResponse } from "@nowcrm/services/server";
 
 //TODO: remove here any types
 
@@ -21,7 +28,7 @@ export async function findData(
 	}
 	try {
 		const service = ServiceFactory.getService(serviceName);
-		const response = await service.find(session?.jwt,options as any);
+		const response = await service.find(session?.jwt, options as any);
 		return response;
 	} catch (error) {
 		return handleError(error);

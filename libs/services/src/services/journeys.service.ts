@@ -1,5 +1,5 @@
-import {API_ROUTES_STRAPI} from "../api-routes/api-routes-strapi";
-import { DocumentId } from "../client";
+import { API_ROUTES_STRAPI } from "../api-routes/api-routes-strapi";
+import type { DocumentId } from "../client";
 import { envServices } from "../envConfig";
 import type { Form_Journey, Journey } from "../types/journey";
 import BaseService from "./common/base.service";
@@ -35,7 +35,10 @@ class JourneysService extends BaseService<Journey, Form_Journey> {
 		}
 	}
 
-	async fullDelete(journeyId: DocumentId, token: string): Promise<StandardResponse<null>> {
+	async fullDelete(
+		journeyId: DocumentId,
+		token: string,
+	): Promise<StandardResponse<null>> {
 		try {
 			const steps = await journeyStepsService.findAll(token, {
 				filters: {

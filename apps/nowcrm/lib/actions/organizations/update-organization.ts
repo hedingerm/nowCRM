@@ -1,8 +1,16 @@
 // actions/deleteContactAction.ts
 "use server";
+import type {
+	DocumentId,
+	Form_Organization,
+	Organization,
+} from "@nowcrm/services";
+import {
+	handleError,
+	organizationsService,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { DocumentId, Form_Organization, Organization } from "@nowcrm/services";
-import { handleError, organizationsService, StandardResponse } from "@nowcrm/services/server";
 
 export async function updateOrganization(
 	id: DocumentId,
@@ -17,7 +25,7 @@ export async function updateOrganization(
 		};
 	}
 	try {
-		const res = await organizationsService.update(id, values,session.jwt);
+		const res = await organizationsService.update(id, values, session.jwt);
 		return res;
 	} catch (error) {
 		return handleError(error);

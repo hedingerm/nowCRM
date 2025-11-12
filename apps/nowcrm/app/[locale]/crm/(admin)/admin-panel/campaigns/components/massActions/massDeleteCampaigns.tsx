@@ -1,8 +1,12 @@
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	campaignsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { DocumentId } from "@nowcrm/services";
-import { campaignsService, handleError, StandardResponse } from "@nowcrm/services/server";
 
 export async function MassDeleteCampaigns(
 	campaigns: DocumentId[],

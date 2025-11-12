@@ -1,7 +1,7 @@
-
+import { API_ROUTES_STRAPI } from "../api-routes/api-routes-strapi";
 import { envServices } from "../envConfig";
-import { DocumentId } from "../types/common/base_type";
-import type Asset from "../types/common/asset";
+import type { Asset } from "../types/common/asset";
+import type { DocumentId } from "../types/common/base_type";
 import type { Form_FormEntity, FormEntity } from "../types/form";
 import BaseService from "./common/base.service";
 import {
@@ -9,7 +9,6 @@ import {
 	handleResponse,
 	type StandardResponse,
 } from "./common/response.service";
-import { API_ROUTES_STRAPI } from "../api-routes/api-routes-strapi";
 
 class FormsService extends BaseService<FormEntity, Form_FormEntity> {
 	public constructor() {
@@ -119,9 +118,6 @@ class FormsService extends BaseService<FormEntity, Form_FormEntity> {
 			return handleError(error);
 		}
 	}
-
-
-	
 }
 
 export const formsService = new FormsService();

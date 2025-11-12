@@ -2,6 +2,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { FormEntity, FormEntityItem } from "@nowcrm/services";
 import { format } from "date-fns";
 import {
 	Check,
@@ -58,8 +59,10 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { getFormBySlugOrId, submitFormData } from "@/lib/actions/forms/get-form";
-import type { FormEntity, FormEntityItem } from "@nowcrm/services";
+import {
+	getFormBySlugOrId,
+	submitFormData,
+} from "@/lib/actions/forms/get-form";
 import { cn } from "@/lib/utils";
 import CustomProgress from "../CustomProgress";
 import ShareSocial from "./share-social";
@@ -546,7 +549,7 @@ const FormShareClient: React.FC<FormShareClientProps> = ({
 	const findIdentifier = useCallback((): string => {
 		if (!formData.form_items) return "";
 
-		const formIdentifier = (formData.form_items).find(
+		const formIdentifier = formData.form_items.find(
 			(item) => item.type === "email",
 		);
 		if (formIdentifier) {
@@ -1102,7 +1105,7 @@ const FormShareClient: React.FC<FormShareClientProps> = ({
 												if (isStepMode) setTimeout(() => goToNextStep(), 200);
 											}}
 											className={cn(isStepMode ? "space-y-3" : "space-y-2")}
-										>	
+										>
 											{item.options?.map((option: any) => (
 												<div
 													key={option}

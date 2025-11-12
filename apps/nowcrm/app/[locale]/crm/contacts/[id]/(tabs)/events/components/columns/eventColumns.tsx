@@ -1,4 +1,5 @@
 "use client";
+import type { Event } from "@nowcrm/services";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
@@ -13,7 +14,6 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { formatDateTimeStrapi } from "@/lib/strapiDate";
-import type { Event } from "@/lib/types/new_type/event";
 
 const DeleteAction: React.FC<{ event: Event }> = ({ event }) => {
 	const router = useRouter();
@@ -28,7 +28,11 @@ const DeleteAction: React.FC<{ event: Event }> = ({ event }) => {
 					onClick={async () => {
 						const { default: toast } = await import("react-hot-toast");
 						const { deleteEventAction } = await import("./deleteEvent");
-						await deleteEventAction(event.id);
+						const res = await deleteEventAction(event.documentId);
+						if (!res.success) {
+							toast.error(res.errorMessage || "Failed to delete event");
+							return;
+						}
 						toast.success(t("Contacts.events.eventDeleted"));
 						router.refresh();
 					}}

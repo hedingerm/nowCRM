@@ -1,9 +1,13 @@
 // actions/deleteContactAction.ts
 "use server";
-import { auth } from "@/auth";
+import type { ActivityLog, Form_ActivityLog } from "@nowcrm/services";
 
-import { activityLogsService, handleError, StandardResponse } from "@nowcrm/services/server";
-import { type ActivityLog, type Form_ActivityLog } from "@nowcrm/services";
+import {
+	activityLogsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
+import { auth } from "@/auth";
 
 export async function createActivityLog(
 	values: Partial<Form_ActivityLog>,
@@ -18,10 +22,13 @@ export async function createActivityLog(
 	}
 
 	try {
-		const res = await activityLogsService.create({
-			...values,
-			user: session.user.strapi_id,
-		},session.jwt);
+		const res = await activityLogsService.create(
+			{
+				...values,
+				user: session.user.strapi_id,
+			},
+			session.jwt,
+		);
 		return res;
 	} catch (error) {
 		return handleError(error);

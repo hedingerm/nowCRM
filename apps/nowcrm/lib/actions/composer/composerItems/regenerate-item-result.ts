@@ -1,8 +1,12 @@
 // actions/deleteContactAction.ts
 "use server";
+import type { createAdditionalComposition } from "@nowcrm/services";
+import {
+	compositionsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { createAdditionalComposition } from "@nowcrm/services";
-import { compositionsService, handleError, StandardResponse } from "@nowcrm/services/server";
 export async function regenerateItemResult(
 	values: createAdditionalComposition,
 ): Promise<StandardResponse<string>> {
@@ -15,7 +19,7 @@ export async function regenerateItemResult(
 		};
 	}
 	try {
-const res = await compositionsService.regenerateItemResult(values);
+		const res = await compositionsService.regenerateItemResult(values);
 		return res;
 	} catch (error) {
 		return handleError(error);

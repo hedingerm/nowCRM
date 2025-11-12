@@ -403,7 +403,7 @@ export function WaitPanel({
 							<CardContent>
 								<ContactsPageClient
 									key={node.data.stepId}
-									step_id={Number.parseInt(node.data.stepId)}
+									step_id={node.data.stepId}
 								/>
 							</CardContent>
 						</Card>

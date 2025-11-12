@@ -1,9 +1,15 @@
 "use server";
 
+import type {
+	CompositionScheduled,
+	Form_CompositionScheduled,
+} from "@nowcrm/services";
+import {
+	compositionScheduledsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { CompositionScheduled, Form_CompositionScheduled } from "@nowcrm/services";
-import { compositionScheduledsService, handleError, StandardResponse } from "@nowcrm/services/server";
-
 
 export async function createScheduledCompositions(
 	values: Partial<Form_CompositionScheduled>,
@@ -18,7 +24,7 @@ export async function createScheduledCompositions(
 	}
 
 	try {
-		const res = await compositionScheduledsService.create(values,session.jwt);
+		const res = await compositionScheduledsService.create(values, session.jwt);
 		if (!res.data || !res.success) {
 			console.error(
 				`Error creating scheduled composition: ${res.errorMessage}`,
@@ -30,9 +36,13 @@ export async function createScheduledCompositions(
 				errorMessage: res.errorMessage,
 			};
 		}
-		const created = await compositionScheduledsService.findOne(res.data.documentId, res.data.documentId,{
-			populate: ["composition", "channel"],
-		});
+		const created = await compositionScheduledsService.findOne(
+			res.data.documentId,
+			res.data.documentId,
+			{
+				populate: ["composition", "channel"],
+			},
+		);
 		return created;
 	} catch (error) {
 		return handleError(error);

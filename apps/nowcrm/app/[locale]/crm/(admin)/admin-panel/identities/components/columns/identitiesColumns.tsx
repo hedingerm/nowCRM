@@ -1,4 +1,5 @@
 "use client";
+import type { Identity } from "@nowcrm/services";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 import { useMessages } from "next-intl";
@@ -11,7 +12,6 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Identity } from "@nowcrm/services";
 import EditIdentityDialog from "./editDialog";
 
 const DeleteAction: React.FC<{ identity: Identity }> = ({ identity }) => {
@@ -29,7 +29,7 @@ const DeleteAction: React.FC<{ identity: Identity }> = ({ identity }) => {
 						const { default: toast } = await import("react-hot-toast");
 						const { deleteIdentityAction } = await import("./deleteIdentity");
 						const res = await deleteIdentityAction(identity.documentId);
-						if(!res.success) {
+						if (!res.success) {
 							toast.error(res.errorMessage ?? "Failed to delete identity");
 							return;
 						}

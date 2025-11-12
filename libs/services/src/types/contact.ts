@@ -25,8 +25,8 @@ import type { Organization } from "./organization";
 import type { Source } from "./source";
 import type { Subscription } from "./subscription";
 import type { Survey } from "./survey";
-import type { Tag } from "./tag";
 import type { SurveyItem } from "./survey-item";
+import type { Tag } from "./tag";
 
 export type contactStatuses =
 	| "new"

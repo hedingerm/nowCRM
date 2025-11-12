@@ -1,10 +1,12 @@
 // actions/deleteContactAction.ts
 "use server";
+import type { DocumentId, Form_Identity, Identity } from "@nowcrm/services";
+import {
+	handleError,
+	identitiesService,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { DocumentId, Form_Identity, Identity } from "@nowcrm/services";
-import { identitiesService, StandardResponse } from "@nowcrm/services/server";
-import { handleError } from "@nowcrm/services/server";
-
 
 export async function updateIdentity(
 	id: DocumentId,

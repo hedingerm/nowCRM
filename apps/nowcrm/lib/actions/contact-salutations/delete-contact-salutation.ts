@@ -1,7 +1,11 @@
 "use server";
+import type { DocumentId } from "@nowcrm/services";
+import {
+	contactSalutationsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { DocumentId } from "@nowcrm/services";
-import { contactSalutationsService, handleError, StandardResponse } from "@nowcrm/services/server";
 
 export async function deleteContactSalutationAction(
 	id: DocumentId,
@@ -15,7 +19,7 @@ export async function deleteContactSalutationAction(
 		};
 	}
 	try {
-		const res = await contactSalutationsService.delete(id,session.jwt);
+		const res = await contactSalutationsService.delete(id, session.jwt);
 		return res;
 	} catch (error) {
 		return handleError(error);

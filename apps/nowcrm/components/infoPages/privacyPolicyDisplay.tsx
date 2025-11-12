@@ -1,9 +1,9 @@
 "use client";
 
+import type { DocumentId } from "@nowcrm/services";
 import { useParams } from "next/navigation";
 import { InfoMarkdownDisplay } from "@/components/infoPages/infoMarkdownDisplay";
 import { getLatestConsents } from "@/lib/actions/consent/get-latest-consents";
-import { DocumentId } from "@nowcrm/services";
 
 type PrivacyPolicyDisplayProps = {
 	id?: DocumentId;

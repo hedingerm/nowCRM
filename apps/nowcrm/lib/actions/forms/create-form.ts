@@ -1,8 +1,12 @@
 // actions/deleteContactAction.ts
 "use server";
+import type { FormEntity } from "@nowcrm/services";
+import {
+	formsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { FormEntity } from "@nowcrm/services";
-import { formsService, handleError, StandardResponse } from "@nowcrm/services/server";
 
 export async function createForm(
 	name: string,
@@ -16,11 +20,14 @@ export async function createForm(
 		};
 	}
 	try {
-		const res = await formsService.create({
-			name: name,
-			active: false,
-			publishedAt: new Date(),
-		}, session.jwt);
+		const res = await formsService.create(
+			{
+				name: name,
+				active: false,
+				publishedAt: new Date(),
+			},
+			session.jwt,
+		);
 		return res;
 	} catch (error) {
 		return handleError(error);

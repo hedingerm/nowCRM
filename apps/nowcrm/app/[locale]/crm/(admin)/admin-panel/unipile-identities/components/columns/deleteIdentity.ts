@@ -1,11 +1,13 @@
 // actions/deleteContactAction.ts
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	handleError,
+	type StandardResponse,
+	unipileIdentitiesService,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-
-import { DocumentId } from "@nowcrm/services";
-import { StandardResponse, unipileIdentitiesService } from "@nowcrm/services/server";
-import { handleError } from "@nowcrm/services/server";
 
 export async function deleteUnipileIdentityAction(
 	identityId: DocumentId,
@@ -19,7 +21,10 @@ export async function deleteUnipileIdentityAction(
 		};
 	}
 	try {
-		const response = await unipileIdentitiesService.delete(identityId, session?.jwt);
+		const response = await unipileIdentitiesService.delete(
+			identityId,
+			session?.jwt,
+		);
 		return response;
 	} catch (error) {
 		return handleError(error);

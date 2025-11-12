@@ -1,5 +1,6 @@
 "use client";
 
+import type { ActionType } from "@nowcrm/services";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 import { useMessages } from "next-intl";
@@ -12,10 +13,8 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ActionType } from "@nowcrm/services";	
-const DeleteAction: React.FC<{ actionType: ActionType }> = ({
-	actionType,
-}) => {
+
+const DeleteAction: React.FC<{ actionType: ActionType }> = ({ actionType }) => {
 	const t = useMessages();
 	const router = useRouter();
 	return (
@@ -32,7 +31,7 @@ const DeleteAction: React.FC<{ actionType: ActionType }> = ({
 							"@/lib/actions/action_types/delete-action-type"
 						);
 						const res = await deleteActionType(actionType.documentId);
-						if(!res.success) {
+						if (!res.success) {
 							toast.error(res.errorMessage ?? "Failed to delete action type");
 							return;
 						}

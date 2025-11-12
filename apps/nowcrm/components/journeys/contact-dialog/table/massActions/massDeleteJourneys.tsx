@@ -1,11 +1,9 @@
 // actions/deleteContactAction.ts
 "use server";
 
+import type { DocumentId, StandardResponse } from "@nowcrm/services";
+import { handleError, journeyStepsService } from "@nowcrm/services/server";
 import { auth } from "@/auth";
-
-import { DocumentId, StandardResponse } from "@nowcrm/services";
-import { journeyStepsService } from "@nowcrm/services/server";
-import { handleError } from "@nowcrm/services/server";
 
 export async function massDeleteJourneys(
 	contactIds: DocumentId[],
@@ -21,11 +19,15 @@ export async function massDeleteJourneys(
 		};
 	}
 	try {
-		await journeyStepsService.update(journeyStepId,  {
-			contacts: {
-				disconnect: contactIds,
+		await journeyStepsService.update(
+			journeyStepId,
+			{
+				contacts: {
+					disconnect: contactIds,
+				},
 			},
-		}, session.jwt);
+			session.jwt,
+		);
 		return {
 			data: null,
 			status: 200,

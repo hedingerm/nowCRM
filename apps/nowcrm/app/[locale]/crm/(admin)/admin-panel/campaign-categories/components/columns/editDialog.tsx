@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { CampaignCategory } from "@nowcrm/services";
 import { ListPlus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMessages } from "next-intl";
@@ -29,7 +30,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { updateCampaignCategory } from "@/lib/actions/campaign-categories/update-campaign-category";
-import { CampaignCategory } from "@nowcrm/services";
 
 interface EditCampaignCategoryDialogProps {
 	campaignCategory: CampaignCategory;

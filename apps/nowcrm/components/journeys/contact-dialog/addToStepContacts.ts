@@ -1,9 +1,13 @@
 // actions/deleteContactAction.ts
 "use server";
+import type { Contact, DocumentId, StandardResponse } from "@nowcrm/services";
+import {
+	contactsService,
+	journeyStepsService,
+	journeysService,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
 import type { addContactsToStepData } from "./add-contacts-dialog";
-import { contactsService, journeysService, journeyStepsService } from "@nowcrm/services/server";
-import { Contact, DocumentId, StandardResponse } from "@nowcrm/services";
 
 async function propagateContactsToJourney(
 	stepId: DocumentId,
@@ -36,9 +40,13 @@ async function propagateContactsToJourney(
 		new Set([...existingContacts, ...contactIds]),
 	);
 
-	await journeysService.update(journeyId, {
-		contacts: { connect: allJourneyContacts },
-	}, session.jwt);
+	await journeysService.update(
+		journeyId,
+		{
+			contacts: { connect: allJourneyContacts },
+		},
+		session.jwt,
+	);
 	return {
 		data: true,
 		status: 200,
@@ -106,9 +114,13 @@ export async function addToStepAction(
 
 			const list_ids = allContacts.map((contact) => contact.documentId);
 
-			await journeyStepsService.update(data.step_id, {
-				contacts: { connect: list_ids },
-			}, session.jwt);
+			await journeyStepsService.update(
+				data.step_id,
+				{
+					contacts: { connect: list_ids },
+				},
+				session.jwt,
+			);
 			await propagateContactsToJourney(data.step_id, list_ids);
 			return {
 				data: true,
@@ -165,9 +177,13 @@ export async function addToStepAction(
 
 			const org_ids = allContacts.map((contact) => contact.documentId);
 
-			await journeyStepsService.update(data.step_id, {
-				contacts: { connect: org_ids },
-			}, session.jwt);
+			await journeyStepsService.update(
+				data.step_id,
+				{
+					contacts: { connect: org_ids },
+				},
+				session.jwt,
+			);
 			await propagateContactsToJourney(data.step_id, org_ids);
 			return {
 				data: true,
@@ -178,9 +194,13 @@ export async function addToStepAction(
 		}
 
 		if (data.type === "contact" && typeof data.contacts === "number") {
-			await journeyStepsService.update(data.step_id, {
-				contacts: { connect: [data.contacts] },
-			}, session.jwt);
+			await journeyStepsService.update(
+				data.step_id,
+				{
+					contacts: { connect: [data.contacts] },
+				},
+				session.jwt,
+			);
 			await propagateContactsToJourney(data.step_id, [data.contacts]);
 			return {
 				data: true,

@@ -1,8 +1,12 @@
 // actions/deleteContactAction.ts
 "use server";
+import type { LanguageKeys, TextBlock } from "@nowcrm/services";
+import {
+	handleError,
+	type StandardResponse,
+	textblocksService,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { LanguageKeys, TextBlock } from "@nowcrm/services";
-import { handleError, StandardResponse, textblocksService } from "@nowcrm/services/server";
 
 export async function getLocalizedTextBlock(
 	name: string,
@@ -23,12 +27,15 @@ export async function getLocalizedTextBlock(
 				locale: loc,
 			});
 			if (!response.data || !(response.data.length > 0)) {
-				const item = await textblocksService.create({
-					name,
-					publishedAt: new Date(),
-					text: "",
-					locale: loc,
-				}, session.jwt);
+				const item = await textblocksService.create(
+					{
+						name,
+						publishedAt: new Date(),
+						text: "",
+						locale: loc,
+					},
+					session.jwt,
+				);
 				return { locale: loc, data: item.data as TextBlock };
 			}
 			return { locale: loc, data: response.data[0] };

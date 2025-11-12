@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReferenceComposition } from "@nowcrm/services";
 import { HelpCircle, Loader2 } from "lucide-react";
 import { useMessages } from "next-intl";
 import { useState } from "react";
@@ -12,7 +13,6 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { ReferenceComposition } from "@nowcrm/services";
 
 interface TextEditorProps {
 	html: string;

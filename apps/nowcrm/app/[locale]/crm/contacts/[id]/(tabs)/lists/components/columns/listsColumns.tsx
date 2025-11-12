@@ -1,4 +1,5 @@
 "use client";
+import type { List } from "@nowcrm/services";
 import type { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
@@ -22,7 +23,6 @@ import {
 import { getListCount } from "@/lib/actions/lists/get-list-count";
 import { RouteConfig } from "@/lib/config/RoutesConfig";
 import { formatDateTimeStrapi } from "@/lib/strapiDate";
-import { List } from "@nowcrm/services";
 
 const DeleteAction: React.FC<{ list: List }> = ({ list }) => {
 	const router = useRouter();
@@ -39,7 +39,7 @@ const DeleteAction: React.FC<{ list: List }> = ({ list }) => {
 					onClick={async () => {
 						const { default: toast } = await import("react-hot-toast");
 						const { deleteListAction } = await import("./removeList");
-						const res = await deleteListAction(list.documentId, (params.id));
+						const res = await deleteListAction(list.documentId, params.id);
 						if (!res.success) {
 							toast.error(res.errorMessage ?? "Failed to delete list");
 							return;

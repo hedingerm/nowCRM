@@ -1,10 +1,13 @@
 // actions/deleteContactAction.ts
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	donationSubscriptionsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { DocumentId } from "@nowcrm/services";
-import { handleError, StandardResponse } from "@nowcrm/services/server";
-import { donationSubscriptionsService } from "@nowcrm/services/server";
 
 export async function deleteDonationSubscriptionAction(
 	transaction: DocumentId,
@@ -18,7 +21,10 @@ export async function deleteDonationSubscriptionAction(
 		};
 	}
 	try {
-		const response = await donationSubscriptionsService.delete(transaction, session.jwt);
+		const response = await donationSubscriptionsService.delete(
+			transaction,
+			session.jwt,
+		);
 		return response;
 	} catch (error) {
 		return handleError(error);

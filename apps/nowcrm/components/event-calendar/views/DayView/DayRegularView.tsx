@@ -137,7 +137,7 @@ const DayView: React.FC<DayViewProps> = ({
   console.log(
     "[v0] - All filtered events:",
     filteredEvents.map((e) => ({
-      id: e.id,
+      id: e.documentId,
       name: e.name,
       datetime: e.publish_date,
       dateString: new Date(e.publish_date).toDateString(),
@@ -147,7 +147,7 @@ const DayView: React.FC<DayViewProps> = ({
   console.log(
     "[v0] - Day events:",
     dayEvents.map((e) => ({
-      id: e.id,
+      id: e.documentId,
       name: e.name,
       datetime: e.publish_date,
       color: e.color,
@@ -261,7 +261,7 @@ const DayView: React.FC<DayViewProps> = ({
 
               return (
                 <EventPopup
-                  key={`${event.id}-${eventDateTime.getTime()}`}
+                  key={`${event.documentId}-${eventDateTime.getTime()}`}
                   event={event}
                   onAddEvent={onEventAdd}
                   onUpdateEvent={onEventUpdate}

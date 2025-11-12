@@ -1,5 +1,6 @@
 "use client";
 
+import type { DocumentId } from "@nowcrm/services";
 import { AlertCircle, CheckCircle } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
@@ -12,7 +13,6 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { unsubscribeUser } from "@/lib/actions/unsubscribe-user";
-import { DocumentId } from "@nowcrm/services";
 
 export default function UnsubscribeComponent({
 	email,

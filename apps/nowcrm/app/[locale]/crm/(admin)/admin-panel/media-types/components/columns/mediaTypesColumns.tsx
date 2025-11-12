@@ -1,5 +1,6 @@
 "use client";
 
+import type { MediaType } from "@nowcrm/services";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 import { useMessages } from "next-intl";
@@ -12,7 +13,6 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MediaType } from "@nowcrm/services";
 
 const DeleteAction: React.FC<{ mediaType: MediaType }> = ({ mediaType }) => {
 	const t = useMessages();
@@ -29,7 +29,7 @@ const DeleteAction: React.FC<{ mediaType: MediaType }> = ({ mediaType }) => {
 						const { default: toast } = await import("react-hot-toast");
 						const { deleteMediaTypeAction } = await import("./deleteMediaType");
 						const res = await deleteMediaTypeAction(mediaType.documentId);
-						if(!res.success) {
+						if (!res.success) {
 							toast.error(res.errorMessage ?? "Failed to delete media type");
 							return;
 						}

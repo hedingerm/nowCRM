@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { DocumentId, LanguageKeys } from "@nowcrm/services";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { ExternalLink, ListPlus } from "lucide-react";
 import Link from "next/link";
@@ -38,7 +39,6 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { RouteConfig } from "@/lib/config/RoutesConfig";
-import { DocumentId, LanguageKeys } from "@nowcrm/services";
 
 export default function CreateContactDialog() {
 	const t = useTranslations();
@@ -94,7 +94,11 @@ export default function CreateContactDialog() {
 			}
 		}
 
-		const res = await createContact({ ...values, publishedAt: new Date(), language: values.language as LanguageKeys });
+		const res = await createContact({
+			...values,
+			publishedAt: new Date(),
+			language: values.language as LanguageKeys,
+		});
 		if (!res.success) {
 			toast.error(
 				`${t("Contacts.createContact.toast.error")} ${res.errorMessage}`,

@@ -1,13 +1,16 @@
 // contactsapp/lib/actions/composer/getStructuredResponse.ts
 "use server";
+import type { StructuredResponseModel } from "@nowcrm/services";
+import {
+	compositionsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { StructuredResponseModel } from "@nowcrm/services";
-
-import { compositionsService, handleError, StandardResponse } from "@nowcrm/services/server";
 
 export async function structuredResponse(
 	values: StructuredResponseModel,
-): Promise<StandardResponse <{ result: any }>> {
+): Promise<StandardResponse<{ result: any }>> {
 	const session = await auth();
 	if (!session) {
 		return {
@@ -21,6 +24,6 @@ export async function structuredResponse(
 
 		return res;
 	} catch (error) {
-		return handleError(error)
+		return handleError(error);
 	}
 }

@@ -1,11 +1,11 @@
 "use client";
+import type { DocumentId } from "@nowcrm/services";
 // IdentitityMassActions.tsx
 import {
 	type ActionsConfig,
 	massActionsGenerator,
 } from "@/components/generativeComponents/MassActionsGenerator";
 import { MassDeleteTags } from "./massDeleteTags";
-import { DocumentId } from "@nowcrm/services";
 
 const actionsConfig: ActionsConfig = {
 	deleteContacts: {

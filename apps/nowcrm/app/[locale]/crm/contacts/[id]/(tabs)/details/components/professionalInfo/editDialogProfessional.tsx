@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { Contact } from "@nowcrm/services";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
@@ -33,7 +34,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Contact } from "@nowcrm/services";
 
 // Updated Zod schema
 const formSchema = z.object({
@@ -92,10 +92,16 @@ export function EditDialogProfessional({
 		defaultValues: {
 			function: contact.function || "",
 			organization: contact.organization
-				? { label: contact.organization.name, value: contact.organization.documentId }
+				? {
+						label: contact.organization.name,
+						value: contact.organization.documentId,
+					}
 				: undefined,
 			department: contact.department
-				? { label: contact.department.name, value: contact.department.documentId }
+				? {
+						label: contact.department.name,
+						value: contact.department.documentId,
+					}
 				: undefined,
 			industry: contact.industry
 				? { label: contact.industry.name, value: contact.industry.documentId }
@@ -121,9 +127,9 @@ export function EditDialogProfessional({
 		);
 		const edited_values = {
 			...values,
-			organization: values.organization?.value ,
-			department: values.department?.value ,
-			industry: values.industry?.value ,
+			organization: values.organization?.value,
+			department: values.department?.value,
+			industry: values.industry?.value,
 			job_title: values.job_title?.value,
 		};
 		const res = await updateContact(contact.documentId, edited_values);

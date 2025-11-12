@@ -60,7 +60,7 @@ export default function CreateTransactionDialog() {
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			contact: (params.id),
+			contact: params.id,
 			payment_method: "",
 			currency: "",
 			amount: 0,

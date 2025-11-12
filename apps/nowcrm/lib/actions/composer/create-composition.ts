@@ -1,8 +1,12 @@
 // actions/deleteContactAction.ts
 "use server";
+import type { Composition, Form_Composition } from "@nowcrm/services";
+import {
+	compositionsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { Composition, Form_Composition } from "@nowcrm/services";
-import { compositionsService, handleError, StandardResponse } from "@nowcrm/services/server";
 
 export async function createComposition(
 	values: Partial<Form_Composition>,
@@ -16,7 +20,7 @@ export async function createComposition(
 		};
 	}
 	try {
-		const res = await compositionsService.create(values,session.jwt);
+		const res = await compositionsService.create(values, session.jwt);
 		return res;
 	} catch (error) {
 		return handleError(error);

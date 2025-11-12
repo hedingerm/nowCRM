@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { ContactTitle } from "@nowcrm/services";
 import { ListPlus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMessages } from "next-intl";
@@ -28,7 +29,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { updateContactTitle } from "@/lib/actions/contact-titles/update-contact-title";
-import { ContactTitle } from "@nowcrm/services";
 
 interface EditContactTitleDialogProps {
 	contactTitle: ContactTitle;

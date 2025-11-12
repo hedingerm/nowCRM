@@ -1,5 +1,6 @@
 "use client";
 
+import type { CommunicationChannelKeys } from "@nowcrm/services";
 import { Loader2, PlusCircle } from "lucide-react";
 import { useMessages } from "next-intl";
 import { useState } from "react";
@@ -15,7 +16,6 @@ import {
 	CommunicationChannel,
 	getChannelIcon,
 } from "@/lib/static/channel-icons";
-import { CommunicationChannelKeys } from "@nowcrm/services";
 
 interface AddChannelButtonProps {
 	existingChannels: string[];
@@ -72,7 +72,9 @@ export function AddChannelButton({
 									key={channel}
 									variant="outline"
 									className="w-full justify-start"
-									onClick={() => handleAddChannel(channel as CommunicationChannelKeys)}
+									onClick={() =>
+										handleAddChannel(channel as CommunicationChannelKeys)
+									}
 								>
 									<Icon className="mr-2 h-4 w-4" />
 									{channel}

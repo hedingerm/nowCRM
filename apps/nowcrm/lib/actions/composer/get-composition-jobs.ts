@@ -1,7 +1,10 @@
 "use server";
 
-import { JobCompositionRecord } from "@nowcrm/services";
-import { compositionsService, StandardResponse } from "@nowcrm/services/server";
+import type { JobCompositionRecord } from "@nowcrm/services";
+import {
+	compositionsService,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 
 export async function getCompositionJobs(
 	page = 1,

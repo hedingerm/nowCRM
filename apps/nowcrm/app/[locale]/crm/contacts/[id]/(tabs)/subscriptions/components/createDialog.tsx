@@ -37,7 +37,7 @@ export default function CreateListDialog() {
 		resolver: zodResolver(formSchema),
 		defaultValues: {
 			channel: undefined,
-			contact: (params.id),
+			contact: params.id,
 		},
 	});
 

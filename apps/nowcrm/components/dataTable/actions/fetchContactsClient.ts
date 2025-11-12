@@ -1,8 +1,8 @@
 "use server";
 
+import { contactsService } from "@nowcrm/services/server";
 import { auth } from "@/auth";
 import { transformFilters } from "@/lib/actions/filters/filters-search";
-import { contactsService } from "@nowcrm/services/server";
 
 type FetchContactsParams = {
 	page?: number;

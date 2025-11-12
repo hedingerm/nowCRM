@@ -1,3 +1,4 @@
+import type { BaseServiceName } from "@nowcrm/services";
 import type { UseFormReturn } from "react-hook-form";
 import {
 	FormControl,
@@ -8,7 +9,6 @@ import {
 } from "@/components/ui/form";
 import { AsyncSelect } from "./AsyncSelect";
 import type { Option } from "./autoComplete";
-import { BaseServiceName } from "@nowcrm/services";
 
 type Props = {
 	name: string;

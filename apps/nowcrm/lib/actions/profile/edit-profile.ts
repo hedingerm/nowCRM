@@ -3,8 +3,8 @@
 
 import crypto from "node:crypto";
 import { usersService } from "@nowcrm/services/server";
-import { encryptTotpSecret } from "./encryption-helpers";
 import { auth } from "@/auth";
+import { encryptTotpSecret } from "./encryption-helpers";
 
 /**
  * Action to upload an image using the UserService.
@@ -33,7 +33,11 @@ export async function uploadImage(formData: FormData): Promise<string> {
 		}
 	}
 
-	const result = await usersService.uploadProfilePicture(files, userId, session.jwt);
+	const result = await usersService.uploadProfilePicture(
+		files,
+		userId,
+		session.jwt,
+	);
 	const assets = result.data;
 
 	// 3. Return the first URL or a fallback

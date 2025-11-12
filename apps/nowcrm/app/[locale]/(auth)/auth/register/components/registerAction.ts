@@ -1,9 +1,8 @@
 "use server";
-import { env } from "@/lib/config/envConfig";
-import { Form_User } from "@nowcrm/services";
-import { StandardResponse, usersService } from "@nowcrm/services/server";
+import type { Form_User } from "@nowcrm/services";
+import { type StandardResponse, usersService } from "@nowcrm/services/server";
 import { getTranslations } from "next-intl/server";
-
+import { env } from "@/lib/config/envConfig";
 
 export async function registerAction(
 	values: Partial<Form_User>,
@@ -21,7 +20,7 @@ export async function registerAction(
 				errorMessage: t("errors.emailRegistered"),
 			};
 		}
-		const res = await usersService.register(values,env.CRM_STRAPI_API_TOKEN);
+		const res = await usersService.register(values, env.CRM_STRAPI_API_TOKEN);
 		return res;
 	} catch (error: any) {
 		console.log(error);

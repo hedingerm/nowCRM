@@ -1,11 +1,11 @@
+import type { DocumentId } from "@nowcrm/services";
+import { subscriptionsService } from "@nowcrm/services/server";
 import type { Metadata } from "next";
 import type { Session } from "next-auth";
 import { getTranslations } from "next-intl/server";
 import { auth } from "@/auth";
 import DataTable from "@/components/dataTable/dataTable";
 import ErrorMessage from "@/components/ErrorMessage";
-import { subscriptionsService } from "@nowcrm/services/server";
-import { DocumentId } from "@nowcrm/services";
 import { columns } from "./components/columns/subscriptionColumns";
 import createListDialog from "./components/createDialog";
 import ContactsSubscriptionsMassActions from "./components/massActions/massActions";
@@ -14,7 +14,9 @@ export const metadata: Metadata = {
 	title: "Contact subscriptions",
 };
 
-export default async function Page(props: { params: Promise<{ id: DocumentId }> }) {
+export default async function Page(props: {
+	params: Promise<{ id: DocumentId }>;
+}) {
 	const t = await getTranslations();
 	const params = await props.params;
 	// Fetch data from the contactService

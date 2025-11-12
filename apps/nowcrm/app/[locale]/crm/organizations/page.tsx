@@ -1,3 +1,4 @@
+import { organizationsService } from "@nowcrm/services/server";
 import type { Metadata } from "next";
 import type { Session } from "next-auth";
 import { auth } from "@/auth";
@@ -11,7 +12,6 @@ import AdvancedFilters from "./components/advancedFilters/advancedFilters";
 import { columns } from "./components/columns/organizationColumns";
 import createOrganizationDialog from "./components/createDialog";
 import MassActionsContacts from "./components/massActions/MassActions";
-import { organizationsService } from "@nowcrm/services/server";
 export const metadata: Metadata = {
 	title: "Organizations",
 };

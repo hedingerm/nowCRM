@@ -1,10 +1,10 @@
+import type { PaginationParams } from "@nowcrm/services";
+import { textblocksService } from "@nowcrm/services/server";
 import type { Session } from "next-auth";
 import { getTranslations } from "next-intl/server";
 import { auth } from "@/auth";
 import DataTable from "@/components/dataTable/dataTable";
 import ErrorMessage from "@/components/ErrorMessage";
-import { PaginationParams } from "@nowcrm/services";
-import { textblocksService } from "@nowcrm/services/server";
 import { columns } from "./components/columns/textBlocksColumns";
 import CreateTextBlockDialog from "./components/createDialog";
 import OrganizationTypeMassActions from "./components/massActions/massActions";

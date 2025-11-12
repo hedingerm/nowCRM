@@ -1,5 +1,7 @@
 "use client";
 
+import type { DocumentId, Tag } from "@nowcrm/services";
+import type { BaseServiceName } from "@nowcrm/services/server";
 import { Loader2, X } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -7,8 +9,6 @@ import { Button } from "@/components/ui/button";
 import { addTag } from "@/lib/actions/tags/add-tag";
 import { removeTag } from "@/lib/actions/tags/remove-tag";
 import { AddTagDialog } from "./AddTagDialog";
-import { DocumentId, Tag } from "@nowcrm/services";
-import { BaseServiceName } from "@nowcrm/services/server";
 
 interface TagsCellProps {
 	serviceName: BaseServiceName;

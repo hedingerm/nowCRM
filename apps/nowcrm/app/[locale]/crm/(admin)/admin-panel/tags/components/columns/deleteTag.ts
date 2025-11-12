@@ -1,10 +1,13 @@
 // actions/deleteContactAction.ts
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	handleError,
+	type StandardResponse,
+	tagsService,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-
-import { DocumentId } from "@nowcrm/services";
-import { handleError, tagsService, StandardResponse } from "@nowcrm/services/server";
 export async function deleteTag(
 	tagId: DocumentId,
 ): Promise<StandardResponse<null>> {
@@ -21,6 +24,6 @@ export async function deleteTag(
 		const response = await tagsService.delete(tagId, session?.jwt);
 		return response;
 	} catch (error) {
-			return handleError(error);
+		return handleError(error);
 	}
 }

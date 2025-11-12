@@ -1,14 +1,15 @@
+import type { DocumentId } from "@nowcrm/services";
+import { organizationsService } from "@nowcrm/services/server";
 import type { Metadata } from "next";
 import type React from "react";
 import { FaBuilding, FaEnvelope } from "react-icons/fa";
+import { auth } from "@/auth";
 import DeleteButton from "@/components/deleteButton/deleteButton";
 import ErrorMessage from "@/components/ErrorMessage";
 import { TypographyH4 } from "@/components/Typography";
 import { Separator } from "@/components/ui/separator";
 import { RouteConfig } from "@/lib/config/RoutesConfig";
-import { DocumentId } from "@nowcrm/services";
-import { auth } from "@/auth";
-import { organizationsService } from "@nowcrm/services/server";
+
 interface LayoutProps {
 	children: React.ReactNode;
 	params: Promise<{ id: DocumentId }>;
@@ -28,7 +29,10 @@ export default async function Layout(props: LayoutProps) {
 	const organizationId = params.id;
 	const session = await auth();
 
-	const organization = await organizationsService.findOne(organizationId, session?.jwt );
+	const organization = await organizationsService.findOne(
+		organizationId,
+		session?.jwt,
+	);
 	if (!organization.data) {
 		return <ErrorMessage response={organization} />;
 	}

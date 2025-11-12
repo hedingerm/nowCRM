@@ -1,8 +1,12 @@
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	handleError,
+	listsService,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { handleError, listsService, StandardResponse } from "@nowcrm/services/server";
-import { DocumentId } from "@nowcrm/services";
 
 export async function duplicateListAction(
 	listId: DocumentId,
@@ -16,7 +20,7 @@ export async function duplicateListAction(
 		};
 	}
 	try {
-		const response = await listsService.duplicate(listId,session.jwt);
+		const response = await listsService.duplicate(listId, session.jwt);
 		return response;
 	} catch (error) {
 		return handleError(error);

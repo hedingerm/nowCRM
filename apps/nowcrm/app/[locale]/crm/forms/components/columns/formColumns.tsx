@@ -1,4 +1,5 @@
 "use client";
+import type { FormEntity } from "@nowcrm/services";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Copy, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
@@ -19,7 +20,6 @@ import { Switch } from "@/components/ui/switch";
 import { updateForm } from "@/lib/actions/forms/update-form";
 import { RouteConfig } from "@/lib/config/RoutesConfig";
 import { formatDateTimeStrapi } from "@/lib/strapiDate";
-import type { FormEntity } from "@nowcrm/services";
 import { shareForm } from "./shareForm";
 
 const ViewActions: React.FC<{ form: FormEntity }> = ({ form }) => {

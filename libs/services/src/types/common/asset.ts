@@ -22,6 +22,7 @@ export type Asset = {
 	mime: string;
 	size: number;
 	url: string;
+	path: string;
 	previewUrl: string;
 	provider: string;
 	formats: {
@@ -34,4 +35,3 @@ export type Asset = {
 	createdAt: Date;
 	updatedAt: Date;
 };
-

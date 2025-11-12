@@ -4,7 +4,7 @@ export type SearchHistoryType = "contacts" | "organizations";
 
 export interface SearchHistoryTemplate extends BaseType {
 	type: SearchHistoryType;
-	filters: object  | string;
+	filters: object | string;
 	query: object | string;
 	favorite: boolean;
 }

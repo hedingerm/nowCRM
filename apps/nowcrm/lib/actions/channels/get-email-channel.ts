@@ -1,8 +1,12 @@
 // actions/deleteContactAction.ts
 "use server";
+import { type Channel, CommunicationChannel } from "@nowcrm/services";
+import {
+	channelsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { Channel, CommunicationChannel } from "@nowcrm/services";
-import { channelsService, handleError, StandardResponse } from "@nowcrm/services/server";
 export async function getEmailChannel(): Promise<StandardResponse<Channel[]>> {
 	const session = await auth();
 	if (!session) {

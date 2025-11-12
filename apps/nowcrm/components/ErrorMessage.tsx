@@ -1,5 +1,6 @@
 "use client";
 
+import type { StandardResponse } from "@nowcrm/services";
 import { AlertCircle } from "lucide-react";
 import {
 	Card,
@@ -8,7 +9,6 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import type { StandardResponse } from "@nowcrm/services";
 
 interface ErrorMessageProps {
 	response: StandardResponse<any>;

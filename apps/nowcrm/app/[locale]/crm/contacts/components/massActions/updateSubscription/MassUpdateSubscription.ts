@@ -1,18 +1,19 @@
 // actions/update.ts
 "use server";
 
-import { auth } from "@/auth";
-import type { StandardResponse } from "@/lib/services/common/response.service";
-import subscriptionsService from "@/lib/services/new_type/subscriptions.service";
-import type StrapiQuery from "@/lib/types/common/StrapiQuery";
 import type {
+	DocumentId,
 	Form_Subscription,
+	StandardResponse,
+	StrapiQuery,
 	Subscription,
-} from "@/lib/types/new_type/subscription";
+} from "@nowcrm/services";
+import { handleError, subscriptionsService } from "@nowcrm/services/server";
+import { auth } from "@/auth";
 
 export async function MassUpdateSubscription(
-	contactIds: number[],
-	channelId: number,
+	contactIds: DocumentId[],
+	channelId: DocumentId,
 	isSubscribe: boolean,
 ): Promise<StandardResponse<Subscription[]>> {
 	const session = await auth();
@@ -24,12 +25,12 @@ export async function MassUpdateSubscription(
 		const ops = contactIds.map(async (contactId) => {
 			const options: StrapiQuery<Subscription> = {
 				filters: {
-					channel: { id: { $eq: channelId } },
-					contact: { id: { $eq: contactId } },
+					channel: { documentId: { $eq: channelId } },
+					contact: { documentId: { $eq: contactId } },
 				},
 			};
 
-			const findRes = await subscriptionsService.find(options, false);
+			const findRes = await subscriptionsService.find(session.jwt, options);
 			if (!findRes.success) {
 				throw new Error(`Can't find subscription for contact=${contactId}`);
 			}
@@ -40,25 +41,27 @@ export async function MassUpdateSubscription(
 				if (isSubscribe) {
 					if (!existing.active) {
 						const updateRes = await subscriptionsService.update(
-							existing.id,
+							existing.documentId,
 							{ active: true, subscribed_at: new Date() },
-							false,
+							session.jwt,
 						);
 						if (!updateRes.success || !updateRes.data) {
-							throw new Error(`Can't activate subscription id=${existing.id}`);
+							throw new Error(
+								`Can't activate subscription id=${existing.documentId}`,
+							);
 						}
 						return updateRes.data;
 					}
 				} else {
 					if (existing.active) {
 						const updateRes = await subscriptionsService.update(
-							existing.id,
+							existing.documentId,
 							{ active: false },
-							false,
+							session.jwt,
 						);
 						if (!updateRes.success || !updateRes.data) {
 							throw new Error(
-								`Can't deactivate subscription id=${existing.id}`,
+								`Can't deactivate subscription id=${existing.documentId}`,
 							);
 						}
 						return updateRes.data;
@@ -75,7 +78,7 @@ export async function MassUpdateSubscription(
 						subscribed_at: new Date(),
 						active: true,
 					} as Form_Subscription,
-					false,
+					session.jwt,
 				);
 				if (!createRes.success || !createRes.data) {
 					throw new Error(`Can't create subscription for contact=${contactId}`);
@@ -92,12 +95,6 @@ export async function MassUpdateSubscription(
 
 		return { data: results, status: 200, success: true };
 	} catch (error: any) {
-		console.error("MassUpdateSubscription error:", error);
-		return {
-			data: null,
-			status: 500,
-			success: false,
-			errorMessage: error.message || String(error),
-		};
+		return handleError(error);
 	}
 }

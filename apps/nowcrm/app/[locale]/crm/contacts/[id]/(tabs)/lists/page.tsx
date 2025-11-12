@@ -1,3 +1,5 @@
+import type { DocumentId, PaginationParams } from "@nowcrm/services";
+import { listsService } from "@nowcrm/services/server";
 import type { Metadata } from "next";
 import type { Session } from "next-auth";
 import { getTranslations } from "next-intl/server";
@@ -7,9 +9,6 @@ import ErrorMessage from "@/components/ErrorMessage";
 import createListDialog from "./components/addToListDialog";
 import { columns } from "./components/columns/listsColumns";
 import MassActionsLists from "./components/massActions/massActions";
-import { PaginationParams } from "@nowcrm/services";
-import { DocumentId } from "@nowcrm/services";
-import { listsService } from "@nowcrm/services/server";
 export const metadata: Metadata = {
 	title: "Lists",
 };

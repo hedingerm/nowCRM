@@ -16,6 +16,7 @@ interface SendToChannelsProps {
 }
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { DocumentId } from "@nowcrm/services";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -25,7 +26,6 @@ import Spinner from "@/components/Spinner";
 import { DialogClose } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { DocumentId } from "@nowcrm/services";
 
 export interface addContactsToStepData {
 	step_id: DocumentId;

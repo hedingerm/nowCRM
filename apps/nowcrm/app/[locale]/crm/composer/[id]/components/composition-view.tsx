@@ -1,6 +1,14 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import {
+	CommunicationChannel,
+	type CommunicationChannelKeys,
+	type Composition,
+	type createAdditionalComposition,
+	type DocumentId,
+	getFileUploadMimeType,
+} from "@nowcrm/services";
 import { Pencil, Save, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMessages } from "next-intl";
@@ -21,9 +29,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { updateComposition } from "@/lib/actions/composer/update-composition";
 import { delay } from "@/lib/delay";
-import { CommunicationChannelKeys, Composition, createAdditionalComposition, DocumentId } from "@nowcrm/services";
-import { CommunicationChannel } from "@nowcrm/services";
-import { getFileUploadMimeType } from "@nowcrm/services";
 import { CompositionChannelContent } from "./channels/composition-channel-content";
 import { CompositionForm } from "./composition-form";
 import { processFormFileOperations } from "./composition-form-submit";
@@ -260,7 +265,8 @@ export function CompositionView({ composition }: { composition: Composition }) {
 			const { getComposition } = await import(
 				"@/lib/actions/composer/get-composition"
 			);
-			const updatedComposition = (await getComposition(composition.documentId)).data;
+			const updatedComposition = (await getComposition(composition.documentId))
+				.data;
 
 			if (updatedComposition) {
 				// Update the form with the new composition data
@@ -269,7 +275,8 @@ export function CompositionView({ composition }: { composition: Composition }) {
 					category: updatedComposition.category || "",
 					language: updatedComposition.language || "",
 					persona: updatedComposition.persona || "",
-					composition_status: updatedComposition.composition_status || "Finished",
+					composition_status:
+						updatedComposition.composition_status || "Finished",
 					model: updatedComposition.model || undefined,
 					add_unsubscribe: updatedComposition.add_unsubscribe || false,
 					reference_prompt: updatedComposition.reference_prompt || "",

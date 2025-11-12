@@ -1,8 +1,12 @@
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	handleError,
+	organizationsService,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { DocumentId } from "@nowcrm/services";
-import { handleError, organizationsService, StandardResponse } from "@nowcrm/services/server";
 
 export async function duplicateOrganizationAction(
 	organizationId: DocumentId,
@@ -16,7 +20,10 @@ export async function duplicateOrganizationAction(
 		};
 	}
 	try {
-		const response = await organizationsService.duplicate(organizationId,session.jwt);
+		const response = await organizationsService.duplicate(
+			organizationId,
+			session.jwt,
+		);
 		return response;
 	} catch (error) {
 		return handleError(error);

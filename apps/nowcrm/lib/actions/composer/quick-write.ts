@@ -1,8 +1,12 @@
 // contactsapp/lib/actions/composer/quickWrite.ts
 "use server";
+import type { QuickWriteModel } from "@nowcrm/services";
+import {
+	compositionsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { QuickWriteModel } from "@nowcrm/services";
-import { compositionsService, handleError, StandardResponse } from "@nowcrm/services/server";
 
 export async function quickWrite(
 	values: QuickWriteModel,
@@ -19,6 +23,6 @@ export async function quickWrite(
 		const res = await compositionsService.quickWrite(values);
 		return res;
 	} catch (error) {
-		return handleError(error)
+		return handleError(error);
 	}
 }

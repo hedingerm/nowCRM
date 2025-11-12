@@ -1,8 +1,12 @@
 "use server";
 
+import type { Contact, DocumentId } from "@nowcrm/services";
+import {
+	contactsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { Contact, DocumentId } from "@nowcrm/services";
-import { contactsService, handleError, StandardResponse } from "@nowcrm/services/server";
 
 export async function anonymizeContact(
 	contactId: DocumentId,
@@ -18,7 +22,7 @@ export async function anonymizeContact(
 	}
 
 	try {
-		const res = await contactsService.anonymizeContact(contactId,session.jwt);
+		const res = await contactsService.anonymizeContact(contactId, session.jwt);
 
 		return res;
 	} catch (error) {

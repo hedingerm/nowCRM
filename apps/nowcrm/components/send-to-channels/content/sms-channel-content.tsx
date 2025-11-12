@@ -1,6 +1,13 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import {
+	CommunicationChannel,
+	type CommunicationChannelKeys,
+	type CompositionItem,
+	type DocumentId,
+	type sendToChannelsData,
+} from "@nowcrm/services";
 import { Info, Mail } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -38,7 +45,6 @@ import {
 } from "@/lib/actions/channels/get-channel-throttle";
 import { getComposition } from "@/lib/actions/composer/get-composition";
 import { normalizePhone } from "@/lib/normalizePhone";
-import { CommunicationChannel, CommunicationChannelKeys, CompositionItem, DocumentId, sendToChannelsData } from "@nowcrm/services";
 export interface SMSChannelContentProps {
 	mode: "composer" | "mass_actions";
 	composition_id?: DocumentId;
@@ -68,7 +74,9 @@ export function SMSChannelContent({
 	const [defaultThrottle, setDefaultThrottle] =
 		useState<ChannelThrottleResponse | null>(null);
 	React.useEffect(() => {
-		getChannelThrottle(currentChannel.toLowerCase() as CommunicationChannelKeys).then((res) => {
+		getChannelThrottle(
+			currentChannel.toLowerCase() as CommunicationChannelKeys,
+		).then((res) => {
 			if (res.success && res.data) {
 				const safeThrottle = res.data.throttle > 0 ? res.data.throttle : 20;
 				const safeMaxRate =
@@ -259,7 +267,9 @@ export function SMSChannelContent({
 
 				const matchingItem = allItems.find((item) => {
 					const name = item.channel?.name;
-					console.log(` checking item.id=${item.documentId}, channel.name="${name}"`);
+					console.log(
+						` checking item.id=${item.documentId}, channel.name="${name}"`,
+					);
 					return name?.toLowerCase() === channelLower;
 				});
 
@@ -334,7 +344,7 @@ export function SMSChannelContent({
 					submissionData = {
 						composition_id: compId,
 						channels: [CommunicationChannel.SMS.toLowerCase()],
-						to: (values.contact.value),
+						to: values.contact.value,
 						type: "contact",
 						throttle: throttlePerMin,
 						interval: intervalMs,

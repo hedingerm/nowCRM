@@ -1,7 +1,11 @@
 "use server";
+import type { DocumentId } from "@nowcrm/services";
+import {
+	handleError,
+	type StandardResponse,
+	searchHistoryTemplatesService,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { DocumentId } from "@nowcrm/services";
-import { handleError, searchHistoryTemplatesService, StandardResponse } from "@nowcrm/services/server";
 
 export async function makeFavorite(
 	id: DocumentId,
@@ -11,9 +15,13 @@ export async function makeFavorite(
 	if (!session) return { data: null, status: 403, success: false };
 
 	try {
-		const res = await searchHistoryTemplatesService.update(id, {
-			favorite,
-		},session.jwt);
+		const res = await searchHistoryTemplatesService.update(
+			id,
+			{
+				favorite,
+			},
+			session.jwt,
+		);
 		return res;
 	} catch (error) {
 		return handleError(error);

@@ -1,5 +1,6 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { settingSubscriptionCheck } from "@nowcrm/services";
 import { HelpCircle, Pencil, Save, X } from "lucide-react";
 import { useMessages } from "next-intl";
 import { useState } from "react";
@@ -36,7 +37,6 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { settingSubscriptionCheck } from "@nowcrm/services";
 
 interface ChannelSettingsFormProps {
 	initialSubscription: settingSubscriptionCheck;

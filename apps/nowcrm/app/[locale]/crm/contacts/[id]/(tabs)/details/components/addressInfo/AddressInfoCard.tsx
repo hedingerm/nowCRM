@@ -1,5 +1,6 @@
 "use client";
 
+import type { Contact } from "@nowcrm/services";
 import { MapPin } from "lucide-react";
 import { useMessages } from "next-intl";
 import { useState } from "react";
@@ -11,7 +12,6 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { Contact } from "@nowcrm/services";
 import { EditDialogAddress } from "./editDialog";
 
 interface AddressCardProps {

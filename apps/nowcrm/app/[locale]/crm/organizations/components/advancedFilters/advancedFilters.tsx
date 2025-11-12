@@ -1,6 +1,11 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import {
+	NUMBER_OPERATORS,
+	type Operator,
+	TEXT_OPERATORS,
+} from "@nowcrm/services";
 import { Filter } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import * as React from "react";
@@ -34,17 +39,10 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-
 import {
 	parseFormIntoUrlFilters,
 	parseQueryToFilterValues,
 } from "@/lib/actions/filters/filters-search";
-
-import {
-	NUMBER_OPERATORS,
-	type Operator,
-	TEXT_OPERATORS,
-} from "@nowcrm/services";
 
 const FIELD_TYPES: Record<string, "text" | "number"> = {
 	name: "text",

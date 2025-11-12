@@ -1,4 +1,5 @@
 "use client";
+import type { Contact, DocumentId } from "@nowcrm/services";
 import type { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
@@ -18,7 +19,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { RouteConfig } from "@/lib/config/RoutesConfig";
 import { formatDateTimeStrapi } from "@/lib/strapiDate";
-import { Contact, DocumentId } from "@nowcrm/services";
 import { removeContactFromListAction } from "./removeContactFromListAction";
 
 const DeleteAction: React.FC<{ contact: Contact }> = ({ contact }) => {
@@ -33,7 +33,7 @@ const DeleteAction: React.FC<{ contact: Contact }> = ({ contact }) => {
 				<DropdownMenuItem
 					onClick={async () => {
 						await removeContactFromListAction(
-							(path.split("/").pop() as DocumentId),
+							path.split("/").pop() as DocumentId,
 							contact.documentId,
 						);
 						toast.success("Contact removed from list");

@@ -1,7 +1,7 @@
 // contactsapp/app/[locale]/crm/forms/components/columns/shareForm.ts
 "use server";
+import type { DocumentId } from "@nowcrm/services";
 import { env } from "@/lib/config/envConfig";
-import { DocumentId } from "@nowcrm/services";
 
 export async function shareForm(
 	form_id: DocumentId,

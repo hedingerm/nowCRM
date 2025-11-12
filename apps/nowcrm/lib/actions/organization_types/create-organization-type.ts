@@ -1,8 +1,12 @@
 // actions/deleteContactAction.ts
 "use server";
+import type { OrganizationType } from "@nowcrm/services";
+import {
+	handleError,
+	organizationTypesService,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { OrganizationType } from "@nowcrm/services";
-import { handleError, organizationTypesService, StandardResponse } from "@nowcrm/services/server";
 
 export async function createOrganizationType(
 	name: string,
@@ -17,10 +21,13 @@ export async function createOrganizationType(
 	}
 
 	try {
-		const res = await organizationTypesService.create({
-			name,
-			publishedAt: new Date(),
-		},session.jwt);
+		const res = await organizationTypesService.create(
+			{
+				name,
+				publishedAt: new Date(),
+			},
+			session.jwt,
+		);
 		return res;
 	} catch (error) {
 		return handleError(error);

@@ -39,7 +39,11 @@ export async function processFormFileOperations(
 				await Promise.all([
 					itemFiles.length > 0
 						? (async () => {
-								await compositionItemsService.uploadFile(itemFiles, item.documentId, session?.jwt);
+								await compositionItemsService.uploadFile(
+									itemFiles,
+									item.documentId,
+									session?.jwt,
+								);
 							})()
 						: Promise.resolve(),
 
@@ -52,9 +56,13 @@ export async function processFormFileOperations(
 									)
 									.map((file: any) => file.id);
 								console.log(filesUpdated);
-								await compositionItemsService.update(item.documentId, {
-									attached_files: filesUpdated,
-								}, session?.jwt);
+								await compositionItemsService.update(
+									item.documentId,
+									{
+										attached_files: filesUpdated,
+									},
+									session?.jwt,
+								);
 							})()
 						: Promise.resolve(),
 				]);

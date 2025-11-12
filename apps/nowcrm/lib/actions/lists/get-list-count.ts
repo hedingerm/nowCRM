@@ -1,8 +1,12 @@
 // actions/deleteContactAction.ts
 "use server";
+import type { DocumentId } from "@nowcrm/services";
+import {
+	handleError,
+	listsService,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { DocumentId } from "@nowcrm/services";
-import { handleError, listsService, StandardResponse } from "@nowcrm/services/server";
 
 export async function getListCount(
 	listId: DocumentId,
@@ -16,7 +20,7 @@ export async function getListCount(
 		};
 	}
 	try {
-		const res = await listsService.countContacts(listId,session.jwt);
+		const res = await listsService.countContacts(listId, session.jwt);
 		return res;
 	} catch (error) {
 		return handleError(error);

@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { SettingCredential } from "@nowcrm/services";
 import {
 	AlertCircle,
 	ExternalLink,
@@ -50,7 +51,6 @@ import {
 	getStatusColor,
 	getStatusIcon,
 } from "@/lib/static/healthCheckStatuses";
-import { SettingCredential } from "@nowcrm/services";
 
 interface LinkedInHealthCheckProps {
 	linkedin_credential: Omit<SettingCredential, "setting">;
@@ -113,13 +113,16 @@ export function LinkedInHealthCheck({
 	async function handleSubmit(values: z.infer<typeof formSchema>) {
 		setIsSubmitting(true);
 		try {
-			const res = await updateSettingCredentials(linkedin_credential.documentId, {
-				...values,
-				credential_status: "disconnected",
-				error_message: "Please refresh your access token first",
-				access_token: "",
-				refresh_token: "",
-			});
+			const res = await updateSettingCredentials(
+				linkedin_credential.documentId,
+				{
+					...values,
+					credential_status: "disconnected",
+					error_message: "Please refresh your access token first",
+					access_token: "",
+					refresh_token: "",
+				},
+			);
 			if (res.success) {
 				toast.success(t("linkedin.toast.success.credentialsUpdated"));
 				router.refresh();

@@ -1,5 +1,6 @@
 "use client";
 
+import type { ImportRecord } from "@nowcrm/services";
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -20,7 +21,6 @@ import {
 	getImportProgressMap,
 	getPreviousImports,
 } from "@/lib/actions/import/fetch-import";
-import type { ImportRecord } from "@nowcrm/services";
 
 interface PreviousImportsModalProps {
 	isOpen: boolean;

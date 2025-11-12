@@ -1,6 +1,13 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import {
+	CommunicationChannel,
+	type CommunicationChannelKeys,
+	type CompositionItem,
+	type DocumentId,
+	type sendToChannelsData,
+} from "@nowcrm/services";
 import { Linkedin } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -32,7 +39,6 @@ import {
 } from "@/lib/actions/channels/get-channel-throttle";
 import { getComposition } from "@/lib/actions/composer/get-composition";
 import { getUnipileIdentity } from "@/lib/actions/unipile/get-unipile-identity";
-import { CommunicationChannel, CommunicationChannelKeys, CompositionItem, DocumentId, sendToChannelsData } from "@nowcrm/services";
 
 export interface LinkedinInvitesChannelContentProps {
 	mode?: "composer" | "mass_actions";
@@ -62,7 +68,9 @@ export function LinkedinInvitesChannelContent({
 		useState<ChannelThrottleResponse | null>(null);
 
 	React.useEffect(() => {
-		getChannelThrottle(currentChannel.toLowerCase() as CommunicationChannelKeys).then((res) => {
+		getChannelThrottle(
+			currentChannel.toLowerCase() as CommunicationChannelKeys,
+		).then((res) => {
 			if (res.success && res.data) {
 				const safeThrottle = res.data.throttle > 0 ? res.data.throttle : 3;
 				const safeMaxRate =
@@ -233,7 +241,9 @@ export function LinkedinInvitesChannelContent({
 
 				const matchingItem = allItems.find((item) => {
 					const name = item.channel?.name;
-					console.log(` checking item.id=${item.documentId}, channel.name="${name}"`);
+					console.log(
+						` checking item.id=${item.documentId}, channel.name="${name}"`,
+					);
 					return name?.toLowerCase() === channelLower;
 				});
 

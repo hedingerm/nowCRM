@@ -1,7 +1,11 @@
 "use server";
+import type { DocumentId } from "@nowcrm/services";
+import {
+	campaignsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { DocumentId } from "@nowcrm/services";
-import { campaignsService, handleError, StandardResponse } from "@nowcrm/services/server";
 export async function deleteCampaignAction(
 	id: DocumentId,
 ): Promise<StandardResponse<null>> {
@@ -14,7 +18,7 @@ export async function deleteCampaignAction(
 		};
 	}
 	try {
-		const res = await campaignsService.delete(id,session.jwt);
+		const res = await campaignsService.delete(id, session.jwt);
 		return res;
 	} catch (error) {
 		return handleError(error);

@@ -1,5 +1,6 @@
 "use client";
 
+import type { DocumentId } from "@nowcrm/services";
 import {
 	type ColumnDef,
 	type ExpandedState,
@@ -32,7 +33,6 @@ import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { DataTablePagination } from "./dataTablePagination";
 import { DataTableViewOptions } from "./dataTableViewOptions";
-import { DocumentId } from "@nowcrm/services";
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];

@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { SettingCredential } from "@nowcrm/services";
 import {
 	AlertCircle,
 	DollarSign,
@@ -48,7 +49,6 @@ import {
 	getStatusColor,
 	getStatusIcon,
 } from "@/lib/static/healthCheckStatuses";
-import { SettingCredential } from "@nowcrm/services";
 
 interface TelegramHealthCheckProps {
 	telegram_credential: Omit<SettingCredential, "setting">;
@@ -87,11 +87,14 @@ export function TelegramHealthCheck({
 		const { default: toast } = await import("react-hot-toast");
 		setIsSubmitting(true);
 		try {
-			const res = await updateSettingCredentials(telegram_credential.documentId, {
-				...values,
-				credential_status: "disconnected",
-				error_message: "Please at first refresh your access token",
-			});
+			const res = await updateSettingCredentials(
+				telegram_credential.documentId,
+				{
+					...values,
+					credential_status: "disconnected",
+					error_message: "Please at first refresh your access token",
+				},
+			);
 			if (res.success) {
 				toast.success(t.telegram.toast.success.credentialsUpdated);
 				router.refresh();

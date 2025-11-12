@@ -1,7 +1,11 @@
 "use server";
+import type { DocumentId } from "@nowcrm/services";
+import {
+	type BaseServiceName,
+	handleError,
+	ServiceFactory,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { DocumentId } from "@nowcrm/services";
-import { BaseServiceName, handleError, ServiceFactory } from "@nowcrm/services/server";
 export async function DeleteData(serviceName: BaseServiceName, id: DocumentId) {
 	const session = await auth();
 	if (!session) {

@@ -1,5 +1,6 @@
 "use client";
 
+import { aiModels, getLanguageLabel, languages } from "@nowcrm/services";
 import {
 	AlertCircle,
 	Brain,
@@ -43,7 +44,6 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { aiModels, getLanguageLabel, languages } from "@nowcrm/services";
 
 interface CompositionOverviewProps {
 	form: UseFormReturn<any>;

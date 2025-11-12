@@ -1,12 +1,12 @@
 // ContactsMassActions.tsx
 "use client";
 
+import type { DocumentId } from "@nowcrm/services";
 import {
 	type ActionsConfig,
 	massActionsGenerator,
 } from "@/components/generativeComponents/MassActionsGenerator";
 import { MassRemoveTasks } from "./massDeleteTasks";
-import { DocumentId } from "@nowcrm/services";
 
 // Get your translations/messages
 

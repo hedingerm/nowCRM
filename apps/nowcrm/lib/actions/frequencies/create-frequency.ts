@@ -1,8 +1,12 @@
 // actions/deleteContactAction.ts
 "use server";
+import type { Frequency } from "@nowcrm/services";
+import {
+	frequenciesService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { Frequency } from "@nowcrm/services";
-import { frequenciesService, handleError, StandardResponse } from "@nowcrm/services/server";
 
 export async function createFrequency(
 	name: string,
@@ -17,10 +21,13 @@ export async function createFrequency(
 	}
 
 	try {
-		const res = await frequenciesService.create({
-			name,
-			publishedAt: new Date(),
-		}, session.jwt);
+		const res = await frequenciesService.create(
+			{
+				name,
+				publishedAt: new Date(),
+			},
+			session.jwt,
+		);
 		return res;
 	} catch (error) {
 		return handleError(error);

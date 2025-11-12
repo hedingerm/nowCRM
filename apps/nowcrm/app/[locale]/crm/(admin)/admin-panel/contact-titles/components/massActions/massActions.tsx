@@ -1,12 +1,12 @@
 // ContactTitlesMassActions.tsx
 "use client";
 
+import type { DocumentId } from "@nowcrm/services";
 import {
 	type ActionsConfig,
 	massActionsGenerator,
 } from "@/components/generativeComponents/MassActionsGenerator";
 import { MassDeleteContactTitles } from "./massDeleteContactTitles";
-import { DocumentId } from "@nowcrm/services";
 
 // Define the actions configuration for contact titles
 const actionsConfig: ActionsConfig = {

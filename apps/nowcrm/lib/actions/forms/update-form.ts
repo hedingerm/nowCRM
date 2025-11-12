@@ -1,11 +1,21 @@
 // contactsapp/lib/actions/forms/updateForm.ts
 "use server";
 
+import type {
+	CustomForm_FormItemEntity,
+	DocumentId,
+	Form_FormEntity,
+	FormEntity,
+	StrapiImageFormat,
+} from "@nowcrm/services";
+import {
+	formItemsService,
+	formsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-
 import { getFormBySlugOrId } from "./get-form";
-import { CustomForm_FormItemEntity, DocumentId, Form_FormEntity, FormEntity, StrapiImageFormat } from "@nowcrm/services";
-import { formItemsService, formsService, handleError, StandardResponse } from "@nowcrm/services/server";
 export async function updateForm(
 	formId: DocumentId,
 	values: Partial<Form_FormEntity>,
@@ -36,29 +46,40 @@ export async function updateForm(
 
 		const existingItems = currentForm.data[0].form_items || [];
 		const existingIds = existingItems.map((fi) => fi.documentId);
-		const incomingIds = (items ?? []).filter((i) => i.documentId).map((i) => i.documentId!);
+		const incomingIds = (items ?? [])
+			.filter((i) => i.documentId)
+			.map((i) => i.documentId!);
 		const toDelete = existingIds.filter((eid) => !incomingIds.includes(eid));
-		await Promise.all(toDelete.map((eid) => formsService.delete(eid, session.jwt)));
+		await Promise.all(
+			toDelete.map((eid) => formsService.delete(eid, session.jwt)),
+		);
 
 		if (items && items.length > 0) {
 			await Promise.all(
 				items.map(async (item) => {
 					if (item.documentId) {
-						await formItemsService.update(item.documentId, {
-							name: item.name,
-							type: item.type,
-							label: item.label,
-							options: item.options,
-							rank: item.rank,
-							required: item.required ?? false,
-							hidden: item.hidden ?? false,
-						},session.jwt);
+						await formItemsService.update(
+							item.documentId,
+							{
+								name: item.name,
+								type: item.type,
+								label: item.label,
+								options: item.options,
+								rank: item.rank,
+								required: item.required ?? false,
+								hidden: item.hidden ?? false,
+							},
+							session.jwt,
+						);
 					} else {
 						const { ...form_item_fields } = item;
-						await formItemsService.create({
-							...form_item_fields,
-							form: formId,
-						},session.jwt);
+						await formItemsService.create(
+							{
+								...form_item_fields,
+								form: formId,
+							},
+							session.jwt,
+						);
 					}
 				}),
 			);
@@ -111,7 +132,6 @@ export async function eraseCoverOrLogo(
 	strapiImage: StrapiImageFormat,
 	targetField: string,
 ): Promise<string> {
-
 	const session = await auth();
 	if (!session) {
 		return "Unauthorized";
@@ -120,8 +140,11 @@ export async function eraseCoverOrLogo(
 		throw new Error("Invalid image format: missing id.");
 	}
 
-	const result = await formsService.deleteCoverOrLogo(Number(strapiImage.id), session.jwt);
-	
+	const result = await formsService.deleteCoverOrLogo(
+		Number(strapiImage.id),
+		session.jwt,
+	);
+
 	if (!result.success) {
 		throw new Error(`Failed to delete image from field ${targetField}.`);
 	}

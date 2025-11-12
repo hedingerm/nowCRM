@@ -2,14 +2,13 @@
 
 "use server";
 
+import { usersService } from "@nowcrm/services/server";
 import { cookies } from "next/headers";
 import { verifyTotpToken } from "@/lib/actions/profile/edit-profile";
 import { decryptTotpSecret } from "@/lib/actions/profile/encryption-helpers";
-
 import { completeLoginAfter2FA } from "@/lib/actions/user/sign-in-action";
-import { RouteConfig } from "@/lib/config/RoutesConfig";
-import { usersService } from "@nowcrm/services/server";
 import { env } from "@/lib/config/envConfig";
+import { RouteConfig } from "@/lib/config/RoutesConfig";
 
 interface VerifyOtpData {
 	otp: string;
@@ -32,7 +31,7 @@ export async function verifyOtpAction(data: VerifyOtpData) {
 		const userId = Number.parseInt(pendingUserIdCookie.value);
 
 		// Get user data to verify 2FA
-		const user = await usersService.getById(userId,env.CRM_STRAPI_API_TOKEN);
+		const user = await usersService.getById(userId, env.CRM_STRAPI_API_TOKEN);
 
 		if (!user) {
 			throw new Error("User not found");

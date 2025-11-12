@@ -1,8 +1,8 @@
 // actions/deleteContactAction.ts
 "use server";
+import { handleError, type StandardResponse } from "@nowcrm/services/server";
 import { auth } from "@/auth";
 import { env } from "@/lib/config/envConfig";
-import { handleError, StandardResponse } from "@nowcrm/services/server";
 
 export async function refreshAccessLinkedin(): Promise<
 	StandardResponse<string>
@@ -16,7 +16,7 @@ export async function refreshAccessLinkedin(): Promise<
 		};
 	}
 	try {
-		const url = `${env.CRM_COMPOSER_API_URL}send-to-channels/get-callback-linkedin`;
+		const url = `${env.COMPOSER_URL}send-to-channels/get-callback-linkedin`;
 		const rez = await fetch(url, {
 			method: "GET",
 			headers: {

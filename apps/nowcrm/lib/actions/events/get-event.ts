@@ -1,9 +1,13 @@
 // lib/actions/events/getEvents.ts
 "use server";
 
+import type { DocumentId, Event, StrapiQuery } from "@nowcrm/services";
+import {
+	eventsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { DocumentId, Event, StrapiQuery } from "@nowcrm/services";
-import { eventsService, handleError, StandardResponse } from "@nowcrm/services/server";
 
 export async function getEventsByCompositionId(
 	compositionItemId: DocumentId,
@@ -51,7 +55,7 @@ export async function getEventsByCompositionId(
 			},
 		};
 
-		const res = await eventsService.find(session.jwt,query);
+		const res = await eventsService.find(session.jwt, query);
 		return res;
 	} catch (e) {
 		return handleError(e);

@@ -1,8 +1,7 @@
-
 import { API_ROUTES_STRAPI } from "../api-routes/api-routes-strapi";
 import { envServices } from "../envConfig";
-import { handleError, handleResponse, StandardResponse } from "../server";
-import Asset from "../types/common/asset";
+import { handleError, handleResponse, type StandardResponse } from "../server";
+import type { Asset } from "../types/common/asset";
 import type { Form_User, strapi_user, User } from "../types/user";
 import BaseService from "./common/base.service";
 
@@ -84,7 +83,7 @@ class UsersService extends BaseService<User, Form_User> {
 			}
 
 			const updatedUser = await response.json();
-			return updatedUser as User ;
+			return updatedUser as User;
 		} catch (error) {
 			console.error(
 				`Error in updateProfile service for user ${userId}:`,
@@ -98,8 +97,10 @@ class UsersService extends BaseService<User, Form_User> {
 		}
 	}
 
-
-	async forgotPassword(email: string, token: string): Promise<StandardResponse<null>> {
+	async forgotPassword(
+		email: string,
+		token: string,
+	): Promise<StandardResponse<null>> {
 		const url = `${envServices.STRAPI_URL}${API_ROUTES_STRAPI.FORGOT_PASSWORD}`;
 
 		try {
@@ -156,7 +157,7 @@ class UsersService extends BaseService<User, Form_User> {
 				}),
 			});
 
-			const data = await response.json() as any;
+			const data = (await response.json()) as any;
 
 			if (data.error) {
 				// Invalid credentials or other error
@@ -188,9 +189,9 @@ class UsersService extends BaseService<User, Form_User> {
 				throw new Error(`Failed to fetch user. Status: ${response.status}`);
 			}
 
-			const user: User = await response.json() as User;
+			const user: User = (await response.json()) as User;
 			return user;
-		} catch (error) {
+		} catch (_error) {
 			return null;
 		}
 	}
@@ -212,6 +213,54 @@ class UsersService extends BaseService<User, Form_User> {
 		} catch (error: any) {
 			console.error("Error registering user:", error);
 			return handleError<null>(error);
+		}
+	}
+	async login(userData: {
+		identifier: string;
+		password: string;
+		token: string;
+	}): Promise<StandardResponse<strapi_user>> {
+		const url = `${envServices.STRAPI_URL}${API_ROUTES_STRAPI.AUTH_LOGIN}`;
+
+		try {
+			const response = await fetch(url, {
+				method: "POST",
+				headers: this.getHeaders(true, userData.token),
+				body: JSON.stringify(userData),
+			});
+			const data = (await response.json()) as any;
+			if (data.error) {
+				if (data.error.status === 403) {
+					return {
+						data: null,
+						status: data.error.status,
+						success: false,
+						errorMessage:
+							"Api token used for loggin is missing access to user-permissions table",
+					};
+				}
+				return {
+					data: null,
+					status: data.error.status,
+					success: false,
+					errorMessage: `${data.error.message}`,
+				};
+			}
+
+			await this.update(data.user.id, { jwt_token: data.jwt }, userData.token);
+
+			return {
+				data: data,
+				status: 200,
+				success: true,
+			};
+		} catch (error: any) {
+			return {
+				data: null,
+				status: 400,
+				success: false,
+				errorMessage: `Error logging in user: ${error}`,
+			};
 		}
 	}
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { CommunicationChannel, type Setting } from "@nowcrm/services";
 import {
 	AlertCircle,
 	DollarSign,
@@ -20,7 +21,6 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { createSettingCredential } from "@/lib/actions/settings/credentials/create-settings-credentials";
-import { CommunicationChannel, Setting } from "@nowcrm/services";
 import { EmailHealthCheck } from "./channels/email";
 import { LinkedInHealthCheck } from "./channels/linkedIn";
 import { SmsHealthCheck } from "./channels/sms";
@@ -31,7 +31,7 @@ import { WhatsAppHealthCheck } from "./channels/whatsapp";
 import { WordpressHealthCheck } from "./channels/wordpress";
 
 interface ChannelSettingsFormProps {
-		settings: Setting;
+	settings: Setting;
 }
 
 export function ChannelHealthCheck({ settings }: ChannelSettingsFormProps) {

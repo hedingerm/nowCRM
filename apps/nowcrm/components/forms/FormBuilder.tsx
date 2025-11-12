@@ -391,19 +391,17 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ formId }) => {
 			};
 
 			// change to Custom_FormEntityItem
-			const newFormItems: any[] = (form_items || []).map(
-				(item) => ({
-					...(item.id > 0 ? { id: item.id } : {}),
-					name: item.name,
-					type: item.type,
-					label: item.label,
-					options: item.options,
-					rank: item.rank,
-					required: item.required ?? false,
-					hidden: item.hidden ?? false,
-					publishedAt: new Date(),
-				}),
-			);
+			const newFormItems: any[] = (form_items || []).map((item) => ({
+				...(item.id > 0 ? { id: item.id } : {}),
+				name: item.name,
+				type: item.type,
+				label: item.label,
+				options: item.options,
+				rank: item.rank,
+				required: item.required ?? false,
+				hidden: item.hidden ?? false,
+				publishedAt: new Date(),
+			}));
 
 			console.log("Sending payload to updateForm:", payload, newFormItems);
 			const response = await updateForm(formId, payload, newFormItems);
@@ -491,7 +489,9 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ formId }) => {
 								variant="outline"
 								size="sm"
 								onClick={() => {
-									const resultsUrl = RouteConfig.forms.results(formData.documentId);
+									const resultsUrl = RouteConfig.forms.results(
+										formData.documentId,
+									);
 									const win = window.open(
 										resultsUrl,
 										"_blank",
@@ -1126,7 +1126,7 @@ const FormBuilderCustomization: React.FC<FormBuilderCustomizationProps> = ({
 			const { id: assetId, url } = await uploadCoverOrLogo(fd, imageType); // destructure both
 
 			onChange(imageType, {
-				id: String(assetId), // keep media id so deletions work
+				id: assetId, // keep media id so deletions work
 				url,
 				name: file.name,
 				size: file.size,
@@ -1135,7 +1135,7 @@ const FormBuilderCustomization: React.FC<FormBuilderCustomizationProps> = ({
 				path: file.name,
 				height: 0,
 				width: 0,
-			});
+			} as Asset);
 
 			toast.success(`${imageType === "logo" ? "Logo" : "Cover"} uploaded.`);
 		} catch (err) {
@@ -1152,14 +1152,14 @@ const FormBuilderCustomization: React.FC<FormBuilderCustomizationProps> = ({
 
 		try {
 			if (currentImage?.id) {
-				await eraseCoverOrLogo(currentImage, imageType);
+				await eraseCoverOrLogo(currentImage as any, imageType);
 			}
 
 			if (currentImage.url?.startsWith("blob:")) {
 				URL.revokeObjectURL(currentImage.url);
 			}
 
-			onChange(imageType, undefined);
+			onChange(imageType, undefined as any);
 			toast.success(
 				`${imageType === "logo" ? "Logo" : "Cover"} image removed.`,
 			);
@@ -1504,13 +1504,17 @@ const FormFieldDisplay: React.FC<FormFieldDisplayProps> = ({
 // --- Child Component: SortableFormField ---
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import type {
+	Asset,
+	DocumentId,
+	FormEntity,
+	FormEntityItem,
+	FormEntityItemType,
+} from "@nowcrm/services";
 import { shareForm } from "@/app/[locale]/crm/forms/components/columns/shareForm";
 import { RouteConfig } from "@/lib/config/RoutesConfig";
 import EmbedDrawer from "../embedDrawer";
 import GETParamHelpModal from "./GETParamsPreviewHelper";
-import { DocumentId, Form_FormEntity, FormEntity, FormEntityItem, FormEntityItemType } from "@nowcrm/services";
-
-// import { GripVertical } from "lucide-react"; // Already imported
 
 interface SortableFormFieldProps {
 	field: FormEntityItem;

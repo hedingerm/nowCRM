@@ -1,9 +1,9 @@
 "use server";
 
+import type { BaseServiceName } from "@nowcrm/services";
+import { ServiceFactory } from "@nowcrm/services/server";
 import { auth } from "@/auth";
 import { fieldsFromVisible } from "@/lib/generateFieldsPopulate";
-import { BaseServiceName } from "@nowcrm/services";
-import { ServiceFactory } from "@nowcrm/services/server";
 
 export async function fetchDataForVisibleColumns(input: {
 	visibleIds: string[];

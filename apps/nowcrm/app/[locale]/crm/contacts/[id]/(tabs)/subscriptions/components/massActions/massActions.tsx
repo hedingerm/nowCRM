@@ -1,6 +1,7 @@
 // ContactsMassActions.tsx
 "use client";
 
+import type { DocumentId } from "@nowcrm/services";
 import {
 	type ActionsConfig,
 	massActionsGenerator,
@@ -8,7 +9,6 @@ import {
 import { massActivateSubscriptions } from "./massActivateSubscriptions";
 import { massDeactivateSubscriptions } from "./massDeactivateSubscription";
 import { massDeleteSubscriptions } from "./massDeleteSubscriptions";
-import { DocumentId } from "@nowcrm/services";
 
 // Get your translations/messages
 

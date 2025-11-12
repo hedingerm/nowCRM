@@ -1,5 +1,6 @@
 "use client";
 
+import type { ImportRecord, JobCompositionRecord } from "@nowcrm/services";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { Loader2 } from "lucide-react";
 import { useMessages } from "next-intl";
@@ -24,7 +25,6 @@ import {
 	getImportProgressMap,
 	getPreviousImports,
 } from "@/lib/actions/import/fetch-import";
-import { JobCompositionRecord, ImportRecord } from "@nowcrm/services";
 
 interface PreviousJobsModalProps {
 	isOpen: boolean;

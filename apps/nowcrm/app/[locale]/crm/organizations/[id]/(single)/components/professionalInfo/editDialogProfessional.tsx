@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { Organization } from "@nowcrm/services";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -25,7 +26,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { updateOrganization } from "@/lib/actions/organizations/update-organization";
-import { Organization } from "@nowcrm/services";
 
 const formSchema = z.object({
 	organization_type: z
@@ -107,7 +107,10 @@ export function EditDialogOrganizationProfessional({
 	});
 
 	async function handleSubmit(values: FormValues) {
-		const res = await updateOrganization(organization.documentId, values as any);
+		const res = await updateOrganization(
+			organization.documentId,
+			values as any,
+		);
 		if (!res.success) {
 			toast.error(`Error updating organization: ${res.errorMessage}`);
 		} else {

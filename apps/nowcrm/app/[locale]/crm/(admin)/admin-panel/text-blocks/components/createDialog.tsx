@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { LanguageKeys } from "@nowcrm/services";
 import { HelpCircle, ListPlus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMessages } from "next-intl";
@@ -33,7 +34,6 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { LanguageKeys } from "@nowcrm/services";
 
 export default function CreateTextBlockDialog() {
 	const t = useMessages().Admin.TextBlock;

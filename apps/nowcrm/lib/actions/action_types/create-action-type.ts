@@ -1,9 +1,12 @@
 // actions/deleteContactAction.ts
 "use server";
+import type { ActionType } from "@nowcrm/services";
+import {
+	actionTypeService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { type ActionType } from "@nowcrm/services";
-
-import { actionTypeService, handleError, StandardResponse } from "@nowcrm/services/server";
 export async function createActionType(
 	name: string,
 ): Promise<StandardResponse<ActionType>> {
@@ -17,10 +20,13 @@ export async function createActionType(
 	}
 
 	try {
-		const res = await actionTypeService.create( {
-			name,
-			publishedAt: new Date(),
-		},session.jwt,);
+		const res = await actionTypeService.create(
+			{
+				name,
+				publishedAt: new Date(),
+			},
+			session.jwt,
+		);
 		return res;
 	} catch (error) {
 		return handleError(error);

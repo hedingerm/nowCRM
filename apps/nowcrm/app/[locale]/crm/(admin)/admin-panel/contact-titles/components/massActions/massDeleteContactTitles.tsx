@@ -1,7 +1,7 @@
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
 import { deleteContactTitleAction } from "@/lib/actions/contact-titles/delete-contact-title";
-import { DocumentId } from "@nowcrm/services";
 
 export async function MassDeleteContactTitles(contactTitleIds: DocumentId[]) {
 	try {

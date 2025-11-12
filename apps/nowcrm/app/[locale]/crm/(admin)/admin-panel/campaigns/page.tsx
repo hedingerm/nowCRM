@@ -1,13 +1,13 @@
+import type { PaginationParams } from "@nowcrm/services";
+import { campaignsService } from "@nowcrm/services/server";
 import type { Session } from "next-auth";
 import { getTranslations } from "next-intl/server";
 import { auth } from "@/auth";
 import DataTable from "@/components/dataTable/dataTable";
 import ErrorMessage from "@/components/ErrorMessage";
-import { PaginationParams } from "@nowcrm/services";
 import { columns } from "./components/columns/campaignsColumns";
 import createCampaignDialog from "./components/createDialog";
 import MassActionsCampaigns from "./components/massActions/massActions";
-import { campaignsService } from "@nowcrm/services/server";
 
 export default async function Page(props: {
 	searchParams: Promise<PaginationParams>;

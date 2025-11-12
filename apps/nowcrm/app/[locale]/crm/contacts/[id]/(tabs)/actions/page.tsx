@@ -1,14 +1,13 @@
+import type { PaginationParams } from "@nowcrm/services";
+import { actionsService } from "@nowcrm/services/server";
 import type { Metadata } from "next";
 import type { Session } from "next-auth";
 import { getTranslations } from "next-intl/server";
 import { auth } from "@/auth";
 import DataTable from "@/components/dataTable/dataTable";
 import ErrorMessage from "@/components/ErrorMessage";
-
 import { columns } from "./components/columns/actionsColumns";
 import ActionsMassActions from "./components/massActions/massActions";
-import { PaginationParams } from "@nowcrm/services";
-import { actionsService } from "@nowcrm/services/server";
 
 export const metadata: Metadata = {
 	title: "Contact actions",

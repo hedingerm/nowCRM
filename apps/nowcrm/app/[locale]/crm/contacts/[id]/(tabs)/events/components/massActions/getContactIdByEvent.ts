@@ -1,4 +1,4 @@
-import { DocumentId } from "@nowcrm/services";
+import type { DocumentId } from "@nowcrm/services";
 
 export function getContactIdByEventId(
 	eventId: DocumentId,

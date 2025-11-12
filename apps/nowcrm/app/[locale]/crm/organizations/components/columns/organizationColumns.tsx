@@ -1,4 +1,5 @@
 "use client";
+import type { Organization } from "@nowcrm/services";
 import type { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
@@ -17,10 +18,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { RouteConfig } from "@/lib/config/RoutesConfig";
 import { formatDateTimeStrapi } from "@/lib/strapiDate";
-import type { Organization } from "@nowcrm/services";
 import { TagsCell } from "../../../contacts/components/columns/tags/TagCell";
 import { TagFilterHeader } from "../../../contacts/components/columns/tags/TagFilterHeader";
-
 
 const ViewActions: React.FC<{ organization: Organization }> = ({
 	organization,
@@ -49,7 +48,9 @@ const ViewActions: React.FC<{ organization: Organization }> = ({
 							const { duplicateOrganizationAction } = await import(
 								"@/lib/actions/organizations/duplicate-organization"
 							);
-							const res = await duplicateOrganizationAction(organization.documentId);
+							const res = await duplicateOrganizationAction(
+								organization.documentId,
+							);
 							if (!res.success) {
 								toast.error(
 									res.errorMessage ?? "Failed to duplicate organization",
@@ -67,9 +68,13 @@ const ViewActions: React.FC<{ organization: Organization }> = ({
 							const { deleteOrganizationAction } = await import(
 								"@/lib/actions/organizations/delete-organization"
 							);
-							const res = await deleteOrganizationAction(organization.documentId);
+							const res = await deleteOrganizationAction(
+								organization.documentId,
+							);
 							if (!res.success) {
-								toast.error(res.errorMessage ?? "Failed to delete organization");
+								toast.error(
+									res.errorMessage ?? "Failed to delete organization",
+								);
 								return;
 							}
 							toast.success("Organization deleted");

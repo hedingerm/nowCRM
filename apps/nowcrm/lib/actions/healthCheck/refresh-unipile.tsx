@@ -1,9 +1,8 @@
 // actions/deleteContactAction.ts
 "use server";
+import { handleError, type StandardResponse } from "@nowcrm/services/server";
 import { auth } from "@/auth";
 import { env } from "@/lib/config/envConfig";
-import { handleError, StandardResponse } from "@nowcrm/services/server";
-
 
 export async function AddNewIdentityUnipile(
 	name: string,
@@ -19,8 +18,8 @@ export async function AddNewIdentityUnipile(
 	}
 	try {
 		const url = reconnect_account
-			? `${env.CRM_COMPOSER_API_URL}send-to-channels/get-callback-unipile?name=${name}&recconect=${reconnect_account}`
-			: `${env.CRM_COMPOSER_API_URL}send-to-channels/get-callback-unipile?name=${name}`;
+			? `${env.COMPOSER_URL}send-to-channels/get-callback-unipile?name=${name}&recconect=${reconnect_account}`
+			: `${env.COMPOSER_URL}send-to-channels/get-callback-unipile?name=${name}`;
 		const rez = await fetch(url, {
 			method: "GET",
 			headers: {

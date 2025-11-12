@@ -2,10 +2,18 @@
 
 "use server";
 
+import {
+	checkDocumentId,
+	type DocumentId,
+	type FormEntity,
+} from "@nowcrm/services";
+import {
+	formsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
+import type { Session } from "next-auth";
 import { env } from "@/lib/config/envConfig";
-import { checkDocumentId, DocumentId, FormEntity } from "@nowcrm/services";
-import { formsService, handleError, StandardResponse } from "@nowcrm/services/server";
-import { Session } from "next-auth";
 
 /**
  * Server action to fetch a form by its slug/ID
@@ -31,7 +39,7 @@ export async function getFormBySlugOrId(
 			}
 		}
 		// 1. Build filters dynamically
-		const isId =  checkDocumentId(identifier)
+		const isId = checkDocumentId(identifier);
 
 		const filters = isId
 			? { docuemntId: { $eq: identifier } }

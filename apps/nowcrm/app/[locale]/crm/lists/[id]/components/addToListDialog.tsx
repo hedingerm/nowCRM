@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { DocumentId } from "@nowcrm/services";
 import { ListPlus } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useMessages } from "next-intl";
@@ -21,7 +22,6 @@ import {
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
 import { addContactToList } from "@/lib/actions/lists/add-contact-to-list";
-import { DocumentId } from "@nowcrm/services";
 
 const formSchema = z.object({
 	contact: z.object(
@@ -45,10 +45,7 @@ export default function AddToListDialog() {
 		},
 	});
 	async function onSubmit(values: z.infer<typeof formSchema>) {
-		const res = await addContactToList(
-			values.contact.value,
-			params.id,
-		);
+		const res = await addContactToList(values.contact.value, params.id);
 		if (!res.success) {
 			toast.error(`${t.addToListError} ${res.errorMessage}`);
 		} else {

@@ -1,5 +1,11 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
+import {
+	aiModels,
+	getLanguageLabel,
+	getLanguageValue,
+	type ReferenceComposition,
+} from "@nowcrm/services";
 import { ArrowLeft, Edit, HelpCircle, ListPlus, Loader2 } from "lucide-react";
 import { useMessages } from "next-intl";
 import { useState } from "react";
@@ -31,8 +37,6 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { getEmailChannel } from "@/lib/actions/channels/get-email-channel";
-import { aiModels, getLanguageLabel, getLanguageValue, ReferenceComposition } from "@nowcrm/services";
-
 
 interface InitialFormProps {
 	onSubmit: (data: ReferenceComposition) => void;

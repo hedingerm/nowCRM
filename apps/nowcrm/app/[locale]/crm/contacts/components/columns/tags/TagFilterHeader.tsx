@@ -1,5 +1,6 @@
 "use client";
 
+import type { Tag } from "@nowcrm/services";
 import { Filter, TagIcon, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useUrlState } from "@/components/dataTable/dataTableContacts";
@@ -14,8 +15,6 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { fetchTags } from "@/lib/actions/tags/fetch-tags";
-import { Tag } from "@nowcrm/services";
-
 
 export function TagFilterHeader() {
 	const [tags, setTags] = useState<Tag[]>([]);
@@ -38,7 +37,9 @@ export function TagFilterHeader() {
 		updateUrl?.({ tag: tagId });
 	};
 
-	const selectedTagData = tags.find((t) => String(t.documentId) === selectedTag);
+	const selectedTagData = tags.find(
+		(t) => String(t.documentId) === selectedTag,
+	);
 
 	return (
 		<div className="flex items-center gap-2">
@@ -92,7 +93,7 @@ export function TagFilterHeader() {
 								style={{ backgroundColor: tag.color }}
 							/>
 							<span className="flex-1">{tag.name}</span>
-							{selectedTag ===(tag.documentId) && (
+							{selectedTag === tag.documentId && (
 								<div className="h-2 w-2 rounded-full bg-primary" />
 							)}
 						</DropdownMenuItem>

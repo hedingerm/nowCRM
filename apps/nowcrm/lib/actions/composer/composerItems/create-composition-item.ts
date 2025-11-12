@@ -1,8 +1,17 @@
 // actions/deleteContactAction.ts
 "use server";
+import type {
+	CommunicationChannelKeys,
+	CompositionItem,
+	DocumentId,
+} from "@nowcrm/services";
+import {
+	channelsService,
+	compositionItemsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { CommunicationChannelKeys, CompositionItem, DocumentId } from "@nowcrm/services";
-import { channelsService, compositionItemsService, handleError, StandardResponse } from "@nowcrm/services/server";
 
 export async function createCompositionItem(
 	composition_id: DocumentId,
@@ -21,14 +30,19 @@ export async function createCompositionItem(
 			filters: { name: { $eqi: channel_name } },
 		});
 		if (!channel.data || !channel.success) {
-			return handleError(new Error("Error creating composition: no channel found"));
+			return handleError(
+				new Error("Error creating composition: no channel found"),
+			);
 		}
-		const res = await compositionItemsService.create({
-			composition: composition_id,
-			channel: channel.data[0].documentId,
-			result: "-",
-			publishedAt: new Date(),
-		},session.jwt);
+		const res = await compositionItemsService.create(
+			{
+				composition: composition_id,
+				channel: channel.data[0].documentId,
+				result: "-",
+				publishedAt: new Date(),
+			},
+			session.jwt,
+		);
 		return res;
 	} catch (error) {
 		return handleError(error);

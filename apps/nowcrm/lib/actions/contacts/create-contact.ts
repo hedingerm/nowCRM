@@ -1,8 +1,12 @@
 // contactsapp/lib/actions/contacts/createContact.ts
 "use server";
+import type { Contact, Form_Contact } from "@nowcrm/services";
+import {
+	contactsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { Contact, Form_Contact } from "@nowcrm/services";
-import { contactsService, handleError, StandardResponse } from "@nowcrm/services/server";
 
 export async function createContact(
 	values: Partial<Form_Contact>,
@@ -16,7 +20,7 @@ export async function createContact(
 		};
 	}
 	try {
-		const res = await contactsService.create(values,session.jwt);
+		const res = await contactsService.create(values, session.jwt);
 		return res;
 	} catch (error) {
 		return handleError(error);

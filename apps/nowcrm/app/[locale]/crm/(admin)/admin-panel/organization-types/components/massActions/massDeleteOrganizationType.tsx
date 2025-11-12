@@ -1,10 +1,13 @@
 // actions/deleteContactAction.ts
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	handleError,
+	organizationTypesService,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-
-import { DocumentId } from "@nowcrm/services";
-import { handleError, organizationTypesService, StandardResponse } from "@nowcrm/services/server";
 
 export async function MassDeleteOrganizationTypes(
 	organizationTypes: DocumentId[],

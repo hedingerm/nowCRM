@@ -1,9 +1,12 @@
 "use server";
 
+import type { Form_SurveyItem, SurveyItem } from "@nowcrm/services";
+import {
+	handleError,
+	type StandardResponse,
+	surveyItemsService,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { Form_SurveyItem, SurveyItem } from "@nowcrm/services";
-import { handleError, StandardResponse, surveyItemsService } from "@nowcrm/services/server";
-
 
 export async function createSurveyItem(
 	values: Pick<Form_SurveyItem, "question" | "answer" | "survey">,
@@ -19,10 +22,13 @@ export async function createSurveyItem(
 	}
 
 	try {
-		const res = await surveyItemsService.create({
-			...values,
-			publishedAt: new Date(),
-		},session.jwt);
+		const res = await surveyItemsService.create(
+			{
+				...values,
+				publishedAt: new Date(),
+			},
+			session.jwt,
+		);
 		return res;
 	} catch (error) {
 		return handleError(error);

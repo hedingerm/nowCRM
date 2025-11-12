@@ -1,6 +1,7 @@
-import { auth } from "@/auth";
-import { Contact } from "@nowcrm/services";
+"use server";
+import type { Contact } from "@nowcrm/services";
 import { contactsService } from "@nowcrm/services/server";
+import { auth } from "@/auth";
 
 // Define all acceptable sort strings explicitly (type-safe)
 const SORT_OPTIONS = [
@@ -28,11 +29,11 @@ function getRandomSort(): SortOption {
  */
 export async function findRandomContact(): Promise<Contact | null> {
 	const randomSort = getRandomSort();
-    const session = await auth();
-    if(!session) {
-        return null;
-    }
-	const response = await contactsService.find(session?.jwt , {
+	const session = await auth();
+	if (!session) {
+		return null;
+	}
+	const response = await contactsService.find(session?.jwt, {
 		populate: {
 			subscriptions: { populate: ["id", "channel", "subscribedAt"] },
 			contact_interests: "*",

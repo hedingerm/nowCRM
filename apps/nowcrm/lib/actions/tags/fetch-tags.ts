@@ -1,8 +1,12 @@
 // actions/deleteContactAction.ts
 "use server";
+import type { Tag } from "@nowcrm/services";
+import {
+	handleError,
+	type StandardResponse,
+	tagsService,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { Tag } from "@nowcrm/services";
-import { handleError, StandardResponse, tagsService } from "@nowcrm/services/server";
 
 export async function fetchTags(): Promise<StandardResponse<Tag[]>> {
 	const session = await auth();
@@ -15,7 +19,7 @@ export async function fetchTags(): Promise<StandardResponse<Tag[]>> {
 	}
 
 	try {
-		const res = await tagsService.find(session.jwt, {sort: ["id:desc"]});
+		const res = await tagsService.find(session.jwt, { sort: ["id:desc"] });
 		return res;
 	} catch (error) {
 		return handleError(error);

@@ -1,57 +1,67 @@
+import {
+	checkDocumentId,
+	type DocumentId,
+	type Journey,
+	type JourneyStep,
+	type JourneyStepConnection,
+} from "@nowcrm/services";
+import { journeysService } from "@nowcrm/services/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import type { Edge, Node } from "reactflow";
+import { auth } from "@/auth";
 import { isValidTimeZone } from "@/lib/is-valid-timezone";
 import JourneyClient from "./client";
-import { journeysService } from "@nowcrm/services/server";
-import { checkDocumentId, DocumentId, Journey, JourneyStep, JourneyStepConnection } from "@nowcrm/services";
-import { auth } from "@/auth";
 
 export default async function JourneyPage(props: {
 	params: Promise<{ id: DocumentId }>;
 }) {
 	const params = await props.params;
-	const journeyId =params.id;
+	const journeyId = params.id;
 	const session = await auth();
 	if (checkDocumentId(journeyId)) {
 		return notFound();
 	}
 
-	const journeyResponse = await journeysService.findOne(journeyId, session?.jwt, {
-		populate: {
-			journey_steps: {
-				populate: {
-					connections_from_this_step: {
-						populate: {
-							target_step: true,
-							source_step: true,
-							journey_step_rules: {
-								populate: {
-									journey_step_rule_scores: true,
+	const journeyResponse = await journeysService.findOne(
+		journeyId,
+		session?.jwt,
+		{
+			populate: {
+				journey_steps: {
+					populate: {
+						connections_from_this_step: {
+							populate: {
+								target_step: true,
+								source_step: true,
+								journey_step_rules: {
+									populate: {
+										journey_step_rule_scores: true,
+									},
 								},
 							},
 						},
-					},
-					connections_to_this_step: {
-						populate: {
-							source_step: true,
-							journey_step_rules: {
-								populate: {
-									journey_step_rule_scores: true,
+						connections_to_this_step: {
+							populate: {
+								source_step: true,
+								journey_step_rules: {
+									populate: {
+										journey_step_rule_scores: true,
+									},
 								},
 							},
 						},
+						channel: true,
+						composition: true,
+						contacts: true,
+						identity: true,
+						additional_data: true,
+						type: true,
 					},
-					channel: true,
-					composition: true,
-					contacts: true,
-					identity: true,
-					additional_data: true,
-					type: true,
 				},
 			},
 		},
-	});
+	);
 
 	if (!journeyResponse.success || !journeyResponse.data) {
 		return notFound();

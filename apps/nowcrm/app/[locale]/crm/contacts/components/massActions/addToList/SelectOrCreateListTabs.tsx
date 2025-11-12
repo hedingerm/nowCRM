@@ -98,7 +98,7 @@ export default function SelectOrCreateListTabs({
 						</label>
 						<div className="relative z-50">
 							<AsyncSelect
-								serviceName="listService"
+								serviceName="listsService"
 								label="list"
 								onValueChange={setSelectedOption}
 								presetOption={selectedOption ? selectedOption : undefined}

@@ -1,6 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { CampaignCategory } from "@nowcrm/services";
+import { campaignCategoriesService } from "@nowcrm/services/server";
 import { ListPlus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMessages } from "next-intl";
@@ -10,7 +12,7 @@ import { GrAddCircle } from "react-icons/gr";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import {
-	Dialog,	
+	Dialog,
 	DialogContent,
 	DialogDescription,
 	DialogHeader,
@@ -35,11 +37,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-
 import { createCampaign } from "@/lib/actions/campaigns/create-campaign";
-import { CampaignCategory } from "@nowcrm/services";
-import { campaignCategoriesService } from "@nowcrm/services/server";
-
 
 export default function CreateCampaignDialog() {
 	const t = useMessages();
@@ -83,9 +81,7 @@ export default function CreateCampaignDialog() {
 		const res = await createCampaign(
 			values.name,
 			values.description,
-			values.campaignId
-				? (values.campaignId)
-				: undefined,
+			values.campaignId ? values.campaignId : undefined,
 		);
 		if (!res.success) {
 			toast.error(`${t.Admin.Campaign.toast.createError}: ${res.errorMessage}`);

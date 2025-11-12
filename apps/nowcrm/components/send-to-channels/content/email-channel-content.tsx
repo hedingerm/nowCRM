@@ -1,6 +1,13 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import {
+	CommunicationChannel,
+	type CommunicationChannelKeys,
+	type CompositionItem,
+	type DocumentId,
+	type sendToChannelsData,
+} from "@nowcrm/services";
 import { Mail } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -32,7 +39,6 @@ import {
 } from "@/lib/actions/channels/get-channel-throttle";
 import { getComposition } from "@/lib/actions/composer/get-composition";
 import { getUserIdentity } from "@/lib/actions/identities/get-user-identity";
-import { CommunicationChannel, CommunicationChannelKeys, CompositionItem, DocumentId, sendToChannelsData } from "@nowcrm/services";
 export interface EmailChannelContentProps {
 	mode: "composer" | "mass_actions";
 	composition_id?: DocumentId;
@@ -63,7 +69,9 @@ export function EmailChannelContent({
 		useState<ChannelThrottleResponse | null>(null);
 
 	React.useEffect(() => {
-		getChannelThrottle(currentChannel.toLowerCase() as CommunicationChannelKeys).then((res) => {
+		getChannelThrottle(
+			currentChannel.toLowerCase() as CommunicationChannelKeys,
+		).then((res) => {
 			if (res.success && res.data) {
 				const safeThrottle = res.data.throttle > 0 ? res.data.throttle : 30;
 				const safeMaxRate =
@@ -249,7 +257,9 @@ export function EmailChannelContent({
 
 				const matchingItem = allItems.find((item) => {
 					const name = item.channel?.name;
-					console.log(` checking item.id=${item.documentId}, channel.name="${name}"`);
+					console.log(
+						` checking item.id=${item.documentId}, channel.name="${name}"`,
+					);
 					return name?.toLowerCase() === channelLower;
 				});
 

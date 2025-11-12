@@ -1,8 +1,12 @@
 // actions/deleteContactAction.ts
 "use server";
+import type { Composition, DocumentId } from "@nowcrm/services";
+import {
+	compositionsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { Composition, DocumentId } from "@nowcrm/services";
-import { compositionsService, handleError, StandardResponse } from "@nowcrm/services/server";
 
 export async function getComposition(
 	id: DocumentId,
@@ -16,7 +20,7 @@ export async function getComposition(
 		};
 	}
 	try {
-		const identity = await compositionsService.findOne(id,session.jwt, {
+		const identity = await compositionsService.findOne(id, session.jwt, {
 			populate: {
 				"*": true,
 				composition_items: {

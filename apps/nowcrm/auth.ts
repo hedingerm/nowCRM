@@ -1,20 +1,23 @@
 // contactsapp/auth.ts
 import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
-import userService from "@/lib/services/new_type/users.service"
+import { usersService } from "@nowcrm/services/server"
 import { headers } from "next/headers";
 
 import { parse } from "cookie"; // make sure you're using named import
+import { env } from "./lib/config/envConfig";
 
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
+
+export const { handlers, signIn, signOut, auth }: any = NextAuth({
   providers: [
-    CredentialsProvider({
+    CredentialsProvider({ 
       name: "credentials",
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
+      //@ts-ignore
       authorize: async (credentials, req) => {
           if (!credentials?.password) return null;
 
@@ -40,7 +43,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             }
 
 
-            const user = await userService.getById(Number(pendingUserId));
+            const user = await usersService.getById(Number(pendingUserId),env.CRM_STRAPI_API_TOKEN);
             if (!user || user.email !== pendingEmail) {
               console.error("2FA login blocked: user mismatch or not found");
               return null;
@@ -58,9 +61,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           // ✅ Normal login flow
           if (!credentials?.email || !credentials?.password) return null;
 
-          const loginRes = await userService.login({
+          const loginRes = await usersService.login({
             identifier: credentials.email as string,
             password: credentials.password as string,
+            token: env.CRM_STRAPI_API_TOKEN,
           });
 
           if (!loginRes.success || !loginRes.data?.user) {
@@ -87,13 +91,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     jwt: async ({ token }) => {
 
 
-      const {default: userService} = await import('./lib/services/new_type/users.service')
-      const searchRes = await userService.find(
+      const {usersService} = await import('@nowcrm/services/server')
+      const searchRes = await usersService.find(
+        env.CRM_STRAPI_API_TOKEN,
         {
           populate: ["role", "image"],
           filters: ({ email: token.email }) as any, //any here is because of not normal behaviour of user permission routes on strapi,
-        },
-        true
+        }
       );
       if (
         searchRes.data &&

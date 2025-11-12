@@ -1,9 +1,16 @@
 // actions/deleteContactAction.ts
 "use server";
+import type {
+	DocumentId,
+	Form_SettingCredential,
+	SettingCredential,
+} from "@nowcrm/services";
+import {
+	handleError,
+	type StandardResponse,
+	settingCredentialsService,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { DocumentId, Form_SettingCredential, SettingCredential } from "@nowcrm/services";
-import { handleError, settingCredentialsService, StandardResponse } from "@nowcrm/services/server";
-
 
 export async function updateSettingCredentials(
 	id: DocumentId,
@@ -18,7 +25,7 @@ export async function updateSettingCredentials(
 		};
 	}
 	try {
-		const res = await settingCredentialsService.update(id, values,session.jwt);
+		const res = await settingCredentialsService.update(id, values, session.jwt);
 		return res;
 	} catch (error) {
 		return handleError(error);

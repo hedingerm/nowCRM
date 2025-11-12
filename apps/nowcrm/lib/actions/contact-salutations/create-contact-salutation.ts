@@ -1,8 +1,12 @@
 // actions/createContactSalutation.ts
 "use server";
+import type { ContactSalutation } from "@nowcrm/services";
+import {
+	contactSalutationsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { ContactSalutation } from "@nowcrm/services";
-import { contactSalutationsService, handleError, StandardResponse } from "@nowcrm/services/server";
 
 export async function createContactSalutation(
 	name: string,
@@ -16,10 +20,13 @@ export async function createContactSalutation(
 		};
 	}
 	try {
-		const res = await contactSalutationsService.create({
-			name: name,
-			publishedAt: new Date(),
-		},session.jwt);
+		const res = await contactSalutationsService.create(
+			{
+				name: name,
+				publishedAt: new Date(),
+			},
+			session.jwt,
+		);
 		return res;
 	} catch (error) {
 		return handleError(error);

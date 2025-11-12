@@ -1,5 +1,6 @@
 //  contactsapp/app/[locale]/crm/contacts/components/columns/ContactColumns.tsx
 "use client";
+import type { CommunicationChannelKeys, Contact } from "@nowcrm/services";
 import type { ColumnDef } from "@tanstack/react-table";
 import { ChevronDown, ChevronUp, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
@@ -21,7 +22,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { RouteConfig } from "@/lib/config/RoutesConfig";
 import { formatDateTimeStrapi } from "@/lib/strapiDate";
-import { CommunicationChannelKeys, Contact } from "@nowcrm/services";
 import { toNames } from "@/lib/utils";
 import { CountryFilterHeader } from "./countries/CountryFilterHeader";
 import { TagsCell } from "./tags/TagCell";
@@ -42,7 +42,9 @@ const ViewActions: React.FC<{ contact: Contact }> = ({ contact }) => {
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align="end">
 					<DropdownMenuLabel>{t.common.actions.actions}</DropdownMenuLabel>
-					<Link href={`${RouteConfig.contacts.single.base(contact.documentId)}`}>
+					<Link
+						href={`${RouteConfig.contacts.single.base(contact.documentId)}`}
+					>
 						<DropdownMenuItem>{t.common.actions.view}</DropdownMenuItem>
 					</Link>
 					<DropdownMenuSeparator />
@@ -242,7 +244,9 @@ export const columns: ColumnDef<Contact>[] = [
 				row.original.subscriptions
 					?.filter((sub) => !!sub?.active)
 					.map((sub) => sub?.channel?.name ?? null)
-					.filter((n): n is CommunicationChannelKeys => !!n && n.trim().length > 0)
+					.filter(
+						(n): n is CommunicationChannelKeys => !!n && n.trim().length > 0,
+					)
 					.join(", ") || "None";
 			return <p>{names}</p>;
 		},

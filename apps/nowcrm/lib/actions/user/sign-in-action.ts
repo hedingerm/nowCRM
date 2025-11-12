@@ -1,12 +1,10 @@
 "use server";
 
+import { usersService } from "@nowcrm/services/server";
 import { cookies } from "next/headers";
 import { signIn } from "@/auth";
-
-import { RouteConfig } from "@/lib/config/RoutesConfig";
-import { usersService } from "@nowcrm/services/server";
 import { env } from "@/lib/config/envConfig";
-
+import { RouteConfig } from "@/lib/config/RoutesConfig";
 
 export async function onSubmitLogin(values: {
 	password: string;

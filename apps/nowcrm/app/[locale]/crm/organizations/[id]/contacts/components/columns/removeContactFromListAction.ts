@@ -1,10 +1,13 @@
 // actions/deleteContactAction.ts
 "use server";
 
+import type { DocumentId, List } from "@nowcrm/services";
+import {
+	handleError,
+	organizationsService,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { DocumentId, List } from "@nowcrm/services";
-import { organizationsService, StandardResponse } from "@nowcrm/services/server";
-import { handleError } from "@nowcrm/services/server";
 
 export async function removeContactFromListAction(
 	organizationId: DocumentId,
@@ -19,9 +22,13 @@ export async function removeContactFromListAction(
 		};
 	}
 	try {
-		const response = await organizationsService.update(organizationId, {
-			contacts: { disconnect: [contactId] },
-		}, session.jwt,);
+		const response = await organizationsService.update(
+			organizationId,
+			{
+				contacts: { disconnect: [contactId] },
+			},
+			session.jwt,
+		);
 		return response;
 	} catch (error) {
 		return handleError(error);

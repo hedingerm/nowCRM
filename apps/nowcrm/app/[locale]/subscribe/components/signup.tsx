@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { DocumentId, LanguageKeys } from "@nowcrm/services";
 import { HelpCircle } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation"; // Import useParams to obtain the current locale
@@ -26,15 +27,13 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-
+import { getContacts } from "@/lib/actions/contacts/get-contacts";
 // Import actions from your API
 import {
 	getChannels,
 	getInterests,
 	upsertSubscription,
 } from "@/lib/actions/signup/dataFetch";
-import { getContacts } from "@/lib/actions/contacts/get-contacts";
-import { DocumentId, LanguageKeys } from "@nowcrm/services";
 
 // Types for channel and interest items
 interface ItemProps {
@@ -170,7 +169,6 @@ export default function SignUp({ unsubscribe_token }: SignUpProps) {
 						populate: { subscriptions: "*", contact_interests: "*" },
 					});
 
-
 					if (contactData.data && contactData.data.length > 0) {
 						// Map simple text fields.
 						form.setValue("first_name", contactData.data[0].first_name || "");
@@ -179,12 +177,12 @@ export default function SignUp({ unsubscribe_token }: SignUpProps) {
 						form.setValue("phone", contactData.data[0].phone || "");
 
 						// Map channels from subscriptions.
-						const channelIdsFromSubscriptions = contactData.data[0].subscriptions
+						const channelIdsFromSubscriptions = contactData.data[0]
+							.subscriptions
 							? contactData.data[0].subscriptions
 									.map((sub) => sub?.channel?.documentId)
 									.filter((id): id is DocumentId => typeof id === "string")
 							: [];
-				
 
 						// Only keep channels that exist in the allowed channels.
 						const validChannelIds = channelIdsFromSubscriptions.filter((id) =>
@@ -194,10 +192,12 @@ export default function SignUp({ unsubscribe_token }: SignUpProps) {
 						form.setValue("channels", validChannelIds);
 
 						// Map interests from contact.
-						const interestIdsFromContact: DocumentId[] =
-							contactData.data[0].contact_interests
-								? contactData.data[0].contact_interests.map((interest) => interest.documentId)
-								: [];
+						const interestIdsFromContact: DocumentId[] = contactData.data[0]
+							.contact_interests
+							? contactData.data[0].contact_interests.map(
+									(interest) => interest.documentId,
+								)
+							: [];
 						console.log("Interest IDs from contact:", interestIdsFromContact);
 
 						// Only keep interests that exist in the allowed interests.

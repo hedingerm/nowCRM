@@ -1,9 +1,12 @@
 // actions/deleteContactAction.ts
 "use server";
+import type { Form_TextBlock, TextBlock } from "@nowcrm/services";
+import {
+	handleError,
+	type StandardResponse,
+	textblocksService,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { Form_TextBlock, TextBlock } from "@nowcrm/services";
-import { handleError, StandardResponse, textblocksService } from "@nowcrm/services/server";
-
 
 export async function createTextBlock(
 	values: Form_TextBlock,

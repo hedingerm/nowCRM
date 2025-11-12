@@ -604,7 +604,7 @@ export default function Page() {
 
 										{listMode === "existing" && (
 											<AsyncSelect
-												serviceName="listService"
+												serviceName="listsService"
 												label="Existing Lists"
 												onValueChange={setSelectedList}
 												presetOption={selectedList}
