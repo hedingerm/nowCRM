@@ -33,7 +33,7 @@ export const env = cleanEnv(process.env, {
 	DAL_DATABASE_RDS: bool({ devDefault: testOnly(false) }),
 	DAL_DATABASE_SSL_SELF: bool({ devDefault: testOnly(false) }),
 	DAL_SMTP_HOST: host({ devDefault: testOnly("localhost") }),
-	DAL_SMTP_PORT: port({ devDefault: testOnly(587) }),
+	DAL_SMTP_PORT: port({ default: 18000,devDefault: testOnly(587) }),
 	DAL_SMTP_USER: str({ devDefault: testOnly("username") }),
 	DAL_SMTP_PASS: str({ devDefault: testOnly("password") }),
 	DAL_SMTP_FROM: str({ devDefault: testOnly("") }),
