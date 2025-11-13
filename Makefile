@@ -1,8 +1,9 @@
-COMPOSE_FILE=docker-compose.yaml
+COMPOSE_FILE=docker-compose.dev.yaml
 ENV_FILE=.env
 NETWORK_NAME=my_net
 
-SERVICES = apps/composer apps/journeys apps/dal
+SERVICES = apps/composer apps/journeys apps/dal apps/nowcrm
+DEV_SERVICES = dbdt strapi rabbitmq redis
 STRAPI_SERVICE = strapi
 TOKEN_NAME = crm_journeys_dal_composer
 SHELL := /bin/bash
@@ -201,15 +202,40 @@ inject-strapi-token:
 		done; \
 	fi
 
+print-strapi-creds:
+	@echo ""
+	@echo "📘 Reading Strapi credentials from logs..."
+	@URL="http://localhost:1337/admin"; \
+	EMAIL="$$(grep -E '^STRAPI_STANDART_EMAIL=' $(ENV_FILE) | cut -d= -f2-)"; \
+	PASS="$$(docker logs $(STRAPI_SERVICE) 2>&1 \
+		| grep 'STRAPI_ADMIN_PASSWORD:' \
+		| tail -1 \
+		| cut -d: -f2- \
+		| sed 's/^[[:space:]]*//' \
+		| tr -d '\r\n')"; \
+	echo "Strapi URL: $$URL"; \
+	echo "Login: $$EMAIL"; \
+	if [ -z "$$PASS" ]; then \
+		echo "Password: not found in logs"; \
+	else \
+		echo "Password: $$PASS"; \
+	fi
+	
 # ============================================================
 # Main commands
 # ============================================================
 
 up: init-env check-network
-	@echo "🚀 Starting Docker containers..."
+	@echo "Starting Docker containers..."
 	docker compose --env-file $(ENV_FILE) -f $(COMPOSE_FILE) up -d
-	@echo "🧠 Waiting for Strapi to generate token..."
 	@$(MAKE) inject-strapi-token
+	@$(MAKE) print-strapi-creds
+
+dev: init-env check-network
+	@echo "Starting DEV stack (Strapi + DB + RabbitMQ + Redis)..."
+	docker compose --env-file $(ENV_FILE) -f $(COMPOSE_FILE) up -d $(DEV_SERVICES)
+	@$(MAKE) inject-strapi-token
+	@$(MAKE) print-strapi-creds
 
 down:
 	docker compose --env-file $(ENV_FILE) -f $(COMPOSE_FILE) down

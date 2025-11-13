@@ -64,9 +64,10 @@ export default {
       const adminPassword = generatePassword();
       await createSuperAdminUserIfNotExist(
         strapi,
-        process.env.STRAPI_STANDART_EMAIL_STRAPI!,
+        process.env.STRAPI_STANDART_EMAIL!,
         adminPassword
       );
+      console.log(`STRAPI_ADMIN_PASSWORD: ${adminPassword}`);
 
       await createSuperAdminTest(
         strapi,

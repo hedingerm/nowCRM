@@ -4,7 +4,7 @@ export default ({ env }) => {
     return {
         upload: {
           config: {
-            provider: 'aws-s3',
+            provider: "@strapi/provider-upload-aws-s3",
             providerOptions: {
               s3Options: {
                 accessKeyId: env('STRAPI_AWS_ACCESS_KEY_ID'),
@@ -37,11 +37,6 @@ export default ({ env }) => {
               max: 100000,
             },
           },
-        },
-    
-        reports: {
-          enabled: true,
-          resolve: './src/plugins/reports',
         },
       };
 
