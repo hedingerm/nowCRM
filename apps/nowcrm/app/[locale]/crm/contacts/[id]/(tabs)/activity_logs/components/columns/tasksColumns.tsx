@@ -1,4 +1,5 @@
 "use client";
+import type { ActivityLog } from "@nowcrm/services";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 import { useMessages } from "next-intl";
@@ -12,7 +13,6 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { formatDateTimeStrapi } from "@/lib/strapiDate";
-import type { ActivityLog } from "@/lib/types/new_type/activity_log";
 
 const DeleteAction: React.FC<{ activityLog: ActivityLog }> = ({
 	activityLog,
@@ -31,7 +31,7 @@ const DeleteAction: React.FC<{ activityLog: ActivityLog }> = ({
 						const { deleteActivityLogAction } = await import(
 							"./deleteActivityLogs"
 						);
-						await deleteActivityLogAction(activityLog.id);
+						await deleteActivityLogAction(activityLog.documentId);
 						toast.success(t.Contacts.activityLog.activityDeleted);
 						router.refresh();
 					}}

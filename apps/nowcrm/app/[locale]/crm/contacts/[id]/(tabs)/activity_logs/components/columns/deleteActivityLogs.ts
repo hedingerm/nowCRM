@@ -1,12 +1,16 @@
 // actions/deleteContactAction.ts
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	activityLogsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import type { StandardResponse } from "@/lib/services/common/response.service";
-import activityLogsService from "@/lib/services/new_type/activity_logs.service";
 
 export async function deleteActivityLogAction(
-	activity_log: number,
+	activity_log: DocumentId,
 ): Promise<StandardResponse<null>> {
 	const session = await auth();
 	if (!session) {
@@ -17,10 +21,12 @@ export async function deleteActivityLogAction(
 		};
 	}
 	try {
-		const response = await activityLogsService.unPublish(activity_log);
+		const response = await activityLogsService.delete(
+			activity_log,
+			session.jwt,
+		);
 		return response;
 	} catch (error) {
-		console.log(error);
-		throw new Error(`Failed to delete activitylog ${error}`);
+		return handleError(error);
 	}
 }

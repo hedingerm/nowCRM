@@ -1,11 +1,11 @@
 "use client";
 
+import type { StandardResponse } from "@nowcrm/services";
 import { AlertCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { StandardResponse } from "@/lib/services/common/response.service";
 
 interface InfoContent {
 	title?: string;

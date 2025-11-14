@@ -1,5 +1,6 @@
 "use client";
 
+import type { DocumentId } from "@nowcrm/services";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -7,7 +8,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { RouteConfig } from "@/lib/config/RoutesConfig";
 import { cn } from "@/lib/utils";
 
-export default function TopBarContacts({ id }: { id: number }) {
+export default function TopBarContacts({ id }: { id: DocumentId }) {
 	const t = useTranslations("Contacts");
 
 	const sidebarNavItems = [

@@ -1,5 +1,6 @@
 "use client";
 
+import type { DocumentId } from "@nowcrm/services";
 import { HelpCircle, Loader2 } from "lucide-react";
 import { useMessages } from "next-intl";
 import { useState } from "react";
@@ -25,7 +26,7 @@ interface ChannelAdditionsProps {
 	onBack: () => void;
 	channels: { value: string; label: string }[];
 	initialChannelCustomizations?: ChannelCustomization[];
-	mainChannel?: number;
+	mainChannel?: DocumentId;
 }
 
 export default function ChannelAdditions({

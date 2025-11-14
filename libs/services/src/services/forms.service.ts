@@ -1,6 +1,7 @@
-import { APIRoutesStrapi } from "../api-routes/api-routes-strapi";
+import { API_ROUTES_STRAPI } from "../api-routes/api-routes-strapi";
 import { envServices } from "../envConfig";
-import type Asset from "../types/common/asset";
+import type { Asset } from "../types/common/asset";
+import type { DocumentId } from "../types/common/base_type";
 import type { Form_FormEntity, FormEntity } from "../types/form";
 import BaseService from "./common/base.service";
 import {
@@ -11,21 +12,21 @@ import {
 
 class FormsService extends BaseService<FormEntity, Form_FormEntity> {
 	public constructor() {
-		super(APIRoutesStrapi.FORMS);
+		super(API_ROUTES_STRAPI.FORMS);
 	}
 
 	public async submit(
 		payload: {
-			formId?: number;
+			formId: DocumentId;
 			identifier: string;
 			formData: Record<string, any>; // might include File[]
 		},
 		token: string,
 	): Promise<{ success: boolean; message?: string }> {
-		const url = `${envServices.STRAPI_URL}${APIRoutesStrapi.FORM_SUBMIT}`;
+		const url = `${envServices.STRAPI_URL}${API_ROUTES_STRAPI.FORM_SUBMIT}`;
 
 		const formData = new FormData();
-		formData.append("formId", String(payload.formId));
+		formData.append("formId", payload.formId);
 		formData.append("identifier", payload.identifier);
 
 		for (const [key, value] of Object.entries(payload.formData)) {
@@ -60,7 +61,7 @@ class FormsService extends BaseService<FormEntity, Form_FormEntity> {
 		targetField: string,
 		token: string,
 	): Promise<StandardResponse<Asset[]>> {
-		const url = `${envServices.STRAPI_URL}${APIRoutesStrapi.UPLOAD}`;
+		const url = `${envServices.STRAPI_URL}${API_ROUTES_STRAPI.UPLOAD}`;
 
 		const formData = new FormData();
 		for (let i = 0; i < files.length; i++) {
@@ -86,7 +87,7 @@ class FormsService extends BaseService<FormEntity, Form_FormEntity> {
 		assetId: number,
 		token: string,
 	): Promise<StandardResponse<Asset[]>> {
-		const url = `${envServices.STRAPI_URL}${APIRoutesStrapi.UPLOAD}/files/${assetId}`;
+		const url = `${envServices.STRAPI_URL}${API_ROUTES_STRAPI.UPLOAD}/files/${assetId}`;
 
 		try {
 			const response = await fetch(url, {
@@ -101,11 +102,11 @@ class FormsService extends BaseService<FormEntity, Form_FormEntity> {
 	}
 
 	async duplicate(
-		formId: number,
+		formId: DocumentId,
 		token: string,
 	): Promise<StandardResponse<null>> {
 		try {
-			const url = `${envServices.STRAPI_URL}${APIRoutesStrapi.FORM_DUPLICATE}`;
+			const url = `${envServices.STRAPI_URL}${API_ROUTES_STRAPI.FORM_DUPLICATE}`;
 
 			const response = await fetch(url, {
 				method: "POST",

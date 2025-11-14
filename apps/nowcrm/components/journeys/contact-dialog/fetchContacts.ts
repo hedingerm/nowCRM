@@ -1,15 +1,16 @@
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import { contactsService } from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { transformFilters } from "@/lib/actions/filters/filtersSearch";
-import contactsService from "@/lib/services/new_type/contacts.service";
+import { transformFilters } from "@/lib/actions/filters/filters-search";
 
 type FetchContactsParams = {
 	page?: number;
 	pageSize?: number;
 	search?: string;
 	rawFilters?: Record<string, any>;
-	step_id: number;
+	step_id: DocumentId;
 	sortBy?: string;
 	sortOrder?: "asc" | "desc";
 };
@@ -20,7 +21,7 @@ export async function fetchContactsAction({
 	search = "",
 	rawFilters = {},
 	step_id,
-	sortBy,
+	sortBy = "documentId:desc",
 	sortOrder = "desc",
 }: FetchContactsParams) {
 	const session = await auth();

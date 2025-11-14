@@ -1,4 +1,5 @@
 "use client";
+import { CommunicationChannel, type DocumentId } from "@nowcrm/services";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -7,10 +8,9 @@ import Spinner from "@/components/Spinner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { DialogClose } from "@/components/ui/dialog";
-import { CommunicationChannel } from "@/lib/static/channel-icons";
 
 export interface TelegramChannelContentProps {
-	composition_id: number;
+	composition_id: DocumentId;
 	closeOnSubmit: () => void;
 }
 

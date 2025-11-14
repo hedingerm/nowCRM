@@ -1,12 +1,11 @@
+import type { DocumentId, PaginationParams } from "@nowcrm/services";
+import { contactsService, organizationsService } from "@nowcrm/services/server";
 import type { Session } from "next-auth";
 import { auth } from "@/auth";
 import DataTable from "@/components/dataTable/dataTable";
 import ErrorMessage from "@/components/ErrorMessage";
 import { TypographyH3 } from "@/components/Typography";
-import { transformFilters } from "@/lib/actions/filters/filtersSearch";
-import contactsService from "@/lib/services/new_type/contacts.service";
-import organizationService from "@/lib/services/new_type/organizations.service";
-import type { PaginationParams } from "@/lib/types/common/paginationParams";
+import { transformFilters } from "@/lib/actions/filters/filters-search";
 import AdvancedFilters from "../../../contacts/components/advancedFilters/advancedFilters";
 import addToListDialog from "../contacts/components/addToListDialog";
 import { columns } from "../contacts/components/columns/ContactColumns";
@@ -16,7 +15,7 @@ import { OrganizationGeneralInfoCard } from "./components/generalInfo/generalInf
 import { OrganizationProfessionalInfoCard } from "./components/professionalInfo/professionalInfoCard";
 
 export default async function Home(props: {
-	params: Promise<{ id: number }>;
+	params: Promise<{ id: DocumentId }>;
 	searchParams: Promise<PaginationParams>;
 }) {
 	const searchParams = await props.searchParams;
@@ -32,11 +31,14 @@ export default async function Home(props: {
 	const transformedFilters = transformFilters(rawFilters);
 
 	const session = await auth();
-	const organization = await organizationService.findOne(params.id);
+	const organization = await organizationsService.findOne(
+		params.id,
+		session?.jwt,
+	);
 	if (!organization.success || !organization.data || !organization.meta) {
 		return <ErrorMessage response={organization} />;
 	}
-	const response = await contactsService.find({
+	const response = await contactsService.find(session?.jwt, {
 		populate: "*",
 		sort: [`${sortBy}:${sortOrder}` as any],
 		pagination: {

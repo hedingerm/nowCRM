@@ -10,7 +10,7 @@ export type StrapiImageFormat = {
 	size: number;
 };
 
-type Asset = {
+export type Asset = {
 	id: number;
 	name: string;
 	alternativeText: string | null;
@@ -22,6 +22,7 @@ type Asset = {
 	mime: string;
 	size: number;
 	url: string;
+	path: string;
 	previewUrl: string;
 	provider: string;
 	formats: {
@@ -34,5 +35,3 @@ type Asset = {
 	createdAt: Date;
 	updatedAt: Date;
 };
-
-export default Asset;

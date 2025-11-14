@@ -1,5 +1,6 @@
 "use client";
 
+import type { DocumentId } from "@nowcrm/services";
 import { CheckCircle, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMessages } from "next-intl";
@@ -22,7 +23,7 @@ export default function ProcessingScreen({
 
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [isComplete, setIsComplete] = useState(false);
-	const [compositionId, setCompositionId] = useState<string | null>(null);
+	const [compositionId, setCompositionId] = useState<DocumentId | null>(null);
 	const handleSubmit = async () => {
 		setIsSubmitting(true);
 		try {
@@ -102,7 +103,9 @@ export default function ProcessingScreen({
 						</div>
 						<Button
 							onClick={() =>
-								router.push(RouteConfig.composer.single(Number(compositionId)))
+								router.push(
+									RouteConfig.composer.single(compositionId as string),
+								)
 							}
 						>
 							{t.Composer.channelContent.viewComposition}

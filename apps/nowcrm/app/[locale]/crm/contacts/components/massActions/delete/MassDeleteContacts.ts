@@ -1,12 +1,12 @@
 // actions/deleteContactAction.ts
 "use server";
 
+import type { DocumentId, StandardResponse } from "@nowcrm/services";
+import { contactsService, handleError } from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import type { StandardResponse } from "@/lib/services/common/response.service";
-import contactsService from "@/lib/services/new_type/contacts.service";
 
 export async function MassDeleteContacts(
-	contacts: number[],
+	contacts: DocumentId[],
 ): Promise<StandardResponse<null>> {
 	const session = await auth();
 	if (!session) {
@@ -18,7 +18,7 @@ export async function MassDeleteContacts(
 	}
 	try {
 		const unpublishPromises = contacts.map((id) =>
-			contactsService.unPublish(id),
+			contactsService.delete(id, session.jwt),
 		);
 		await Promise.all(unpublishPromises);
 		return {
@@ -27,11 +27,6 @@ export async function MassDeleteContacts(
 			success: true,
 		};
 	} catch (error) {
-		console.error("Error deleting Contacts:", error);
-		return {
-			data: null,
-			status: 500,
-			success: false,
-		};
+		return handleError(error);
 	}
 }

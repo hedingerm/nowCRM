@@ -1,4 +1,4 @@
-import { APIRoutesStrapi } from "../api-routes/api-routes-strapi";
+import { API_ROUTES_STRAPI } from "../api-routes/api-routes-strapi";
 import type {
 	CompositionScheduled,
 	Form_CompositionScheduled,
@@ -10,7 +10,7 @@ class CompositionScheduledsService extends BaseService<
 	Form_CompositionScheduled
 > {
 	public constructor() {
-		super(APIRoutesStrapi.COMPOSITION_SCHEDULEDS);
+		super(API_ROUTES_STRAPI.COMPOSITION_SCHEDULEDS);
 	}
 }
 

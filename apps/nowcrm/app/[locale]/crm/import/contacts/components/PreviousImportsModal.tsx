@@ -1,5 +1,6 @@
 "use client";
 
+import type { ImportRecord } from "@nowcrm/services";
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -15,12 +16,11 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { downloadCsv } from "@/lib/actions/import/downloadCsv";
+import { downloadCsv } from "@/lib/actions/import/download-csv";
 import {
 	getImportProgressMap,
 	getPreviousImports,
-} from "@/lib/actions/import/fetchImports";
-import type { ImportRecord } from "@/lib/types/new_type/import";
+} from "@/lib/actions/import/fetch-import";
 
 interface PreviousImportsModalProps {
 	isOpen: boolean;

@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { createList } from "@/lib/actions/lists/createList";
+import { createList } from "@/lib/actions/lists/create-list";
 
 const createListSchema = z.object({
 	name: z
@@ -58,20 +58,17 @@ export default function AddToListDialog() {
 
 	async function handleCreate(values: z.infer<typeof createListSchema>) {
 		const res = await createList(values.name);
-		setSelectedOption({ value: res.data?.id, label: res.data?.name });
+		setSelectedOption({ value: res.data?.documentId, label: res.data?.name });
 		setListCreated(true);
 	}
 
 	async function handleSubmit() {
 		const { default: toast } = await import("react-hot-toast");
 		const { addContactToList } = await import(
-			"@/lib/actions/lists/addContactToList"
+			"@/lib/actions/lists/add-contact-to-list"
 		);
 
-		const res = await addContactToList(
-			Number(params.id),
-			+selectedOption.value,
-		);
+		const res = await addContactToList(params.id, selectedOption.value);
 
 		if (!res.success) {
 			toast.error("Failed to add contact to the list.");
@@ -133,7 +130,7 @@ export default function AddToListDialog() {
 
 					<TabsContent value="select" className="mt-4 space-y-4">
 						<AsyncSelect
-							serviceName="listService"
+							serviceName="listsService"
 							label="List"
 							onValueChange={setSelectedOption}
 							presetOption={selectedOption}

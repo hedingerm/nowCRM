@@ -1,6 +1,7 @@
 // ContactsMassActions.tsx
 "use client";
 
+import type { DocumentId } from "@nowcrm/services";
 import {
 	type ActionsConfig,
 	massActionsGenerator,
@@ -13,7 +14,7 @@ import { MassDeleteSurveyItems } from "./massDeleteSurveyItems";
 const actionsConfig: ActionsConfig = {
 	deleteContacts: {
 		label: "Delete", // e.g., "Delete"
-		onAction: async (selectedRows: number[]) => {
+		onAction: async (selectedRows: DocumentId[]) => {
 			return await MassDeleteSurveyItems(selectedRows);
 		},
 		successMessage: "Survey Item deleted",

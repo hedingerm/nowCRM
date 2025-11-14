@@ -1,12 +1,14 @@
+import type { DocumentId } from "@nowcrm/services";
+import { contactsService } from "@nowcrm/services/server";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { FaEnvelope, FaUser } from "react-icons/fa";
+import { auth } from "@/auth";
 import DeleteButton from "@/components/deleteButton/deleteButton";
 import ErrorMessage from "@/components/ErrorMessage";
 import { TypographyH4 } from "@/components/Typography";
 import { Separator } from "@/components/ui/separator";
 import { RouteConfig } from "@/lib/config/RoutesConfig";
-import contactsService from "@/lib/services/new_type/contacts.service";
 import TopBarContacts from "./components/topbar";
 
 interface LayoutProps {
@@ -25,8 +27,10 @@ export default async function Layout(props: LayoutProps) {
 	const params = await props.params;
 	const t = await getTranslations();
 	const { children } = props;
-	const contactId = Number.parseInt(params.id);
-	const contact = await contactsService.findOne(contactId);
+
+	const contactId = params.id as DocumentId;
+	const session = await auth();
+	const contact = await contactsService.findOne(contactId, session?.jwt);
 	if (!contact.data) {
 		return <ErrorMessage response={contact} />;
 	}
@@ -43,7 +47,7 @@ export default async function Layout(props: LayoutProps) {
 					label={t("common.actions.delete")}
 					successMessage={t("Contacts.deleteContact")}
 					redirectURL={RouteConfig.contacts.base}
-					serviceName="contactService"
+					serviceName="contactsService"
 					id={contactId}
 				/>
 			</header>

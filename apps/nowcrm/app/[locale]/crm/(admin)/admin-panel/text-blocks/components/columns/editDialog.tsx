@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { LanguageKeys, TextBlock } from "@nowcrm/services";
 import { HelpCircle, ListPlus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMessages } from "next-intl";
@@ -33,8 +34,6 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import type { LanguageKeys } from "@/lib/static/languages";
-import type { TextBlock } from "@/lib/types/new_type/text_blocks";
 
 interface EditTextBlockDialogProps {
 	textBlockName: string;
@@ -98,7 +97,7 @@ export default function EditTextBlockDialog({
 				setIsLoading(true);
 				try {
 					const { getLocalizedTextBlock } = await import(
-						"@/lib/actions/text_blocks/getLocalizedTextBlock"
+						"@/lib/actions/text_blocks/get-localized-text-block"
 					);
 					const data = await getLocalizedTextBlock(textBlockName);
 					setTextblocks(data.data as any);
@@ -138,7 +137,7 @@ export default function EditTextBlockDialog({
 
 		const { default: toast } = await import("react-hot-toast");
 		const { updateTextBlock } = await import(
-			"@/lib/actions/text_blocks/updateTextBlock"
+			"@/lib/actions/text_blocks/update-text-block"
 		);
 
 		// Update text block for each locale
@@ -147,7 +146,7 @@ export default function EditTextBlockDialog({
 			locales.map(async (locale) => {
 				// Find the textblock with the matching locale to get its ID
 				const textblock = textblocks.find((block) => block.locale === locale);
-				const id = textblock?.data.id;
+				const id = textblock?.data.documentId;
 
 				if (!id) {
 					return {

@@ -1,4 +1,5 @@
 "use client";
+import type { UnipileIdentity } from "@nowcrm/services";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 import type React from "react";
@@ -14,8 +15,7 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { AddNewIdentityUnipile } from "@/lib/actions/healthCheck/refereshUnipile";
-import type { UnipileIdentity } from "@/lib/types/new_type/unipile_identity";
+import { AddNewIdentityUnipile } from "@/lib/actions/healthCheck/refresh-unipile";
 import { deleteUnipileIdentityAction } from "./deleteIdentity";
 
 const DeleteAction: React.FC<{ identity: UnipileIdentity }> = ({
@@ -30,7 +30,11 @@ const DeleteAction: React.FC<{ identity: UnipileIdentity }> = ({
 			<DropdownMenuContent>
 				<DropdownMenuItem
 					onClick={async () => {
-						await deleteUnipileIdentityAction(identity.id);
+						const res = await deleteUnipileIdentityAction(identity.documentId);
+						if (!res.success) {
+							toast.error(res.errorMessage || "Failed to delete identity");
+							return;
+						}
 						toast.success("Identity deleted");
 						router.refresh();
 					}}
@@ -119,8 +123,8 @@ export const columns: ColumnDef<UnipileIdentity>[] = [
 		cell: ({ row }) => {
 			const identity = row.original;
 			const needsReconnect =
-				identity.status !== "CREATION_SUCCESS" &&
-				identity.status !== "RECONNECTED";
+				identity.unipile_status !== "CREATION_SUCCESS" &&
+				identity.unipile_status !== "RECONNECTED";
 
 			return (
 				<div className="flex items-center gap-2">

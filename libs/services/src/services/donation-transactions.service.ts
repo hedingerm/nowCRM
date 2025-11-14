@@ -1,4 +1,4 @@
-import { APIRoutesStrapi } from "../api-routes/api-routes-strapi";
+import { API_ROUTES_STRAPI } from "../api-routes/api-routes-strapi";
 import type {
 	DonationTransaction,
 	Form_DonationTransaction,
@@ -10,7 +10,7 @@ class DonationTransactionsService extends BaseService<
 	Form_DonationTransaction
 > {
 	public constructor() {
-		super(APIRoutesStrapi.DONATION_TRANSACTIONS);
+		super(API_ROUTES_STRAPI.DONATION_TRANSACTIONS);
 	}
 }
 

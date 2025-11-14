@@ -1,10 +1,10 @@
+import type { PaginationParams } from "@nowcrm/services";
+import { formsService } from "@nowcrm/services/server";
 import type { Metadata } from "next";
 import type { Session } from "next-auth";
 import { auth } from "@/auth";
 import DataTable from "@/components/dataTable/dataTable";
 import ErrorMessage from "@/components/ErrorMessage";
-import formsService from "@/lib/services/new_type/forms.service";
-import type { PaginationParams } from "@/lib/types/common/paginationParams";
 import { columns } from "./components/columns/formColumns";
 import createListDialog from "./components/createDialog";
 import MassActionsLists from "./components/massActions/massActions";
@@ -27,7 +27,7 @@ export default async function Page(props: {
 	// Fetch data from the contactService
 	const session = await auth();
 
-	const response = await formsService.find({
+	const response = await formsService.find(session?.jwt, {
 		populate: "*",
 		sort: [`${sortBy}:${sortOrder}` as any],
 		pagination: {

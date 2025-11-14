@@ -1,12 +1,16 @@
 // actions/deleteContactAction.ts
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	compositionsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import type { StandardResponse } from "@/lib/services/common/response.service";
-import composerService from "@/lib/services/new_type/composer.service";
 
 export async function MassDeleteCompositions(
-	compositions: number[],
+	compositions: DocumentId[],
 ): Promise<StandardResponse<null>> {
 	const session = await auth();
 	if (!session) {
@@ -18,7 +22,7 @@ export async function MassDeleteCompositions(
 	}
 	try {
 		const unpublishPromises = compositions.map((id) =>
-			composerService.unPublish(id),
+			compositionsService.delete(id, session.jwt),
 		);
 		await Promise.all(unpublishPromises);
 		return {
@@ -27,11 +31,6 @@ export async function MassDeleteCompositions(
 			success: true,
 		};
 	} catch (error) {
-		console.error("Error deleting Lists:", error);
-		return {
-			data: null,
-			status: 500,
-			success: false,
-		};
+		return handleError(error);
 	}
 }

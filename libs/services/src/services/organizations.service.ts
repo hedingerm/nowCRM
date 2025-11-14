@@ -1,5 +1,6 @@
-import { APIRoutesStrapi } from "../api-routes/api-routes-strapi";
+import { API_ROUTES_STRAPI } from "../api-routes/api-routes-strapi";
 import { envServices } from "../envConfig";
+import type { DocumentId } from "../types/common/base_type";
 import type { Form_Organization, Organization } from "../types/organization";
 import BaseService from "./common/base.service";
 import {
@@ -13,15 +14,15 @@ class OrganizationsService extends BaseService<
 	Form_Organization
 > {
 	public constructor() {
-		super(APIRoutesStrapi.ORGANIZATIONS);
+		super(API_ROUTES_STRAPI.ORGANIZATIONS);
 	}
 
 	async duplicate(
-		organizationId: number,
+		organizationId: DocumentId,
 		token: string,
 	): Promise<StandardResponse<null>> {
 		try {
-			const url = `${envServices.STRAPI_URL}${APIRoutesStrapi.ORGANIZATIONS_DUPLICATE}`;
+			const url = `${envServices.STRAPI_URL}${API_ROUTES_STRAPI.ORGANIZATIONS_DUPLICATE}`;
 
 			const response = await fetch(url, {
 				method: "POST",

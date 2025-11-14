@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { List } from "@nowcrm/services";
 import { ListPlus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import * as React from "react";
@@ -26,9 +27,8 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { createList } from "@/lib/actions/lists/createList";
-import { updateList } from "@/lib/actions/lists/updateList";
-import type { List } from "@/lib/types/new_type/list";
+import { createList } from "@/lib/actions/lists/create-list";
+import { updateList } from "@/lib/actions/lists/update-list";
 
 const formSchema = z.object({
 	name: z.string().min(2, {
@@ -68,7 +68,7 @@ export default function CreateListDialog({
 				setOpenDialog(false);
 			}
 		} else if (mode === "rename" && list) {
-			const res = await updateList(list.id, { name: values.name });
+			const res = await updateList(list.documentId, { name: values.name });
 			if (!res.success) {
 				toast.error(`Error renaming list: ${res.errorMessage}`);
 			} else {

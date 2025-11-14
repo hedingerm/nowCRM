@@ -1,6 +1,7 @@
 // IdentitityMassActions.tsx
 "use client";
 
+import type { DocumentId } from "@nowcrm/services";
 import {
 	type ActionsConfig,
 	massActionsGenerator,
@@ -10,7 +11,7 @@ import { MassDeleteUnipileIdentities } from "./MassDeleteUnipileIdentities";
 const actionsConfig: ActionsConfig = {
 	deleteContacts: {
 		label: "Delete", // e.g., "Delete"
-		onAction: async (selectedRows: number[]) => {
+		onAction: async (selectedRows: DocumentId[]) => {
 			return await MassDeleteUnipileIdentities(selectedRows);
 		},
 		successMessage: "Identities deleted",

@@ -1,3 +1,4 @@
+import { organizationsService } from "@nowcrm/services/server";
 import type { Metadata } from "next";
 import type { Session } from "next-auth";
 import { auth } from "@/auth";
@@ -6,8 +7,7 @@ import ErrorMessage from "@/components/ErrorMessage";
 import {
 	parseQueryToFilterValues,
 	transformFilters,
-} from "@/lib/actions/filters/filtersSearch";
-import organizationService from "@/lib/services/new_type/organizations.service";
+} from "@/lib/actions/filters/filters-search";
 import AdvancedFilters from "./components/advancedFilters/advancedFilters";
 import { columns } from "./components/columns/organizationColumns";
 import createOrganizationDialog from "./components/createDialog";
@@ -32,7 +32,7 @@ export default async function Page(props: { searchParams: Promise<any> }) {
 	const transformedFilters = transformFilters(flatFilters);
 	// Fetch data from the contactService
 	const session = await auth();
-	const response = await organizationService.find({
+	const response = await organizationsService.find(session?.jwt, {
 		populate: "*",
 		sort: [`${sortBy}:${sortOrder}` as any],
 		pagination: {

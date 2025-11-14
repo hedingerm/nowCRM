@@ -1,6 +1,7 @@
 // ContactsMassActions.tsx
 "use client";
 
+import type { DocumentId } from "@nowcrm/services";
 import {
 	type ActionsConfig,
 	massActionsGenerator,
@@ -13,7 +14,7 @@ import { massDeleteJourneys } from "./massDeleteJourneys";
 const actionsConfig: ActionsConfig = {
 	removeContacts: {
 		label: "Delete", // e.g., "Delete"
-		onAction: async (selectedRows: number[], journeyStepId: number) => {
+		onAction: async (selectedRows: DocumentId[], journeyStepId: DocumentId) => {
 			return await massDeleteJourneys(selectedRows, journeyStepId);
 		},
 		getExtraData: (props) => props.journeyStepId,

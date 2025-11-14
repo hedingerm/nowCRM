@@ -1,7 +1,6 @@
+import type { PaginationParams } from "@nowcrm/services";
 import type { Metadata } from "next";
-import type { PaginationParams } from "@/lib/types/common/paginationParams";
 import ComposerTable from "./components/composerTable";
-
 export const metadata: Metadata = {
 	title: "Compositions",
 };

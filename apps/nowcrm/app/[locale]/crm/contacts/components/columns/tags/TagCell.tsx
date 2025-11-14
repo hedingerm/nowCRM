@@ -1,19 +1,18 @@
 "use client";
 
+import type { DocumentId, Tag } from "@nowcrm/services";
+import type { BaseServiceName } from "@nowcrm/services/server";
 import { Loader2, X } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { addTag } from "@/lib/actions/tags/addTag";
-import { removeTag } from "@/lib/actions/tags/removeTag";
-import type { ServiceName } from "@/lib/services/common/serviceFactory";
+import { addTag } from "@/lib/actions/tags/add-tag";
+import { removeTag } from "@/lib/actions/tags/remove-tag";
 import { AddTagDialog } from "./AddTagDialog";
 
-type Tag = { id: number; name: string; color: string };
-
 interface TagsCellProps {
-	serviceName: ServiceName;
-	entityId: number;
+	serviceName: BaseServiceName;
+	entityId: DocumentId;
 	initialTags: Tag[];
 }
 
@@ -24,12 +23,12 @@ export function TagsCell({
 }: TagsCellProps) {
 	const [tags, setTags] = useState<Tag[]>(initialTags || []);
 	const [adding, setAdding] = useState(false);
-	const [removingTagId, setRemovingTagId] = useState<number | null>(null);
+	const [removingTagId, setRemovingTagId] = useState<DocumentId | null>(null);
 
 	const handleTagAdded = async (newTag: Tag) => {
 		setAdding(true);
 		try {
-			const res = await addTag(serviceName, entityId, newTag.id);
+			const res = await addTag(serviceName, entityId, newTag.documentId);
 			if (res.success) {
 				setTags((prev) => [...prev, newTag]);
 			}
@@ -38,12 +37,12 @@ export function TagsCell({
 		}
 	};
 
-	const handleTagRemoved = async (tagId: number) => {
+	const handleTagRemoved = async (tagId: DocumentId) => {
 		setRemovingTagId(tagId);
 		try {
 			const res = await removeTag(serviceName, entityId, tagId);
 			if (res.success) {
-				setTags((prev) => prev.filter((tag) => tag.id !== tagId));
+				setTags((prev) => prev.filter((tag) => tag.documentId !== tagId));
 			}
 		} finally {
 			setRemovingTagId(null);
@@ -54,7 +53,6 @@ export function TagsCell({
 		return (
 			<div className="flex items-center gap-2">
 				<AddTagDialog
-					contactId={entityId}
 					currentTags={tags}
 					onTagAdded={handleTagAdded}
 				/>
@@ -82,11 +80,11 @@ export function TagsCell({
 						<Button
 							variant="ghost"
 							size="sm"
-							onClick={() => handleTagRemoved(tag.id)}
-							disabled={removingTagId === tag.id}
+							onClick={() => handleTagRemoved(tag.documentId)}
+							disabled={removingTagId === tag.documentId}
 							className="ml-1 h-3 w-3 rounded-full p-0 opacity-0 transition-opacity hover:bg-destructive/20 group-hover:opacity-100"
 						>
-							{removingTagId === tag.id ? (
+							{removingTagId === tag.documentId ? (
 								<Loader2 className="h-2 w-2 animate-spin" />
 							) : (
 								<X className="h-2 w-2" />
@@ -96,7 +94,6 @@ export function TagsCell({
 				</div>
 			))}
 			<AddTagDialog
-				contactId={entityId}
 				currentTags={tags}
 				onTagAdded={handleTagAdded}
 			/>

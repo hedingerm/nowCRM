@@ -4,6 +4,8 @@ import type { Core } from '@strapi/strapi';
 import { generatePassword } from './bootstrap/utils/generatePassword';
 import { seedData } from './bootstrap/data/seedData';
 import industriesData from "./bootstrap/data/industries.json";
+import { createUsersPermissionsAdminIfNotExist } from './bootstrap/admin-and-tokens'
+import { createCrmToken } from './bootstrap/admin-and-tokens';
 
 import {
   ensureLocalesAndConsents,
@@ -20,7 +22,7 @@ import {
   createSuperAdminUserIfNotExist,
   createSuperAdminTest,
   createApiTokenTest,
-  createCrmJourneysDalComposerToken,
+  createJourneysDalComposerToken,
 } from './bootstrap/admin-and-tokens';
 import { setUpJourneysWebhook } from './bootstrap/create-journeys-webhooks';
 
@@ -54,19 +56,43 @@ export default {
       }
 
       // --- setup roles, users, and tokens ---
-      cleanupPermissions(strapi);
-      createAdminRole(strapi);
+      await cleanupPermissions(strapi)
+      await createAdminRole(strapi)
+
+      const upPassword = generatePassword()
+
+      await createUsersPermissionsAdminIfNotExist(
+        strapi,
+        process.env.STRAPI_STANDART_EMAIL!,
+        upPassword
+      )
+      
+      console.log("CRM_ADMIN_PASSWORD:", upPassword)
 
       if (process.env.NT_ACTIVE_SERVICES?.includes('journeys')) {
         setUpJourneysWebhook(strapi);
       }
 
-      const adminPassword = generatePassword();
-      await createSuperAdminUserIfNotExist(
-        strapi,
-        process.env.STRAPI_STANDART_EMAIL_STRAPI!,
-        adminPassword
-      );
+      // check if super-admin already exists
+      const superAdminRole = await strapi.db
+        .query("admin::role")
+        .findOne({ where: { code: "strapi-super-admin" } });
+
+      const existingSuperAdmins = await strapi.db
+        .query("admin::user")
+        .count({ where: { roles: { id: superAdminRole!.id } } });
+
+      if (existingSuperAdmins === 0) {
+        const adminPassword = generatePassword();
+        await createSuperAdminUserIfNotExist(
+          strapi,
+          process.env.STRAPI_STANDART_EMAIL!,
+          adminPassword
+        );
+        console.log(`STRAPI_ADMIN_PASSWORD: ${adminPassword}`);
+      } else {
+        console.log("SuperAdmin already exists. Skipping password generation.");
+      }
 
       await createSuperAdminTest(
         strapi,
@@ -75,7 +101,8 @@ export default {
       );
 
       await createApiTokenTest(strapi);
-      await createCrmJourneysDalComposerToken(strapi);
+      await createJourneysDalComposerToken(strapi);
+      await createCrmToken(strapi); 
 
       seedCommonEntities(strapi);
       seedEntities(strapi);

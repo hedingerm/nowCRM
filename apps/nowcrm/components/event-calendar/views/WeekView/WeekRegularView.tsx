@@ -72,7 +72,7 @@ const WeekRegularView: React.FC<WeekRegularViewProps> = ({
   console.log(
     "[v0] - All filtered events:",
     filteredEvents.map((e) => ({
-      id: e.id,
+      id: e.documentId,
       name: e.name,
       datetime: e.publish_date,
       dateString: new Date(e.publish_date).toDateString(),
@@ -209,7 +209,7 @@ const WeekRegularView: React.FC<WeekRegularViewProps> = ({
                   console.log(`[v0] WeekView day ${dayIndex + 1} (${day.toDateString()}):`, {
                     dayEvents: dayEvents.length,
                     events: dayEvents.map((e) => ({
-                      id: e.id,
+                      id: e.documentId,
                       name: e.name,
                       datetime: e.publish_date,
                       color: e.color,
@@ -264,7 +264,7 @@ const WeekRegularView: React.FC<WeekRegularViewProps> = ({
 
                           return (
                             <EventPopup
-                              key={`${event.id}-${day.toISOString()}`}
+                              key={`${event.documentId}-${day.toISOString()}`}
                               event={event}
                               onAddEvent={onEventAdd}
                               onUpdateEvent={onEventUpdate}

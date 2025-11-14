@@ -1,5 +1,6 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { CommunicationChannel, type DocumentId } from "@nowcrm/services";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -19,10 +20,9 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { CommunicationChannel } from "@/lib/static/channel-icons";
 
 export interface WordpressChannelContentProps {
-	composition_id: number;
+	composition_id: DocumentId;
 	closeOnSubmit: () => void;
 }
 

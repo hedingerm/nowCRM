@@ -1,12 +1,16 @@
 // actions/deleteContactAction.ts
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	handleError,
+	type StandardResponse,
+	surveysService,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import type { StandardResponse } from "@/lib/services/common/response.service";
-import surveysService from "@/lib/services/new_type/surveys.service";
 
 export async function massDeleteSurveys(
-	surveys: number[],
+	surveys: DocumentId[],
 ): Promise<StandardResponse<null>> {
 	const session = await auth();
 	if (!session) {
@@ -17,7 +21,9 @@ export async function massDeleteSurveys(
 		};
 	}
 	try {
-		const unpublishPromises = surveys.map((id) => surveysService.unPublish(id));
+		const unpublishPromises = surveys.map((id) =>
+			surveysService.delete(id, session.jwt),
+		);
 		await Promise.all(unpublishPromises);
 		return {
 			data: null,
@@ -25,11 +31,6 @@ export async function massDeleteSurveys(
 			success: true,
 		};
 	} catch (error) {
-		console.error("Error deleting Survey:", error);
-		return {
-			data: null,
-			status: 500,
-			success: false,
-		};
+		return handleError(error);
 	}
 }

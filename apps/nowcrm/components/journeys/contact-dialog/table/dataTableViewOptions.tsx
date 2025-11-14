@@ -1,5 +1,6 @@
 "use client";
 
+import type { DocumentId } from "@nowcrm/services";
 import { MixerHorizontalIcon } from "@radix-ui/react-icons";
 import type { Table } from "@tanstack/react-table";
 import Link from "next/link";
@@ -22,12 +23,12 @@ import { cn } from "@/lib/utils";
 interface DataTableViewOptionsProps<TData> {
 	table: Table<TData>;
 	table_name: string;
-	step_id: number;
+	step_id: DocumentId;
 	onDownloadCSV: () => void;
 	showStatusModal: boolean;
 	refreshData: () => void;
 	createDialog?: React.ComponentType<{
-		step_id: number;
+		step_id: DocumentId;
 		refreshData: () => void;
 	}>;
 	hiddenExport?: boolean;

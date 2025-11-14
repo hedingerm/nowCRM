@@ -1,16 +1,23 @@
 "use server";
 
+import type {
+	BaseServiceName,
+	DocumentId,
+	StrapiQuery,
+} from "@nowcrm/services";
+import {
+	handleError,
+	ServiceFactory,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import ServiceFactory, {
-	type ServiceName,
-} from "@/lib/services/common/serviceFactory";
-import type StrapiQuery from "@/lib/types/common/StrapiQuery";
+
 //TODO: remove here any types
 
 export async function findData(
-	serviceName: ServiceName,
+	serviceName: BaseServiceName,
 	options?: StrapiQuery<any>,
-) {
+): Promise<StandardResponse<any[]>> {
 	const session = await auth();
 	if (!session) {
 		return {
@@ -21,17 +28,16 @@ export async function findData(
 	}
 	try {
 		const service = ServiceFactory.getService(serviceName);
-		const response = await service.find(options as any);
+		const response = await service.find(session?.jwt, options as any);
 		return response;
 	} catch (error) {
-		console.log(error);
-		throw new Error("Failed to fetch item");
+		return handleError(error);
 	}
 }
 
 export async function findSingleData(
-	serviceName: ServiceName,
-	id: number,
+	serviceName: BaseServiceName,
+	id: DocumentId,
 	options?: StrapiQuery<any>,
 ) {
 	const session = await auth();

@@ -1,11 +1,15 @@
 "use client";
 
+import type {
+	DocumentId,
+	Form_JourneyStep,
+	Form_JourneyStepConnection,
+	JourneyStepTypes,
+} from "@nowcrm/services";
 import { useCallback, useState } from "react";
 import { toast } from "react-hot-toast";
 import type { Edge, Node } from "reactflow";
 import JourneyBuilder from "@/components/journeys/journey-builder";
-import type { Form_JourneyStep } from "@/lib/types/new_type/journeyStep";
-import type { Form_JourneyStepConnection } from "@/lib/types/new_type/journeyStepConnection";
 import {
 	activateJourney,
 	createConnection,
@@ -20,7 +24,7 @@ import {
 } from "./actions";
 
 interface JourneyClientProps {
-	journeyId: number;
+	journeyId: DocumentId;
 	initialTitle: string;
 	initialActive: boolean;
 	initialNodes: Node[];
@@ -104,7 +108,6 @@ export default function JourneyClient({
 					name: node.data.label || "New Step",
 					journey: journeyId,
 					type: node.data.type,
-					is_start: node.id === "start" || node.data.label === "Start",
 				};
 				// Build the config based on the node type
 				let timing: any, composition: any, channel: any, additional_data: any;
@@ -178,7 +181,7 @@ export default function JourneyClient({
 						...node,
 						data: {
 							...node.data,
-							stepId: result.data.id,
+							stepId: result.data.documentId,
 						},
 					};
 				} else {
@@ -221,15 +224,15 @@ export default function JourneyClient({
 
 			if (node.data.type === "channel") {
 				composition = node.data.config.composition?.value
-					? parseInt(node.data.config.composition.value)
+					? node.data.config.composition.value
 					: undefined;
 
 				channel = node.data.config.channel?.value
-					? parseInt(node.data.config.channel.value)
+					? node.data.config.channel.value
 					: undefined;
 
 				identity = node.data.config.identity?.value
-					? parseInt(node.data.config.identity.value)
+					? node.data.config.identity.value
 					: undefined;
 			} else if (node.data.type === "trigger") {
 				additional_data = {
@@ -280,6 +283,7 @@ export default function JourneyClient({
 			// Final data to update
 			const stepData = {
 				...baseData,
+				type: baseData.type as JourneyStepTypes,
 				timing,
 				composition,
 				channel,
@@ -288,7 +292,7 @@ export default function JourneyClient({
 			};
 
 			const result = await updateStep(node.data.stepId, stepData);
-
+			console.log(result)
 			if (result.success) {
 				return true;
 			} else {
@@ -364,7 +368,7 @@ export default function JourneyClient({
 						...edge,
 						data: {
 							...edge.data,
-							connectionId: result.data.id,
+							connectionId: result.data.documentId,
 							condition_type: "all",
 						},
 					};
@@ -522,8 +526,8 @@ export default function JourneyClient({
 
 				// Format conditions for the backend
 				const formattedRules = conditions.map((condition) => ({
-					id: condition.id?.startsWith("condition-")
-						? Number.parseInt(condition.id.replace("condition-", ""))
+					documentId: condition.documentId?.startsWith("condition-")
+						? (condition.documentId.replace("condition-", ""))
 						: undefined,
 					condition: condition.type,
 					ready_condition: condition.value
@@ -536,7 +540,7 @@ export default function JourneyClient({
 					label: condition.label,
 					scores:
 						condition.scores?.map((score: any) => ({
-							id: score.id,
+							documentId: score.documentId,
 							attribute: score.attribute,
 							value: score.value,
 						})) || [],
@@ -570,7 +574,7 @@ export default function JourneyClient({
 	// Add a new handler for updating connection priorities
 	const handleConnectionPrioritiesUpdate = useCallback(
 		async (
-			connectionPriorities: { connectionId: number; priority: number }[],
+			connectionPriorities: { connectionId: DocumentId; priority: number }[],
 		) => {
 			try {
 				setIsSaving(true);

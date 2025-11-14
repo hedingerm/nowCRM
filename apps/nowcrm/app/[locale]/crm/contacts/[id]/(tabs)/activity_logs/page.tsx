@@ -1,3 +1,5 @@
+import type { DocumentId, PaginationParams } from "@nowcrm/services";
+import { activityLogsService } from "@nowcrm/services/server";
 import { Info } from "lucide-react";
 import type { Metadata } from "next";
 import type { Session } from "next-auth";
@@ -6,8 +8,6 @@ import { auth } from "@/auth";
 import DataTable from "@/components/dataTable/dataTable";
 import ErrorMessage from "@/components/ErrorMessage";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import activityLogsService from "@/lib/services/new_type/activity_logs.service";
-import type { PaginationParams } from "@/lib/types/common/paginationParams";
 import { columns } from "./components/columns/tasksColumns";
 import createActivityLogDialog from "./components/createDialog";
 import MassActionsActivityLogs from "./components/massActions/massActions";
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 
 export default async function Page(props: {
 	searchParams: Promise<PaginationParams>;
-	params: Promise<{ id: number }>;
+	params: Promise<{ id: DocumentId }>;
 }) {
 	const t = await getTranslations("Contacts.topBar");
 	const params = await props.params;
@@ -32,7 +32,7 @@ export default async function Page(props: {
 	} = searchParams;
 	// Fetch data from the contactService
 	const session = await auth();
-	const response = await activityLogsService.find({
+	const response = await activityLogsService.find(session?.jwt, {
 		populate: "*",
 		sort: [`${sortBy}:${sortOrder}` as any],
 		pagination: {
@@ -44,7 +44,7 @@ export default async function Page(props: {
 				{ action: { $containsi: search } },
 				{ description: { $containsi: search } },
 			],
-			contact: { id: { $eq: params.id } },
+			contact: { documentId: { $eq: params.id } },
 		},
 	});
 

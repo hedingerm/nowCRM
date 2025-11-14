@@ -1,5 +1,6 @@
 "use client";
 
+import type { DocumentId } from "@nowcrm/services";
 import { debounce } from "lodash";
 import {
 	AlertTriangle,
@@ -77,7 +78,7 @@ type Branch = {
 	conditions: Condition[];
 	condition_type: "all" | "any";
 	priority: number;
-	connectionId: number; // Store the connection ID for priority updates
+	connectionId: DocumentId; // Store the connection ID for priority updates
 };
 
 interface ChannelPanelProps {
@@ -90,7 +91,7 @@ interface ChannelPanelProps {
 	nodes?: Node[];
 	updateEdge?: (edgeId: string, data: any) => void;
 	onConnectionPrioritiesUpdate?: (
-		connectionPriorities: { connectionId: number; priority: number }[],
+		connectionPriorities: { connectionId: DocumentId; priority: number }[],
 	) => Promise<boolean>;
 }
 
@@ -269,7 +270,7 @@ export function ChannelPanel({
 
 		// Prepare connection priority updates
 		const connectionPriorityUpdates: {
-			connectionId: number;
+			connectionId: DocumentId;
 			priority: number;
 		}[] = [];
 
@@ -323,7 +324,7 @@ export function ChannelPanel({
 
 		// Prepare connection priority updates
 		const connectionPriorityUpdates: {
-			connectionId: number;
+			connectionId: DocumentId;
 			priority: number;
 		}[] = [];
 
@@ -542,7 +543,7 @@ export function ChannelPanel({
 											</label>
 											<AsyncSelect
 												presetOption={config.channel}
-												serviceName="channelService"
+												serviceName="channelsService"
 												fetchFilters={{
 													$or: [
 														{ name: { $eqi: "email" } },
@@ -588,7 +589,7 @@ export function ChannelPanel({
 											</label>
 											<AsyncSelect
 												presetOption={config.composition}
-												serviceName="composerService"
+												serviceName="compositionsService"
 												onValueChange={(value) =>
 													handleConfigChange({ composition: value })
 												}
@@ -606,7 +607,7 @@ export function ChannelPanel({
 														<Button variant="outline" size="sm" asChild>
 															<Link
 																href={`${RouteConfig.composer.single(
-																	Number(config.composition.value),
+																	config.composition.value,
 																)}`}
 																target="_blank"
 																rel="noopener noreferrer"
@@ -646,7 +647,7 @@ export function ChannelPanel({
 												</label>
 												<AsyncSelect
 													presetOption={config.identity}
-													serviceName="identityService"
+													serviceName="identitiesService"
 													onValueChange={(value) => {
 														handleConfigChange({ identity: value });
 														setHasIdentity(!!value);
@@ -689,7 +690,7 @@ export function ChannelPanel({
 									<CardContent>
 										<ContactsPageClient
 											key={node.data.stepId}
-											step_id={Number.parseInt(node.data.stepId)}
+											step_id={node.data.stepId}
 										/>
 									</CardContent>
 								</Card>

@@ -1,5 +1,6 @@
 "use client";
 
+import type { Contact } from "@nowcrm/services";
 import { Check, Sparkles, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -24,7 +25,6 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import type { Contact } from "@/lib/types/new_type/contact";
 
 interface EnrichDialogProps {
 	contact: Contact;
@@ -175,7 +175,7 @@ export function EnrichDialog({ contact, isOpen, onClose }: EnrichDialogProps) {
 
 		const { default: toast } = await import("react-hot-toast");
 		const { structuredResponse } = await import(
-			"@/lib/actions/composer/getStructuredResponse"
+			"@/lib/actions/composer/get-sctructured-response"
 		);
 
 		try {
@@ -285,7 +285,7 @@ export function EnrichDialog({ contact, isOpen, onClose }: EnrichDialogProps) {
 
 		const { default: toast } = await import("react-hot-toast");
 		const { updateContact } = await import(
-			"@/lib/actions/contacts/updateContact"
+			"@/lib/actions/contacts/update-contact"
 		);
 
 		try {
@@ -333,7 +333,7 @@ export function EnrichDialog({ contact, isOpen, onClose }: EnrichDialogProps) {
 				toast.error("No changes to apply.");
 				return;
 			}
-			const result = await updateContact(contact.id, updateData);
+			const result = await updateContact(contact.documentId, updateData);
 
 			if (result.success) {
 				toast.success("Contact enriched successfully!");

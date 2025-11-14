@@ -25,7 +25,6 @@ import { Highlight } from "reactjs-tiptap-editor/highlight";
 import { History } from "reactjs-tiptap-editor/history";
 import { HorizontalRule } from "reactjs-tiptap-editor/horizontalrule";
 import { Iframe } from "reactjs-tiptap-editor/iframe";
-import { Image } from "reactjs-tiptap-editor/image";
 import { ImportWord } from "reactjs-tiptap-editor/importword";
 import { Indent } from "reactjs-tiptap-editor/indent";
 import { Italic } from "reactjs-tiptap-editor/italic";
@@ -44,7 +43,6 @@ import { TaskList } from "reactjs-tiptap-editor/tasklist";
 import { TextAlign } from "reactjs-tiptap-editor/textalign";
 import { TextDirection } from "reactjs-tiptap-editor/textdirection";
 import { TextUnderline } from "reactjs-tiptap-editor/textunderline";
-import { Video } from "reactjs-tiptap-editor/video";
 import MyEditor from "@/components/editor/Editor";
 import "reactjs-tiptap-editor/style.css";
 import "prism-code-editor-lightweight/layout.css";
@@ -54,7 +52,6 @@ import "katex/dist/katex.min.css";
 import "easydrawer/styles.css";
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { uploadAsset } from "@/lib/services/new_type/assets/downloadAsset";
 
 const extensions = [
 	BaseKit.configure({
@@ -93,25 +90,6 @@ const extensions = [
 		},
 	}),
 	Link,
-	Image.configure({
-		upload: async (files: File) => {
-			const formData = new FormData();
-			formData.append("files", files);
-			const asset = await uploadAsset(formData);
-			console.log(asset);
-			if (!asset.data || !asset.success) return "";
-			return asset.data[0].url;
-		},
-	}),
-	Video.configure({
-		upload: async (files: File) => {
-			const formData = new FormData();
-			formData.append("files", files);
-			const asset = await uploadAsset(formData);
-			if (!asset.data || !asset.success) return "";
-			return asset.data[0].url;
-		},
-	}),
 	Blockquote,
 	SlashCommand,
 	HorizontalRule,

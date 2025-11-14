@@ -1,13 +1,16 @@
 // actions/deleteContactAction.ts
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	handleError,
+	type StandardResponse,
+	tasksService,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import type { StandardResponse } from "@/lib/services/common/response.service";
-import tasksService from "@/lib/services/new_type/tasks.service";
-
 export async function MassRemoveTasks(
-	tasks: number[],
-	_contactId: number,
+	tasks: DocumentId[],
+	_contactId: DocumentId,
 ): Promise<StandardResponse<null>> {
 	const session = await auth();
 	if (!session) {
@@ -18,18 +21,13 @@ export async function MassRemoveTasks(
 		};
 	}
 	try {
-		tasks.map(async (id) => await tasksService.unPublish(id));
+		tasks.map(async (id) => await tasksService.delete(id, session.jwt));
 		return {
 			data: null,
 			status: 200,
 			success: true,
 		};
 	} catch (error) {
-		console.error("Error removing tasks:", error);
-		return {
-			data: null,
-			status: 500,
-			success: false,
-		};
+		return handleError(error);
 	}
 }

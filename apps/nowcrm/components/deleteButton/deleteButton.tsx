@@ -1,4 +1,6 @@
 "use client";
+import type { DocumentId } from "@nowcrm/services";
+import type { BaseServiceName } from "@nowcrm/services/client";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import {
@@ -7,7 +9,6 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { ServiceName } from "@/lib/services/common/serviceFactory";
 import { Button } from "../ui/button";
 import { DeleteData } from "./deleteData";
 
@@ -15,8 +16,8 @@ interface deleteButtonProps {
 	label: string;
 	successMessage: string;
 	redirectURL: string;
-	serviceName: ServiceName;
-	id: number;
+	serviceName: BaseServiceName;
+	id: DocumentId;
 }
 
 export default function DeleteButton({

@@ -25,6 +25,7 @@ import ReactFlow, {
 	useNodesState,
 } from "reactflow";
 import "reactflow/dist/style.css";
+import type { DocumentId } from "@nowcrm/services";
 import { Info, Trash2, X } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { Button } from "@/components/ui/button";
@@ -43,10 +44,10 @@ import { WaitPanel } from "./panels/wait-panel";
 import { StepSelectorPanel } from "./step-selector";
 
 const nodeTypes: NodeTypes = {
-	channel: ChannelNode,
-	trigger: TriggerNode,
-	"scheduler-trigger": SchedulerTriggerNode,
-	wait: WaitNode,
+	channel: ChannelNode as any,
+	trigger: TriggerNode as any,
+	"scheduler-trigger": SchedulerTriggerNode as any,
+	wait: WaitNode as any,
 };
 
 // Update the JourneyBuilderProps interface to include the new callback
@@ -70,10 +71,10 @@ interface JourneyBuilderProps {
 		condition_type: "all" | "any",
 	) => Promise<boolean>;
 	onConnectionPrioritiesUpdate?: (
-		connectionPriorities: { connectionId: number; priority: number }[],
+		connectionPriorities: { connectionId: DocumentId; priority: number }[],
 	) => Promise<boolean>;
 	onRulePrioritiesUpdate?: (
-		rulePriorities: { ruleId: number; priority: number }[],
+		rulePriorities: { ruleId: DocumentId; priority: number }[],
 	) => Promise<boolean>;
 	isSaving?: boolean;
 	journeyTitle: string;
@@ -1447,6 +1448,7 @@ function JourneyBuilderContent({
 				}`}
 				ref={reactFlowWrapper}
 			>
+				{/* @ts-ignore */}
 				<style jsx global>{`
   .edge-label-hover-container .react-flow__edge:not(.has-conditions):hover .react-flow__edge-textbg {
     fill: #22c55e !important;

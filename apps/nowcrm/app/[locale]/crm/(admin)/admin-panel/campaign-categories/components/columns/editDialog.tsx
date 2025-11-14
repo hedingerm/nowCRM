@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { CampaignCategory } from "@nowcrm/services";
 import { ListPlus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMessages } from "next-intl";
@@ -28,8 +29,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { updateCampaignCategory } from "@/lib/actions/campaign-categories/updateCampaignCategory";
-import type { CampaignCategory } from "@/lib/types/new_type/campaignCategory";
+import { updateCampaignCategory } from "@/lib/actions/campaign-categories/update-campaign-category";
 
 interface EditCampaignCategoryDialogProps {
 	campaignCategory: CampaignCategory;
@@ -61,7 +61,7 @@ export default function EditCampaignCategoryDialog({
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		const { default: toast } = await import("react-hot-toast");
 		const res = await updateCampaignCategory(
-			campaignCategory.id,
+			campaignCategory.documentId,
 			values.name,
 			values.description,
 		);

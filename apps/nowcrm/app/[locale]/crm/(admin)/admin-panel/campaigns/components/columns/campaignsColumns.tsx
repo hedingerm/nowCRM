@@ -1,4 +1,5 @@
 "use client";
+import type { Campaign } from "@nowcrm/services";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 import { useMessages } from "next-intl";
@@ -11,7 +12,6 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { Campaign } from "@/lib/types/new_type/campaign";
 import EditCampaignDialog from "./editDialog";
 
 const DeleteAction: React.FC<{ campaign: Campaign }> = ({ campaign }) => {
@@ -29,7 +29,11 @@ const DeleteAction: React.FC<{ campaign: Campaign }> = ({ campaign }) => {
 					onClick={async () => {
 						const { default: toast } = await import("react-hot-toast");
 						const { deleteCampaignAction } = await import("./deleteCampaign");
-						await deleteCampaignAction(campaign.id);
+						const res = await deleteCampaignAction(campaign.documentId);
+						if (!res.success) {
+							toast.error(res.errorMessage ?? "Failed to delete campaign");
+							return;
+						}
 						toast.success(t.common.actions.delete);
 						router.refresh();
 					}}
@@ -81,7 +85,7 @@ export const columns: ColumnDef<Campaign>[] = [
 		accessorKey: "campaign_category.name",
 		header: ({ column }) => <SortableHeader column={column} label="Category" />,
 		cell: ({ row }) => {
-			return row.original.campaign_category?.name || "-";
+			return row.original.campaign_category || "-";
 		},
 	},
 	{

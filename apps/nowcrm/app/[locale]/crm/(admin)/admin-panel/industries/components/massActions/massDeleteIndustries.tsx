@@ -1,12 +1,16 @@
 // actions/deleteContactAction.ts
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	handleError,
+	industriesService,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import type { StandardResponse } from "@/lib/services/common/response.service";
-import industryService from "@/lib/services/new_type/industry.service";
 
 export async function MassDeleteIndustries(
-	industries: number[],
+	industries: DocumentId[],
 ): Promise<StandardResponse<null>> {
 	const session = await auth();
 	if (!session) {
@@ -18,7 +22,7 @@ export async function MassDeleteIndustries(
 	}
 	try {
 		const unpublishPromises = industries.map((id) =>
-			industryService.unPublish(id),
+			industriesService.delete(id, session?.jwt),
 		);
 		await Promise.all(unpublishPromises);
 		return {
@@ -27,11 +31,6 @@ export async function MassDeleteIndustries(
 			success: true,
 		};
 	} catch (error) {
-		console.error("Error deleting Lists:", error);
-		return {
-			data: null,
-			status: 500,
-			success: false,
-		};
+		return handleError(error);
 	}
 }

@@ -1,0 +1,35 @@
+// actions/deleteContactAction.ts
+"use server";
+import type { DocumentId, List } from "@nowcrm/services";
+import {
+	handleError,
+	listsService,
+	type StandardResponse,
+} from "@nowcrm/services/server";
+import { auth } from "@/auth";
+
+export async function addContactToList(
+	contactId: DocumentId,
+	listId: DocumentId,
+): Promise<StandardResponse<List>> {
+	const session = await auth();
+	if (!session) {
+		return {
+			data: null,
+			status: 403,
+			success: false,
+		};
+	}
+	try {
+		const res = await listsService.update(
+			listId,
+			{
+				contacts: { connect: [contactId] },
+			},
+			session.jwt,
+		);
+		return res;
+	} catch (error) {
+		return handleError(error);
+	}
+}

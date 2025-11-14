@@ -1,6 +1,13 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import {
+	CommunicationChannel,
+	type CommunicationChannelKeys,
+	type CompositionItem,
+	type DocumentId,
+	type sendToChannelsData,
+} from "@nowcrm/services";
 import { Mail } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -29,16 +36,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
 	type ChannelThrottleResponse,
 	getChannelThrottle,
-} from "@/lib/actions/channels/getThrottle";
-import { getComposition } from "@/lib/actions/composer/getComposition";
-import { getUserIdentity } from "@/lib/actions/identities/getUserIdentity";
-import { CommunicationChannel } from "@/lib/static/channel-icons";
-import type { CompositionItem } from "@/lib/types/new_type/composition";
-import type { sendToChannelsData } from "../sendToChannelType";
-
+} from "@/lib/actions/channels/get-channel-throttle";
+import { getComposition } from "@/lib/actions/composer/get-composition";
+import { getUserIdentity } from "@/lib/actions/identities/get-user-identity";
 export interface EmailChannelContentProps {
 	mode: "composer" | "mass_actions";
-	composition_id?: number;
+	composition_id?: DocumentId;
 	contacts?: string;
 	closeOnSubmit: () => void;
 	setSelectedOption?: (opt: sendToChannelsData) => void;
@@ -66,7 +69,9 @@ export function EmailChannelContent({
 		useState<ChannelThrottleResponse | null>(null);
 
 	React.useEffect(() => {
-		getChannelThrottle(currentChannel.toLowerCase()).then((res) => {
+		getChannelThrottle(
+			currentChannel.toLowerCase() as CommunicationChannelKeys,
+		).then((res) => {
 			if (res.success && res.data) {
 				const safeThrottle = res.data.throttle > 0 ? res.data.throttle : 30;
 				const safeMaxRate =
@@ -96,18 +101,18 @@ export function EmailChannelContent({
 	const formSchema = z
 		.object({
 			composition: z
-				.object({ value: z.number(), label: z.string() })
+				.object({ value: z.string(), label: z.string() })
 				.optional(),
 			email: z.string().optional(),
 			list: z
 				.object({
-					value: z.number(),
+					value: z.string(),
 					label: z.string(),
 				})
 				.optional(),
 			organization: z
 				.object({
-					value: z.number(),
+					value: z.string(),
 					label: z.string(),
 				})
 				.optional(),
@@ -209,8 +214,8 @@ export function EmailChannelContent({
 		let submissionData: sendToChannelsData | undefined;
 
 		// determine composition ID
-		let compId: number;
-		let compositionItemId: number | null = null;
+		let compId: DocumentId;
+		let compositionItemId: DocumentId | null = null;
 
 		if (isMassAction) {
 			if (!values.composition) {
@@ -252,7 +257,9 @@ export function EmailChannelContent({
 
 				const matchingItem = allItems.find((item) => {
 					const name = item.channel?.name;
-					console.log(` checking item.id=${item.id}, channel.name="${name}"`);
+					console.log(
+						` checking item.id=${item.documentId}, channel.name="${name}"`,
+					);
 					return name?.toLowerCase() === channelLower;
 				});
 
@@ -271,7 +278,7 @@ export function EmailChannelContent({
 					return;
 				}
 
-				compositionItemId = matchingItem.id;
+				compositionItemId = matchingItem.documentId;
 				console.log("Found compositionItemId:", compositionItemId);
 				console.groupEnd();
 			} catch (err) {
@@ -423,7 +430,7 @@ export function EmailChannelContent({
 					<AsyncSelectField
 						name="composition"
 						label="Composition"
-						serviceName="compositionService"
+						serviceName="compositionsService"
 						form={form}
 						useFormClear={false}
 					/>
@@ -433,7 +440,7 @@ export function EmailChannelContent({
 					<AsyncSelectField
 						name="identity"
 						label="Identity"
-						serviceName="identityService"
+						serviceName="identitiesService"
 						form={form}
 						useFormClear={false}
 						showDefaultCheckbox={true}
@@ -481,7 +488,7 @@ export function EmailChannelContent({
 							<AsyncSelectField
 								name="list"
 								label="List"
-								serviceName="listService"
+								serviceName="listsService"
 								form={form}
 								useFormClear={false}
 							/>
@@ -491,7 +498,7 @@ export function EmailChannelContent({
 							<AsyncSelectField
 								name="organization"
 								label="Organization"
-								serviceName="organizationService"
+								serviceName="organizationsService"
 								form={form}
 								useFormClear={false}
 							/>

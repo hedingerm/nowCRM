@@ -1,10 +1,10 @@
-export const APIRoutesComposer = {
+export const API_ROUTES_COMPOSER = {
 	// composer
 	CREATE_COMPOSITION: "composer/create-composition",
 	CREATE_REFERENCE: "composer/create-reference",
 	COMPOSER_REGENERATE: "composer/regenerate",
 	COMPOSER_QUICK_WRITE: "composer/quick-write",
-
+	COMPOSER_STRUCTURED_RESPONSE: "composer/structured-response",
 	// ses webhook
 	SES_WEBHOOK: "webhook/ses-event-to-strapi",
 

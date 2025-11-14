@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { Identity } from "@nowcrm/services";
 import { HelpCircle, ListPlus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMessages } from "next-intl";
@@ -31,7 +32,6 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import type { Identity } from "@/lib/types/new_type/identity";
 
 interface EditIdentityDialogProps {
 	identity: Identity;
@@ -85,10 +85,10 @@ export default function EditIdentityDialog({
 		setIsLoading(true);
 		const { default: toast } = await import("react-hot-toast");
 		const { updateIdentity } = await import(
-			"@/lib/actions/identities/updateIdentity"
+			"@/lib/actions/identities/update-identity"
 		);
 
-		const result = await updateIdentity(identity.id, values);
+		const result = await updateIdentity(identity.documentId, values);
 		setIsLoading(false);
 
 		if (!result.success) {

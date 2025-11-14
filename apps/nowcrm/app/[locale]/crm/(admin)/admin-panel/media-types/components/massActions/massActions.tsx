@@ -1,4 +1,5 @@
 "use client";
+import type { DocumentId } from "@nowcrm/services";
 // IdentitityMassActions.tsx
 import {
 	type ActionsConfig,
@@ -9,7 +10,7 @@ import { MassDeleteMediaTypes } from "./massDeleteMediaType";
 const actionsConfig: ActionsConfig = {
 	deleteContacts: {
 		label: "Delete", // e.g., "Delete"
-		onAction: async (selectedRows: number[]) => {
+		onAction: async (selectedRows: DocumentId[]) => {
 			return await MassDeleteMediaTypes(selectedRows);
 		},
 		successMessage: "Media Type deleted",

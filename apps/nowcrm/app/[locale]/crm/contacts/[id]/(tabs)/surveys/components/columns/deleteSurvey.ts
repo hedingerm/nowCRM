@@ -1,12 +1,16 @@
 // actions/deleteContactAction.ts
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	handleError,
+	type StandardResponse,
+	surveysService,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import type { StandardResponse } from "@/lib/services/common/response.service";
-import surveysService from "@/lib/services/new_type/surveys.service";
 
 export async function deleteSurveyAction(
-	survey: number,
+	survey: DocumentId,
 ): Promise<StandardResponse<null>> {
 	const session = await auth();
 	if (!session) {
@@ -17,10 +21,9 @@ export async function deleteSurveyAction(
 		};
 	}
 	try {
-		const response = await surveysService.unPublish(survey);
+		const response = await surveysService.delete(survey, session.jwt);
 		return response;
 	} catch (error) {
-		console.log(error);
-		throw new Error("Failed to delete survey");
+		return handleError(error);
 	}
 }

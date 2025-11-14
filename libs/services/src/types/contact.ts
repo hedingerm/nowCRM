@@ -25,6 +25,7 @@ import type { Organization } from "./organization";
 import type { Source } from "./source";
 import type { Subscription } from "./subscription";
 import type { Survey } from "./survey";
+import type { SurveyItem } from "./survey-item";
 import type { Tag } from "./tag";
 
 export type contactStatuses =
@@ -84,9 +85,10 @@ export interface Contact extends Omit<BaseType, "name"> {
 	media_types: MediaType[];
 	events: Event[];
 	surveys: Survey[];
+	survey_items: SurveyItem[];
 	donation_transactions: DonationTransaction[];
 	donation_subscriptions: DonationSubscription[];
-	tags: Tag;
+	tags: Tag[];
 	title: ContactTitle;
 	salutation: ContactSalutation;
 	job_title: ContactJobTitle;
@@ -104,11 +106,11 @@ export interface Form_Contact extends Omit<BaseFormType, "name"> {
 	address_line2: string;
 	location: string;
 	canton: string;
-	organization: Organization;
+	organization?: DocumentId;
 	lists: StrapiConnect;
 	phone: string;
 	contact_interests: StrapiConnect;
-	department: DocumentId;
+	department?: DocumentId;
 	consent: DocumentId;
 	language: LanguageKeys;
 	gender: string;
@@ -142,9 +144,10 @@ export interface Form_Contact extends Omit<BaseFormType, "name"> {
 	media_types: StrapiConnect;
 	events: StrapiConnect;
 	surveys: StrapiConnect;
+	survey_items: StrapiConnect;
 	donation_transactions: StrapiConnect;
 	donation_subscriptions: StrapiConnect;
-	tags: DocumentId;
+	tags: StrapiConnect;
 	title: DocumentId;
 	salutation: DocumentId;
 	job_title: DocumentId;

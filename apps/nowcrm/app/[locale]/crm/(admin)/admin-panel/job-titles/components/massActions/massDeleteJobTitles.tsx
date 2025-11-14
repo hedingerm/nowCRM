@@ -1,11 +1,14 @@
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	contactJobTitlesService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import type { StandardResponse } from "@/lib/services/common/response.service";
-import jobTitleService from "@/lib/services/new_type/job_title.service";
-
 export async function MassDeleteJobTitles(
-	jobTitles: number[],
+	jobTitles: DocumentId[],
 ): Promise<StandardResponse<null>> {
 	const session = await auth();
 	if (!session) {
@@ -17,7 +20,7 @@ export async function MassDeleteJobTitles(
 	}
 	try {
 		const unpublishPromises = jobTitles.map((id) =>
-			jobTitleService.unPublish(id),
+			contactJobTitlesService.delete(id, session?.jwt),
 		);
 		await Promise.all(unpublishPromises);
 		return {
@@ -26,11 +29,6 @@ export async function MassDeleteJobTitles(
 			success: true,
 		};
 	} catch (error) {
-		console.error("Error deleting job titles:", error);
-		return {
-			data: null,
-			status: 500,
-			success: false,
-		};
+		return handleError(error);
 	}
 }

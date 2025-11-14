@@ -1,5 +1,6 @@
 "use client";
 
+import { CommunicationChannel, type DocumentId } from "@nowcrm/services";
 import { Mail } from "lucide-react";
 import React from "react";
 import { Button } from "@/components/ui/button";
@@ -10,7 +11,6 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
-import { CommunicationChannel } from "@/lib/static/channel-icons";
 import { EmailChannelContent } from "./content/email-channel-content";
 import { LinkedInChannelContent } from "./content/linkedin-channel-content";
 import { LinkedinInvitesChannelContent } from "./content/linkedin-invitations-channel-content";
@@ -22,7 +22,7 @@ import { WordpressChannelContent } from "./content/wordpress-channel-content";
 
 interface SendToChannelsProps {
 	channelName: string;
-	composition_id: number;
+	composition_id: DocumentId;
 }
 
 export default function SendToChannelButton({

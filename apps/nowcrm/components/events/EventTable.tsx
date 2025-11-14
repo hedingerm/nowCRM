@@ -1,5 +1,6 @@
 "use client";
 
+import type { DocumentId, Event } from "@nowcrm/services";
 import {
 	AlertCircle,
 	BellOff,
@@ -29,11 +30,10 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { getEventsByCompositionId } from "@/lib/actions/events/getEvents";
-import type { Event } from "@/lib/types/new_type/event";
+import { getEventsByCompositionId } from "@/lib/actions/events/get-event";
 
 interface EventTableProps {
-	compositionItemId: number;
+	compositionItemId: DocumentId;
 	channelName?: string;
 }
 
@@ -113,12 +113,12 @@ const defaultPagination: PaginationState = {
 
 function groupEventsByContact(events: Event[], action: string) {
 	const grouped: Record<
-		number,
+		DocumentId,
 		{ contact: Event["contact"]; count: number; lastEvent: Event }
 	> = {};
 
 	for (const e of events) {
-		const contactId = e.contact?.id;
+		const contactId = e.contact?.documentId;
 		if (!contactId) continue;
 
 		if (!grouped[contactId]) {

@@ -21,10 +21,10 @@ import { Form } from "@/components/ui/form";
 
 const formSchema = z.object({
 	channel: z.object({
-		value: z.number(),
+		value: z.string(),
 		label: z.string(),
 	}),
-	contact: z.number(),
+	contact: z.string(),
 });
 
 export default function CreateListDialog() {
@@ -37,17 +37,17 @@ export default function CreateListDialog() {
 		resolver: zodResolver(formSchema),
 		defaultValues: {
 			channel: undefined,
-			contact: Number.parseInt(params.id),
+			contact: params.id,
 		},
 	});
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		const { default: toast } = await import("react-hot-toast");
 		const { createSubscription } = await import(
-			"@/lib/actions/subscriptions/createSubscription"
+			"@/lib/actions/subscriptions/create-subscription"
 		);
 		const { getSubscription } = await import(
-			"@/lib/actions/subscriptions/getSubscription"
+			"@/lib/actions/subscriptions/get-subscription"
 		);
 		const exists = await getSubscription(values.contact, values.channel.value);
 		if (exists) {
@@ -83,7 +83,7 @@ export default function CreateListDialog() {
 						<AsyncSelectField
 							name="channel"
 							label={t("channel")}
-							serviceName="channelService"
+							serviceName="channelsService"
 							form={form}
 							useFormClear={true}
 						/>

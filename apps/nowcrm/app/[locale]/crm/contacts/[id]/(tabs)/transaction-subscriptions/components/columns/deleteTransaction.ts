@@ -1,12 +1,16 @@
 // actions/deleteContactAction.ts
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	donationSubscriptionsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import type { StandardResponse } from "@/lib/services/common/response.service";
-import donationSubscriptionService from "@/lib/services/new_type/donation_subscription.service";
 
 export async function deleteDonationSubscriptionAction(
-	transaction: number,
+	transaction: DocumentId,
 ): Promise<StandardResponse<null>> {
 	const session = await auth();
 	if (!session) {
@@ -17,10 +21,12 @@ export async function deleteDonationSubscriptionAction(
 		};
 	}
 	try {
-		const response = await donationSubscriptionService.unPublish(transaction);
+		const response = await donationSubscriptionsService.delete(
+			transaction,
+			session.jwt,
+		);
 		return response;
 	} catch (error) {
-		console.log(error);
-		throw new Error("Failed to delete donation subscription");
+		return handleError(error);
 	}
 }

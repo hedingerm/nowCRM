@@ -1,13 +1,16 @@
 // actions/deleteContactAction.ts
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	handleError,
+	type StandardResponse,
+	unipileIdentitiesService,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import type { StandardResponse } from "@/lib/services/common/response.service";
-
-import unipleIdentityService from "@/lib/services/new_type/unipile_identity.service";
 
 export async function MassDeleteUnipileIdentities(
-	identities: number[],
+	identities: DocumentId[],
 ): Promise<StandardResponse<null>> {
 	const session = await auth();
 	if (!session) {
@@ -19,7 +22,7 @@ export async function MassDeleteUnipileIdentities(
 	}
 	try {
 		const unpublishPromises = identities.map((id) =>
-			unipleIdentityService.unPublish(id),
+			unipileIdentitiesService.delete(id, session?.jwt),
 		);
 		await Promise.all(unpublishPromises);
 		return {
@@ -28,11 +31,6 @@ export async function MassDeleteUnipileIdentities(
 			success: true,
 		};
 	} catch (error) {
-		console.error("Error deleting identities:", error);
-		return {
-			data: null,
-			status: 500,
-			success: false,
-		};
+		return handleError(error);
 	}
 }

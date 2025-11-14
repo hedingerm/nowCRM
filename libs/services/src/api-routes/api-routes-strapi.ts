@@ -1,4 +1,6 @@
-export const APIRoutesStrapi = {
+export const API_ROUTES_STRAPI = {
+	//Terms
+	TERMS: "terms",
 	//Actions
 	ACTIONS: "actions",
 	ACTION_SCORE_ITEMS: "action-score-items",
@@ -33,7 +35,11 @@ export const APIRoutesStrapi = {
 	CONTACT_SALUTATIONS: "contact-salutations",
 	CONTACT_TITLES: "contact-titles",
 	CONTACT_TYPES: "contact-types",
+	CONTACT_ANONYMIZE_DATA: "contacts/anonymize-user",
+	CONTACTS_DUPLICATE: "contacts/duplicate",
+	CONTACT_EXPORT_DATA: "contacts/export-user-data",
 
+	//tasks
 	TASKS: "tasks",
 
 	//Sibscriptions
@@ -50,7 +56,7 @@ export const APIRoutesStrapi = {
 	JOURNEY_DUPLICATE: "journeys/duplicate",
 	//List
 	LISTS: "lists",
-	LISTS_COUNT_CONTACTS: "lists/:id/active-contacts-count",
+	LISTS_COUNT_CONTACTS: "active-contacts-count",
 	LISTS_DUPLICATE: "lists/duplicate",
 
 	//Addional data
@@ -80,6 +86,10 @@ export const APIRoutesStrapi = {
 
 	//User
 	USERS: "users",
+	FORGOT_PASSWORD: "auth/forgot-password",
+	REGISTER: "auth/local/register",
+	RESET_PASSWORD: "auth/reset-password",
+	AUTH_LOGIN: "auth/local",
 
 	// Uploads
 	UPLOAD: "upload",

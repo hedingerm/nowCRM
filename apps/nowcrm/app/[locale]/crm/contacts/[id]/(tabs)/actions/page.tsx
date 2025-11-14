@@ -1,11 +1,11 @@
+import type { PaginationParams } from "@nowcrm/services";
+import { actionsService } from "@nowcrm/services/server";
 import type { Metadata } from "next";
 import type { Session } from "next-auth";
 import { getTranslations } from "next-intl/server";
 import { auth } from "@/auth";
 import DataTable from "@/components/dataTable/dataTable";
 import ErrorMessage from "@/components/ErrorMessage";
-import actionsService from "@/lib/services/new_type/actions.service";
-import type { PaginationParams } from "@/lib/types/common/paginationParams";
 import { columns } from "./components/columns/actionsColumns";
 import ActionsMassActions from "./components/massActions/massActions";
 
@@ -29,7 +29,7 @@ export default async function Page(props: {
 	} = searchParams;
 	// Fetch data from the contactService
 	const session = await auth();
-	const response = await actionsService.find({
+	const response = await actionsService.find(session?.jwt, {
 		sort: [`${sortBy}:${sortOrder}` as any],
 		populate: "*",
 		pagination: {
@@ -38,7 +38,7 @@ export default async function Page(props: {
 		},
 		filters: {
 			$or: [
-				{ action_normalized_type: { $containsi: search } as any },
+				{ action_type: { $containsi: search } as any },
 				{ entity: { $containsi: search } },
 				{ payload: { $containsi: search } },
 			],

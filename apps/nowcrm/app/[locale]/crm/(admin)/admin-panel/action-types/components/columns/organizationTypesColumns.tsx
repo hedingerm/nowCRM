@@ -1,5 +1,6 @@
 "use client";
 
+import type { ActionType } from "@nowcrm/services";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 import { useMessages } from "next-intl";
@@ -12,11 +13,8 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { MediaType } from "@/lib/types/new_type/media_type";
 
-const DeleteAction: React.FC<{ organizationType: MediaType }> = ({
-	organizationType,
-}) => {
+const DeleteAction: React.FC<{ actionType: ActionType }> = ({ actionType }) => {
 	const t = useMessages();
 	const router = useRouter();
 	return (
@@ -30,9 +28,13 @@ const DeleteAction: React.FC<{ organizationType: MediaType }> = ({
 					onClick={async () => {
 						const { default: toast } = await import("react-hot-toast");
 						const { deleteActionType } = await import(
-							"@/lib/actions/action_types/deleteActionType"
+							"@/lib/actions/action_types/delete-action-type"
 						);
-						await deleteActionType(organizationType.id);
+						const res = await deleteActionType(actionType.documentId);
+						if (!res.success) {
+							toast.error(res.errorMessage ?? "Failed to delete action type");
+							return;
+						}
 						toast.success(t.Admin.MediaType.toast.delete);
 						router.refresh();
 					}}
@@ -47,7 +49,7 @@ const DeleteAction: React.FC<{ organizationType: MediaType }> = ({
 	);
 };
 
-export const columns: ColumnDef<MediaType>[] = [
+export const columns: ColumnDef<ActionType>[] = [
 	{
 		id: "select",
 		header: ({ table }) => (
@@ -78,8 +80,8 @@ export const columns: ColumnDef<MediaType>[] = [
 		id: "delete",
 		header: "Delete",
 		cell: ({ row }) => {
-			const organizationType = row.original;
-			return <DeleteAction organizationType={organizationType} />;
+			const actionType = row.original;
+			return <DeleteAction actionType={actionType} />;
 		},
 	},
 ];

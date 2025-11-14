@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { LanguageKeys } from "@nowcrm/services";
 import {
 	Check,
 	ChevronsUpDown,
@@ -51,7 +52,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { quickWrite } from "@/lib/actions/composer/quickWrite";
+import { quickWrite } from "@/lib/actions/composer/quick-write";
 import { cn } from "@/lib/utils";
 import {
 	getRandomInstruction,
@@ -143,6 +144,7 @@ export function QuickWriteDialog({
 
 			const response = await quickWrite({
 				...data,
+				language: data.language as LanguageKeys,
 				additional_context: enhancedContext,
 			});
 

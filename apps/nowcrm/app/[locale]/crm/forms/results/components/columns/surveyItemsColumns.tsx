@@ -1,5 +1,6 @@
 "use client";
 
+import type { SurveyItem } from "@nowcrm/services";
 import type { ColumnDef } from "@tanstack/react-table";
 import { FileText, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
@@ -19,7 +20,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { RouteConfig } from "@/lib/config/RoutesConfig";
 import { formatDateTimeStrapi } from "@/lib/strapiDate";
-import type { SurveyItem } from "@/lib/types/new_type/survey_item";
 import { deleteSurveyItemAction } from "./deleteSurveyItem";
 
 const DeleteAction: React.FC<{ surveryItem: SurveyItem }> = ({
@@ -34,7 +34,11 @@ const DeleteAction: React.FC<{ surveryItem: SurveyItem }> = ({
 			<DropdownMenuContent>
 				<DropdownMenuItem
 					onClick={async () => {
-						await deleteSurveyItemAction(surveryItem.id);
+						const res = await deleteSurveyItemAction(surveryItem.documentId);
+						if (!res.success) {
+							toast.error(res.errorMessage ?? "Failed to delete survey item");
+							return;
+						}
 						toast.success("Survey Item deleted");
 						router.refresh();
 					}}
@@ -119,7 +123,7 @@ export const columns: ColumnDef<SurveyItem>[] = [
 		cell: ({ row }) => {
 			return (
 				<Link
-					href={`${RouteConfig.forms.single(Number(row.original.survey.form_id))}`}
+					href={`${RouteConfig.forms.single(row.original.survey.form_id)}`}
 					className=" font-medium"
 				>
 					{row.original.survey.form_id}
@@ -146,22 +150,6 @@ export const columns: ColumnDef<SurveyItem>[] = [
 				</Link>
 			);
 		},
-	},
-	{
-		accessorKey: "videoask_option_id",
-		header: "VideoAsk Option ID",
-		cell: ({ row }) => {
-			return <div>{row.original.videoask_option_id}</div>;
-		},
-		meta: { hidden: true },
-	},
-	{
-		accessorKey: "videoask_question_id",
-		header: "VideoAsk Question ID",
-		cell: ({ row }) => {
-			return <div>{row.original.videoask_question_id}</div>;
-		},
-		meta: { hidden: true },
 	},
 	{
 		accessorKey: "createdAt",

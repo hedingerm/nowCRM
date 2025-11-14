@@ -1,5 +1,10 @@
 "use client";
 
+import type {
+	Asset,
+	createAdditionalComposition,
+	DocumentId,
+} from "@nowcrm/services";
 import {
 	AlertCircle,
 	Archive,
@@ -51,8 +56,6 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import type Asset from "@/lib/services/new_type/assets/asset";
-import type { createAdditionalComposition } from "@/lib/types/new_type/composition";
 import SendToChannelButton from "../../../../../../../components/send-to-channels/sendToChannel";
 import { FileUploadHandler } from "../../../../../../../components/uploaders/file-uploader-handler";
 import { AnalyticsSection } from "../analytics/EmailAnalyticsSection";
@@ -69,14 +72,14 @@ interface ChannelTab {
 }
 
 interface CompositionChannelContentProps {
-	composition_id: number;
+	composition_id: DocumentId;
 	tab: ChannelTab;
 	form: UseFormReturn<any>;
 	isEditing: boolean;
 	formItemIndex: number;
-	itemId: number;
+	itemId: DocumentId;
 	onRegenerate: (
-		itemId: number,
+		itemId: DocumentId,
 		formItemIndex: number,
 		data: createAdditionalComposition,
 	) => any;
@@ -198,11 +201,7 @@ export function CompositionChannelContent({
 					removeHtml: tab.remove_html,
 					max_content_length: tab.maximum_content_lenght,
 				};
-				const newResult = await onRegenerate(
-					Number.parseInt(itemId),
-					formItemIndex,
-					data,
-				);
+				const newResult = await onRegenerate(itemId, formItemIndex, data);
 				form.setValue(`composition_items.${formItemIndex}.result`, newResult);
 				setRegenerated(newResult);
 				toast.success(`${tab.channelName} ${t.regenerateToastSuccess}`);
@@ -231,7 +230,7 @@ export function CompositionChannelContent({
 		setNewFiles((prev) => [...prev, ...files]);
 
 		const newUIAssets = files.map((file) => {
-			const uiAsset: UIAsset = {
+			const uiAsset: any = {
 				id: -1 * Math.floor(Math.random() * 10000),
 				name: file.name,
 				alternativeText: null,

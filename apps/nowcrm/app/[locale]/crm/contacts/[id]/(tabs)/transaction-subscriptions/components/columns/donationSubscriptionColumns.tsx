@@ -1,4 +1,5 @@
 "use client";
+import type { DonationSubscription } from "@nowcrm/services";
 import type { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -18,7 +19,6 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { formatDateTimeStrapi } from "@/lib/strapiDate";
-import type { DonationSubscription } from "@/lib/types/new_type/donation_subscription";
 import EditSubscriptionTransactionDialog from "./editSubscriptionDialog";
 
 const DeleteAction: React.FC<{ subscription: DonationSubscription }> = ({
@@ -39,7 +39,15 @@ const DeleteAction: React.FC<{ subscription: DonationSubscription }> = ({
 						const { deleteDonationSubscriptionAction } = await import(
 							"./deleteTransaction"
 						);
-						await deleteDonationSubscriptionAction(subscription.id);
+						const res = await deleteDonationSubscriptionAction(
+							subscription.documentId,
+						);
+						if (!res.success) {
+							toast.error(
+								res.errorMessage ?? "Failed to delete donation subscription",
+							);
+							return;
+						}
 						toast.success(
 							t(
 								"Contacts.transactionSubscription.transactionSubscriptionDeleted",

@@ -1,11 +1,11 @@
+import type { DocumentId, PaginationParams } from "@nowcrm/services";
+import { listsService } from "@nowcrm/services/server";
 import type { Metadata } from "next";
 import type { Session } from "next-auth";
 import { getTranslations } from "next-intl/server";
 import { auth } from "@/auth";
 import DataTable from "@/components/dataTable/dataTable";
 import ErrorMessage from "@/components/ErrorMessage";
-import listsService from "@/lib/services/new_type/lists.service";
-import type { PaginationParams } from "@/lib/types/common/paginationParams";
 import createListDialog from "./components/addToListDialog";
 import { columns } from "./components/columns/listsColumns";
 import MassActionsLists from "./components/massActions/massActions";
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 
 export default async function Page(props: {
 	searchParams: Promise<PaginationParams>;
-	params: Promise<{ id: number }>;
+	params: Promise<{ id: DocumentId }>;
 }) {
 	const t = await getTranslations();
 	const params = await props.params;
@@ -29,7 +29,7 @@ export default async function Page(props: {
 	} = searchParams;
 	// Fetch data from the contactService
 	const session = await auth();
-	const response = await listsService.find({
+	const response = await listsService.find(session?.jwt, {
 		fields: ["id", "name", "createdAt", "updatedAt"],
 		populate: {},
 		sort: [`${sortBy}:${sortOrder}` as any],
@@ -39,7 +39,7 @@ export default async function Page(props: {
 		},
 		filters: {
 			$or: [{ name: { $containsi: search } }],
-			contacts: { id: { $in: params.id } },
+			contacts: { documentId: { $in: params.id } },
 		},
 	});
 

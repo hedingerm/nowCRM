@@ -3,7 +3,7 @@
 import { Ban, X } from "lucide-react";
 import type React from "react";
 import { type JSX, useEffect, useState } from "react";
-import { findRandomContact } from "@/lib/actions/contacts/findOneContact";
+import { findRandomContact } from "@/lib/actions/contacts/find-contact-by-unsubscribe";
 import { RouteConfig } from "@/lib/config/RoutesConfig";
 
 type Phrase = {
@@ -161,7 +161,7 @@ export const HelloMessage: React.FC = () => {
 		(async () => {
 			try {
 				const contact = await findRandomContact();
-				const link = `${RouteConfig.contacts.single.base(contact?.id || 1)}`;
+				const link = `${RouteConfig.contacts.single.base(contact?.documentId ?? "")}`;
 
 				const replacements: Record<string, string> = {
 					"{contact_name}":

@@ -1,5 +1,6 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { settingSubscriptionCheck } from "@nowcrm/services";
 import { HelpCircle, Pencil, Save, X } from "lucide-react";
 import { useMessages } from "next-intl";
 import { useState } from "react";
@@ -36,10 +37,9 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import type { SubscriptionStatuses } from "@/lib/types/new_type/settings";
 
 interface ChannelSettingsFormProps {
-	initialSubscription: SubscriptionStatuses;
+	initialSubscription: settingSubscriptionCheck;
 	initialUnsubscribeText: string;
 	baseLink: string;
 }
@@ -77,10 +77,11 @@ export function ChannelSettingsForm({
 	const onSubmit = async (data: any) => {
 		try {
 			const { updateSettings } = await import(
-				"@/lib/actions/settings/updateSettings"
+				"@/lib/actions/settings/update-settings"
 			);
 			setIsSaving(true);
-			await updateSettings(1, data);
+			//TODO: get settings id from database
+			await updateSettings("", data);
 			toast.success(t.Admin.Channels.toast.updateSettings);
 			setIsEditing(false);
 		} catch (error) {

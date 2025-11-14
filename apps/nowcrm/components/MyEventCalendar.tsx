@@ -34,10 +34,10 @@
  */
 "use client";
 
-import { createScheduledCompositions } from "@/lib/actions/scheduled_composition/createScheduledComposition";
-import { deleteScheduledCompositions } from "@/lib/actions/scheduled_composition/deleteScheduledComposition";
-import { fetchScheduledCompositions } from "@/lib/actions/scheduled_composition/fetchScheduledCompositions";
-import { updateScheduledCompositions } from "@/lib/actions/scheduled_composition/updateScheduledComposition";
+import { createScheduledCompositions } from "@/lib/actions/scheduled_composition/create-scheduled-composition";
+import { deleteScheduledCompositions } from "@/lib/actions/scheduled_composition/delete-scheduled-composition";
+import { fetchScheduledCompositions } from "@/lib/actions/scheduled_composition/get-scheduled-composition";
+import { updateScheduledCompositions } from "@/lib/actions/scheduled_composition/update-scheduled-composition";
 import { fromCalendarEventToForm, mapToCalendarEvents } from "@/lib/utils";
 import EventCalendar from "./event-calendar/EventCalendar";
 import {
@@ -108,7 +108,7 @@ const MyEventCalendar = ({ initialEvents }: MyEventCalendarProps) => {
 	): Promise<CalendarEventType> => {
 		const payload = fromCalendarEventToForm(event);
 		const response = await updateScheduledCompositions(
-			Number(event.id),
+			event.documentId ?? "",
 			payload,
 		);
 		if (!response.success || !response.data) {
@@ -118,7 +118,7 @@ const MyEventCalendar = ({ initialEvents }: MyEventCalendarProps) => {
 	};
 
 	const handleEventDelete = async (eventId: string): Promise<void> => {
-		const response = await deleteScheduledCompositions(Number(eventId));
+		const response = await deleteScheduledCompositions(eventId);
 		if (!response.success) {
 			throw new Error(response.errorMessage ?? "Failed to delete event");
 		}
@@ -140,7 +140,6 @@ const MyEventCalendar = ({ initialEvents }: MyEventCalendarProps) => {
 				start.toISOString(),
 				end.toISOString(),
 			);
-
 			if (!response.success || !response.data) {
 				throw new Error(
 					response.errorMessage ?? "Failed to fetch scheduled compositions",

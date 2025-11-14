@@ -1,10 +1,10 @@
+import type { PaginationParams } from "@nowcrm/services";
+import { listsService } from "@nowcrm/services/server";
 import type { Metadata } from "next";
 import type { Session } from "next-auth";
 import { auth } from "@/auth";
 import DataTable from "@/components/dataTable/dataTable";
 import ErrorMessage from "@/components/ErrorMessage";
-import listsService from "@/lib/services/new_type/lists.service";
-import type { PaginationParams } from "@/lib/types/common/paginationParams";
 import { columns } from "./components/columns/listsColumns";
 import createListDialog from "./components/createDialog";
 import MassActionsLists from "./components/massActions/massActions";
@@ -26,12 +26,10 @@ export default async function Page(props: {
 
 	// Fetch data from the contactService
 	const session = await auth();
-	const response = await listsService.find({
-		fields: ["id", "name", "createdAt", "updatedAt"],
+	const response = await listsService.find(session?.jwt, {
+		fields: ["documentId", "name", "createdAt", "updatedAt"],
 		populate: {
-			tags: {
-				populate: ["name"],
-			},
+			tags: true,
 		},
 		sort: [`${sortBy}:${sortOrder}` as any],
 		pagination: {
@@ -42,12 +40,10 @@ export default async function Page(props: {
 			$or: [{ name: { $containsi: search } }],
 		},
 	});
-
 	if (!response.success || !response.data || !response.meta) {
 		return <ErrorMessage response={response} />;
 	}
 	const { meta } = response;
-
 	return (
 		<div className="container">
 			<DataTable

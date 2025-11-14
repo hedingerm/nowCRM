@@ -1,5 +1,6 @@
 "use client";
 
+import type { DocumentId } from "@nowcrm/services";
 import {
 	type ColumnDef,
 	type ExpandedState,
@@ -40,7 +41,7 @@ interface DataTableProps<TData, TValue> {
 	table_name: string;
 	table_title: string;
 	mass_actions: React.ComponentType<{
-		selectedRows: number[];
+		selectedRows: DocumentId[];
 		clearFunction: () => void;
 		jwt?: string;
 		refreshData?: () => void;
@@ -267,7 +268,7 @@ export default function DataTable<TData, TValue>({
 		getCoreRowModel: getCoreRowModel(),
 		getSortedRowModel: getSortedRowModel(),
 		getExpandedRowModel: getExpandedRowModel(),
-		getRowId: (row) => (row as any).id,
+		getRowId: (row) => (row as any).documentId,
 		meta: { session: session ? session : null },
 		state: {
 			sorting: sortingState,
@@ -351,7 +352,7 @@ export default function DataTable<TData, TValue>({
 
 					<MassActionsComponent
 						selectedRows={Object.keys(table.getState().rowSelection).map(
-							(key) => +key,
+							(key) => key as DocumentId,
 						)}
 						clearFunction={table.resetRowSelection}
 						jwt={table.options.meta?.session?.jwt}

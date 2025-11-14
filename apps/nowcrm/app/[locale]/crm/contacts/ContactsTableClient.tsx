@@ -6,7 +6,7 @@ import { fetchDataForVisibleColumns } from "@/components/dataTable/actions/fetch
 import DataTable, {
 	useUrlState,
 } from "@/components/dataTable/dataTableContacts";
-import { transformFilters } from "@/lib/actions/filters/filtersSearch";
+import { transformFilters } from "@/lib/actions/filters/filters-search";
 import AdvancedFilters from "./components/advancedFilters/advancedFilters";
 import { columns } from "./components/columns/ContactColumns";
 import createContactDialog from "./components/createDialog";
@@ -140,7 +140,7 @@ export default function ContactsTableClient({
 				sortBy: params.sortBy ?? sortBy,
 				sortOrder: params.sortOrder ?? sortOrder,
 				filters: params.filters ?? effectiveFilters,
-				serviceName: "contactService",
+				serviceName: "contactsService",
 			});
 
 			if (res?.success) {

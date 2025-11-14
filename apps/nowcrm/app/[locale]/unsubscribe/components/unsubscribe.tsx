@@ -1,5 +1,6 @@
 "use client";
 
+import type { DocumentId } from "@nowcrm/services";
 import { AlertCircle, CheckCircle } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
@@ -11,7 +12,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { unsubscribeUser } from "@/lib/actions/unsubscribeUser";
+import { unsubscribeUser } from "@/lib/actions/unsubscribe-user";
 
 export default function UnsubscribeComponent({
 	email,
@@ -20,7 +21,7 @@ export default function UnsubscribeComponent({
 }: {
 	email: string;
 	channel?: string;
-	compositionId?: number;
+	compositionId?: DocumentId;
 }) {
 	const [status, setStatus] = useState<{
 		success: boolean;

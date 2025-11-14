@@ -109,7 +109,7 @@ export function useEventCalendar({
       } else {
         addedEvent = {
           ...newEvent,
-          id:
+          documentId:
             Date.now().toString() + Math.random().toString(36).substring(2, 7),
         };
       }
@@ -121,7 +121,7 @@ export function useEventCalendar({
         toast.success(localization.eventAdded, {
           action: {
             label: localization.undo,
-            onClick: () => deleteEvent(addedEvent.id, true),
+            onClick: () => deleteEvent(addedEvent.documentId, true),
           },
         });
       } else {
@@ -153,7 +153,7 @@ export function useEventCalendar({
       }
       setEvents((prevEvents) =>
         prevEvents.map((event) =>
-          event.id === updatedEvent.id ? updatedEvent : event
+          event.documentId === updatedEvent.documentId ? updatedEvent : event
         )
       );
 
@@ -162,7 +162,7 @@ export function useEventCalendar({
           action: {
             label: localization.undo,
             onClick: () =>
-              updateEvent(events.find((e) => e.id === updatedEvent.id)!, true),
+              updateEvent(events.find((e) => e.documentId === updatedEvent.documentId)!, true),
           },
         });
       } else {
@@ -188,7 +188,7 @@ export function useEventCalendar({
     if (!eventId) return;
     const eventToDelete = isUndo
       ? lastAddedEventRef.current
-      : events.find((e) => e.id === eventId);
+      : events.find((e) => e.documentId === eventId);
 
     if (!eventToDelete) {
       console.error(`Event with id ${eventId} not found`);
@@ -200,7 +200,7 @@ export function useEventCalendar({
         await onEventDelete(eventId);
       }
       setEvents((prevEvents) =>
-        prevEvents.filter((event) => event.id !== eventId)
+        prevEvents.filter((event) => event.documentId !== eventId)
       );
 
       if (!isUndo) {
@@ -250,14 +250,14 @@ export function useEventCalendar({
           endDate,
           abortController.signal
         );
-
+        console.log(fetchedEvents)
         // Only update state if this is still the current fetch
         if (currentFetchRef.current === abortController) {
           setEvents((prev) => {
             const byId = new Map<string, CalendarEventType>();
             for (const e of [...prev, ...fetchedEvents]) {
-              if (!e.id) continue;
-              byId.set(String(e.id), e);
+              if (!e.documentId) continue;
+              byId.set(String(e.documentId), e);
             }
             return Array.from(byId.values());
           });

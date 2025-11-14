@@ -1,5 +1,6 @@
 "use client";
 
+import type { CommunicationChannelKeys } from "@nowcrm/services";
 import { RefreshCcw } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMessages } from "next-intl";
@@ -20,7 +21,7 @@ interface CompositionSidebarProps {
 	activeTab: string;
 	setActiveTab: (tab: string) => void;
 	channelTabs: ChannelTab[];
-	onAddChannel?: (channel: string) => void;
+	onAddChannel?: (channel: CommunicationChannelKeys) => void;
 	isAddingChannel?: boolean;
 }
 

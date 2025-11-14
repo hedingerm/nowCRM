@@ -1,9 +1,9 @@
 "use server";
 
+import type { BaseServiceName } from "@nowcrm/services";
+import { ServiceFactory } from "@nowcrm/services/server";
+import { auth } from "@/auth";
 import { fieldsFromVisible } from "@/lib/generateFieldsPopulate";
-import ServiceFactory, {
-	type ServiceName,
-} from "@/lib/services/common/serviceFactory";
 
 export async function fetchDataForVisibleColumns(input: {
 	visibleIds: string[];
@@ -12,8 +12,16 @@ export async function fetchDataForVisibleColumns(input: {
 	sortBy: string;
 	sortOrder: "asc" | "desc";
 	filters?: any;
-	serviceName: ServiceName;
+	serviceName: BaseServiceName;
 }) {
+	const session = await auth();
+	if (!session) {
+		return {
+			data: null,
+			status: 403,
+			success: false,
+		};
+	}
 	const {
 		visibleIds,
 		page,
@@ -32,7 +40,7 @@ export async function fetchDataForVisibleColumns(input: {
 	]);
 	const service = ServiceFactory.getService(serviceName);
 
-	return await service.find({
+	return await service.find(session?.jwt, {
 		fields: fields as any,
 		populate: {
 			salutation: { fields: ["name"] },
@@ -54,7 +62,7 @@ export async function fetchDataForVisibleColumns(input: {
 			survey_items: { fields: ["question", "answer"] },
 			tags: { fields: ["name", "color"] },
 		},
-		sort: [`${sortBy}:${sortOrder}` as any],
+		sort: [`${sortBy}:${sortOrder}`] as any,
 		pagination: { page, pageSize },
 		filters: { ...(filters ?? {}) },
 	});

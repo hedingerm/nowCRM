@@ -1,5 +1,6 @@
 "use client";
 
+import type { Frequency } from "@nowcrm/services";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 import { useMessages } from "next-intl";
@@ -12,7 +13,6 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { Frequency } from "@/lib/types/new_type/frequency";
 
 const DeleteAction: React.FC<{ frequency: Frequency }> = ({ frequency }) => {
 	const t = useMessages();
@@ -28,7 +28,11 @@ const DeleteAction: React.FC<{ frequency: Frequency }> = ({ frequency }) => {
 					onClick={async () => {
 						const { default: toast } = await import("react-hot-toast");
 						const { deleteFrequencyAction } = await import("./deleteFrequency");
-						await deleteFrequencyAction(frequency.id);
+						const res = await deleteFrequencyAction(frequency.documentId);
+						if (!res.success) {
+							toast.error(res.errorMessage ?? "Failed to delete frequency");
+							return;
+						}
 						toast.success(t.Admin.Frequency.toast.delete);
 						router.refresh();
 					}}

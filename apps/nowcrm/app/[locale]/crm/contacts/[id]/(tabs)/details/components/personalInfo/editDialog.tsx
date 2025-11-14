@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { Contact, LanguageKeys } from "@nowcrm/services";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import type React from "react";
@@ -52,7 +53,6 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import type { Contact } from "@/lib/types/new_type/contact";
 
 const handlePhoneInput = (e: React.ChangeEvent<HTMLInputElement>) => {
 	const value = e.target.value;
@@ -93,7 +93,7 @@ export function EditDialog({ contact, isOpen, onClose }: EditDialogProps) {
 			const { findData } = await import("@/components/autoComplete/findData");
 
 			try {
-				const res = await findData("contactTypeService", {
+				const res = await findData("contactTypesService", {
 					pagination: { pageSize: 15 },
 				});
 				const mapped = (res?.data ?? []).map((item: any) => ({
@@ -131,19 +131,19 @@ export function EditDialog({ contact, isOpen, onClose }: EditDialogProps) {
 		salutation: z
 			.object({
 				label: z.string(),
-				value: z.number(),
+				value: z.string(),
 			})
 			.optional(),
 		title: z
 			.object({
 				label: z.string(),
-				value: z.number(),
+				value: z.string(),
 			})
 			.optional(),
 		contact_types: z
 			.object({
 				label: z.string(),
-				value: z.number(),
+				value: z.string(),
 			})
 			.optional(),
 		gender: z.string().optional(),
@@ -160,7 +160,7 @@ export function EditDialog({ contact, isOpen, onClose }: EditDialogProps) {
 			contact_types: contact.contact_types?.length
 				? {
 						label: contact.contact_types[0].name,
-						value: contact.contact_types[0].id,
+						value: contact.contact_types[0].documentId,
 					}
 				: undefined,
 			phone: contact.phone || "",
@@ -168,13 +168,13 @@ export function EditDialog({ contact, isOpen, onClose }: EditDialogProps) {
 			salutation: contact.salutation
 				? {
 						label: contact.salutation.name,
-						value: contact.salutation.id,
+						value: contact.salutation.documentId,
 					}
 				: undefined,
 			title: contact.title
 				? {
 						label: contact.title.name,
-						value: contact.title.id,
+						value: contact.title.documentId,
 					}
 				: undefined,
 			gender: contact.gender || "",
@@ -186,17 +186,18 @@ export function EditDialog({ contact, isOpen, onClose }: EditDialogProps) {
 	async function handleSubmit(values: z.infer<typeof formSchema>) {
 		const { default: toast } = await import("react-hot-toast");
 		const { updateContact } = await import(
-			"@/lib/actions/contacts/updateContact"
+			"@/lib/actions/contacts/update-contact"
 		);
 		const edited_values = {
 			...values,
+			language: values.language as LanguageKeys,
 			contact_types: values.contact_types
-				? [values.contact_types.value]
+				? { set: [values.contact_types.value] }
 				: undefined,
 			title: values.title?.value,
 			salutation: values.salutation?.value,
 		};
-		const res = await updateContact(contact.id, edited_values);
+		const res = await updateContact(contact.documentId, edited_values);
 		if (!res.success) {
 			toast.error(
 				`${t("Contacts.details.personal.edit.error")}: ${res.errorMessage}`,
@@ -429,7 +430,7 @@ export function EditDialog({ contact, isOpen, onClose }: EditDialogProps) {
 							<AsyncSelectField
 								name="contact_types"
 								label=""
-								serviceName="contactTypeService"
+								serviceName="contactTypesService"
 								form={form}
 								useFormClear={false}
 							/>

@@ -1,4 +1,5 @@
 "use client";
+import type { DocumentId } from "@nowcrm/services";
 // IdentitityMassActions.tsx
 import {
 	type ActionsConfig,
@@ -7,9 +8,9 @@ import {
 import { MassDeleteActionTypes } from "./massDeleteActionType";
 
 const actionsConfig: ActionsConfig = {
-	deleteContacts: {
+	deleteActionTypes: {
 		label: "Delete",
-		onAction: async (selectedRows: number[]) => {
+		onAction: async (selectedRows: DocumentId[]) => {
 			return await MassDeleteActionTypes(selectedRows);
 		},
 		successMessage: "Action Type deleted",

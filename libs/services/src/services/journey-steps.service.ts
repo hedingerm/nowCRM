@@ -1,4 +1,4 @@
-import { APIRoutesStrapi } from "../api-routes/api-routes-strapi";
+import { API_ROUTES_STRAPI } from "../api-routes/api-routes-strapi";
 import type { DocumentId } from "../types/common/base_type";
 import type { Form_JourneyStep, JourneyStep } from "../types/journey-step";
 import { actionsService } from "./action.service";
@@ -8,21 +8,21 @@ import { journeyPassedStepService } from "./journey-passed-step.service";
 
 class JourneyStepsService extends BaseService<JourneyStep, Form_JourneyStep> {
 	public constructor() {
-		super(APIRoutesStrapi.JOURNEY_STEPS);
+		super(API_ROUTES_STRAPI.JOURNEY_STEPS);
 	}
 
 	async checkPassedStep(
 		token: string,
-		stepId: number,
-		contactId: number,
-		compositionId: number,
+		stepId: DocumentId,
+		contactId: DocumentId,
+		compositionId: DocumentId,
 	): Promise<StandardResponse<boolean>> {
 		try {
 			const data = await journeyPassedStepService.find(token, {
 				filters: {
-					journey_step: { id: { $eq: stepId } },
-					composition: { id: { $eq: compositionId } },
-					contact: { id: { $eq: contactId } },
+					journey_step: { documentId: { $eq: stepId } },
+					composition: { documentId: { $eq: compositionId } },
+					contact: { documentId: { $eq: contactId } },
 				},
 			});
 

@@ -1,4 +1,4 @@
-import { APIRoutesStrapi } from "../api-routes/api-routes-strapi";
+import { API_ROUTES_STRAPI } from "../api-routes/api-routes-strapi";
 import type {
 	Form_SubscriptionType,
 	SubscriptionType,
@@ -10,7 +10,7 @@ class SubscriptionTypesService extends BaseService<
 	Form_SubscriptionType
 > {
 	public constructor() {
-		super(APIRoutesStrapi.SUBSCRIPTION_TYPES);
+		super(API_ROUTES_STRAPI.SUBSCRIPTION_TYPES);
 	}
 }
 

@@ -54,24 +54,19 @@ import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 // --- Actions & Types ---
-import { getFormBySlugOrId } from "@/lib/actions/forms/getForm";
+import { getFormBySlugOrId } from "@/lib/actions/forms/get-form";
 import {
 	eraseCoverOrLogo,
 	updateForm,
 	uploadCoverOrLogo,
-} from "@/lib/actions/forms/updateForm";
-import type {
-	CustomForm_FormItemEntity,
-	Form_FormEntity,
-	FormEntity,
-	FormItemEntity,
-} from "@/lib/types/new_type/form";
+} from "@/lib/actions/forms/update-form";
+
 import { cn } from "@/lib/utils";
 
 // --- Main Component ---
 
 interface FormBuilderProps {
-	formId: number;
+	formId: DocumentId;
 }
 
 const FormBuilder: React.FC<FormBuilderProps> = ({ formId }) => {
@@ -80,7 +75,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ formId }) => {
 	const [error, setError] = useState<string | null>(null);
 	const [formData, setFormData] = useState<FormEntity | null>(null);
 	const [activeId, setActiveId] = useState<string | null>(null);
-	const [selectedField, setSelectedField] = useState<FormItemEntity | null>(
+	const [selectedField, setSelectedField] = useState<FormEntityItem | null>(
 		null,
 	);
 	const [showPreviewButton, setShowPreviewButton] = useState(false);
@@ -98,7 +93,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ formId }) => {
 
 	const nextTempIdRef = useRef<number>(-1);
 
-	const initNextTempId = (items: FormItemEntity[]) => {
+	const initNextTempId = (items: FormEntityItem[]) => {
 		const minNeg = items.reduce((min, it) => (it.id < min ? it.id : min), 0);
 		// Always go one lower than the smallest negative id we have
 		nextTempIdRef.current = Math.min(-1, minNeg - 1);
@@ -175,7 +170,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ formId }) => {
 		const generateShareUrl = async () => {
 			if (formData?.id) {
 				try {
-					const url = await shareForm(formData.id, formData.slug);
+					const url = await shareForm(formData.documentId, formData.slug);
 					setShareUrl(url);
 				} catch (error) {
 					console.error("Failed to generate share URL:", error);
@@ -228,7 +223,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ formId }) => {
 	);
 
 	const updateFormField = useCallback(
-		(updatedField: FormItemEntity) => {
+		(updatedField: FormEntityItem) => {
 			setFormData((prevData) => {
 				if (!prevData) return null;
 				const updatedFields = prevData.form_items.map((field) =>
@@ -290,10 +285,11 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ formId }) => {
 
 			const uniqueName = makeUniqueName(rawName || "field", existingNames);
 
-			const newField: FormItemEntity = {
+			// change any to FormEntity
+			const newField: any = {
 				id: tempId,
 				name: uniqueName,
-				type: fieldType,
+				type: fieldType as FormEntityItemType,
 				label,
 				options: [
 					"select",
@@ -355,7 +351,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ formId }) => {
 		try {
 			// Strip media and id from payload
 			const {
-				id: formId,
+				documentId: formId,
 				form_items,
 				logo,
 				cover,
@@ -383,7 +379,8 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ formId }) => {
 				}
 			}
 
-			const payload: Form_FormEntity = {
+			// change any to Form_FormEntity
+			const payload: any = {
 				...regularFields,
 				slug: formData.slug ?? "",
 				keep_contact: formData.keep_contact ?? false,
@@ -393,20 +390,18 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ formId }) => {
 				submission_success_text: formData.submission_success_text ?? "",
 			};
 
-			// Map items
-			const newFormItems: CustomForm_FormItemEntity[] = (form_items || []).map(
-				(item) => ({
-					...(item.id > 0 ? { id: item.id } : {}),
-					name: item.name,
-					type: item.type,
-					label: item.label,
-					options: item.options,
-					rank: item.rank,
-					required: item.required ?? false,
-					hidden: item.hidden ?? false,
-					publishedAt: new Date(),
-				}),
-			);
+			// change to Custom_FormEntityItem
+			const newFormItems: any[] = (form_items || []).map((item) => ({
+				...(item.id > 0 ? { id: item.id } : {}),
+				name: item.name,
+				type: item.type,
+				label: item.label,
+				options: item.options,
+				rank: item.rank,
+				required: item.required ?? false,
+				hidden: item.hidden ?? false,
+				publishedAt: new Date(),
+			}));
 
 			console.log("Sending payload to updateForm:", payload, newFormItems);
 			const response = await updateForm(formId, payload, newFormItems);
@@ -494,7 +489,9 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ formId }) => {
 								variant="outline"
 								size="sm"
 								onClick={() => {
-									const resultsUrl = RouteConfig.forms.results(formData.id);
+									const resultsUrl = RouteConfig.forms.results(
+										formData.documentId,
+									);
 									const win = window.open(
 										resultsUrl,
 										"_blank",
@@ -1129,7 +1126,7 @@ const FormBuilderCustomization: React.FC<FormBuilderCustomizationProps> = ({
 			const { id: assetId, url } = await uploadCoverOrLogo(fd, imageType); // destructure both
 
 			onChange(imageType, {
-				id: String(assetId), // keep media id so deletions work
+				id: assetId, // keep media id so deletions work
 				url,
 				name: file.name,
 				size: file.size,
@@ -1138,7 +1135,7 @@ const FormBuilderCustomization: React.FC<FormBuilderCustomizationProps> = ({
 				path: file.name,
 				height: 0,
 				width: 0,
-			});
+			} as Asset);
 
 			toast.success(`${imageType === "logo" ? "Logo" : "Cover"} uploaded.`);
 		} catch (err) {
@@ -1155,14 +1152,14 @@ const FormBuilderCustomization: React.FC<FormBuilderCustomizationProps> = ({
 
 		try {
 			if (currentImage?.id) {
-				await eraseCoverOrLogo(currentImage, imageType);
+				await eraseCoverOrLogo(currentImage as any, imageType);
 			}
 
 			if (currentImage.url?.startsWith("blob:")) {
 				URL.revokeObjectURL(currentImage.url);
 			}
 
-			onChange(imageType, undefined);
+			onChange(imageType, undefined as any);
 			toast.success(
 				`${imageType === "logo" ? "Logo" : "Cover"} image removed.`,
 			);
@@ -1408,7 +1405,7 @@ const FormBuilderCustomization: React.FC<FormBuilderCustomizationProps> = ({
 
 // --- Child Component: FormFieldDisplay ---
 interface FormFieldDisplayProps {
-	field: FormItemEntity;
+	field: FormEntityItem;
 	className?: string;
 }
 
@@ -1507,15 +1504,20 @@ const FormFieldDisplay: React.FC<FormFieldDisplayProps> = ({
 // --- Child Component: SortableFormField ---
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import type {
+	Asset,
+	DocumentId,
+	FormEntity,
+	FormEntityItem,
+	FormEntityItemType,
+} from "@nowcrm/services";
 import { shareForm } from "@/app/[locale]/crm/forms/components/columns/shareForm";
 import { RouteConfig } from "@/lib/config/RoutesConfig";
 import EmbedDrawer from "../embedDrawer";
 import GETParamHelpModal from "./GETParamsPreviewHelper";
 
-// import { GripVertical } from "lucide-react"; // Already imported
-
 interface SortableFormFieldProps {
-	field: FormItemEntity;
+	field: FormEntityItem;
 	isSelected?: boolean;
 	onClick: () => void;
 	onDelete: () => void;
@@ -1631,8 +1633,8 @@ const getFieldTypeName = (type: string): string => {
 
 // --- Child Component: FormFieldSettings ---
 interface FormFieldSettingsProps {
-	field: FormItemEntity;
-	onUpdate: (field: FormItemEntity) => void;
+	field: FormEntityItem;
+	onUpdate: (field: FormEntityItem) => void;
 	onDelete: () => void;
 }
 
@@ -1642,9 +1644,9 @@ const FormFieldSettings: React.FC<FormFieldSettingsProps> = ({
 	onDelete,
 }) => {
 	const [newOption, setNewOption] = useState<string>("");
-	const handleFieldChange = <K extends keyof FormItemEntity>(
+	const handleFieldChange = <K extends keyof FormEntityItem>(
 		key: K,
-		value: FormItemEntity[K],
+		value: FormEntityItem[K],
 	) => {
 		onUpdate({ ...field, [key]: value });
 	};
@@ -1654,7 +1656,7 @@ const FormFieldSettings: React.FC<FormFieldSettingsProps> = ({
 		if (!trimmedOption) return;
 		if (
 			field.options.some(
-				(opt) => opt.toLowerCase() === trimmedOption.toLowerCase(),
+				(opt: any) => opt.toLowerCase() === trimmedOption.toLowerCase(),
 			)
 		) {
 			toast.error(`Option "${trimmedOption}" already exists.`);
@@ -1665,7 +1667,7 @@ const FormFieldSettings: React.FC<FormFieldSettingsProps> = ({
 	};
 	const removeOption = (index: number) => {
 		/* ... remove logic ... */
-		const newOptions = field.options.filter((_, i) => i !== index);
+		const newOptions = field.options.filter((_: any, i: number) => i !== index);
 		handleFieldChange("options", newOptions);
 	};
 	const updateOption = (index: number, value: string) => {
@@ -1775,7 +1777,7 @@ const FormFieldSettings: React.FC<FormFieldSettingsProps> = ({
 						<Label className="font-medium">Options</Label>
 						{field.options.length > 0 ? (
 							<div className="max-h-60 space-y-2 overflow-y-auto pr-2">
-								{field.options.map((option, index) => (
+								{field.options.map((option: any, index: any) => (
 									<div key={index} className="flex items-center gap-2">
 										<Input
 											value={option}

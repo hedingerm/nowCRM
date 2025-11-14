@@ -1,6 +1,13 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import {
+	CommunicationChannel,
+	type CommunicationChannelKeys,
+	type CompositionItem,
+	type DocumentId,
+	type sendToChannelsData,
+} from "@nowcrm/services";
 import { Linkedin } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -29,16 +36,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
 	type ChannelThrottleResponse,
 	getChannelThrottle,
-} from "@/lib/actions/channels/getThrottle";
-import { getComposition } from "@/lib/actions/composer/getComposition";
-import { getUnipileIdentity } from "@/lib/actions/unipile/getUnipileIdentity";
-import { CommunicationChannel } from "@/lib/static/channel-icons";
-import type { CompositionItem } from "@/lib/types/new_type/composition";
-import type { sendToChannelsData } from "../sendToChannelType";
+} from "@/lib/actions/channels/get-channel-throttle";
+import { getComposition } from "@/lib/actions/composer/get-composition";
+import { getUnipileIdentity } from "@/lib/actions/unipile/get-unipile-identity";
 
 export interface LinkedinInvitesChannelContentProps {
 	mode?: "composer" | "mass_actions";
-	composition_id?: number;
+	composition_id?: DocumentId;
 	contacts?: string;
 	closeOnSubmit: () => void;
 	setSelectedOption?: (opt: sendToChannelsData) => void;
@@ -64,7 +68,9 @@ export function LinkedinInvitesChannelContent({
 		useState<ChannelThrottleResponse | null>(null);
 
 	React.useEffect(() => {
-		getChannelThrottle(currentChannel.toLowerCase()).then((res) => {
+		getChannelThrottle(
+			currentChannel.toLowerCase() as CommunicationChannelKeys,
+		).then((res) => {
 			if (res.success && res.data) {
 				const safeThrottle = res.data.throttle > 0 ? res.data.throttle : 3;
 				const safeMaxRate =
@@ -94,18 +100,18 @@ export function LinkedinInvitesChannelContent({
 	const formSchema = z
 		.object({
 			composition: z
-				.object({ value: z.number(), label: z.string() })
+				.object({ value: z.string(), label: z.string() })
 				.optional(),
 			linkedin_url: z.string().optional(),
 			list: z
 				.object({
-					value: z.number(),
+					value: z.string(),
 					label: z.string(),
 				})
 				.optional(),
 			organization: z
 				.object({
-					value: z.number(),
+					value: z.string(),
 					label: z.string(),
 				})
 				.optional(),
@@ -121,7 +127,7 @@ export function LinkedinInvitesChannelContent({
 				.optional(),
 			identity: z
 				.object({
-					value: z.number(),
+					value: z.string(),
 					label: z.string(),
 				})
 				.optional(),
@@ -193,8 +199,8 @@ export function LinkedinInvitesChannelContent({
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		let submissionData: sendToChannelsData | undefined;
 		// determine composition ID
-		let compId: number;
-		let compositionItemId: number | null = null;
+		let compId: DocumentId;
+		let compositionItemId: DocumentId | null = null;
 		if (isMassAction) {
 			if (!values.composition) {
 				toast.error("Please select a composition");
@@ -235,7 +241,9 @@ export function LinkedinInvitesChannelContent({
 
 				const matchingItem = allItems.find((item) => {
 					const name = item.channel?.name;
-					console.log(` checking item.id=${item.id}, channel.name="${name}"`);
+					console.log(
+						` checking item.id=${item.documentId}, channel.name="${name}"`,
+					);
 					return name?.toLowerCase() === channelLower;
 				});
 
@@ -254,7 +262,7 @@ export function LinkedinInvitesChannelContent({
 					return;
 				}
 
-				compositionItemId = matchingItem.id;
+				compositionItemId = matchingItem.documentId;
 				console.log("Found compositionItemId:", compositionItemId);
 				console.groupEnd();
 			} catch (err) {
@@ -388,7 +396,7 @@ export function LinkedinInvitesChannelContent({
 					<AsyncSelectField
 						name="composition"
 						label="Composition"
-						serviceName="compositionService"
+						serviceName="compositionsService"
 						form={form}
 						useFormClear={false}
 					/>
@@ -398,7 +406,7 @@ export function LinkedinInvitesChannelContent({
 					<AsyncSelectField
 						name="identity"
 						label="Identity"
-						serviceName="unipileIdentityService"
+						serviceName="unipileIdentitiesService"
 						form={form}
 						useFormClear={false}
 						showDefaultCheckbox={true}
@@ -443,7 +451,7 @@ export function LinkedinInvitesChannelContent({
 							<AsyncSelectField
 								name="list"
 								label="List"
-								serviceName="listService"
+								serviceName="listsService"
 								form={form}
 								useFormClear={false}
 							/>
@@ -453,7 +461,7 @@ export function LinkedinInvitesChannelContent({
 							<AsyncSelectField
 								name="organization"
 								label="Organization"
-								serviceName="organizationService"
+								serviceName="organizationsService"
 								form={form}
 								useFormClear={false}
 							/>

@@ -1,4 +1,5 @@
 "use client";
+import type { CampaignCategory } from "@nowcrm/services";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 import { useMessages } from "next-intl";
@@ -11,7 +12,6 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { CampaignCategory } from "@/lib/types/new_type/campaignCategory";
 import EditCampaignCategoryDialog from "./editDialog";
 
 const DeleteAction: React.FC<{ campaignCategory: CampaignCategory }> = ({
@@ -33,7 +33,15 @@ const DeleteAction: React.FC<{ campaignCategory: CampaignCategory }> = ({
 						const { deleteCampaignCategoryAction } = await import(
 							"./deleteCampaignCategory"
 						);
-						await deleteCampaignCategoryAction(campaignCategory.id);
+						const res = await deleteCampaignCategoryAction(
+							campaignCategory.documentId,
+						);
+						if (!res.success) {
+							toast.error(
+								res.errorMessage ?? "Failed to delete campaign category",
+							);
+							return;
+						}
 						toast.success(t.common.actions.delete);
 						router.refresh();
 					}}

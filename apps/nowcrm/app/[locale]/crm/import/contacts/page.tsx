@@ -49,7 +49,7 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { uploadCSV } from "@/lib/actions/import/uploadCSV";
+import { uploadCSV } from "@/lib/actions/import/upload-csv";
 import { cn } from "@/lib/utils";
 import { CSVMappingModal } from "./components/csvMappingModal";
 import PreviousImportsModal from "./components/PreviousImportsModal";
@@ -604,7 +604,7 @@ export default function Page() {
 
 										{listMode === "existing" && (
 											<AsyncSelect
-												serviceName="listService"
+												serviceName="listsService"
 												label="Existing Lists"
 												onValueChange={setSelectedList}
 												presetOption={selectedList}

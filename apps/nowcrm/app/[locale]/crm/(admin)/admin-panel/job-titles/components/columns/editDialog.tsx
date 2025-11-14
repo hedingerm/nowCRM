@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { ContactJobTitle } from "@nowcrm/services";
 import { ListPlus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMessages } from "next-intl";
@@ -27,11 +28,10 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { updateJobTitle } from "@/lib/actions/job-titles/updateJobTitle";
-import type { JobTitle } from "@/lib/types/new_type/job_title";
+import { updateJobTitle } from "@/lib/actions/job-titles/update-job-title";
 
 interface EditJobTitleDialogProps {
-	jobTitle: JobTitle;
+	jobTitle: ContactJobTitle;
 }
 
 export default function EditJobTitleDialog({
@@ -57,7 +57,7 @@ export default function EditJobTitleDialog({
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		const { default: toast } = await import("react-hot-toast");
-		const res = await updateJobTitle(jobTitle.id, values.name);
+		const res = await updateJobTitle(jobTitle.documentId, values.name);
 		if (!res.success) {
 			toast.error(`${t.Admin.JobTitle.toast.createError}: ${res.errorMessage}`);
 		} else {

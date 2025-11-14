@@ -1,12 +1,16 @@
 // actions/deleteContactAction.ts
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	handleError,
+	industriesService,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import type { StandardResponse } from "@/lib/services/common/response.service";
-import industryService from "@/lib/services/new_type/industry.service";
 
 export async function deleteIndustryAction(
-	industryId: number,
+	industryId: DocumentId,
 ): Promise<StandardResponse<null>> {
 	const session = await auth();
 	if (!session) {
@@ -17,10 +21,9 @@ export async function deleteIndustryAction(
 		};
 	}
 	try {
-		const response = await industryService.unPublish(industryId);
+		const response = await industriesService.delete(industryId, session?.jwt);
 		return response;
 	} catch (error) {
-		console.log(error);
-		throw new Error("Failed to delete industry");
+		return handleError(error);
 	}
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { Organization } from "@nowcrm/services";
 import { useRouter } from "next/navigation";
 import { useMessages } from "next-intl";
 import { useEffect } from "react";
@@ -34,10 +35,9 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { updateOrganization } from "@/lib/actions/organizations/updateOrganization";
+import { updateOrganization } from "@/lib/actions/organizations/update-organization";
 import cantons from "@/lib/static/cantons.json";
 import countries from "@/lib/static/countries.json";
-import type { Organization } from "@/lib/types/new_type/organization";
 
 const formSchema = z.object({
 	address_line1: z.string().optional(),
@@ -87,7 +87,7 @@ export function EditDialogOrganizationAddress({
 			canton: values.country === "Switzerland" ? values.canton || "" : "", // Ignore canton if not CH
 			country: values.country || "",
 		};
-		const res = await updateOrganization(organization.id, finalValues);
+		const res = await updateOrganization(organization.documentId, finalValues);
 		if (!res.success) {
 			toast.error(`Error updating organization address: ${res.errorMessage}`);
 		} else {

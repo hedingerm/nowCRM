@@ -1,12 +1,16 @@
 // actions/deleteContactAction.ts
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	frequenciesService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import type { StandardResponse } from "@/lib/services/common/response.service";
-import frequencyService from "@/lib/services/new_type/frequency.service";
 
 export async function deleteFrequencyAction(
-	frequencyId: number,
+	frequencyId: DocumentId,
 ): Promise<StandardResponse<null>> {
 	const session = await auth();
 	if (!session) {
@@ -18,10 +22,9 @@ export async function deleteFrequencyAction(
 	}
 
 	try {
-		const response = await frequencyService.unPublish(frequencyId);
+		const response = await frequenciesService.delete(frequencyId, session?.jwt);
 		return response;
 	} catch (error) {
-		console.log(error);
-		throw new Error("Failed to delete frequency");
+		return handleError(error);
 	}
 }

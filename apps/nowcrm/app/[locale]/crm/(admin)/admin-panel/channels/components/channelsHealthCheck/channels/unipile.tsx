@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { SettingCredential } from "@nowcrm/services";
 import {
 	AlertCircle,
 	DollarSign,
@@ -42,12 +43,11 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { updateSettingCredentials } from "@/lib/actions/settings/credentials/updateSettingsCredentials";
+import { updateSettingCredentials } from "@/lib/actions/settings/credentials/update-setting-credential";
 import {
 	getStatusColor,
 	getStatusIcon,
 } from "@/lib/static/healthCheckStatuses";
-import type { SettingCredential } from "@/lib/types/new_type/settings";
 
 interface UnipileHealthCheckProps {
 	unipile_credential: Omit<SettingCredential, "setting">;
@@ -83,10 +83,13 @@ export function UnipileHealthCheck({
 	async function handleSubmit(values: z.infer<typeof formSchema>) {
 		setIsSubmitting(true);
 		try {
-			const res = await updateSettingCredentials(unipile_credential.id, {
-				...values,
-				status: "active",
-			});
+			const res = await updateSettingCredentials(
+				unipile_credential.documentId,
+				{
+					...values,
+					credential_status: "active",
+				},
+			);
 			if (res.success) {
 				toast.success("LinkedIn credentials updated successfully");
 				router.refresh();
@@ -120,11 +123,11 @@ export function UnipileHealthCheck({
 							</div>
 							<div className="flex items-center gap-2">
 								<span
-									className={`rounded-full px-2 py-1 text-xs ${getStatusColor(unipile_credential.status)}`}
+									className={`rounded-full px-2 py-1 text-xs ${getStatusColor(unipile_credential.credential_status)}`}
 								>
-									{unipile_credential.status}
+									{unipile_credential.credential_status}
 								</span>
-								{getStatusIcon(unipile_credential.status)}
+								{getStatusIcon(unipile_credential.credential_status)}
 								<div>
 									<TooltipProvider>
 										<Tooltip>
@@ -183,18 +186,18 @@ export function UnipileHealthCheck({
 					<div className="mb-4 flex items-center justify-between">
 						<h4 className="font-medium text-sm">Connection Status</h4>
 						<span
-							className={`rounded-full px-2 py-1 text-xs ${getStatusColor(unipile_credential.status)}`}
+							className={`rounded-full px-2 py-1 text-xs ${getStatusColor(unipile_credential.credential_status)}`}
 						>
-							{unipile_credential.status}
+							{unipile_credential.credential_status}
 						</span>
 					</div>
 
-					{unipile_credential?.status === "invalid" ||
-					(unipile_credential?.status === "disconnected" &&
+					{unipile_credential?.credential_status === "invalid" ||
+					(unipile_credential?.credential_status === "disconnected" &&
 						unipile_credential?.error_message) ? (
 						<div
 							className={`mb-4 rounded-md border p-3 ${
-								unipile_credential?.status === "invalid"
+								unipile_credential?.credential_status === "invalid"
 									? "border-red-200 bg-red-50 dark:border-red-900/50 dark:bg-red-900/20"
 									: "border-amber-200 bg-amber-50 dark:border-amber-900/50 dark:bg-amber-900/20"
 							}`}
@@ -202,7 +205,7 @@ export function UnipileHealthCheck({
 							<div className="flex items-start">
 								<AlertCircle
 									className={`mt-0.5 mr-2 h-5 w-5 shrink-0 ${
-										unipile_credential?.status === "invalid"
+										unipile_credential?.credential_status === "invalid"
 											? "text-red-500 dark:text-red-400"
 											: "text-amber-500 dark:text-amber-400"
 									}`}
@@ -210,18 +213,18 @@ export function UnipileHealthCheck({
 								<div>
 									<h5
 										className={`font-medium text-sm ${
-											unipile_credential?.status === "invalid"
+											unipile_credential?.credential_status === "invalid"
 												? "text-red-800 dark:text-red-400"
 												: "text-amber-800 dark:text-amber-400"
 										}`}
 									>
-										{unipile_credential?.status === "invalid"
+										{unipile_credential?.credential_status === "invalid"
 											? "Invalid Credentials"
 											: "Error Details"}
 									</h5>
 									<p
 										className={`text-sm ${
-											unipile_credential?.status === "invalid"
+											unipile_credential?.credential_status === "invalid"
 												? "text-red-700 dark:text-red-300"
 												: "text-amber-700 dark:text-amber-300"
 										}`}

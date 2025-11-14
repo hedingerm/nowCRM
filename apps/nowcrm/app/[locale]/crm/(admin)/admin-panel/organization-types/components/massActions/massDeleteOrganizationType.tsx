@@ -1,12 +1,16 @@
 // actions/deleteContactAction.ts
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	handleError,
+	organizationTypesService,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import type { StandardResponse } from "@/lib/services/common/response.service";
-import organizationTypeService from "@/lib/services/new_type/ogranization_type.service";
 
 export async function MassDeleteOrganizationTypes(
-	organizationTypes: number[],
+	organizationTypes: DocumentId[],
 ): Promise<StandardResponse<null>> {
 	const session = await auth();
 	if (!session) {
@@ -18,7 +22,7 @@ export async function MassDeleteOrganizationTypes(
 	}
 	try {
 		const unpublishPromises = organizationTypes.map((id) =>
-			organizationTypeService.unPublish(id),
+			organizationTypesService.delete(id, session?.jwt),
 		);
 		await Promise.all(unpublishPromises);
 		return {
@@ -27,11 +31,6 @@ export async function MassDeleteOrganizationTypes(
 			success: true,
 		};
 	} catch (error) {
-		console.error("Error deleting organization types:", error);
-		return {
-			data: null,
-			status: 500,
-			success: false,
-		};
+		return handleError(error);
 	}
 }

@@ -1,12 +1,12 @@
 // actions/exportContactAction.ts
 "use server";
 
+import type { DocumentId, StandardResponse } from "@nowcrm/services";
+import { contactsService } from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import type { StandardResponse } from "@/lib/services/common/response.service";
-import contactsService from "@/lib/services/new_type/contacts.service";
 
 export async function MassAnonymizeContacts(
-	contacts: number[],
+	contacts: DocumentId[],
 ): Promise<StandardResponse<string>> {
 	const session = await auth();
 	if (!session) {
@@ -15,7 +15,10 @@ export async function MassAnonymizeContacts(
 
 	try {
 		for (const contactId of contacts) {
-			const result = await contactsService.anonymizeContact(contactId);
+			const result = await contactsService.anonymizeContact(
+				contactId,
+				session.jwt,
+			);
 			if (!result.success) {
 				return { data: null, status: 500, success: false };
 			}

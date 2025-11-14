@@ -1,12 +1,15 @@
 // actions/deleteContactAction.ts
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	donationTransactionsService,
+	handleError,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import type { StandardResponse } from "@/lib/services/common/response.service";
-import donationTransactionService from "@/lib/services/new_type/donation_transcation.service";
-
 export async function deleteTransactionAction(
-	transaction: number,
+	transaction: DocumentId,
 ): Promise<StandardResponse<null>> {
 	const session = await auth();
 	if (!session) {
@@ -17,10 +20,12 @@ export async function deleteTransactionAction(
 		};
 	}
 	try {
-		const response = await donationTransactionService.unPublish(transaction);
+		const response = await donationTransactionsService.delete(
+			transaction,
+			session.jwt,
+		);
 		return response;
 	} catch (error) {
-		console.log(error);
-		throw new Error("Failed to delete transaction");
+		return handleError(error);
 	}
 }

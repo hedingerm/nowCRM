@@ -1,34 +1,35 @@
 "use server";
 
+import type { Contact, DocumentId, StandardResponse } from "@nowcrm/services";
+import {
+	contactInterestsService,
+	contactJobTitlesService,
+	contactNotesService,
+	contactRanksService,
+	contactSalutationsService,
+	contactsService,
+	contactTitlesService,
+	contactTypesService,
+	departmentsService,
+	industriesService,
+	keywordsService,
+	organizationsService,
+	sourcesService,
+	tagsService,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import type { StandardResponse } from "@/lib/services/common/response.service";
-import contactInterestsService from "@/lib/services/new_type/contact_interests.service";
-import contactSalutationsService from "@/lib/services/new_type/contact_salutation";
-import contactTitlesService from "@/lib/services/new_type/contact_title";
-import contactTypesService from "@/lib/services/new_type/contact_type.service";
-import contactsService from "@/lib/services/new_type/contacts.service";
-import departmentService from "@/lib/services/new_type/department.service";
-import industriesService from "@/lib/services/new_type/industry.service";
-import jobTitleService from "@/lib/services/new_type/job_title.service";
-import keywordsService from "@/lib/services/new_type/keywords.service";
-import notesService from "@/lib/services/new_type/notes.service";
-import organizationService from "@/lib/services/new_type/organizations.service";
-import ranksService from "@/lib/services/new_type/rank.service";
-import sourcesService from "@/lib/services/new_type/source.service";
-import tagsService from "@/lib/services/new_type/tags.service";
-import type { Contact } from "@/lib/types/new_type/contact";
 
 // Map each relation field to its service
 const relationServiceMap = {
-	organization: organizationService,
+	organization: organizationsService,
 	contact_interests: contactInterestsService,
-	department: departmentService,
+	department: departmentsService,
 	keywords: keywordsService,
-	job_title: jobTitleService,
-	ranks: ranksService,
+	job_title: contactJobTitlesService,
+	ranks: contactRanksService,
 	contact_types: contactTypesService,
 	sources: sourcesService,
-	notes: notesService,
+	notes: contactNotesService,
 	industry: industriesService,
 	title: contactTitlesService,
 	salutation: contactSalutationsService,
@@ -36,7 +37,7 @@ const relationServiceMap = {
 } as const;
 
 export async function MassUpdateContactField(
-	contactIds: number[],
+	contactIds: DocumentId[],
 	field: string,
 	value: string,
 ): Promise<StandardResponse<Contact[]>> {
@@ -94,7 +95,7 @@ export async function MassUpdateContactField(
 		const updateData = { [field]: processedValue };
 
 		const updatePromises = contactIds.map((cid) =>
-			contactsService.update(cid, updateData),
+			contactsService.update(cid, updateData, session.jwt),
 		);
 		const results = await Promise.allSettled(updatePromises);
 

@@ -1,5 +1,6 @@
 // app/[locale]/crm/forms/[id]/page.tsx
 
+import type { DocumentId } from "@nowcrm/services";
 import type { Metadata } from "next";
 import FormBuilder from "@/components/forms/FormBuilder";
 
@@ -12,10 +13,10 @@ export const metadata: Metadata = {
 export default async function Page({
 	params,
 }: {
-	params: Promise<{ id: string }>;
+	params: Promise<{ id: DocumentId }>;
 }) {
 	const { id } = await params;
-	const formId = Number(id);
+	const formId = id;
 
 	return (
 		<div className="container mx-auto py-8">

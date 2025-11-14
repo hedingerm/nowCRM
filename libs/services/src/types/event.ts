@@ -16,6 +16,8 @@ export interface Event extends Omit<BaseType, "name"> {
 	title: string;
 	channel: Channel;
 	step_id: string;
+	click_count: number;
+	open_count: number;
 	composition_item: CompositionItem;
 }
 
@@ -32,5 +34,7 @@ export interface Form_Event extends Omit<BaseFormType, "name"> {
 	title: string;
 	channel: DocumentId;
 	step_id: string;
+	click_count: number;
+	open_count: number;
 	composition_item: DocumentId;
 }

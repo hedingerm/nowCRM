@@ -1,12 +1,16 @@
 // actions/deleteContactAction.ts
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	handleError,
+	type StandardResponse,
+	tasksService,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import type { StandardResponse } from "@/lib/services/common/response.service";
-import tasksService from "@/lib/services/new_type/tasks.service";
 
 export async function deleteTaskAction(
-	task: number,
+	task: DocumentId,
 ): Promise<StandardResponse<null>> {
 	const session = await auth();
 	if (!session) {
@@ -17,10 +21,9 @@ export async function deleteTaskAction(
 		};
 	}
 	try {
-		const response = await tasksService.unPublish(task);
+		const response = await tasksService.delete(task, session.jwt);
 		return response;
 	} catch (error) {
-		console.log(error);
-		throw new Error("Failed to delete task");
+		return handleError(error);
 	}
 }

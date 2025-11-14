@@ -1,5 +1,6 @@
 "use client";
 
+import type { TextBlock } from "@nowcrm/services";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 import { useMessages } from "next-intl";
@@ -12,7 +13,6 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { TextBlock } from "@/lib/types/new_type/text_blocks";
 import EditTextBlockDialog from "./editDialog";
 
 const DeleteAction: React.FC<{ textblock: TextBlock }> = ({ textblock }) => {
@@ -29,7 +29,11 @@ const DeleteAction: React.FC<{ textblock: TextBlock }> = ({ textblock }) => {
 					onClick={async () => {
 						const { default: toast } = await import("react-hot-toast");
 						const { deleteTextBlock } = await import("./deleteTextBlock");
-						await deleteTextBlock(textblock.id);
+						const res = await deleteTextBlock(textblock.documentId);
+						if (!res.success) {
+							toast.error(res.errorMessage || "Failed to delete text block");
+							return;
+						}
 						toast.success(t.toast.delete);
 						router.refresh();
 					}}

@@ -1,9 +1,8 @@
+import type { CompositionScheduled, CompositionScheduledStatuses } from "@nowcrm/services";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import type { Option } from "@/components/autoComplete/autoComplete";
 import type { CalendarEventType } from "@/components/event-calendar/types";
-import type { ScheduledComposition } from "@/lib/types/new_type/sceduled_composition";
-
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
 }
@@ -48,17 +47,13 @@ export function fromCalendarEventToForm(event: Omit<CalendarEventType, "id">) {
 		color: event.color ?? "#999999",
 		publish_date: event.publish_date,
 		publishedAt: new Date(),
-		status:
-			event.status &&
-			["scheduled", "processing", "published"].includes(event.status)
-				? event.status
-				: "scheduled",
-		channel: event.channel
-			? { connect: [Number(event.channel.value)] }
-			: undefined,
-		composition: event.composition
-			? { connect: [Number(event.composition.value)] }
-			: undefined,
+		scheduled_status:
+			event.scheduled_status &&
+			["scheduled", "processing", "published"].includes(event.scheduled_status)
+				? event.scheduled_status as CompositionScheduledStatuses
+				: "scheduled" as CompositionScheduledStatuses,
+		channel: event.channel ? event.channel.value : undefined,
+		composition: event.composition ? event.composition.value : undefined,
 		send_to: event.send_to
 			? {
 					type: event.send_to.type as "contact" | "list" | "organization",
@@ -74,12 +69,12 @@ export function fromCalendarEventToForm(event: Omit<CalendarEventType, "id">) {
 }
 
 export function mapToCalendarEvents(
-	data: ScheduledComposition[],
+	data: CompositionScheduled[],
 ): CalendarEventType[] {
 	return data.map((item) => ({
-		id: String(item.id),
+		documentId: (item.documentId),
 		name: item.name,
-		status: item.status ?? "scheduled",
+		scheduled_status: item.scheduled_status ?? "scheduled",
 		description: item.description ?? "",
 		color: item.color ?? "#999999",
 		publish_date: new Date(item.publish_date),

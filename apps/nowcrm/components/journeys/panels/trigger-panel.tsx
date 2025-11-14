@@ -1,4 +1,5 @@
 "use client";
+import type { DocumentId } from "@nowcrm/services";
 import { debounce } from "lodash";
 import {
 	AlertTriangle,
@@ -63,7 +64,7 @@ interface TriggerPanelProps {
 	nodes?: Node[];
 	updateEdge?: (edgeId: string, data: any) => void;
 	onConnectionPrioritiesUpdate?: (
-		connectionPriorities: { connectionId: number; priority: number }[],
+		connectionPriorities: { connectionId: DocumentId; priority: number }[],
 	) => Promise<boolean>;
 }
 
@@ -583,7 +584,7 @@ export function TriggerPanel({
 														</label>
 														<AsyncSelect
 															presetOption={config.attribute as any}
-															serviceName="formService"
+															serviceName="formsService"
 															onValueChange={(value) =>
 																handleConfigChange({ attribute: value })
 															}

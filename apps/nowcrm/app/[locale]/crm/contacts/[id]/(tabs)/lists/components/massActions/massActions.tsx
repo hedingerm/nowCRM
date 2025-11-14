@@ -1,6 +1,7 @@
 // ContactsMassActions.tsx
 "use client";
 
+import type { DocumentId } from "@nowcrm/services";
 import {
 	type ActionsConfig,
 	massActionsGenerator,
@@ -13,7 +14,7 @@ import { MassRemoveLists } from "./massRemoveLists";
 const actionsConfig: ActionsConfig = {
 	deleteContacts: {
 		label: "Remove", // e.g., "Delete"
-		onAction: async (selectedRows: number[], contactId: number) => {
+		onAction: async (selectedRows: DocumentId[], contactId: DocumentId) => {
 			return await MassRemoveLists(selectedRows, contactId);
 		},
 		successMessage: "Lists disconnected",

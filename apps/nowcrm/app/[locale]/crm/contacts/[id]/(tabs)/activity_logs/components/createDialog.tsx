@@ -29,7 +29,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
 const formSchema = z.object({
-	contact: z.number(),
+	contact: z.string(),
 	action: z.string(),
 	description: z.string().optional(),
 });
@@ -44,7 +44,7 @@ export default function CreateTaskDialog() {
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			contact: Number.parseInt(params.id),
+			contact: params.id,
 			action: "",
 			description: "",
 		},
@@ -53,7 +53,7 @@ export default function CreateTaskDialog() {
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		const { default: toast } = await import("react-hot-toast");
 		const { createActivityLog } = await import(
-			"@/lib/actions/activity_logs/createActivityLog"
+			"@/lib/actions/activity_logs/create-activity-log"
 		);
 		const res = await createActivityLog({ ...values, publishedAt: new Date() });
 		if (!res.success) {

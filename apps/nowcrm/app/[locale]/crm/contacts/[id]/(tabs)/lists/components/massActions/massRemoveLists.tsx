@@ -1,13 +1,16 @@
 // actions/deleteContactAction.ts
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	handleError,
+	listsService,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import type { StandardResponse } from "@/lib/services/common/response.service";
-import listsService from "@/lib/services/new_type/lists.service";
-
 export async function MassRemoveLists(
-	lists: number[],
-	contactId: number,
+	lists: DocumentId[],
+	contactId: DocumentId,
 ): Promise<StandardResponse<null>> {
 	const session = await auth();
 	if (!session) {
@@ -20,9 +23,13 @@ export async function MassRemoveLists(
 	try {
 		lists.map(
 			async (id) =>
-				await listsService.update(id, {
-					contacts: { disconnect: [contactId] },
-				}),
+				await listsService.update(
+					id,
+					{
+						contacts: { disconnect: [contactId] },
+					},
+					session.jwt,
+				),
 		);
 		return {
 			data: null,
@@ -30,11 +37,6 @@ export async function MassRemoveLists(
 			success: true,
 		};
 	} catch (error) {
-		console.error("Error removing Lists:", error);
-		return {
-			data: null,
-			status: 500,
-			success: false,
-		};
+		return handleError(error);
 	}
 }

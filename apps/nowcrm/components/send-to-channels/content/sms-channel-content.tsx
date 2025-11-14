@@ -1,6 +1,13 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import {
+	CommunicationChannel,
+	type CommunicationChannelKeys,
+	type CompositionItem,
+	type DocumentId,
+	type sendToChannelsData,
+} from "@nowcrm/services";
 import { Info, Mail } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -35,16 +42,12 @@ import {
 import {
 	type ChannelThrottleResponse,
 	getChannelThrottle,
-} from "@/lib/actions/channels/getThrottle";
-import { getComposition } from "@/lib/actions/composer/getComposition";
+} from "@/lib/actions/channels/get-channel-throttle";
+import { getComposition } from "@/lib/actions/composer/get-composition";
 import { normalizePhone } from "@/lib/normalizePhone";
-import { CommunicationChannel } from "@/lib/static/channel-icons";
-import type { CompositionItem } from "@/lib/types/new_type/composition";
-import type { sendToChannelsData } from "../sendToChannelType";
-
 export interface SMSChannelContentProps {
 	mode: "composer" | "mass_actions";
-	composition_id?: number;
+	composition_id?: DocumentId;
 	contacts?: string;
 	closeOnSubmit: () => void;
 	setSelectedOption?: (opt: sendToChannelsData) => void;
@@ -71,7 +74,9 @@ export function SMSChannelContent({
 	const [defaultThrottle, setDefaultThrottle] =
 		useState<ChannelThrottleResponse | null>(null);
 	React.useEffect(() => {
-		getChannelThrottle(currentChannel.toLowerCase()).then((res) => {
+		getChannelThrottle(
+			currentChannel.toLowerCase() as CommunicationChannelKeys,
+		).then((res) => {
 			if (res.success && res.data) {
 				const safeThrottle = res.data.throttle > 0 ? res.data.throttle : 20;
 				const safeMaxRate =
@@ -101,13 +106,13 @@ export function SMSChannelContent({
 	const formSchema = z
 		.object({
 			composition: z
-				.object({ value: z.number(), label: z.string() })
+				.object({ value: z.string(), label: z.string() })
 				.optional(),
-			contact: z.object({ value: z.number(), label: z.string() }).optional(),
+			contact: z.object({ value: z.string(), label: z.string() }).optional(),
 			phone: z.string().optional(),
-			list: z.object({ value: z.number(), label: z.string() }).optional(),
+			list: z.object({ value: z.string(), label: z.string() }).optional(),
 			organization: z
-				.object({ value: z.number(), label: z.string() })
+				.object({ value: z.string(), label: z.string() })
 				.optional(),
 			useDefaultThrottle: z.boolean().default(false),
 			throttle: z
@@ -220,8 +225,8 @@ export function SMSChannelContent({
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		let submissionData: sendToChannelsData | undefined;
 		// determine composition ID
-		let compId: number;
-		let compositionItemId: number | null = null;
+		let compId: DocumentId;
+		let compositionItemId: DocumentId | null = null;
 		if (isMassAction) {
 			if (!values.composition) {
 				toast.error("Please select a composition");
@@ -262,7 +267,9 @@ export function SMSChannelContent({
 
 				const matchingItem = allItems.find((item) => {
 					const name = item.channel?.name;
-					console.log(` checking item.id=${item.id}, channel.name="${name}"`);
+					console.log(
+						` checking item.id=${item.documentId}, channel.name="${name}"`,
+					);
 					return name?.toLowerCase() === channelLower;
 				});
 
@@ -281,7 +288,7 @@ export function SMSChannelContent({
 					return;
 				}
 
-				compositionItemId = matchingItem.id;
+				compositionItemId = matchingItem.documentId;
 				console.log("Found compositionItemId:", compositionItemId);
 				console.groupEnd();
 			} catch (err) {
@@ -337,7 +344,7 @@ export function SMSChannelContent({
 					submissionData = {
 						composition_id: compId,
 						channels: [CommunicationChannel.SMS.toLowerCase()],
-						to: Number(values.contact.value),
+						to: values.contact.value,
 						type: "contact",
 						throttle: throttlePerMin,
 						interval: intervalMs,
@@ -428,7 +435,7 @@ export function SMSChannelContent({
 						<AsyncSelectField
 							name="composition"
 							label="Composition"
-							serviceName="compositionService"
+							serviceName="compositionsService"
 							form={form}
 							useFormClear={false}
 						/>
@@ -455,7 +462,7 @@ export function SMSChannelContent({
 								<AsyncSelectField
 									name="contact"
 									label="Select contact"
-									serviceName="contactService"
+									serviceName="contactsService"
 									form={form}
 									useFormClear={true}
 									filterKey={["first_name", "last_name"]}
@@ -518,7 +525,7 @@ export function SMSChannelContent({
 								<AsyncSelectField
 									name="list"
 									label="List"
-									serviceName="listService"
+									serviceName="listsService"
 									form={form}
 									useFormClear={false}
 								/>
@@ -528,7 +535,7 @@ export function SMSChannelContent({
 								<AsyncSelectField
 									name="organization"
 									label="Organization"
-									serviceName="organizationService"
+									serviceName="organizationsService"
 									form={form}
 									useFormClear={false}
 								/>

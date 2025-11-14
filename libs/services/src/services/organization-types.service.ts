@@ -1,4 +1,4 @@
-import { APIRoutesStrapi } from "../api-routes/api-routes-strapi";
+import { API_ROUTES_STRAPI } from "../api-routes/api-routes-strapi";
 import type {
 	Form_OrganizationType,
 	OrganizationType,
@@ -10,7 +10,7 @@ class OrganizationTypesService extends BaseService<
 	Form_OrganizationType
 > {
 	public constructor() {
-		super(APIRoutesStrapi.ORGANIZATION_TYPES);
+		super(API_ROUTES_STRAPI.ORGANIZATION_TYPES);
 	}
 }
 

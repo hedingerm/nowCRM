@@ -1,4 +1,5 @@
 "use client";
+import type { Journey } from "@nowcrm/services";
 import type { ColumnDef } from "@tanstack/react-table";
 import { ChevronDown, ChevronUp, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
@@ -20,9 +21,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { RouteConfig } from "@/lib/config/RoutesConfig";
 import { formatDateTimeStrapi } from "@/lib/strapiDate";
-import type { Journey } from "@/lib/types/new_type/journey";
 import { activateJourney } from "../../[id]/actions";
-import { deleteJourneyAction } from "./deleteJourney";
 
 type Props = {
 	journey: Journey;
@@ -86,16 +85,16 @@ const ViewActions: React.FC<{ journey: Journey }> = ({ journey }) => {
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align="end">
 					<DropdownMenuLabel>Actions</DropdownMenuLabel>
-					<Link href={`${RouteConfig.journeys.single(journey.id)}`}>
+					<Link href={`${RouteConfig.journeys.single(journey.documentId)}`}>
 						<DropdownMenuItem>View journey</DropdownMenuItem>
 					</Link>
 					<DropdownMenuSeparator />
 					<DropdownMenuItem
 						onClick={async () => {
 							const { duplicateJourneyAction } = await import(
-								"@/lib/actions/journeys/duplicateJourney"
+								"@/lib/actions/journeys/duplicate-journey"
 							);
-							const res = await duplicateJourneyAction(journey.id);
+							const res = await duplicateJourneyAction(journey.documentId);
 							if (!res.success) {
 								toast.error(res.errorMessage ?? "Failed to duplicate journey");
 								return;
@@ -108,7 +107,14 @@ const ViewActions: React.FC<{ journey: Journey }> = ({ journey }) => {
 					</DropdownMenuItem>
 					<DropdownMenuItem
 						onClick={async () => {
-							await deleteJourneyAction(journey.id);
+							const { deleteJourneyAction } = await import(
+								"@/lib/actions/journeys/delete-journey"
+							);
+							const res = await deleteJourneyAction(journey.documentId);
+							if (!res.success) {
+								toast.error(res.errorMessage ?? "Failed to delete journey");
+								return;
+							}
 							toast.success("Journey deleted");
 							router.refresh();
 						}}
@@ -128,7 +134,7 @@ const SwitchAction: React.FC<{ journey: Journey }> = ({ journey }) => {
 		<Switch
 			checked={isActive}
 			onCheckedChange={async (value) => {
-				const res = await activateJourney(journey.id, value);
+				const res = await activateJourney(journey.documentId, value);
 				if (res.success) {
 					setIsActive(value);
 					toast.success(`Journey ${value ? "activated" : "deactivated"}`);
@@ -176,7 +182,7 @@ export const columns: ColumnDef<Journey>[] = [
 			const journey = row.original;
 			return (
 				<Link
-					href={`${RouteConfig.journeys.single(journey.id)}`}
+					href={`${RouteConfig.journeys.single(journey.documentId)}`}
 					className="whitespace-nowrap font-medium hover:underline"
 				>
 					{cell.renderValue() as any}

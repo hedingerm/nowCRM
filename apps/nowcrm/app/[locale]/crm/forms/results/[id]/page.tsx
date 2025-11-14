@@ -1,10 +1,9 @@
+import type { PaginationParams } from "@nowcrm/services";
+import { surveyItemsService } from "@nowcrm/services/server";
 import type { Session } from "next-auth";
 import { auth } from "@/auth";
 import DataTable from "@/components/dataTable/dataTable";
 import ErrorMessage from "@/components/ErrorMessage";
-import surveyItemsService from "@/lib/services/new_type/surveyItems.service";
-import type { PaginationParams } from "@/lib/types/common/paginationParams";
-
 import { columns } from "../components/columns/surveyItemsColumns";
 import CreateFormItemDialog from "../components/createDialog";
 import MassActionsSurveyItems from "../components/massActions/massActions";
@@ -29,7 +28,7 @@ export default async function Page(props: {
 
 	const session = await auth();
 
-	const response = await surveyItemsService.find({
+	const response = await surveyItemsService.find(session?.jwt, {
 		populate: ["survey", "file"],
 		sort: [`${sortBy}:${sortOrder}` as any],
 		pagination: {

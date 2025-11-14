@@ -23,18 +23,13 @@ export const env = cleanEnv(process.env, {
 
 	COMPOSER_REDIS_PORT: port({ devDefault: testOnly(6379) }),
 	COMPOSER_REDIS_HOST: host({ devDefault: testOnly("localhost") }),
-	COMPOSER_REDIS_PASSWORD: str({ devDefault: testOnly("default") }),
-
-	COMPOSER_BASIC_AUTH_USERNAME: str({ devDefault: testOnly("admin") }),
-	COMPOSER_BASIC_AUTH_PASSWORD: str({ devDefault: testOnly("admin") }),
-	COMPOSER_SESSION_SECRET: str({ devDefault: testOnly("secret") }),
 
 	COMPOSER_OPENAI_API_KEY: str({ devDefault: testOnly("") }),
 	COMPOSER_ANTHROPIC_KEY: str({ devDefault: testOnly("") }),
 
 	// used for email smtp connection
 	COMPOSER_SMTP_HOST: str({ devDefault: testOnly("") }),
-	COMPOSER_SMTP_PORT: port({ devDefault: testOnly(18000) }),
+	COMPOSER_SMTP_PORT: port({ default: 18000,devDefault: testOnly(18000) }),
 	COMPOSER_SMTP_USER: str({ devDefault: testOnly("") }),
 	COMPOSER_SMTP_PASS: str({ devDefault: testOnly("") }),
 	CUSTOMER_DOMAIN: str({ devDefault: testOnly("") }),

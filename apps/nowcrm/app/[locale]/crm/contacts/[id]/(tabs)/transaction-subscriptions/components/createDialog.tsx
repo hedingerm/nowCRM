@@ -35,7 +35,7 @@ import { Input } from "@/components/ui/input";
 
 // Updated schema
 const formSchema = z.object({
-	contact: z.number(),
+	contact: z.string(),
 	payment_method: z.string(),
 	currency: z.string(),
 	amount: z.number(),
@@ -60,7 +60,7 @@ export default function CreateTransactionDialog() {
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			contact: Number.parseInt(params.id),
+			contact: params.id,
 			payment_method: "",
 			currency: "",
 			amount: 0,
@@ -79,7 +79,7 @@ export default function CreateTransactionDialog() {
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		const { default: toast } = await import("react-hot-toast");
 		const { createDonationSubscription } = await import(
-			"@/lib/actions/donationSubscriptions/createDonationSubscription"
+			"@/lib/actions/donationSubscriptions/create-donation-subscrpition"
 		);
 		const res = await createDonationSubscription({
 			...values,

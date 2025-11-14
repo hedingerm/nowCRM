@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { DocumentId, LanguageKeys } from "@nowcrm/services";
 import { HelpCircle } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation"; // Import useParams to obtain the current locale
@@ -26,8 +27,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-
-import { findContactByToken } from "@/lib/actions/contacts/findOneContact";
+import { getContacts } from "@/lib/actions/contacts/get-contacts";
 // Import actions from your API
 import {
 	getChannels,
@@ -37,7 +37,7 @@ import {
 
 // Types for channel and interest items
 interface ItemProps {
-	value: number;
+	value: DocumentId;
 	label: string;
 }
 
@@ -53,10 +53,10 @@ const formSchema = z.object({
 		})
 		.optional(),
 	channels: z
-		.array(z.number())
+		.array(z.string())
 		.min(0, { message: "Please select at least one channel" }),
 	contact_interests: z
-		.array(z.number())
+		.array(z.string())
 		.min(0, { message: "Please select at least one interest" }),
 	unsubscribe_token: z.string().optional(),
 	agreement: z.boolean().refine((val) => val === true, {
@@ -136,7 +136,7 @@ export default function SignUp({ unsubscribe_token }: SignUpProps) {
 				console.log("Interests fetched:", interests);
 
 				// Process channels.
-				let allowedChannelIds: number[] = [];
+				let allowedChannelIds: DocumentId[] = [];
 				if (Array.isArray(channels)) {
 					setChannelValues(channels);
 					allowedChannelIds = channels.map((element) => element.value);
@@ -148,7 +148,7 @@ export default function SignUp({ unsubscribe_token }: SignUpProps) {
 				}
 
 				// Process interests.
-				let allowedInterestIds: number[] = [];
+				let allowedInterestIds: DocumentId[] = [];
 				if (Array.isArray(interests)) {
 					setInterestValues(interests);
 					allowedInterestIds = interests.map((element) => element.value);
@@ -162,42 +162,42 @@ export default function SignUp({ unsubscribe_token }: SignUpProps) {
 				// Check if an unsubscribe token is provided.
 				if (unsubscribe_token) {
 					console.log("Unsubscribe token provided:", unsubscribe_token);
-					const contactData = await findContactByToken(unsubscribe_token);
-					console.log("Found contact data:", contactData);
+					const contactData = await getContacts({
+						filters: {
+							unsubscribe_token: { $eqi: unsubscribe_token },
+						},
+						populate: { subscriptions: "*", contact_interests: "*" },
+					});
 
-					if (contactData) {
+					if (contactData.data && contactData.data.length > 0) {
 						// Map simple text fields.
-						form.setValue("first_name", contactData.first_name || "");
-						form.setValue("last_name", contactData.last_name || "");
-						form.setValue("email", contactData.email || "");
-						form.setValue("phone", contactData.phone || "");
+						form.setValue("first_name", contactData.data[0].first_name || "");
+						form.setValue("last_name", contactData.data[0].last_name || "");
+						form.setValue("email", contactData.data[0].email || "");
+						form.setValue("phone", contactData.data[0].phone || "");
 
 						// Map channels from subscriptions.
-						const channelIdsFromSubscriptions = contactData.subscriptions
-							? contactData.subscriptions
-									.map((sub) => sub?.channel?.id)
-									.filter((id): id is number => typeof id === "number")
+						const channelIdsFromSubscriptions = contactData.data[0]
+							.subscriptions
+							? contactData.data[0].subscriptions
+									.map((sub) => sub?.channel?.documentId)
+									.filter((id): id is DocumentId => typeof id === "string")
 							: [];
-						console.log(
-							"Channel IDs from contact subscriptions:",
-							channelIdsFromSubscriptions,
-						);
 
 						// Only keep channels that exist in the allowed channels.
 						const validChannelIds = channelIdsFromSubscriptions.filter((id) =>
 							allowedChannelIds.includes(id),
 						);
-						console.log(
-							"Valid channel IDs to set (intersection):",
-							validChannelIds,
-						);
+
 						form.setValue("channels", validChannelIds);
 
 						// Map interests from contact.
-						const interestIdsFromContact: number[] =
-							contactData.contact_interests
-								? contactData.contact_interests.map((interest) => interest.id)
-								: [];
+						const interestIdsFromContact: DocumentId[] = contactData.data[0]
+							.contact_interests
+							? contactData.data[0].contact_interests.map(
+									(interest) => interest.documentId,
+								)
+							: [];
 						console.log("Interest IDs from contact:", interestIdsFromContact);
 
 						// Only keep interests that exist in the allowed interests.
@@ -212,7 +212,7 @@ export default function SignUp({ unsubscribe_token }: SignUpProps) {
 
 						form.setValue(
 							"unsubscribe_token",
-							contactData.unsubscribe_token || unsubscribe_token,
+							contactData.data[0].unsubscribe_token || unsubscribe_token,
 						);
 					} else {
 						console.warn("No contact data found for token:", unsubscribe_token);
@@ -241,7 +241,7 @@ export default function SignUp({ unsubscribe_token }: SignUpProps) {
 					contact_interests: { connect: contact_interests },
 					first_name, // Use the entered first name
 					last_name, // Use the entered last name
-					language: locale ? locale[0] : "en", // Use current locale from URL or default to "en"
+					language: locale ? (locale as LanguageKeys) : "en", // Use current locale from URL or default to "en"
 					publishedAt: new Date(),
 				},
 				channels,

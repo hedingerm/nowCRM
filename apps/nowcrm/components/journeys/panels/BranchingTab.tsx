@@ -1,10 +1,11 @@
 "use client";
 
+import type { DocumentId } from "@nowcrm/services";
 import { ArrowDown, ArrowRight, ArrowUp, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 type Branch = {
-	id: string;
+	id: DocumentId;
 	sourceNodeId: string;
 	targetNodeId: string;
 	targetNodeLabel: string;
@@ -12,7 +13,7 @@ type Branch = {
 	conditions: any[];
 	condition_type: "all" | "any";
 	priority: number;
-	connectionId: number;
+	connectionId: DocumentId;
 };
 
 interface BranchingTabProps {

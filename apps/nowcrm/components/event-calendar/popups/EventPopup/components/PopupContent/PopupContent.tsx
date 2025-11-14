@@ -62,8 +62,9 @@ export const EventPopupContent: React.FC<EventPopupContent> = ({
   const [datetimeOpen, setDatetimeOpen] = useState(false)
   const [activeTab, setActiveTab] = useState("contact");
   const [isDeleting, setIsDeleting] = useState(false)
+
   const getDefaultValues = (): CalendarEventType => ({
-    id: event?.id || "",
+    documentId: event?.documentId || "",
     name: event?.name || "",
     description: event?.description || "",
     publish_date: event?.publish_date || dateFromViewClick || new Date(),
@@ -97,9 +98,7 @@ export const EventPopupContent: React.FC<EventPopupContent> = ({
   const onSubmit = async (values: z.infer<ReturnType<typeof eventFormSchema>>) => {
     setIsSaving(true)
     try {
-      if (!event?.id) {
-        // New event
-        console.log(values)
+      if (!event?.documentId) {
         const newEvent: Omit<CalendarEventType, "id"> = {
           name: values.name,
           description: values.description,
@@ -137,14 +136,14 @@ export const EventPopupContent: React.FC<EventPopupContent> = ({
   }
 
   const handleDelete = async () => {
-    if (!event?.id) {
+    if (!event?.documentId) {
       throw Error("Missing Event Id")
     }
 
     setIsDeleting(true)
     try {
       if (onDeleteEvent) {
-        await Promise.resolve(onDeleteEvent(event.id))
+        await Promise.resolve(onDeleteEvent(event.documentId))
       }
     } finally {
       setIsDeleting(false)
@@ -157,23 +156,23 @@ export const EventPopupContent: React.FC<EventPopupContent> = ({
       <DialogHeader>
         <DialogTitle className="text-lg sm:text-xl flex items-center gap-2">
           <CalendarPlus className="h-5 w-5" />
-          {event?.id ? translations.editEvent : translations.addEvent}
-          {event?.status && (
+          {event?.documentId ? translations.editEvent : translations.addEvent}
+          {event?.scheduled_status && (
             <span
               className={cn(
                 "px-2 py-[2px] rounded text-[13px] font-semibold  tracking-wide",
-                event.status === "published" && "bg-green-100 text-green-700 dark:bg-green-800/40 dark:text-green-300",
-                event.status === "scheduled" && "bg-yellow-100 text-yellow-700 dark:bg-yellow-800/40 dark:text-yellow-300",
-                event.status === "processing" && "bg-blue-100 text-blue-700 dark:bg-blue-800/40 dark:text-blue-300",
+                event.scheduled_status === "published" && "bg-green-100 text-green-700 dark:bg-green-800/40 dark:text-green-300",
+                event.scheduled_status === "scheduled" && "bg-yellow-100 text-yellow-700 dark:bg-yellow-800/40 dark:text-yellow-300",
+                event.scheduled_status === "processing" && "bg-blue-100 text-blue-700 dark:bg-blue-800/40 dark:text-blue-300",
               )}
             >
-              {event.status}
+              {event.scheduled_status}
             </span>
           )}
         </DialogTitle>
 
         <DialogDescription className="text-sm sm:text-base">
-          {event?.id ? translations.editEventDescription : translations.createEventDescription}
+          {event?.documentId ? translations.editEventDescription : translations.createEventDescription}
         </DialogDescription>
       </DialogHeader>
 
@@ -187,7 +186,7 @@ export const EventPopupContent: React.FC<EventPopupContent> = ({
                 <FormLabel>Composition</FormLabel>
                 <FormControl>
                   <AsyncSelect
-                    serviceName="compositionService"
+                    serviceName="compositionsService"
                     label="composition"
                     onValueChange={(opt) => field.onChange(opt ? { label: opt.label, value: String(opt.value) } : undefined)}
                     useFormClear={false}
@@ -207,13 +206,23 @@ export const EventPopupContent: React.FC<EventPopupContent> = ({
       <FormLabel>Channel</FormLabel>
       <FormControl>
         <AsyncSelect
-          serviceName="channelService"
+          serviceName="channelsService"
           label="channel"
           presetOption={field.value}
           formValue={field.value}
-          onValueChange={(opt) =>
+          onValueChange={(opt) => {
             field.onChange(opt ? { label: opt.label, value: String(opt.value) } : undefined)
-          }
+          
+            const channelValue = opt?.label?.toLowerCase?.() || ""
+            const isSocial = ["blog", "twitter", "linkedin", "telegram"].includes(channelValue)
+          
+            const currentSendTo = form.getValues("send_to")
+          
+            form.setValue("send_to", {
+              ...currentSendTo,
+              type: isSocial ? "contact" : currentSendTo?.type,
+            })
+          }}
           useFormClear={false}
         />
       </FormControl>
@@ -232,8 +241,8 @@ export const EventPopupContent: React.FC<EventPopupContent> = ({
   console.log(sendToType)
   const identityServiceName =
     selectedChannel === "Linkedin_Invitations"
-      ? "unipileIdentityService"
-      : "identityService";
+      ? "unipileIdentitiesService"
+      : "identitiesService";
   return (
     <div className="pt-3 space-y-4">
       <Tabs
@@ -266,7 +275,12 @@ export const EventPopupContent: React.FC<EventPopupContent> = ({
                     type="email"
                     placeholder="Enter contact email..."
                     {...field}
-                    value={field.value as string}
+                    defaultValue={ sendToType === "contact"
+                    ? sendToData as string
+                    : ''}
+                    value={ sendToType === "contact"
+                    ? sendToData as string
+                    : ''}
                     onChange={(e) => {
                       form.setValue("send_to", {
                         type: "contact",
@@ -292,9 +306,9 @@ export const EventPopupContent: React.FC<EventPopupContent> = ({
                 <FormLabel>List</FormLabel>
                 <FormControl>
                   <AsyncSelect
-                    serviceName="listService"
+                    serviceName="listsService"
                     label="List"
-                    presetOption={ sendToType === "organization"
+                    presetOption={ sendToType === "list"
                     ? field.value?.send_data as Option
                     : undefined}
                     formValue={
@@ -329,7 +343,7 @@ export const EventPopupContent: React.FC<EventPopupContent> = ({
                 <FormLabel>Organization</FormLabel>
                 <FormControl>
                   <AsyncSelect
-                    serviceName="organizationService"
+                    serviceName="organizationsService"
                     label="Organization"
                     presetOption={ sendToType === "organization"
                     ? field.value?.send_data as Option
@@ -372,8 +386,8 @@ export const EventPopupContent: React.FC<EventPopupContent> = ({
                 formValue={field.value?.identity}
                 onValueChange={(opt) =>field.onChange(
                   opt
-                  ? { type: "organization", send_data: sendToData ? sendToData : undefined, identity: opt }
-                  : { type: "organization", send_data: sendToData ? sendToData : undefined, identity: undefined }
+                  ? { type: sendToType ? sendToType : undefined, send_data: sendToData ? sendToData : undefined, identity: opt }
+                  : { type: sendToType ? sendToType : undefined, send_data: sendToData ? sendToData : undefined, identity: undefined }
                 )}
               />
             </FormControl>
@@ -507,7 +521,7 @@ export const EventPopupContent: React.FC<EventPopupContent> = ({
           />
 
           <DialogFooter className="flex flex-col space-y-3 sm:space-y-0 sm:flex-row sm:justify-between items-center w-full">
-            {event?.id && (
+            {event?.documentId && (
               <div className="w-full sm:w-auto">
                 <AlertDialog>
                   <AlertDialogTrigger asChild>

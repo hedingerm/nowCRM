@@ -51,7 +51,7 @@ export function FormCompleteRule({
 					Value
 				</label>
 				<AsyncSelect
-					serviceName="formService"
+					serviceName="formsService"
 					presetOption={condition.additional_data?.form as Option | undefined}
 					onValueChange={(value) =>
 						updateCondition(condition.id, {
@@ -67,7 +67,7 @@ export function FormCompleteRule({
 				{condition.value != null && (
 					<div className="mt-1 text-sm">
 						<Link
-							href={`${RouteConfig.forms.single(Number(condition.value))}`}
+							href={`${RouteConfig.forms.single(condition.value as string)}`}
 							target="_blank"
 							rel="noopener noreferrer"
 							className="flex items-center text-yellow-600 hover:underline"

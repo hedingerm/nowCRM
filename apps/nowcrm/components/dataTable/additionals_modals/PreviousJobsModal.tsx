@@ -1,5 +1,6 @@
 "use client";
 
+import type { ImportRecord, JobCompositionRecord } from "@nowcrm/services";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { Loader2 } from "lucide-react";
 import { useMessages } from "next-intl";
@@ -19,13 +20,11 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { getCompositionJobs } from "@/lib/actions/composer/getCompositionJobs";
+import { getCompositionJobs } from "@/lib/actions/composer/get-composition-jobs";
 import {
 	getImportProgressMap,
 	getPreviousImports,
-} from "@/lib/actions/import/fetchImports";
-import type { JobCompositionRecord } from "@/lib/types/new_type/composition";
-import type { ImportRecord } from "@/lib/types/new_type/import";
+} from "@/lib/actions/import/fetch-import";
 
 interface PreviousJobsModalProps {
 	isOpen: boolean;

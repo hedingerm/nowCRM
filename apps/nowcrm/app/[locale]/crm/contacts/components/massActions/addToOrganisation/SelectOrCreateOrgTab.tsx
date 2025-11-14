@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { createOrganization } from "@/lib/actions/organizations/createOrganization";
+import { createOrganization } from "@/lib/actions/organizations/create-organization";
 
 const formSchema = z.object({
 	name: z.string().min(2, {
@@ -95,7 +95,7 @@ export default function SelectOrCreateOrganizationTabs({
 			<TabsContent value="select" className="space-y-4">
 				<div className="mt-4">
 					<AsyncSelect
-						serviceName="organizationService"
+						serviceName="organizationsService"
 						label="organization"
 						onValueChange={setSelectedOption}
 						presetOption={selectedOption}

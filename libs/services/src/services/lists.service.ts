@@ -1,5 +1,6 @@
-import { APIRoutesStrapi } from "../api-routes/api-routes-strapi";
+import { API_ROUTES_STRAPI } from "../api-routes/api-routes-strapi";
 import { envServices } from "../envConfig";
+import type { DocumentId } from "../types/common/base_type";
 import type { Form_List, List } from "../types/list";
 import BaseService from "./common/base.service";
 import {
@@ -10,14 +11,14 @@ import {
 
 class ListsService extends BaseService<List, Form_List> {
 	public constructor() {
-		super(APIRoutesStrapi.LISTS);
+		super(API_ROUTES_STRAPI.LISTS);
 	}
 
 	async countContacts(
-		id: number,
+		id: DocumentId,
 		token: string,
-	): Promise<StandardResponse<number>> {
-		const url = `${envServices.STRAPI_URL}${this.endpoint}/${id}/${APIRoutesStrapi.LISTS_COUNT_CONTACTS}`;
+	): Promise<StandardResponse<{ count: number }>> {
+		const url = `${envServices.STRAPI_URL}${this.endpoint}/${id}/${API_ROUTES_STRAPI.LISTS_COUNT_CONTACTS}`;
 		try {
 			const response = await fetch(url, {
 				headers: this.getHeaders(false, token),
@@ -25,16 +26,16 @@ class ListsService extends BaseService<List, Form_List> {
 			});
 			return await handleResponse(response);
 		} catch (error: any) {
-			return handleError<number>(error);
+			return handleError<{ count: number }>(error);
 		}
 	}
 
 	async duplicate(
-		listId: number,
+		listId: DocumentId,
 		token: string,
 	): Promise<StandardResponse<null>> {
 		try {
-			const url = `${envServices.STRAPI_URL}${APIRoutesStrapi.LISTS_DUPLICATE}`;
+			const url = `${envServices.STRAPI_URL}${API_ROUTES_STRAPI.LISTS_DUPLICATE}`;
 
 			const response = await fetch(url, {
 				method: "POST",

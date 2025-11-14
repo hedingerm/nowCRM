@@ -7,6 +7,7 @@ export type FormEntityItemType =
 	| "number"
 	| "text_area"
 	| "checkbox"
+	| "radio"
 	| "select"
 	| "date"
 	| "single_choice"
@@ -18,7 +19,7 @@ export interface FormEntityItem extends BaseType {
 	form: FormEntity;
 	type: FormEntityItemType;
 	label: string;
-	options: object;
+	options: object | any;
 	rank: number;
 	required: boolean;
 	hidden: boolean;

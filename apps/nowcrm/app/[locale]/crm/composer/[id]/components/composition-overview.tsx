@@ -1,5 +1,6 @@
 "use client";
 
+import { aiModels, getLanguageLabel, languages } from "@nowcrm/services";
 import {
 	AlertCircle,
 	Brain,
@@ -43,8 +44,6 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { compositionModels } from "@/lib/static/compoisitonModels";
-import { getLanguageLabel, languages } from "@/lib/static/languages";
 
 interface CompositionOverviewProps {
 	form: UseFormReturn<any>;
@@ -222,7 +221,7 @@ export function CompositionOverview({
 												<SelectValue placeholder={t.fields.selectModel} />
 											</SelectTrigger>
 											<SelectContent>
-												{compositionModels.map((model) => (
+												{aiModels.map((model) => (
 													<SelectItem
 														key={`${model.label}`}
 														value={model.value}

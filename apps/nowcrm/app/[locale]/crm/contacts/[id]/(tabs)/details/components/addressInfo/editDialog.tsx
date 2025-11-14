@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { Contact } from "@nowcrm/services";
 import { useRouter } from "next/navigation";
 import { useMessages } from "next-intl";
 import { useEffect } from "react";
@@ -41,7 +42,6 @@ import {
 } from "@/components/ui/tooltip";
 import cantons from "@/lib/static/cantons.json";
 import countries from "@/lib/static/countries.json";
-import type { Contact } from "@/lib/types/new_type/contact";
 
 const formSchema = z.object({
 	address_line1: z.string().optional(),
@@ -89,7 +89,7 @@ export function EditDialogAddress({
 	async function handleSubmit(values: FormValues) {
 		const { default: toast } = await import("react-hot-toast");
 		const { updateContact } = await import(
-			"@/lib/actions/contacts/updateContact"
+			"@/lib/actions/contacts/update-contact"
 		);
 
 		const finalValues = {
@@ -97,7 +97,7 @@ export function EditDialogAddress({
 			canton: values.country === "Switzerland" ? values.canton : "", // Ignore canton if not CH
 			country: values.country || "",
 		};
-		const res = await updateContact(contact.id, finalValues);
+		const res = await updateContact(contact.documentId, finalValues);
 		if (!res.success) {
 			toast.error(`${t.Contacts.details.address.error} ${res.errorMessage}`);
 		} else {

@@ -3,10 +3,10 @@ import type { EventCalendarTranslations } from "./EventCalendarTranslations"
 
 export const eventFormSchema = (translations: EventCalendarTranslations) => {
   return z.object({
-    id: z.string().optional(),
+    documentId: z.string().optional(),
     name: z.string().min(1, translations.validations.eventNameRequired),
     description: z.string().optional(),
-    status: z.string().optional(),
+    scheduled_status: z.string().optional(),
     publish_date: z.date(),
     color: z.string().min(1, translations.validations.colorRequired),
     channel:
@@ -16,7 +16,7 @@ export const eventFormSchema = (translations: EventCalendarTranslations) => {
     ({ label: z.string(), value: z.string() }).optional(),
     send_to: z
       .object({
-        type: z.enum(["contact", "list", "organization"]),
+        type: z.enum(["contact", "list", "organization"]).optional(),
         send_data: z.union([
           z.string(),
           z.object({

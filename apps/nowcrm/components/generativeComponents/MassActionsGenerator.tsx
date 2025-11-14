@@ -1,11 +1,11 @@
 "use client";
 
+import type { DocumentId } from "@nowcrm/services";
 import { SlidersHorizontal } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import type { JSX } from "react";
 import { useState } from "react";
 import toast from "react-hot-toast";
-
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
 import {
@@ -19,11 +19,11 @@ import { cn } from "@/lib/utils";
 // Define the props type for the MassActionsComponent.
 // This type will be used by the getExtraData function in ActionConfig.
 export type MassActionsComponentProps = {
-	selectedRows: number[];
+	selectedRows: DocumentId[];
 	clearFunction: () => void;
 	dropdownModal?: boolean;
 	refreshData?: () => void;
-	journeyStepId?: number; // Added for your specific use case
+	journeyStepId?: DocumentId; // Added for your specific use case
 	jwt?: string; // Added for your specific use case
 	[key: string]: any; // Allows for other dynamic props to be passed
 };
@@ -43,7 +43,7 @@ export interface ActionConfig {
 	dialogContent?: (params: {
 		selectedOption: any;
 		setSelectedOption: (val: any) => void;
-		selectedRows: number[];
+		selectedRows: DocumentId[];
 	}) => JSX.Element;
 	dialogContentWithFilters?: (params: {
 		selectedOption: any;
@@ -67,7 +67,7 @@ export interface ActionConfig {
 	 * It receives the array of selected rows and an optional extra parameter (for example, the value from the dialog)
 	 */
 	onAction: (
-		selectedRows: number[],
+		selectedRows: DocumentId[],
 		extra?: any,
 	) => Promise<{ success: boolean; errorMessage?: string }>;
 	onFilterAction?: (

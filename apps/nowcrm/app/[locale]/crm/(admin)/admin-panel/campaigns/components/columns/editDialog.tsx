@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { Campaign, CampaignCategory } from "@nowcrm/services";
 import { ListPlus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMessages } from "next-intl";
@@ -35,10 +36,8 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { getCampaignCategories } from "@/lib/actions/campaign-categories/getCampaignCategories";
-import { updateCampaign } from "@/lib/actions/campaigns/updateCampaign";
-import type { Campaign } from "@/lib/types/new_type/campaign";
-import type { CampaignCategory } from "@/lib/types/new_type/campaignCategory";
+import { getCampaignCategories } from "@/lib/actions/campaign-categories/get-campaign-category";
+import { updateCampaign } from "@/lib/actions/campaigns/update-campaigns";
 
 interface EditCampaignDialogProps {
 	campaign: Campaign;
@@ -78,19 +77,17 @@ export default function EditCampaignDialog({
 		defaultValues: {
 			name: campaign.name,
 			description: campaign.description || "",
-			campaignCategoryId: campaign.campaign_category?.id.toString() || "",
+			campaignCategoryId: campaign.campaign_category[0]?.documentId || "",
 		},
 	});
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		const { default: toast } = await import("react-hot-toast");
 		const res = await updateCampaign(
-			campaign.id,
+			campaign.documentId,
 			values.name,
 			values.description,
-			values.campaignCategoryId
-				? Number.parseInt(values.campaignCategoryId)
-				: undefined,
+			values.campaignCategoryId ? values.campaignCategoryId : undefined,
 		);
 		if (!res.success) {
 			toast.error(`${t.Admin.Campaign.toast.createError}: ${res.errorMessage}`);

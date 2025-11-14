@@ -1,4 +1,5 @@
 "use client";
+import type { Contact } from "@nowcrm/services";
 import {
 	Briefcase,
 	Check,
@@ -21,7 +22,6 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { RouteConfig } from "@/lib/config/RoutesConfig";
-import type { Contact } from "@/lib/types/new_type/contact";
 import { EditDialogProfessional } from "./editDialogProfessional";
 
 interface ProfessionalInfoCardProps {
@@ -84,7 +84,7 @@ export function ProfessionalInfoCard({ contact }: ProfessionalInfoCardProps) {
 									<strong>{t("AdvancedFilters.fields.organization")}:</strong>
 									<Link
 										href={RouteConfig.organizations.single.base(
-											contact.organization.id,
+											contact.organization.documentId,
 										)}
 									>
 										{" "}

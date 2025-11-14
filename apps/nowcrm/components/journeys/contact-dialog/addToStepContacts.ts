@@ -1,18 +1,27 @@
 // actions/deleteContactAction.ts
 "use server";
+import type { Contact, DocumentId, StandardResponse } from "@nowcrm/services";
+import {
+	contactsService,
+	journeyStepsService,
+	journeysService,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import type { StandardResponse } from "@/lib/services/common/response.service";
-import contactsService from "@/lib/services/new_type/contacts.service";
-import journeyStepsService from "@/lib/services/new_type/journeySteps.service";
-import journeysService from "@/lib/services/new_type/journeys.service";
-import type { Contact } from "@/lib/types/new_type/contact";
 import type { addContactsToStepData } from "./add-contacts-dialog";
 
 async function propagateContactsToJourney(
-	stepId: number,
-	contactIds: number[],
+	stepId: DocumentId,
+	contactIds: DocumentId[],
 ) {
-	const step = await journeyStepsService.findOne(stepId, {
+	const session = await auth();
+	if (!session) {
+		return {
+			data: null,
+			status: 403,
+			success: false,
+		};
+	}
+	const step = await journeyStepsService.findOne(stepId, session.jwt, {
 		populate: {
 			journey: {
 				populate: {
@@ -22,18 +31,28 @@ async function propagateContactsToJourney(
 		},
 	});
 
-	if (!step?.data?.journey?.id) return;
+	if (!step?.data?.journey?.documentId) return;
 
-	const journeyId = step.data.journey.id;
+	const journeyId = step.data.journey.documentId;
 	const existingContacts =
-		step.data.journey.contacts?.map((c: Contact) => c.id) || [];
+		step.data.journey.contacts?.map((c: Contact) => c.documentId) || [];
 	const allJourneyContacts = Array.from(
 		new Set([...existingContacts, ...contactIds]),
 	);
 
-	await journeysService.update(journeyId, {
-		contacts: { connect: allJourneyContacts },
-	});
+	await journeysService.update(
+		journeyId,
+		{
+			contacts: { connect: allJourneyContacts },
+		},
+		session.jwt,
+	);
+	return {
+		data: true,
+		status: 200,
+		success: true,
+		errorMessage: "",
+	};
 }
 
 export async function addToStepAction(
@@ -50,7 +69,7 @@ export async function addToStepAction(
 	try {
 		if (data.type === "list" && typeof data.contacts === "number") {
 			let allContacts: Contact[] = [];
-			const list_contacts = await contactsService.find({
+			const list_contacts = await contactsService.find(session.jwt, {
 				filters: { lists: { id: { $in: data.contacts } } },
 				populate: {
 					subscriptions: {
@@ -76,7 +95,7 @@ export async function addToStepAction(
 
 			while (currentPage < totalPages) {
 				currentPage++;
-				const result = await contactsService.find({
+				const result = await contactsService.find(session.jwt, {
 					filters: { lists: { id: { $in: data.contacts } } },
 					populate: {
 						subscriptions: {
@@ -93,11 +112,15 @@ export async function addToStepAction(
 				}
 			}
 
-			const list_ids = allContacts.map((contact) => contact.id);
+			const list_ids = allContacts.map((contact) => contact.documentId);
 
-			await journeyStepsService.update(data.step_id, {
-				contacts: { connect: list_ids },
-			});
+			await journeyStepsService.update(
+				data.step_id,
+				{
+					contacts: { connect: list_ids },
+				},
+				session.jwt,
+			);
 			await propagateContactsToJourney(data.step_id, list_ids);
 			return {
 				data: true,
@@ -109,7 +132,7 @@ export async function addToStepAction(
 
 		if (data.type === "organization" && typeof data.contacts === "number") {
 			let allContacts: Contact[] = [];
-			const organization_contacts = await contactsService.find({
+			const organization_contacts = await contactsService.find(session.jwt, {
 				filters: { organization: { id: { $eq: data.contacts } } },
 				populate: {
 					subscriptions: {
@@ -135,7 +158,7 @@ export async function addToStepAction(
 
 			while (currentPage < totalPages) {
 				currentPage++;
-				const result = await contactsService.find({
+				const result = await contactsService.find(session.jwt, {
 					filters: { lists: { id: { $in: data.contacts } } },
 					populate: {
 						subscriptions: {
@@ -152,11 +175,15 @@ export async function addToStepAction(
 				}
 			}
 
-			const org_ids = allContacts.map((contact) => contact.id);
+			const org_ids = allContacts.map((contact) => contact.documentId);
 
-			await journeyStepsService.update(data.step_id, {
-				contacts: { connect: org_ids },
-			});
+			await journeyStepsService.update(
+				data.step_id,
+				{
+					contacts: { connect: org_ids },
+				},
+				session.jwt,
+			);
 			await propagateContactsToJourney(data.step_id, org_ids);
 			return {
 				data: true,
@@ -167,9 +194,13 @@ export async function addToStepAction(
 		}
 
 		if (data.type === "contact" && typeof data.contacts === "number") {
-			await journeyStepsService.update(data.step_id, {
-				contacts: { connect: [data.contacts] },
-			});
+			await journeyStepsService.update(
+				data.step_id,
+				{
+					contacts: { connect: [data.contacts] },
+				},
+				session.jwt,
+			);
 			await propagateContactsToJourney(data.step_id, [data.contacts]);
 			return {
 				data: true,

@@ -1,5 +1,6 @@
 "use client";
 
+import type { Organization } from "@nowcrm/services";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,7 +10,6 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import type { Organization } from "@/lib/types/new_type/organization";
 import { EditDialogOrganizationGeneral } from "./editDialogGeneral";
 
 interface OrganizationGeneralInfoCardProps {

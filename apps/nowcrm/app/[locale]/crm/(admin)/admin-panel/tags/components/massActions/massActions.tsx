@@ -1,16 +1,17 @@
 "use client";
+import type { DocumentId } from "@nowcrm/services";
 // IdentitityMassActions.tsx
 import {
 	type ActionsConfig,
 	massActionsGenerator,
 } from "@/components/generativeComponents/MassActionsGenerator";
-import { MassDeleteTag } from "./massDeleteTags";
+import { MassDeleteTags } from "./massDeleteTags";
 
 const actionsConfig: ActionsConfig = {
 	deleteContacts: {
 		label: "Delete", // e.g., "Delete"
-		onAction: async (selectedRows: number[]) => {
-			return await MassDeleteTag(selectedRows);
+		onAction: async (selectedRows: DocumentId[]) => {
+			return await MassDeleteTags(selectedRows);
 		},
 		successMessage: "Tags deleted",
 		errorMessage: "Error deleting Tags",

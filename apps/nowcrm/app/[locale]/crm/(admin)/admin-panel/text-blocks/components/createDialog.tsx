@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { LanguageKeys } from "@nowcrm/services";
 import { HelpCircle, ListPlus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMessages } from "next-intl";
@@ -33,7 +34,6 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import type { LanguageKeys } from "@/lib/static/languages";
 
 export default function CreateTextBlockDialog() {
 	const t = useMessages().Admin.TextBlock;
@@ -67,7 +67,7 @@ export default function CreateTextBlockDialog() {
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		const { default: toast } = await import("react-hot-toast");
 		const { createTextBlock } = await import(
-			"@/lib/actions/text_blocks/createTextBlock"
+			"@/lib/actions/text_blocks/create-text-block"
 		);
 
 		// Create a text block for each locale

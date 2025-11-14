@@ -13,6 +13,36 @@ export const compositionStatuses: Option[] = [
 	{ label: "Errored", value: "Errored" },
 ];
 
+export interface StructuredResponseModel {
+	model: string;
+	input_data: string;
+	structure_scheme: string;
+	language?: LanguageKeys | string;
+}
+
+export interface JobCompositionRecord {
+	id: string;
+	name?: string;
+	title: string;
+	createdAt: string;
+	channels?: string[];
+	status: string;
+	logs: string;
+	progressPercent?: number;
+	jobId: string;
+	type?: string;
+	massAction?: string | null;
+	listName?: string | null;
+	listField?: string | null;
+	parsedSearchMask?: string;
+	result?: string;
+	composition_id?: number;
+	from?: string;
+	to?: number[];
+	subject?: string;
+	publicationDate?: string | null;
+}
+
 export interface Composition extends BaseType {
 	composition_status: CompositionStatusKeys;
 	category: string;
@@ -39,4 +69,25 @@ export interface Form_Composition extends BaseFormType {
 	subject: string;
 	composition_items?: StrapiConnect;
 	campaign?: StrapiConnect;
+}
+
+// used for calendar metrics
+export type DateRange =
+	| "today"
+	| "yesterday"
+	| "last7days"
+	| "custom"
+	| "total";
+
+export interface MetricConfig {
+	label: string;
+	actionTypes: string | string[];
+	mode: "count" | "percentage" | "fraction";
+	denominatorActionTypes?: string | string[];
+	threshold?: number;
+	invert?: boolean;
+	Icon: any;
+	bgColor: string;
+	fgColor: string;
+	textColor: string;
 }

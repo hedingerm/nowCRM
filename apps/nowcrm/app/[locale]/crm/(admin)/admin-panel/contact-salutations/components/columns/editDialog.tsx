@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { ContactSalutation } from "@nowcrm/services";
 import { ListPlus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMessages } from "next-intl";
@@ -27,8 +28,7 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { updateContactSalutation } from "@/lib/actions/contact-salutations/updateContactSalutation";
-import type { ContactSalutation } from "@/lib/types/new_type/contact_salutation";
+import { updateContactSalutation } from "@/lib/actions/contact-salutations/update-contact-salutation";
 
 interface EditContactSalutationDialogProps {
 	contactSalutation: ContactSalutation;
@@ -58,7 +58,7 @@ export default function EditContactSalutationDialog({
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		const { default: toast } = await import("react-hot-toast");
 		const res = await updateContactSalutation(
-			contactSalutation.id,
+			contactSalutation.documentId,
 			values.name,
 		);
 		if (!res.success) {

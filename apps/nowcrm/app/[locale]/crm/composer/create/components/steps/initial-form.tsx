@@ -1,5 +1,11 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
+import {
+	aiModels,
+	getLanguageLabel,
+	getLanguageValue,
+	type ReferenceComposition,
+} from "@nowcrm/services";
 import { ArrowLeft, Edit, HelpCircle, ListPlus, Loader2 } from "lucide-react";
 import { useMessages } from "next-intl";
 import { useState } from "react";
@@ -30,10 +36,7 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { getChannels } from "@/lib/actions/channels/getChannel";
-import { compositionModels } from "@/lib/static/compoisitonModels";
-import { getLanguageLabel, getLanguageValue } from "@/lib/static/languages";
-import type { ReferenceComposition } from "@/lib/types/new_type/composition";
+import { getEmailChannel } from "@/lib/actions/channels/get-email-channel";
 
 interface InitialFormProps {
 	onSubmit: (data: ReferenceComposition) => void;
@@ -110,7 +113,7 @@ const formSchema = z.object({
 	category: z.string(),
 	promptBase: z.string(),
 	language: z.enum(["en", "it", "fr", "de"]).default("en"),
-	mainChannel: z.coerce.number(),
+	mainChannel: z.string(),
 	persona: z.string().optional(),
 });
 
@@ -215,9 +218,8 @@ The output should reflect the tone, vocabulary, and perspective typical for the 
 		form.setValue("subject", promptBaseName);
 
 		// Set mainChannel to 1
-		const id = await getChannels();
-		if (id.data) form.setValue("mainChannel", id.data[0].id);
-		else form.setValue("mainChannel", 1);
+		const id = await getEmailChannel();
+		if (id.data) form.setValue("mainChannel", id.data[0].documentId);
 
 		// Generate and set the base prompt text
 		const basePrompt = generateBasePrompt(
@@ -435,7 +437,7 @@ The output should reflect the tone, vocabulary, and perspective typical for the 
 												</SelectTrigger>
 											</FormControl>
 											<SelectContent>
-												{compositionModels.map((model) => (
+												{aiModels.map((model) => (
 													<SelectItem
 														value={model.value}
 														key={`${model.label} - ${model.value}`}

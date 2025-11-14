@@ -1,6 +1,8 @@
 import { makeValidator } from "envalid";
 
-export const NotEmptyStringValidator = makeValidator((x) => {
-	if (x) return x;
+const isCI = process.env.NODE_ENV === "production";
+
+export const NotEmptyStringValidator = makeValidator((x: string) => {
+	if (x || isCI) return x;
 	else throw new Error("Expected not empty string");
 });

@@ -44,14 +44,14 @@ import "easydrawer/styles.css";
 import { useTheme } from "next-themes";
 import { Link } from "reactjs-tiptap-editor/lib/Link.js";
 import { LinkedImage } from "@/components/editor/extensions/LinkedImage";
-import { findTextBlock } from "@/lib/actions/text_blocks/findTextBlock";
-import { generateFieldsFromObject } from "@/lib/services/common/typeList";
+import { findTextBlock } from "@/lib/actions/text_blocks/find-text-block";
 import { cn } from "@/lib/utils";
 import { LinkedVideo } from "./extensions/LinkedVideo";
 import LinkedVideoToolbarButton from "./extensions/LinkedVideoButton";
 import LinkedImageToolbarButton from "./extensions/LinkeImageButton";
 import { StyledLink } from "./extensions/StyledLink";
 import StyledLinkButton from "./extensions/StyledLinkButton";
+import { generateFieldsFromObject } from "@nowcrm/services";
 
 const sampleContact = {
 	email: "test@example.com",

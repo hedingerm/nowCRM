@@ -1,5 +1,5 @@
+import type { MetricConfig } from "@nowcrm/services";
 import { CheckCircle, Clock, Eye, Mail, MousePointer } from "lucide-react";
-import type { MetricConfig } from "@/lib/types/new_type/composition";
 
 export interface ChannelAnalyticsConfig {
 	channelName: string;

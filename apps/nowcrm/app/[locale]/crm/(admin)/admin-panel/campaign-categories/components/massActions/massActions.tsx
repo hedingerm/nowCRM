@@ -1,6 +1,7 @@
 // CampaignCategoriesMassActions.tsx
 "use client";
 
+import type { DocumentId } from "@nowcrm/services";
 import {
 	type ActionsConfig,
 	massActionsGenerator,
@@ -9,9 +10,9 @@ import { MassDeleteCampaignCategories } from "./massDeleteCampaignCategories";
 
 // Define the actions configuration for campaign categories
 const actionsConfig: ActionsConfig = {
-	deleteContacts: {
+	deleteCampaignCategories: {
 		label: "Delete",
-		onAction: async (selectedRows: number[]) => {
+		onAction: async (selectedRows: DocumentId[]) => {
 			return await MassDeleteCampaignCategories(selectedRows);
 		},
 		successMessage: "Campaign categories deleted",

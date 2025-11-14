@@ -10,7 +10,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
-import type { ChannelThrottleResponse } from "@/lib/actions/channels/getThrottle";
+import type { ChannelThrottleResponse } from "@/lib/actions/channels/get-channel-throttle";
 import AdvancedFilters from "../../advancedFilters/advancedFilters";
 import {
 	SendCompositionForm,
@@ -82,7 +82,7 @@ export default function SendCompositionWithFiltersDialog({
 
 		try {
 			const { getContactsPreview } = await import(
-				"@/lib/actions/filters/getContactsPreview"
+				"@/lib/actions/filters/get-contact-preview"
 			);
 			const response = await getContactsPreview(filterData);
 			if (response) {

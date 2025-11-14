@@ -2,6 +2,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { DocumentId, FormEntity, FormEntityItem } from "@nowcrm/services";
 import { format } from "date-fns";
 import {
 	Check,
@@ -58,8 +59,10 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { getFormBySlugOrId, submitFormData } from "@/lib/actions/forms/getForm";
-import type { FormEntity, FormItemEntity } from "@/lib/types/new_type/form";
+import {
+	getFormBySlugOrId,
+	submitFormData,
+} from "@/lib/actions/forms/get-form";
 import { cn } from "@/lib/utils";
 import CustomProgress from "../CustomProgress";
 import ShareSocial from "./share-social";
@@ -103,7 +106,7 @@ const FormShareClient: React.FC<FormShareClientProps> = ({
 	// ===== STATE MANAGEMENT =====
 	// Form data and loading states
 	const [loading, setLoading] = useState(true);
-	const [formId, setFormId] = useState<number | undefined>(undefined);
+	const [formId, setFormId] = useState<DocumentId>("");
 	const [submitSuccess, setSubmitSuccess] = useState(false);
 	const [submitDisabled, setSubmitDisabled] = useState(false);
 	const [formData, setFormData] = useState<FormEntity>({} as FormEntity);
@@ -128,7 +131,7 @@ const FormShareClient: React.FC<FormShareClientProps> = ({
 	const isEmbedded = urlParams?.isEmbedded === "1";
 
 	function buildInitialDefaults(
-		items: FormItemEntity[] = [],
+		items: FormEntityItem[] = [],
 		urlParams: Record<string, string> = {},
 	) {
 		const defaults: Record<string, any> = {};
@@ -334,7 +337,7 @@ const FormShareClient: React.FC<FormShareClientProps> = ({
 				}
 
 				const loadedForm = forms[0];
-				setFormId(loadedForm.id);
+				setFormId(loadedForm.documentId);
 				setFormData(loadedForm);
 				setFormMode(loadedForm.form_view ? "list" : "step");
 
@@ -344,7 +347,7 @@ const FormShareClient: React.FC<FormShareClientProps> = ({
 				);
 				reset(initialDefaults); // call RHF reset here
 
-				const url = await shareForm(loadedForm.id, loadedForm.slug);
+				const url = await shareForm(loadedForm.documentId, loadedForm.slug);
 				setShareUrl(url);
 			} catch (err) {
 				console.error("Error fetching form:", err);
@@ -546,7 +549,7 @@ const FormShareClient: React.FC<FormShareClientProps> = ({
 	const findIdentifier = useCallback((): string => {
 		if (!formData.form_items) return "";
 
-		const formIdentifier = (formData.form_items as FormItemEntity[]).find(
+		const formIdentifier = formData.form_items.find(
 			(item) => item.type === "email",
 		);
 		if (formIdentifier) {
@@ -600,6 +603,7 @@ const FormShareClient: React.FC<FormShareClientProps> = ({
 			const response = await submitFormData(formSubmitData);
 
 			if (!response.success) {
+				console.log(response)
 				setError(response.message || "Form submission failed");
 				return;
 			}
@@ -618,7 +622,7 @@ const FormShareClient: React.FC<FormShareClientProps> = ({
 	 * Render form field based on type
 	 */
 	const renderFormField = useCallback(
-		(item: FormItemEntity, isStepMode = true) => {
+		(item: FormEntityItem, isStepMode = true) => {
 			switch (item.type) {
 				case "email":
 					return (
@@ -817,7 +821,7 @@ const FormShareClient: React.FC<FormShareClientProps> = ({
 										</FormLabel>
 									)}{" "}
 									<div className="space-y-3">
-										{item.options?.map((option) => (
+										{item.options?.map((option: any) => (
 											<FormField
 												key={option}
 												control={form.control}
@@ -972,7 +976,7 @@ const FormShareClient: React.FC<FormShareClientProps> = ({
 											</SelectTrigger>
 										</FormControl>
 										<SelectContent>
-											{item.options?.map((option) => (
+											{item.options?.map((option: any) => (
 												<SelectItem
 													key={option}
 													value={option}
@@ -1011,7 +1015,7 @@ const FormShareClient: React.FC<FormShareClientProps> = ({
 										</FormLabel>
 									)}{" "}
 									<div className="space-y-3">
-										{item.options?.map((option) => (
+										{item.options?.map((option: any) => (
 											<FormField
 												key={option}
 												control={form.control}
@@ -1103,7 +1107,7 @@ const FormShareClient: React.FC<FormShareClientProps> = ({
 											}}
 											className={cn(isStepMode ? "space-y-3" : "space-y-2")}
 										>
-											{item.options?.map((option) => (
+											{item.options?.map((option: any) => (
 												<div
 													key={option}
 													className="flex items-center space-x-3"

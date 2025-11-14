@@ -1,4 +1,5 @@
 "use client";
+import type { Composition } from "@nowcrm/services";
 import type { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
@@ -18,7 +19,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { RouteConfig } from "@/lib/config/RoutesConfig";
 import { formatDateTimeStrapi } from "@/lib/strapiDate";
-import type { Composition } from "@/lib/types/new_type/composition";
 import { cn } from "@/lib/utils";
 import { deleteCompositionAction } from "./deleteComposition";
 
@@ -38,7 +38,7 @@ const ViewActions: React.FC<{ composition: Composition }> = ({
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align="end">
 				<DropdownMenuLabel>{t.common.actions.actions}</DropdownMenuLabel>
-				<Link href={`${RouteConfig.composer.single(composition.id)}`}>
+				<Link href={`${RouteConfig.composer.single(composition.documentId)}`}>
 					<DropdownMenuItem>
 						{t.Composer.channelContent.viewComposition}
 					</DropdownMenuItem>
@@ -47,9 +47,11 @@ const ViewActions: React.FC<{ composition: Composition }> = ({
 				<DropdownMenuItem
 					onClick={async () => {
 						const { duplicateCompositionAction } = await import(
-							"@/lib/actions/composer/dublicateComposition"
+							"@/lib/actions/composer/duplicate-composition"
 						);
-						const res = await duplicateCompositionAction(composition.id);
+						const res = await duplicateCompositionAction(
+							composition.documentId,
+						);
 						if (!res.success) {
 							toast.error(
 								res.errorMessage ?? "Failed to duplicate composition",
@@ -64,7 +66,11 @@ const ViewActions: React.FC<{ composition: Composition }> = ({
 				</DropdownMenuItem>
 				<DropdownMenuItem
 					onClick={async () => {
-						await deleteCompositionAction(composition.id);
+						const res = await deleteCompositionAction(composition.documentId);
+						if (!res.success) {
+							toast.error(res.errorMessage ?? "Failed to delete composition");
+							return;
+						}
 						toast.success("Composition deleted");
 						router.refresh();
 					}}
@@ -131,7 +137,7 @@ export const columns: ColumnDef<Composition>[] = [
 			const list = row.original;
 			return (
 				<Link
-					href={`${RouteConfig.composer.single(list.id)}`}
+					href={`${RouteConfig.composer.single(list.documentId)}`}
 					className="whitespace-nowrap font-medium hover:underline"
 				>
 					{cell.renderValue() as any}
@@ -152,23 +158,23 @@ export const columns: ColumnDef<Composition>[] = [
 		header: ({ column }) => <SortableHeader column={column} label="Persona" />,
 	},
 	{
-		accessorKey: "status",
+		accessorKey: "composition_status",
 		header: "Status",
 		cell: ({ row }) => {
-			const status = row.original.status.toLowerCase();
+			const status = row.original.composition_status?.toLowerCase();
 
 			return (
 				<div
 					className={cn("rounded-full px-2 py-1 text-center font-medium", {
 						"border border-red-800/25 bg-red-100 text-red-800 dark:border-text-red-200/25 dark:bg-red-900 dark:text-red-200":
-							status.includes("error"),
+							status?.includes("error"),
 						"border border-yellow-800/25 bg-yellow-100 text-yellow-800 dark:border-yellow-200/25 dark:bg-yellow-900 dark:text-yellow-200":
 							status === "pending",
 						"border border-green-800/25 bg-green-100 text-green-800 dark:border-green-200/25 dark:bg-green-900 dark:text-green-200":
 							status === "finished",
 					})}
 				>
-					{row.original.status}
+					{row.original.composition_status}
 				</div>
 			);
 		},

@@ -1,12 +1,15 @@
 // actions/deleteContactAction.ts
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	handleError,
+	type StandardResponse,
+	subscriptionsService,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import type { StandardResponse } from "@/lib/services/common/response.service";
-import subscriptionsService from "@/lib/services/new_type/subscriptions.service";
-
 export async function massDeleteSubscriptions(
-	subscriptions: number[],
+	subscriptions: DocumentId[],
 ): Promise<StandardResponse<null>> {
 	const session = await auth();
 	if (!session) {
@@ -18,7 +21,7 @@ export async function massDeleteSubscriptions(
 	}
 	try {
 		const unpublishPromises = subscriptions.map((id) =>
-			subscriptionsService.unPublish(id),
+			subscriptionsService.delete(id, session.jwt),
 		);
 		await Promise.all(unpublishPromises);
 		return {
@@ -28,10 +31,6 @@ export async function massDeleteSubscriptions(
 		};
 	} catch (error) {
 		console.error("Error deleting Subscription:", error);
-		return {
-			data: null,
-			status: 500,
-			success: false,
-		};
+		return handleError(error);
 	}
 }

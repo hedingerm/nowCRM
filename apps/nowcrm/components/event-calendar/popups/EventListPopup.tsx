@@ -90,7 +90,7 @@ const EventListPopup: React.FC<EventListPopupProps> = ({
                             )
                         .map((event) => (
                             <EventPopup
-                                key={event.id}
+                                key={event.documentId}
                                 event={event}
                                 onAddEvent={addEvent}
                                 onUpdateEvent={handleUpdateEvent}

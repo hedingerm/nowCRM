@@ -1,4 +1,5 @@
 "use client";
+import type { ContactDocument } from "@nowcrm/services";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -13,9 +14,10 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { formatDateTimeStrapi } from "@/lib/strapiDate";
-import type { Documents } from "@/lib/types/new_type/document";
 
-const DeleteAction: React.FC<{ document: Documents }> = ({ document }) => {
+const DeleteAction: React.FC<{ document: ContactDocument }> = ({
+	document,
+}) => {
 	const router = useRouter();
 	const t = useTranslations();
 	return (
@@ -28,7 +30,7 @@ const DeleteAction: React.FC<{ document: Documents }> = ({ document }) => {
 					onClick={async () => {
 						const { default: toast } = await import("react-hot-toast");
 						const { deleteAction } = await import("./deleteDocument");
-						await deleteAction(document.id);
+						await deleteAction(document.documentId);
 						toast.success(t("Contacts.documents.documentDeleted"));
 						router.refresh();
 					}}
@@ -41,7 +43,9 @@ const DeleteAction: React.FC<{ document: Documents }> = ({ document }) => {
 	);
 };
 
-export const ViewAction: React.FC<{ document: Documents }> = ({ document }) => {
+export const ViewAction: React.FC<{ document: ContactDocument }> = ({
+	document,
+}) => {
 	const t = useTranslations();
 
 	const handleCopyLink = async () => {
@@ -76,7 +80,7 @@ export const ViewAction: React.FC<{ document: Documents }> = ({ document }) => {
 	);
 };
 
-export const columns: ColumnDef<Documents>[] = [
+export const columns: ColumnDef<ContactDocument>[] = [
 	{
 		id: "select",
 		header: ({ table }) => (

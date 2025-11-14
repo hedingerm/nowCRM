@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { DonationSubscription } from "@nowcrm/services";
 import { ListPlus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -28,7 +29,6 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import type { DonationSubscription } from "@/lib/types/new_type/donation_subscription";
 
 // Updated schema
 const formSchema = z.object({
@@ -63,10 +63,10 @@ export default function EditSubscriptionTransactionDialog({
 		defaultValues: {
 			payment_method: subscription.payment_method || "",
 			currency: subscription.currency || "",
-			amount: subscription.amount || 0,
+			amount: subscription.ammount || 0,
 			payment_provider: subscription.payment_provider || "",
 			interval: subscription.interval || "",
-			subscription_token: subscription.subscripiton_token || "",
+			subscription_token: subscription.subscription_token || "",
 			raw_data: subscription.raw_data || "",
 		},
 	});
@@ -74,9 +74,12 @@ export default function EditSubscriptionTransactionDialog({
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		const { default: toast } = await import("react-hot-toast");
 		const { updateDonationSubscription } = await import(
-			"@/lib/actions/donationSubscriptions/updateDonationSubscription"
+			"@/lib/actions/donationSubscriptions/update-donation-subscription"
 		);
-		const res = await updateDonationSubscription(subscription.id, values);
+		const res = await updateDonationSubscription(
+			subscription.documentId,
+			values,
+		);
 		if (!res.success) {
 			toast.error(
 				`${t("Contacts.transactionSubscription.error")} ${res.errorMessage}`,

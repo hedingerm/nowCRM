@@ -1,12 +1,17 @@
+import type { DocumentId } from "@nowcrm/services";
+import { contactsService } from "@nowcrm/services/server";
+import { auth } from "@/auth";
 import ErrorMessage from "@/components/ErrorMessage";
-import contactsService from "@/lib/services/new_type/contacts.service";
 import { AddressCard } from "./components/addressInfo/AddressInfoCard";
 import { PersonalInfoCard } from "./components/personalInfo/personalInfocard";
 import { ProfessionalInfoCard } from "./components/professionalInfo/professionalInforCard";
 
-export default async function Home(props: { params: Promise<{ id: number }> }) {
+export default async function Home(props: {
+	params: Promise<{ id: DocumentId }>;
+}) {
 	const params = await props.params;
-	const contact = await contactsService.findOne(params.id, {
+	const session = await auth();
+	const contact = await contactsService.findOne(params.id, session?.jwt, {
 		populate: "*",
 	});
 

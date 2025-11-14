@@ -1,12 +1,16 @@
 // actions/deleteContactAction.ts
 "use server";
 
+import type { DocumentId } from "@nowcrm/services";
+import {
+	handleError,
+	mediaTypesService,
+	type StandardResponse,
+} from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import type { StandardResponse } from "@/lib/services/common/response.service";
-import mediaTypeService from "@/lib/services/new_type/media_type.service";
 
 export async function MassDeleteMediaTypes(
-	mediaTypes: number[],
+	mediaTypes: DocumentId[],
 ): Promise<StandardResponse<null>> {
 	const session = await auth();
 	if (!session) {
@@ -18,7 +22,7 @@ export async function MassDeleteMediaTypes(
 	}
 	try {
 		const unpublishPromises = mediaTypes.map((id) =>
-			mediaTypeService.unPublish(id),
+			mediaTypesService.delete(id, session?.jwt),
 		);
 		await Promise.all(unpublishPromises);
 		return {
@@ -27,11 +31,6 @@ export async function MassDeleteMediaTypes(
 			success: true,
 		};
 	} catch (error) {
-		console.error("Error deleting mediaTypes:", error);
-		return {
-			data: null,
-			status: 500,
-			success: false,
-		};
+		return handleError(error);
 	}
 }

@@ -1,4 +1,4 @@
-import type Asset from "./common/asset";
+import type { Asset } from "./common/asset";
 import type { BaseFormType, BaseType, DocumentId } from "./common/base_type";
 import type { Survey } from "./survey";
 export interface SurveyItem extends Omit<BaseType, "name"> {

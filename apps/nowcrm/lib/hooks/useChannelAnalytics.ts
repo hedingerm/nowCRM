@@ -1,11 +1,12 @@
 // lib/hooks/useChannelAnalytics.ts
+
+import type { DateRange, DocumentId } from "@nowcrm/services";
 import { format } from "date-fns";
 import { useCallback, useEffect, useState } from "react";
-import { getEventsByCompositionId } from "@/lib/actions/events/getEvents";
-import type { DateRange } from "@/lib/types/new_type/composition";
+import { getEventsByCompositionId } from "@/lib/actions/events/get-event";
 
 export function useChannelAnalytics(
-	compositionItemId: number,
+	compositionItemId: DocumentId,
 	channelName: string,
 ) {
 	const [selectedRange, setSelectedRange] = useState<DateRange>("total");

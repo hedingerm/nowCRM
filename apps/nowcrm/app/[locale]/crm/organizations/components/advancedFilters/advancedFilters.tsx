@@ -1,6 +1,11 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import {
+	NUMBER_OPERATORS,
+	type Operator,
+	TEXT_OPERATORS,
+} from "@nowcrm/services";
 import { Filter } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import * as React from "react";
@@ -34,17 +39,10 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-
 import {
 	parseFormIntoUrlFilters,
 	parseQueryToFilterValues,
-} from "@/lib/actions/filters/filtersSearch";
-
-import {
-	NUMBER_OPERATORS,
-	type Operator,
-	TEXT_OPERATORS,
-} from "@/lib/types/common/StrapiQuery";
+} from "@/lib/actions/filters/filters-search";
 
 const FIELD_TYPES: Record<string, "text" | "number"> = {
 	name: "text",
@@ -779,14 +777,14 @@ export default function AdvancedFilters() {
 										<AsyncSelectField
 											form={form}
 											name="organization_type"
-											serviceName="organizationTypeService"
+											serviceName="organizationTypesService"
 											label="Organization Type"
 											useFormClear={true}
 										/>
 										<AsyncSelectField
 											form={form}
 											name="industry"
-											serviceName="industryService"
+											serviceName="industriesService"
 											label="Industry"
 											useFormClear={true}
 										/>
@@ -802,14 +800,14 @@ export default function AdvancedFilters() {
 										<AsyncSelectField
 											form={form}
 											name="frequency"
-											serviceName="frequencyService"
+											serviceName="frequenciesService"
 											label="Frequency"
 											useFormClear={true}
 										/>
 										<AsyncSelectField
 											form={form}
 											name="media_type"
-											serviceName="mediaTypeService"
+											serviceName="mediaTypesService"
 											label="Media Type"
 											useFormClear={true}
 										/>
@@ -890,7 +888,7 @@ export default function AdvancedFilters() {
 										<AsyncSelectField
 											form={form}
 											name="sources"
-											serviceName="sourceService"
+											serviceName="sourcesService"
 											label="Sources"
 											useFormClear={true}
 										/>
