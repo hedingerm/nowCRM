@@ -2,6 +2,45 @@
 
 **nowCRM** - your open source CRM with multichannel outreach capabilities and efficient data management at scale.
 
+## Watch nowCRM in action
+
+[![nowCRM latest features 2025 - Watch Video](https://cdn.loom.com/sessions/thumbnails/a76ce91ff48c407a94d14866b585dd17-aa4045a8e01c9b24-full-play.gif#t=0.1)](https://www.loom.com/share/a76ce91ff48c407a94d14866b585dd17)
+
+## Screenshots
+
+### Core Features
+
+**Contact Management**
+![nowCRM contacts](.github/workflows/screenshots/nowCRM%20contacts.png)
+
+**Contact Details & Communication History**
+![nowCRM contact details](.github/workflows/screenshots/nowCRM%20contact%20details.png)
+
+**List Management**
+![nowCRM lists](.github/workflows/screenshots/nowCRM%20lists.png)
+
+### Marketing & Outreach
+
+**Journeys - Automated Marketing Workflows**
+![nowCRM journeys](.github/workflows/screenshots/nowCRM%20journeys.png)
+
+**Composer - Multi-Channel Outreach**
+![nowCRM composer](.github/workflows/screenshots/nowCRM%20composer%20-%20outreach%20via%20anychannel.png)
+
+**Dynamic Variables in Email Campaigns**
+![nowCRM dynamic variables](.github/workflows/screenshots/nowCRM%20dynamic%20variables%20in%20email.png)
+
+### Content & Campaign Tools
+
+**Form Builder**
+![nowCRM form builder](.github/workflows/screenshots/nowCRM%20form%20Builder.png)
+
+**Social Media Calendar**
+![nowCRM social media calendar](.github/workflows/screenshots/nowCRM%20social%20media%20calendar.png)
+
+**Contact Import**
+![nowCRM contact import](.github/workflows/screenshots/nowCRM%20contact%20import.png)
+
 ---
 
 # nowCRM Developer Guide
