@@ -7,7 +7,7 @@ export default {
 		data.subscribed_at = new Date().getTime()
         data.unsubscribe_token = uuidv4();
 
-        if(!data.consent || !data.consent.connect.length) {
+        if(!data.consent || !data.consent?.connect?.length) {
             const consent = await strapi.db.query('api::consent.consent').findOne({
                 select: ['id', 'version'],
                 where: { active: true },
