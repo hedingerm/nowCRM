@@ -1,4 +1,5 @@
 import {
+	checkDocumentId,
 	CommunicationChannel,
 	type DocumentId,
 	ServiceResponse,
@@ -26,7 +27,7 @@ type AdditionalData = {
 	event?: StringEvent;
 	attribute?: {
 		label?: string | null;
-		value?: boolean | string | number | null;
+		value?: boolean | string | DocumentId | null;
 		attribute_name?: string | null;
 	};
 	[k: string]: any;
@@ -59,7 +60,7 @@ function readWebhookAttributeValue(data: any, attribute?: string | null) {
 function eventMatches(
 	stepEvent: StringEvent | undefined | null,
 	data: any,
-	attribute?: { label?: string | null;value?: boolean | string | number | null; attribute_name?: string | null },
+	attribute?: { label?: string | null;value?: boolean | string | DocumentId | null; attribute_name?: string | null },
 ): boolean {
 	if (!stepEvent) return false;
 
@@ -84,11 +85,9 @@ function eventMatches(
 		return Boolean(rawActual) === boolExpected;
 	}
 
-	// --- Number (ID) handling ---
-	if (typeof expected === "number") {
-		const actualNum =
-			typeof rawActual === "object" && rawActual?.id ? rawActual.id : rawActual;
-		return Number(actualNum) === expected;
+	// --- documentId (ID) handling ---
+	if (expected && checkDocumentId(expected)) {
+		return rawActual?.documentId === expected;
 	}
 
 	// --- String fallback (including numeric-looking strings) ---
@@ -195,7 +194,7 @@ export async function processTriggerMessage(data: any) {
 		if (step.connections_from_this_step?.length) {
 			for (const connection_step of step.connections_from_this_step) {
 				logger.info(
-					`Creating job for -> connection step ${connection_step.id} with target ${connection_step.target_step.id}`,
+					`Creating job for -> connection step ${connection_step.documentId} with target ${connection_step.target_step.documentId}`,
 				);
 				await createJob({
 					contact: contactId,
