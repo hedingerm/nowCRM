@@ -45,7 +45,7 @@ jobs:
         working-directory: apps/journeys
         run: biome ci
 
-  quality-nowcrm-shared:
+  quality-nowcrm-services:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -55,7 +55,7 @@ jobs:
         with:
           version: 2.2.7
       - name: Run Biome
-        working-directory: libs/shared
+        working-directory: libs/services
         run: biome ci
 
   quality-nowcrm-dal:
