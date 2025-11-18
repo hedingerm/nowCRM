@@ -6,7 +6,6 @@ import { startMassActionsWorker } from "./common/mass-actions/mass-actions-worke
 import { startRelationsWorkers } from "./common/relation/contacts/relation-worker";
 import { startOrgRelationsWorkers } from "./common/relation/orgs/relation-worker-org";
 import { startContactsWorkers } from "./csv-import/contacts/contacts-worker";
-import { waitForStrapi } from "./csv-import/contacts/processors/helpers/check-strapi";
 import { startOrganizationsWorkers } from "./csv-import/orgs/organizations-worker";
 import { startDeletionWorker } from "./delete/deletion-worker";
 import { startExportWorker } from "./export/export-worker";

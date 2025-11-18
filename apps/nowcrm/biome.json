@@ -1,5 +1,5 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.0.6/schema.json",
+	"$schema": "https://biomejs.dev/schemas/2.2.7/schema.json",
 	"extends": ["../../biome.json"],
 	"files": {
 		"includes": [
@@ -8,17 +8,15 @@
 			"hooks/**",
 			"i18n/**",
 			"lib/**",
-			"!components/editor/**",
-			"!components/ui/**",
-			"!components/event-calendar/**"
+			"!components/editor",
+			"!components/ui",
+			"!components/event-calendar"
 		]
 	},
 	"linter": {
 		"enabled": true,
 		"rules": {
 			"nursery": {
-				"useUniqueElementIds": "off",
-				"noNestedComponentDefinitions": "warn",
 				"useSortedClasses": {
 					"level": "warn",
 					"fix": "safe",
@@ -43,7 +41,9 @@
 			"recommended": true,
 			"correctness": {
 				"useExhaustiveDependencies": "off",
-				"noUnusedImports": "off"
+				"noUnusedImports": "off",
+				"noNestedComponentDefinitions": "off",
+				"useUniqueElementIds": "off"
 			},
 			"performance": {
 				"noImgElement": "off"
@@ -51,7 +51,8 @@
 			"suspicious": {
 				"noExplicitAny": "off",
 				"noConfusingVoidType": "off",
-				"noArrayIndexKey": "off"
+				"noArrayIndexKey": "off",
+				"noUnknownAtRules": "warn"
 			},
 			"style": {
 				"noUselessElse": "off",

@@ -54,10 +54,10 @@ class JourneyStepsService extends BaseService<JourneyStep, Form_JourneyStep> {
 		try {
 			const data = await actionsService.find(token, {
 				filters: {
-					action_type: { name : { $eq: actionTypes.STEP_REACHED } },
+					action_type: { name: { $eq: actionTypes.STEP_REACHED } },
 					external_id: { $eq: stepId },
 					contact: { documentId: { $eq: contactId } },
-				}
+				},
 			});
 
 			if (!data.data)

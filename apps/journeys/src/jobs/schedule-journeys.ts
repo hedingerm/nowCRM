@@ -18,7 +18,9 @@ export async function scheduleJourneys() {
 			const processedDate = new Date(jobData.processedDate).getTime();
 
 			if (now - processedDate >= JOURNEY_TIME_CHECK_SEC * 1000) {
-				logger.info(`Journey ${journey.documentId} expired; scheduling new job.`);
+				logger.info(
+					`Journey ${journey.documentId} expired; scheduling new job.`,
+				);
 				await redis.del(redisKey);
 			} else {
 				logger.info(`Journey ${journey.documentId} job still valid; skipping.`);

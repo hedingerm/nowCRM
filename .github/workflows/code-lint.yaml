@@ -1,0 +1,72 @@
+name: Code Quality
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  quality-nowcrm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Biome
+        uses: biomejs/setup-biome@v2
+        with:
+          version: 2.2.7
+      - name: Run Biome
+        working-directory: apps/nowcrm
+        run: biome ci
+
+  quality-nowcrm-composer:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Biome
+        uses: biomejs/setup-biome@v2
+        with:
+          version: 2.2.7
+      - name: Run Biome
+        working-directory: apps/composer
+        run: biome ci
+
+  quality-nowcrm-journeys:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Biome
+        uses: biomejs/setup-biome@v2
+        with:
+          version: 2.2.7
+      - name: Run Biome
+        working-directory: apps/journeys
+        run: biome ci
+
+  quality-nowcrm-services:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Biome
+        uses: biomejs/setup-biome@v2
+        with:
+          version: 2.2.7
+      - name: Run Biome
+        working-directory: libs/services
+        run: biome ci
+
+  quality-nowcrm-dal:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Biome
+        uses: biomejs/setup-biome@v2
+        with:
+          version: 2.2.7
+      - name: Run Biome
+        working-directory: apps/dal
+        run: biome ci

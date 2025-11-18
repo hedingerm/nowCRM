@@ -59,7 +59,10 @@ export async function createContactActionAndScore(
 		);
 	}
 
-	const actionType = await actionTypeService.find(env.JOURNEYS_STRAPI_API_TOKEN,{filters: {name: { $eq: actionTypes.STEP_REACHED }}});
+	const actionType = await actionTypeService.find(
+		env.JOURNEYS_STRAPI_API_TOKEN,
+		{ filters: { name: { $eq: actionTypes.STEP_REACHED } } },
+	);
 	if (!actionType.data || actionType.data.length === 0) {
 		return ServiceResponse.failure(
 			"Error in finding action type. Probably strapi is down",

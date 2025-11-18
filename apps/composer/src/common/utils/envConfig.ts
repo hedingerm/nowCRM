@@ -29,7 +29,7 @@ export const env = cleanEnv(process.env, {
 
 	// used for email smtp connection
 	COMPOSER_SMTP_HOST: str({ devDefault: testOnly("") }),
-	COMPOSER_SMTP_PORT: port({ default: 18000,devDefault: testOnly(18000) }),
+	COMPOSER_SMTP_PORT: port({ default: 18000, devDefault: testOnly(18000) }),
 	COMPOSER_SMTP_USER: str({ devDefault: testOnly("") }),
 	COMPOSER_SMTP_PASS: str({ devDefault: testOnly("") }),
 	CUSTOMER_DOMAIN: str({ devDefault: testOnly("") }),

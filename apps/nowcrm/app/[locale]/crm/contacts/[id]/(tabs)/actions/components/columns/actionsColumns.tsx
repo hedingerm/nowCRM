@@ -136,7 +136,7 @@ export const columns: ColumnDef<Action>[] = [
 							>
 								<Tooltip>
 									<TooltipTrigger>
-										<CardContent className="px-3 py-1 text-sm ">
+										<CardContent className="px-3 py-1 text-sm">
 											<div>{score.name}</div>
 											<TooltipContent>
 												<p>{score.value}</p>

@@ -124,7 +124,7 @@ export const columns: ColumnDef<SurveyItem>[] = [
 			return (
 				<Link
 					href={`${RouteConfig.forms.single(row.original.survey.form_id)}`}
-					className=" font-medium"
+					className="font-medium"
 				>
 					{row.original.survey.form_id}
 				</Link>

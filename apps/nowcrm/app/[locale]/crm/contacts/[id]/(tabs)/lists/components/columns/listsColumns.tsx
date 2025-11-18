@@ -144,7 +144,7 @@ export const columns: ColumnDef<List>[] = [
 			return (
 				<Link
 					href={`${RouteConfig.lists.single(list.documentId)}`}
-					className=" font-medium"
+					className="font-medium"
 				>
 					{cell.renderValue() as any}
 				</Link>

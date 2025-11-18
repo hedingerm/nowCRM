@@ -63,7 +63,7 @@ export function CompositionOverview({
 					<CardTitle>{t.cardTitle}</CardTitle>
 					<CardDescription>{t.cardDescription}</CardDescription>
 				</CardHeader>
-				<CardContent className=" grid grid-cols-1 gap-6 md:grid-cols-2">
+				<CardContent className="grid grid-cols-1 gap-6 md:grid-cols-2">
 					<FormField
 						control={form.control}
 						name="subject"
