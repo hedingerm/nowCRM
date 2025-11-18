@@ -25,6 +25,7 @@ export async function getComposition(
 				composition_items: {
 					populate: "channel",
 				},
+				campaign: true,
 			},
 		});
 		return identity;
