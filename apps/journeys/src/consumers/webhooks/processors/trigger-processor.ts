@@ -27,6 +27,7 @@ type AdditionalData = {
 	attribute?: {
 		label?: string | null;
 		value?: boolean | string | number | null;
+		attribute_name?: string | null;
 	};
 	[k: string]: any;
 };
@@ -58,7 +59,7 @@ function readWebhookAttributeValue(data: any, attribute?: string | null) {
 function eventMatches(
 	stepEvent: StringEvent | undefined | null,
 	data: any,
-	attribute?: { label?: string | null; value?: any },
+	attribute?: { label?: string | null;value?: boolean | string | number | null; attribute_name?: string | null },
 ): boolean {
 	if (!stepEvent) return false;
 
@@ -70,7 +71,7 @@ function eventMatches(
 	if (!attribute?.label) return true;
 
 	const expected = attribute.value;
-	const rawActual = readWebhookAttributeValue(data, attribute.label);
+	const rawActual = readWebhookAttributeValue(data, attribute.attribute_name ?? attribute.label);
 
 	// --- Boolean handling ---
 	if (

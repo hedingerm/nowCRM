@@ -45,7 +45,12 @@ type TriggerEntity = "contact" | "action" | "survey" | "subscription";
 
 export type EventValue = "entry.create" | "entry.update" | "entry.unpublish";
 
-type LabeledValue = { label: string; value: string | boolean | number };
+// LabeledValue is used to store the attribute name and value for the trigger.
+type LabeledValue = {
+	label: string;
+	value: string | boolean | number;
+	attribute_name?: string;
+};
 
 type TriggerConfig = {
 	enabled?: boolean;
@@ -586,7 +591,7 @@ export function TriggerPanel({
 															presetOption={config.attribute as any}
 															serviceName="formsService"
 															onValueChange={(value) =>
-																handleConfigChange({ attribute: value })
+																handleConfigChange({ attribute: { attribute_name: 'form_id',...value} })
 															}
 															useFormClear={false}
 															label="survey"
