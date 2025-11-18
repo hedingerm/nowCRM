@@ -11,6 +11,8 @@ on:
 jobs:
   gitleaks:
     runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GT_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
