@@ -112,7 +112,7 @@ export function DataTableViewOptions<TData>({
 				<Button
 					asChild
 					size="sm"
-					className={cn("ml-2 h-8 ", hiddenCreate && "hidden")}
+					className={cn("ml-2 h-8", hiddenCreate && "hidden")}
 				>
 					<Link href={`/crm/${table_name}/create`}>
 						<GrAddCircle className="mr-2 h-4 w-4" />

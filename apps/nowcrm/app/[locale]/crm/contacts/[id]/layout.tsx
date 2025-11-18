@@ -38,9 +38,9 @@ export default async function Layout(props: LayoutProps) {
 		<div className="container mt-2">
 			<header className="flex justify-between">
 				<TypographyH4 className="flex items-center">
-					<FaUser className="mx-2 h-4 w-4 text-primary " />
+					<FaUser className="mx-2 h-4 w-4 text-primary" />
 					{`${contact.data.first_name} ${contact.data.last_name}`}
-					<FaEnvelope className="mx-2 h-4 w-4 text-primary " />
+					<FaEnvelope className="mx-2 h-4 w-4 text-primary" />
 					{contact.data.email}
 				</TypographyH4>
 				<DeleteButton

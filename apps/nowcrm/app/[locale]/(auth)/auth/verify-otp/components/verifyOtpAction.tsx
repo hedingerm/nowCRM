@@ -28,7 +28,7 @@ export async function verifyOtpAction(data: VerifyOtpData) {
 			);
 		}
 
-		const userId = Number.parseInt(pendingUserIdCookie.value);
+		const userId = Number.parseInt(pendingUserIdCookie.value, 10);
 
 		// Get user data to verify 2FA
 		const user = await usersService.getById(userId, env.CRM_STRAPI_API_TOKEN);

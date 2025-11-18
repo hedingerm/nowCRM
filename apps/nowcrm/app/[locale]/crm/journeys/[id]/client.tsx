@@ -113,10 +113,10 @@ export default function JourneyClient({
 				let timing: any, composition: any, channel: any, additional_data: any;
 				if (node.data.type === "channel") {
 					composition = node.data.config.composition?.value
-						? parseInt(node.data.config.composition.value)
+						? parseInt(node.data.config.composition.value, 10)
 						: undefined;
 					channel = node.data.config.channel?.value
-						? parseInt(node.data.config.channel.value)
+						? parseInt(node.data.config.channel.value, 10)
 						: undefined;
 				} else if (node.data.type === "trigger") {
 					additional_data = {

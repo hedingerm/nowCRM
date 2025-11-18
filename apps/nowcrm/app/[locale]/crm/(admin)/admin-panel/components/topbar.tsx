@@ -118,7 +118,7 @@ export default function TopBarAdmin() {
 							className={cn(
 								buttonVariants({ variant: "ghost" }),
 								isOrganizationActive
-									? "bg-muted text-foreground "
+									? "bg-muted text-foreground"
 									: "text-muted-foreground hover:text-muted-foreground",
 							)}
 						>

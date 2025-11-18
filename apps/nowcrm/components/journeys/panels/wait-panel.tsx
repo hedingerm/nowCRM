@@ -294,7 +294,7 @@ export function WaitPanel({
 														onChange={(e) =>
 															handleDelayChange(
 																"days",
-																parseInt(e.target.value) || 0,
+																parseInt(e.target.value, 10) || 0,
 															)
 														}
 														className="text-center"
@@ -312,7 +312,7 @@ export function WaitPanel({
 														onChange={(e) =>
 															handleDelayChange(
 																"hours",
-																parseInt(e.target.value) || 0,
+																parseInt(e.target.value, 10) || 0,
 															)
 														}
 														className="text-center"
@@ -330,7 +330,7 @@ export function WaitPanel({
 														onChange={(e) =>
 															handleDelayChange(
 																"minutes",
-																parseInt(e.target.value) || 0,
+																parseInt(e.target.value, 10) || 0,
 															)
 														}
 														className="text-center"

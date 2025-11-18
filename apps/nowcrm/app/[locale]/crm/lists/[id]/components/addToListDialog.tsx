@@ -69,7 +69,7 @@ export default function AddToListDialog() {
 				</DialogHeader>
 
 				<Form {...form}>
-					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 ">
+					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
 						<AsyncSelectField
 							form={form}
 							serviceName="contactsService"

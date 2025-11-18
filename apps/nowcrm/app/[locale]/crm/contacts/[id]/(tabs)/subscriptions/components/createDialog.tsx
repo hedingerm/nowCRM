@@ -79,7 +79,7 @@ export default function CreateListDialog() {
 				</DialogHeader>
 
 				<Form {...form}>
-					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 ">
+					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
 						<AsyncSelectField
 							name="channel"
 							label={t("channel")}

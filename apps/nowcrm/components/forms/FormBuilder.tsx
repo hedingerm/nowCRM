@@ -741,7 +741,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ formId }) => {
 					</div>
 
 					{/* Column 3: Settings & Customization */}
-					<div className="w-80 shrink-0 border-l bg-background ">
+					<div className="w-80 shrink-0 border-l bg-background">
 						<Tabs
 							value={rightTab}
 							onValueChange={(v) => setRightTab(v as typeof rightTab)}
