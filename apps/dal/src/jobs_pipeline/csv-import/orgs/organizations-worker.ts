@@ -9,7 +9,6 @@ import { env } from "@/common/utils/env-config";
 import { fetchJson } from "@/common/utils/fetch-json";
 import { orgRelationsQueue } from "@/jobs_pipeline/common/relation/orgs/relation-worker-org";
 import { relationCache } from "../contacts/processors/helpers/cache";
-import { waitForStrapi } from "../contacts/processors/helpers/check-strapi";
 import { cleanEmptyStringsToNull } from "./processors/organizations/clean";
 import { validateEnumerations } from "./processors/organizations/enumerations";
 import { getCachedOrganizationId } from "./processors/organizations/iscache";

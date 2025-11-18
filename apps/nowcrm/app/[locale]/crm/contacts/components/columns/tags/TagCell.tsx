@@ -52,10 +52,7 @@ export function TagsCell({
 	if (!tags.length) {
 		return (
 			<div className="flex items-center gap-2">
-				<AddTagDialog
-					currentTags={tags}
-					onTagAdded={handleTagAdded}
-				/>
+				<AddTagDialog currentTags={tags} onTagAdded={handleTagAdded} />
 				{adding && (
 					<Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
 				)}
@@ -93,10 +90,7 @@ export function TagsCell({
 					</Badge>
 				</div>
 			))}
-			<AddTagDialog
-				currentTags={tags}
-				onTagAdded={handleTagAdded}
-			/>
+			<AddTagDialog currentTags={tags} onTagAdded={handleTagAdded} />
 			{adding && (
 				<Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
 			)}

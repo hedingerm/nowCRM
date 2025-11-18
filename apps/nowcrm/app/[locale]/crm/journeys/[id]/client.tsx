@@ -292,7 +292,7 @@ export default function JourneyClient({
 			};
 
 			const result = await updateStep(node.data.stepId, stepData);
-			console.log(result)
+			console.log(result);
 			if (result.success) {
 				return true;
 			} else {
@@ -527,7 +527,7 @@ export default function JourneyClient({
 				// Format conditions for the backend
 				const formattedRules = conditions.map((condition) => ({
 					documentId: condition.documentId?.startsWith("condition-")
-						? (condition.documentId.replace("condition-", ""))
+						? condition.documentId.replace("condition-", "")
 						: undefined,
 					condition: condition.type,
 					ready_condition: condition.value

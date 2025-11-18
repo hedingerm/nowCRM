@@ -89,14 +89,11 @@ async function resolveRelationIds(
 		}
 
 		try {
-			const createResp = await fetch(
-				`${env.DAL_STRAPI_API_URL}${endpoint}`,
-				{
-					method: "POST",
-					headers,
-					body: JSON.stringify({ data: { name } }),
-				},
-			);
+			const createResp = await fetch(`${env.DAL_STRAPI_API_URL}${endpoint}`, {
+				method: "POST",
+				headers,
+				body: JSON.stringify({ data: { name } }),
+			});
 			if (!createResp.ok)
 				throw new Error(`Create failed: HTTP ${createResp.status}`);
 

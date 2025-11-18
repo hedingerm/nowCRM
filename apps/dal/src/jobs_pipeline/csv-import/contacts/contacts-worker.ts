@@ -15,7 +15,6 @@ import { validateIntegerFields } from "./processors/contacts/integer";
 import { getCachedContactId } from "./processors/contacts/iscache";
 import { sanitizeContacts } from "./processors/contacts/sanitize";
 import { relationCache } from "./processors/helpers/cache";
-import { waitForStrapi } from "./processors/helpers/check-strapi";
 
 function buildFullContactsArray(
 	originalContacts: any[],

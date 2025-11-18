@@ -1,6 +1,11 @@
 // actions/deleteContactAction.ts
 "use server";
-import { checkDocumentId, type Contact, type DocumentId, type StandardResponse } from "@nowcrm/services";
+import {
+	type Contact,
+	checkDocumentId,
+	type DocumentId,
+	type StandardResponse,
+} from "@nowcrm/services";
 import {
 	contactsService,
 	journeyStepsService,
@@ -156,7 +161,7 @@ export async function addToStepAction(
 			const totalPages = organization_contacts.meta.pagination.pageCount;
 
 			while (currentPage < totalPages) {
-				currentPage++;	
+				currentPage++;
 				const result = await contactsService.find(session.jwt, {
 					filters: { lists: { documentId: { $in: data.contacts } } },
 					populate: {

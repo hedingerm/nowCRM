@@ -34,7 +34,10 @@ export const createContactExtraFields = async (
 			});
 		} catch (error: any) {
 			if (error.name === "AbortError") {
-				console.error("Request timed out while creating extra field:", field.label);
+				console.error(
+					"Request timed out while creating extra field:",
+					field.label,
+				);
 			} else {
 				console.error("Failed to create extra field:", field.label);
 				console.error("Error:", error.message || error);

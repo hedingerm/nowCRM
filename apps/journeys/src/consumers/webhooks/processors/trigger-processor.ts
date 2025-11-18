@@ -1,6 +1,6 @@
 import {
-	checkDocumentId,
 	CommunicationChannel,
+	checkDocumentId,
 	type DocumentId,
 	ServiceResponse,
 } from "@nowcrm/services";
@@ -60,7 +60,11 @@ function readWebhookAttributeValue(data: any, attribute?: string | null) {
 function eventMatches(
 	stepEvent: StringEvent | undefined | null,
 	data: any,
-	attribute?: { label?: string | null;value?: boolean | string | DocumentId | null; attribute_name?: string | null },
+	attribute?: {
+		label?: string | null;
+		value?: boolean | string | DocumentId | null;
+		attribute_name?: string | null;
+	},
 ): boolean {
 	if (!stepEvent) return false;
 
@@ -72,7 +76,10 @@ function eventMatches(
 	if (!attribute?.label) return true;
 
 	const expected = attribute.value;
-	const rawActual = readWebhookAttributeValue(data, attribute.attribute_name ?? attribute.label);
+	const rawActual = readWebhookAttributeValue(
+		data,
+		attribute.attribute_name ?? attribute.label,
+	);
 
 	// --- Boolean handling ---
 	if (

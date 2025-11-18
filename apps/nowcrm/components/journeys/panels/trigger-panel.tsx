@@ -591,7 +591,12 @@ export function TriggerPanel({
 															presetOption={config.attribute as any}
 															serviceName="formsService"
 															onValueChange={(value) =>
-																handleConfigChange({ attribute: { attribute_name: 'form_id',...value} })
+																handleConfigChange({
+																	attribute: {
+																		attribute_name: "form_id",
+																		...value,
+																	},
+																})
 															}
 															useFormClear={false}
 															label="survey"

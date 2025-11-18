@@ -5,7 +5,6 @@ import { healthCheckRouter } from "@/api/healthCheck/healthCheckRouter";
 import errorHandler from "@/common/middleware/errorHandler";
 import rateLimiter from "@/common/middleware/rateLimiter";
 import requestLogger from "@/common/middleware/requestLogger";
-import { env } from "@/common/utils/envConfig";
 import "@/lib/workers/MassSendWorker";
 import "./lib/workers/SendWorker";
 import { serverAdapter } from "./views/BullBoard";

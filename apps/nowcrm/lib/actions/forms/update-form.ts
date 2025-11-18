@@ -36,7 +36,7 @@ export async function updateForm(
 
 		const currentForm = await getFormBySlugOrId(formId, false);
 		if (!currentForm.data || currentForm.data.length === 0) {
-			console.log(currentForm)
+			console.log(currentForm);
 			return {
 				data: null,
 				status: 404,

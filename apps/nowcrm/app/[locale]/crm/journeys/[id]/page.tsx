@@ -227,7 +227,10 @@ function convertJourneyToReactFlow(
 	}
 
 	journey.journey_steps.forEach((step: JourneyStep) => {
-		const position = positions.get(`step-${step.documentId}`) || { x: 100, y: 100 };
+		const position = positions.get(`step-${step.documentId}`) || {
+			x: 100,
+			y: 100,
+		};
 
 		let config: any = {};
 		switch (step.type) {
