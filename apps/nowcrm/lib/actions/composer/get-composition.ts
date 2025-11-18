@@ -22,7 +22,6 @@ export async function getComposition(
 	try {
 		const identity = await compositionsService.findOne(id, session.jwt, {
 			populate: {
-				"*": true,
 				composition_items: {
 					populate: "channel",
 				},
