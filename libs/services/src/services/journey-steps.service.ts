@@ -1,4 +1,5 @@
 import { API_ROUTES_STRAPI } from "../api-routes/api-routes-strapi";
+import { actionTypes } from "../client";
 import type { DocumentId } from "../types/common/base_type";
 import type { Form_JourneyStep, JourneyStep } from "../types/journey-step";
 import { actionsService } from "./action.service";
@@ -53,10 +54,10 @@ class JourneyStepsService extends BaseService<JourneyStep, Form_JourneyStep> {
 		try {
 			const data = await actionsService.find(token, {
 				filters: {
-					action_type: { $eq: "step_reached" },
-					external_id: { $eq: stepId.toString() },
+					action_type: { name : { $eq: actionTypes.STEP_REACHED } },
+					external_id: { $eq: stepId },
 					contact: { documentId: { $eq: contactId } },
-				} as any, //TODO: update action type on shared folder + journey-finished to const,
+				}
 			});
 
 			if (!data.data)
