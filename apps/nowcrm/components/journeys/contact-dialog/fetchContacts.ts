@@ -39,7 +39,7 @@ export async function fetchContactsAction({
 	// Add search across multiple fields
 	const combinedFilters = {
 		...filters,
-		journey_steps: { id: { $eq: step_id } },
+		journey_steps: { documentId: { $eq: step_id } },
 		$or: [
 			{ email: { $containsi: search } },
 			{ phone: { $containsi: search } },
@@ -47,7 +47,7 @@ export async function fetchContactsAction({
 			{ last_name: { $containsi: search } },
 			{ contact_types: { name: { $eq: search } } },
 			{ subscriptions: { channel: { name: { $eq: search } } } },
-			{ actions: { action_normalized_type: { name: { $eq: search } } } },
+			{ actions: { action_type: { name: { $eq: search } } } },
 		],
 	};
 
@@ -56,6 +56,7 @@ export async function fetchContactsAction({
 			combinedFilters,
 			page,
 			pageSize,
+			session?.jwt,
 			sortBy,
 			sortOrder,
 		);

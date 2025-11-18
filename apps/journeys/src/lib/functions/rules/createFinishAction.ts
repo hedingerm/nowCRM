@@ -2,17 +2,22 @@ import {
 	actionEntities,
 	actionSources,
 	actionTypes,
+	ServiceResponse,
 	type DocumentId,
 } from "@nowcrm/services";
-import { actionsService } from "@nowcrm/services/server";
+import { actionsService, actionTypeService } from "@nowcrm/services/server";
 import { env } from "@/common/utils/env-config";
 
 export async function createFinishActions(
 	contactId: DocumentId,
 	journeyId: DocumentId,
 ): Promise<void> {
+	const actionType = await actionTypeService.find(env.JOURNEYS_STRAPI_API_TOKEN,{filters: {name: { $eq: actionTypes.JOURNEY_FINISHED }}});
+	if (!actionType.data || actionType.data.length === 0) {
+		throw new Error("Error in finding action type. Probably strapi is down");
+	}
 	const data = {
-		action_type: actionTypes.JOURNEY_FINISHED,
+		action_type: actionType.data[0].documentId,
 		entity: actionEntities.JOURNEY,
 		value: "0",
 		external_id: journeyId.toString(),
