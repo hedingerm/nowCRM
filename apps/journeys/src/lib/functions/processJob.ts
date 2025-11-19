@@ -1,5 +1,5 @@
 import type { DocumentId } from "@nowcrm/services";
-import { compositionsService, contactsService } from "@nowcrm/services/server";
+import { composerService, compositionsService, contactsService } from "@nowcrm/services/server";
 import { env } from "@/common/utils/env-config";
 import { logger } from "@/server";
 import { getContact } from "./helpers/getContact";
@@ -41,13 +41,15 @@ export async function processJob(
 		).data;
 	}
 	if (check) {
-		await compositionsService.sendComposition(
-			env.JOURNEYS_STRAPI_API_TOKEN,
-			step.responseObject,
-			contact.responseObject,
-			"contact",
+		await composerService.sendComposition({
+			composition_id: step.responseObject.composition.documentId,
+			channels: [step.responseObject.channel?.name.toLowerCase()],
+			to: contact.responseObject.email,
+			type: "contact",
+			subject: step.responseObject.composition.subject || step.responseObject.composition.name,
+			from: step.responseObject.identity.name,
 			ignoreSubscription,
-		);
+		});
 	} else {
 		logger.warn(`contact: ${contactId} doesnt have active subscription`);
 		throw new Error(

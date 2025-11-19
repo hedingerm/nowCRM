@@ -2,7 +2,7 @@
 "use server";
 import type { StructuredResponseModel } from "@nowcrm/services";
 import {
-	compositionsService,
+	composerService,
 	handleError,
 	type StandardResponse,
 } from "@nowcrm/services/server";
@@ -20,7 +20,7 @@ export async function structuredResponse(
 		};
 	}
 	try {
-		const res = await compositionsService.requestStructuredResponse(values);
+		const res = await composerService.requestStructuredResponse(values);
 
 		return res;
 	} catch (error) {
