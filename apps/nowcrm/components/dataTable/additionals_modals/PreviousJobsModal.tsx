@@ -73,7 +73,7 @@ export default function PreviousJobsModal({
 		},
 		{
 			key: "channels",
-			header: "Сhannel",
+			header: "Channel",
 			render: (item: any) =>
 				Array.isArray(item.channels) ? item.channels.join(", ") : "—",
 		},

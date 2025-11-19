@@ -254,7 +254,7 @@ export default function EventTable({
 													<TableRow>
 														<TableHead className="w-3/4">Link</TableHead>
 														<TableHead className="w-1/4 text-center">
-															Сlick count
+															Click count
 														</TableHead>
 													</TableRow>
 												</TableHeader>
