@@ -1,4 +1,3 @@
-import type { DocumentId } from "@nowcrm/services";
 import { Worker } from "bullmq";
 import { env } from "@/common/utils/env-config";
 import { logger } from "@/logger";
@@ -47,17 +46,17 @@ const processCsvJob = async (job: any) => {
 	const batchSize = 1000;
 	const totalBatches = Math.ceil(records.length / batchSize);
 
-	let listId: DocumentId | undefined;
+	let listId: number | undefined;
 	if (type === "contacts") {
 		if (listMode === "existing" && existingListId) {
-			listId = existingListId as DocumentId;
-			logger.info(`Using existing contact list (documentId: ${listId})`);
+			listId = existingListId as number;
+			logger.info(`Using existing contact list (id: ${listId})`);
 		} else {
 			try {
 				const { list } = await createList({}, [], filename);
-				listId = list.data.documentId;
+				listId = list.id;
 				logger.info(
-					`Created empty contact list "${list.data.attributes.name}" (documentId: ${listId})`,
+					`Created empty contact list "${list.name}" (id: ${listId})`,
 				);
 			} catch (err: any) {
 				logger.error(`Failed to create empty contact list: ${err.message}`);
