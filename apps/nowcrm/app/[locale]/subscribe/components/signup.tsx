@@ -33,7 +33,7 @@ import {
 	getChannels,
 	getInterests,
 	upsertSubscription,
-} from "@/lib/actions/signup/dataFetch";
+} from "@/lib/actions/signup/data-fetch";
 
 // Types for channel and interest items
 interface ItemProps {

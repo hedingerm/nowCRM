@@ -7,8 +7,8 @@ import DataTable, {
 	useUrlState,
 } from "@/components/dataTable/data-table-contacts";
 import { transformFilters } from "@/lib/actions/filters/filters-search";
-import AdvancedFilters from "./components/advancedFilters/advancedFilters";
-import { columns } from "./components/columns/ContactColumns";
+import AdvancedFilters from "./components/advancedFilters/advanced-filters";
+import { columns } from "./components/columns/contact-columns";
 import createContactDialog from "./components/create-dialog";
 import MassActionsContacts from "./components/massActions/mass-actions";
 

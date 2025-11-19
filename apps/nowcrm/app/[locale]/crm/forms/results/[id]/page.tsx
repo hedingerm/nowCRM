@@ -4,9 +4,9 @@ import type { Session } from "next-auth";
 import { auth } from "@/auth";
 import DataTable from "@/components/dataTable/data-table";
 import ErrorMessage from "@/components/error-message";
-import { columns } from "../components/columns/surveyItemsColumns";
-import CreateFormItemDialog from "../components/createDialog";
-import MassActionsSurveyItems from "../components/massActions/massActions";
+import { columns } from "../components/columns/survey-item-columns";
+import CreateFormItemDialog from "../components/create-dialog";
+import MassActionsSurveyItems from "../components/massActions/mass-actions";
 
 export default async function Page(props: {
 	params: Promise<{ id: number }>;

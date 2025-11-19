@@ -6,8 +6,8 @@ import { getTranslations } from "next-intl/server";
 import { auth } from "@/auth";
 import DataTable from "@/components/dataTable/data-table";
 import ErrorMessage from "@/components/error-message";
-import { columns } from "./components/columns/eventColumns";
-import EventsMassActions from "./components/massActions/massActions";
+import { columns } from "./components/columns/event-columns";
+import EventsMassActions from "./components/massActions/mass-actions";
 
 export const metadata: Metadata = {
 	title: "Communication History",

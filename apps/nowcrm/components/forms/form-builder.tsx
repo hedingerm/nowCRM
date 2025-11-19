@@ -1511,7 +1511,7 @@ import type {
 	FormEntityItem,
 	FormEntityItemType,
 } from "@nowcrm/services";
-import { shareForm } from "@/app/[locale]/crm/forms/components/columns/shareForm";
+import { shareForm } from "@/app/[locale]/crm/forms/components/columns/share-form";
 import { RouteConfig } from "@/lib/config/routes-config";
 import EmbedDrawer from "../embed-drawer";
 import GETParamHelpModal from "./get-param-help";

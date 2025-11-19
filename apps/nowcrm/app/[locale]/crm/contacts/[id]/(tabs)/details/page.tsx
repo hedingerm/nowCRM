@@ -2,9 +2,9 @@ import type { DocumentId } from "@nowcrm/services";
 import { contactsService } from "@nowcrm/services/server";
 import { auth } from "@/auth";
 import ErrorMessage from "@/components/error-message";
-import { AddressCard } from "./components/addressInfo/AddressInfoCard";
-import { PersonalInfoCard } from "./components/personalInfo/personalInfocard";
-import { ProfessionalInfoCard } from "./components/professionalInfo/professionalInforCard";
+import { AddressCard } from "./components/addressInfo/adress-info";
+import { PersonalInfoCard } from "./components/personalInfo/personal-info";
+import { ProfessionalInfoCard } from "./components/professionalInfo/proff-information";
 
 export default async function Home(props: {
 	params: Promise<{ id: DocumentId }>;

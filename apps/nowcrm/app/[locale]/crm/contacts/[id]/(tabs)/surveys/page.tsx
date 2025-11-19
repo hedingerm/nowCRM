@@ -9,8 +9,8 @@ import ErrorMessage from "@/components/error-message";
 import {
 	columns,
 	renderSubComponent,
-} from "./components/columns/surveyColumns";
-import DonationTransactionMassActions from "./components/massActions/massActions";
+} from "./components/columns/survey-columns";
+import DonationTransactionMassActions from "./components/massActions/mass-actions";
 
 export const metadata: Metadata = {
 	title: "Contact surveys",

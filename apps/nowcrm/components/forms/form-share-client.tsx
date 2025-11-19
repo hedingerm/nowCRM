@@ -16,7 +16,7 @@ import type React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { shareForm } from "@/app/[locale]/crm/forms/components/columns/shareForm";
+import { shareForm } from "@/app/[locale]/crm/forms/components/columns/share-form";
 import { DateTimePicker } from "@/components/date-time-picker";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";

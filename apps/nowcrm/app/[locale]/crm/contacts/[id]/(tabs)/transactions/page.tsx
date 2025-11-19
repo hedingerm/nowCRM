@@ -6,9 +6,9 @@ import { getTranslations } from "next-intl/server";
 import { auth } from "@/auth";
 import DataTable from "@/components/dataTable/data-table";
 import ErrorMessage from "@/components/error-message";
-import { columns } from "./components/columns/transactionColumns";
-import createListDialog from "./components/createDialog";
-import DonationTransactionMassActions from "./components/massActions/massActions";
+import { columns } from "./components/columns/transaction-columns";
+import createListDialog from "./components/create-dialog";
+import DonationTransactionMassActions from "./components/massActions/mass-actions";
 export const metadata: Metadata = {
 	title: "Contact transactions",
 };

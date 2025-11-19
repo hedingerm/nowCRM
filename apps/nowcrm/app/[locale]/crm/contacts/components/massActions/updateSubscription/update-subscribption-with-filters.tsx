@@ -10,7 +10,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
-import AdvancedFilters from "../../advancedFilters/advancedFilters";
+import AdvancedFilters from "../../advancedFilters/advanced-filters";
 import {
 	UpdateSubscriptionForm,
 	type UpdateSubscriptionFormValues,

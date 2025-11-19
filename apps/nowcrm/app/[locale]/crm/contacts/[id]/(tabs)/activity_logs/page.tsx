@@ -8,9 +8,9 @@ import { auth } from "@/auth";
 import DataTable from "@/components/dataTable/data-table";
 import ErrorMessage from "@/components/error-message";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { columns } from "./components/columns/tasksColumns";
-import createActivityLogDialog from "./components/createDialog";
-import MassActionsActivityLogs from "./components/massActions/massActions";
+import { columns } from "./components/columns/tasks-columns";
+import createActivityLogDialog from "./components/create-dialog";
+import MassActionsActivityLogs from "./components/massActions/mass-actions";
 
 export const metadata: Metadata = {
 	title: "Logs",

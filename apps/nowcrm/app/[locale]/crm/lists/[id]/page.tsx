@@ -4,8 +4,8 @@ import type { Metadata } from "next";
 import type { Session } from "next-auth";
 import { auth } from "@/auth";
 import ErrorMessage from "@/components/error-message";
-import ContactsTableClient from "./ContactsTableClient";
-import EditableTitle from "./components/editTitle";
+import EditableTitle from "./components/edit-title";
+import ContactsTableClient from "./contacts-table-client";
 
 export const metadata: Metadata = {
 	title: "Contacts",

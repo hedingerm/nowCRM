@@ -14,10 +14,10 @@ import {
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type { Session } from "next-auth";
 import { useEffect, useState } from "react";
-import { columns } from "@/app/[locale]/crm/contacts/[id]/(tabs)/events/components/columns/eventColumns";
+import { columns } from "@/app/[locale]/crm/contacts/[id]/(tabs)/events/components/columns/event-columns";
 import EventsMassActions, {
 	setEventsForMassActions,
-} from "@/app/[locale]/crm/contacts/[id]/(tabs)/events/components/massActions/massActions";
+} from "@/app/[locale]/crm/contacts/[id]/(tabs)/events/components/massActions/mass-actions";
 import DataTable from "@/components/dataTable/data-table";
 import ErrorMessage from "@/components/error-message";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

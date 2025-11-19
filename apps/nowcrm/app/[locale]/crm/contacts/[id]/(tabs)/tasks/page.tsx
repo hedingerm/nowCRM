@@ -6,9 +6,9 @@ import { getTranslations } from "next-intl/server";
 import { auth } from "@/auth";
 import DataTable from "@/components/dataTable/data-table";
 import ErrorMessage from "@/components/error-message";
-import { columns } from "./components/columns/tasksColumns";
-import createListDialog from "./components/createDialog";
-import MassActionsTasks from "./components/massActions/massActions";
+import { columns } from "./components/columns/task-columns";
+import createListDialog from "./components/create-dialog";
+import MassActionsTasks from "./components/massActions/mass-actions";
 
 export const metadata: Metadata = {
 	title: "Contact tasks",
