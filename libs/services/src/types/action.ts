@@ -1,7 +1,7 @@
 import type { Action_ScoreItem } from "./action-score-item";
 import type { ActionType } from "./action-type";
 import type { Campaign } from "./campaign";
-import type { BaseFormType, BaseType, DocumentId } from "./common/base_type";
+import type { BaseFormType, BaseType, DocumentId } from "./common/base-type";
 import type { StrapiConnect } from "./common/StrapiQuery";
 import type { Contact } from "./contact";
 import type { JourneyStep } from "./journey-step";

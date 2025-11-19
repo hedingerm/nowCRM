@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { FaWordpress } from "react-icons/fa";
 import { z } from "zod";
-import Spinner from "@/components/spinner";
+import Spinner from "@/components/spinner-";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { DialogClose } from "@/components/ui/dialog";

@@ -1,4 +1,4 @@
-import type { BaseFormType, BaseType } from "./common/base_type";
+import type { BaseFormType, BaseType } from "./common/base-type";
 import type { StrapiConnect } from "./common/StrapiQuery";
 import type { SettingCredential } from "./setting-credential";
 

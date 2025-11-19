@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { SortableHeader } from "@/components/dataTable/sortable-header";
 import ErrorMessage from "@/components/error-message";
-import Spinner from "@/components/spinner";
+import Spinner from "@/components/spinner-";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {

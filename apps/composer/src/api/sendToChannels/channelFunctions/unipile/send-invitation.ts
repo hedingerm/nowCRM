@@ -13,7 +13,7 @@ import { StatusCodes } from "http-status-codes";
 import { UnipileClient } from "unipile-node-sdk";
 import { env } from "@/common/utils/env-config";
 import { logEvent } from "../utils/log-event";
-import { checkMentions, replaceMentionsInText } from "../utils/mentions";
+import { checkMentions, replaceMentionsInText } from "../utils/mention";
 
 export async function sendMessage(
 	contact: Contact,

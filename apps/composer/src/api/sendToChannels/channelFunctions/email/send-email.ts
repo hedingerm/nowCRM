@@ -11,7 +11,7 @@ import type * as SMTPTransport from "nodemailer/lib/smtp-transport";
 import { env } from "@/common/utils/env-config";
 import { inlineLinkAndUnderlineStyles } from "../utils/format-style";
 import { logEvent, logUnpublishedEvent } from "../utils/log-event";
-import { checkMentions, replaceMentionsInText } from "../utils/mentions";
+import { checkMentions, replaceMentionsInText } from "../utils/mention";
 
 export async function sendEmail(
 	email_from: string,

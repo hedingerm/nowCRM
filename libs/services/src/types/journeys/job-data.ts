@@ -1,6 +1,6 @@
 //here we handle only ids because we will fetch data from backend when starting the job
 
-import type { DocumentId } from "../common/base_type";
+import type { DocumentId } from "../common/base-type";
 import type { JourneyTiming } from "../journey-step";
 
 //it will help to handle all data always up to date and updated

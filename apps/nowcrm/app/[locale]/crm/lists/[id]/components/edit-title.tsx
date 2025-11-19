@@ -9,7 +9,7 @@ import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { z } from "zod";
-import { TypographyH3 } from "@/components/typography";
+import { TypographyH3 } from "@/components/typography-";
 import { Button } from "@/components/ui/button";
 import {
 	Form,

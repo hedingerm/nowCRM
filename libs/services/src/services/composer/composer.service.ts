@@ -4,8 +4,8 @@ import type {
 	StructuredResponseModel,
 	sendToChannelsData,
 } from "../../client";
-import { envServices } from "../../envConfig";
-import type { DocumentId } from "../../types/common/base_type";
+import { envServices } from "../../env-config";
+import type { DocumentId } from "../../types/common/base-type";
 
 import type { ServiceResponse } from "../../types/microservices/service-response";
 import { handleError, type StandardResponse } from "../common/response.service";

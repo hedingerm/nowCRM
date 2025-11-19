@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import Footer from "@/components/footer";
-import Spinner from "@/components/spinner";
+import Spinner from "@/components/spinner-";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 import NavigationLinks from "@/components/topbar/navigation-links";
 import UserMenu from "@/components/topbar/user-menu";

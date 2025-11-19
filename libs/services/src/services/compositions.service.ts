@@ -1,7 +1,7 @@
 import { API_ROUTES_COMPOSER } from "../api-routes/api-routes-composer";
 import { API_ROUTES_STRAPI } from "../api-routes/api-routes-strapi";
-import { envServices } from "../envConfig";
-import type { DocumentId } from "../types/common/base_type";
+import { envServices } from "../env-config";
+import type { DocumentId } from "../types/common/base-type";
 import type { createAdditionalComposition } from "../types/composer/create-additional-composition";
 import type { QuickWriteModel } from "../types/composer/quick-write-model";
 import type { ReferenceComposition } from "../types/composer/reference-composition";

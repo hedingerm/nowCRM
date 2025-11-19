@@ -1,4 +1,4 @@
-import type { DocumentId } from "./base_type";
+import type { DocumentId } from "./base-type";
 
 export type StandardKeys<T> = {
 	[K in keyof T]: T[K] extends object ? never : K; // Only keep keys that are not objects (primitive fields)

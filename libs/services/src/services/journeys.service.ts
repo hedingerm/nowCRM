@@ -1,6 +1,6 @@
 import { API_ROUTES_STRAPI } from "../api-routes/api-routes-strapi";
 import type { DocumentId } from "../client";
-import { envServices } from "../envConfig";
+import { envServices } from "../env-config";
 import type { Form_Journey, Journey } from "../types/journey";
 import BaseService from "./common/base.service";
 import {

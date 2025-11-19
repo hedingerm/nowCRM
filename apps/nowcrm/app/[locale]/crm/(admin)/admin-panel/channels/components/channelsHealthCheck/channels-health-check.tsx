@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/card";
 import { createSettingCredential } from "@/lib/actions/settings/credentials/create-settings-credentials";
 import { EmailHealthCheck } from "./channels/email";
-import { LinkedInHealthCheck } from "./channels/linkedin";
+import { LinkedInHealthCheck } from "./channels/linkedin-";
 import { SmsHealthCheck } from "./channels/sms";
 import { TelegramHealthCheck } from "./channels/telegram";
 import { TwitterHealthCheck } from "./channels/twitter";

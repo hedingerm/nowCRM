@@ -1,4 +1,4 @@
-import type { BaseFormType, BaseType, DocumentId } from "./common/base_type";
+import type { BaseFormType, BaseType, DocumentId } from "./common/base-type";
 import type { StrapiConnect } from "./common/StrapiQuery";
 import type { JourneyStepConnection } from "./journey-step-connection";
 import type { JourneyStepRuleScore } from "./journey-step-rule-score";

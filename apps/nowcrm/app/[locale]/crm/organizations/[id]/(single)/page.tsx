@@ -4,7 +4,7 @@ import type { Session } from "next-auth";
 import { auth } from "@/auth";
 import DataTable from "@/components/dataTable/data-table";
 import ErrorMessage from "@/components/error-message";
-import { TypographyH3 } from "@/components/typography";
+import { TypographyH3 } from "@/components/typography-";
 import { transformFilters } from "@/lib/actions/filters/filters-search";
 import AdvancedFilters from "../../../contacts/components/advancedFilters/advanced-filters";
 import addToListDialog from "../contacts/components/add-to-list-dialog";

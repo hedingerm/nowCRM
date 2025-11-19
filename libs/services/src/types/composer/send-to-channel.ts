@@ -1,4 +1,4 @@
-import type { DocumentId } from "../common/base_type";
+import type { DocumentId } from "../common/base-type";
 import type { UnipileIdentity } from "../unipie-identity";
 import type { composerSendType } from "./composer-send-types";
 

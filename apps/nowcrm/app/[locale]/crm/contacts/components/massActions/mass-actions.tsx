@@ -36,7 +36,7 @@ import { MassSendComposition } from "./sendComposition/mass-send-composition";
 import SendCompositionDialog from "./sendComposition/send-composition";
 import SendCompositionWithFiltersDialog from "./sendComposition/send-composition-with-filters";
 import { MassUpdateContactField } from "./update/mass-update-contact";
-import UpdateContactFieldDialog from "./update/update";
+import UpdateContactFieldDialog from "./update/update-";
 import UpdateContactFieldWithFiltersDialog from "./update/update-with-filters";
 import { MassUpdateSubscription } from "./updateSubscription/mass-update-subscription";
 import UpdateSubscriptionWithFiltersDialog from "./updateSubscription/update-subscribption-with-filters";

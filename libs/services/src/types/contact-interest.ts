@@ -1,4 +1,4 @@
-import type { BaseFormType, BaseType } from "./common/base_type";
+import type { BaseFormType, BaseType } from "./common/base-type";
 export interface ContactInterest extends BaseType {}
 
 export interface Form_ContactInterest extends BaseFormType {}
