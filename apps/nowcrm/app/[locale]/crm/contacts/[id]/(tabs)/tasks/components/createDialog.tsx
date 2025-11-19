@@ -76,7 +76,7 @@ export default function CreateTaskDialog() {
 			...values,
 			task_status: values.status as taskStatuses,
 			due_date: new Date(),
-			assigned_to: Number.parseInt(values.assigned_to.value),
+			assigned_to: Number.parseInt(values.assigned_to.value, 10),
 		};
 		const res = await createTask({
 			...updated_values,

@@ -182,7 +182,7 @@ export default function CreateCompositionCard({ channels }: Props) {
 	};
 
 	return (
-		<main className=" py-4">
+		<main className="py-4">
 			<Card className="mx-auto max-w-6xl p-6">
 				<div className="mx-auto mb-6 w-full max-w-5xl space-y-4">
 					<div className="grid grid-cols-4 text-center">

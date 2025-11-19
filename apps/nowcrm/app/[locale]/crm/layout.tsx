@@ -16,7 +16,7 @@ export default async function RootLayout({
 }) {
 	return (
 		<div className="flex">
-			<div className="flex min-h-screen grow flex-col ">
+			<div className="flex min-h-screen grow flex-col">
 				<div className="top-0 right-0 left-0 z-10 flex h-16 items-center justify-between border-b bg-card px-4 py-0">
 					{/* Left section: Logo and Navigation */}
 					<div className="flex h-full items-center gap-4">

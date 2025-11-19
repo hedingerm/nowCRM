@@ -23,24 +23,22 @@ const processEnv = {
 	S3_PUBLIC_URL_BASE: process.env.S3_PUBLIC_URL_BASE || "",
 };
 
-
-
 export const env = cleanEnv(processEnv, {
 	NODE_ENV: NotEmptyStringValidator({
-		default: ("production"),
+		default: "production",
 		choices: ["development", "production", "test"],
 	}),
-	CRM_BASE_URL: URLValidator({ default: ("http://localhost:3000") }),
+	CRM_BASE_URL: URLValidator({ default: "http://localhost:3000" }),
 	// this 2 env do not have prefix crm cause next-auth by default detect them like this
 	AUTH_SECRET: NotEmptyStringValidator({
-		default: ("pZsHmI9P7wcs03/BEuFtMxi9HbSuyCwyknuyx7BIads="),
+		default: "pZsHmI9P7wcs03/BEuFtMxi9HbSuyCwyknuyx7BIads=",
 	}),
 	AUTH_URL: URLValidator({
-		default: ("http://localhost:3000/api/auth"),
+		default: "http://localhost:3000/api/auth",
 	}),
 
-	AUTH_TRUST_HOST: bool({ default: (false) }),
-	TEST_RUN: bool({ default: (false) }),
+	AUTH_TRUST_HOST: bool({ default: false }),
+	TEST_RUN: bool({ default: false }),
 	CRM_STRAPI_API_TOKEN: NotEmptyStringValidator(),
 	CRM_TOTP_ENCRYPTION_KEY: NotEmptyStringValidator(),
 	NT_STACK_VERSION: NotEmptyStringValidator(),

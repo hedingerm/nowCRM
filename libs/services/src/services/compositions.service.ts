@@ -176,7 +176,7 @@ class CompositionsService extends BaseService<Composition, Form_Composition> {
 		}
 
 		const payload = {
-			composition_id: step.composition.id,
+			composition_id: step.composition.documentId,
 			channels: [step.channel?.name.toLowerCase()],
 			to: contact.email,
 			type: type,

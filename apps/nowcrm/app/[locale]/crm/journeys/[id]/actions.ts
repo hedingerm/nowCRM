@@ -196,7 +196,7 @@ export async function updateStep(
 		};
 	}
 	try {
-		console.log(stepId)
+		console.log(stepId);
 		return await journeyStepsService.update(stepId, data, session.jwt);
 	} catch (error) {
 		return handleError(error);

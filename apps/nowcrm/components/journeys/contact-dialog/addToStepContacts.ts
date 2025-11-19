@@ -1,6 +1,11 @@
 // actions/deleteContactAction.ts
 "use server";
-import type { Contact, DocumentId, StandardResponse } from "@nowcrm/services";
+import {
+	type Contact,
+	checkDocumentId,
+	type DocumentId,
+	type StandardResponse,
+} from "@nowcrm/services";
 import {
 	contactsService,
 	journeyStepsService,
@@ -67,10 +72,10 @@ export async function addToStepAction(
 		};
 	}
 	try {
-		if (data.type === "list" && typeof data.contacts === "number") {
+		if (data.type === "list" && checkDocumentId(data.contacts)) {
 			let allContacts: Contact[] = [];
 			const list_contacts = await contactsService.find(session.jwt, {
-				filters: { lists: { id: { $in: data.contacts } } },
+				filters: { lists: { documentId: { $in: data.contacts } } },
 				populate: {
 					subscriptions: {
 						populate: {
@@ -79,7 +84,6 @@ export async function addToStepAction(
 					},
 				},
 			});
-
 			if (!list_contacts.data || !list_contacts.meta) {
 				return {
 					data: null,
@@ -96,7 +100,7 @@ export async function addToStepAction(
 			while (currentPage < totalPages) {
 				currentPage++;
 				const result = await contactsService.find(session.jwt, {
-					filters: { lists: { id: { $in: data.contacts } } },
+					filters: { lists: { documentId: { $in: data.contacts } } },
 					populate: {
 						subscriptions: {
 							populate: {
@@ -130,10 +134,10 @@ export async function addToStepAction(
 			};
 		}
 
-		if (data.type === "organization" && typeof data.contacts === "number") {
+		if (data.type === "organization" && checkDocumentId(data.contacts)) {
 			let allContacts: Contact[] = [];
 			const organization_contacts = await contactsService.find(session.jwt, {
-				filters: { organization: { id: { $eq: data.contacts } } },
+				filters: { organization: { documentId: { $eq: data.contacts } } },
 				populate: {
 					subscriptions: {
 						populate: {
@@ -159,7 +163,7 @@ export async function addToStepAction(
 			while (currentPage < totalPages) {
 				currentPage++;
 				const result = await contactsService.find(session.jwt, {
-					filters: { lists: { id: { $in: data.contacts } } },
+					filters: { lists: { documentId: { $in: data.contacts } } },
 					populate: {
 						subscriptions: {
 							populate: {
@@ -193,7 +197,7 @@ export async function addToStepAction(
 			};
 		}
 
-		if (data.type === "contact" && typeof data.contacts === "number") {
+		if (data.type === "contact" && checkDocumentId(data.contacts)) {
 			await journeyStepsService.update(
 				data.step_id,
 				{

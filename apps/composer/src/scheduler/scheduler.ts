@@ -51,7 +51,7 @@ async function runTask(): Promise<void> {
 						$gte: now.toISOString(),
 						$lte: tenMinutesLater.toISOString(),
 					},
-					status: {
+					scheduled_status: {
 						$eq: "scheduled", // avoid refetching processed items
 					},
 				},

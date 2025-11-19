@@ -116,7 +116,7 @@ class ComposerService {
 	): Promise<StandardResponse<DocumentId>> {
 		try {
 			const base = envServices.COMPOSER_URL;
-			const url = new URL(API_ROUTES_COMPOSER.SEND_TO_CHANNELS, base);
+			const url = new URL(API_ROUTES_COMPOSER.CREATE_COMPOSITION, base);
 
 			const response = await fetch(url, {
 				method: "POST",
@@ -127,10 +127,10 @@ class ComposerService {
 				body: JSON.stringify(data),
 			});
 			const res_data = (await response.json()) as ServiceResponse<{
-				documentId: string;
+				id: DocumentId;
 			}>;
 			return {
-				data: res_data.responseObject.documentId,
+				data: res_data.responseObject.id,
 				status: 200,
 				success: true,
 			};

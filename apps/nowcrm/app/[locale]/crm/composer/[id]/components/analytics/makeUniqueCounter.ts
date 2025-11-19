@@ -68,7 +68,9 @@ export function makeCounter(rows: EventRow[], mode: Mode = "unique") {
 					union.add(`${norm}#${i}`);
 				}
 			} else {
-				by[norm]?.forEach((k) => union.add(k));
+				by[norm]?.forEach((k) => {
+					union.add(k);
+				});
 			}
 		}
 		return union.size;

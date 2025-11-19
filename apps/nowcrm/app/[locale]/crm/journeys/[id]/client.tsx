@@ -113,10 +113,10 @@ export default function JourneyClient({
 				let timing: any, composition: any, channel: any, additional_data: any;
 				if (node.data.type === "channel") {
 					composition = node.data.config.composition?.value
-						? parseInt(node.data.config.composition.value)
+						? parseInt(node.data.config.composition.value, 10)
 						: undefined;
 					channel = node.data.config.channel?.value
-						? parseInt(node.data.config.channel.value)
+						? parseInt(node.data.config.channel.value, 10)
 						: undefined;
 				} else if (node.data.type === "trigger") {
 					additional_data = {
@@ -292,7 +292,7 @@ export default function JourneyClient({
 			};
 
 			const result = await updateStep(node.data.stepId, stepData);
-			console.log(result)
+			console.log(result);
 			if (result.success) {
 				return true;
 			} else {
@@ -527,7 +527,7 @@ export default function JourneyClient({
 				// Format conditions for the backend
 				const formattedRules = conditions.map((condition) => ({
 					documentId: condition.documentId?.startsWith("condition-")
-						? (condition.documentId.replace("condition-", ""))
+						? condition.documentId.replace("condition-", "")
 						: undefined,
 					condition: condition.type,
 					ready_condition: condition.value

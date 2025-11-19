@@ -29,7 +29,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export interface addContactsToStepData {
 	step_id: DocumentId;
-	contacts?: DocumentId | DocumentId[] | string | string[];
+	contacts: DocumentId;
 	type?: "list" | "contact" | "organization";
 }
 
@@ -77,7 +77,6 @@ export default function AddContactsToStepDialog({
 		// Only process values from the active tab
 		let submissionData: addContactsToStepData | undefined;
 		let isValid = true;
-		console.log(values);
 		if (activeTab === "contact") {
 			if (!values.email) {
 				toast.error("Email is required");
@@ -118,7 +117,6 @@ export default function AddContactsToStepDialog({
 				setIsLoading(true);
 				const { addToStepAction } = await import("./addToStepContacts");
 				const answer = await addToStepAction(submissionData);
-
 				if (answer.success) {
 					toast.success("Contacts added");
 					setOpenDialog(false);

@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { Tag } from "@nowcrm/services";
 import { Loader2, Plus, TagIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -35,8 +36,6 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { createTag } from "@/lib/actions/tags/create-tag";
 import { fetchTags } from "@/lib/actions/tags/fetch-tags";
-import { Tag } from "@nowcrm/services";
-
 
 interface AddTagDialogProps {
 	currentTags: Tag[];
@@ -51,10 +50,7 @@ const createTagSchema = z.object({
 	color: z.string().regex(/^#([0-9A-F]{3}){1,2}$/i, "Invalid color"),
 });
 
-export function AddTagDialog({
-	currentTags,
-	onTagAdded,
-}: AddTagDialogProps) {
+export function AddTagDialog({ currentTags, onTagAdded }: AddTagDialogProps) {
 	const [open, setOpen] = useState(false);
 	const [tags, setTags] = useState<Tag[]>([]);
 	const [loading, setLoading] = useState(false);

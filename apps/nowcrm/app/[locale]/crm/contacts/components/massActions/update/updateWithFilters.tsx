@@ -147,12 +147,12 @@ export default function UpdateContactFieldWithFiltersStepsDialog({
 							<div
 								className={`flex h-10 w-10 items-center justify-center rounded-full border-2 transition-all duration-200${
 									isCompleted
-										? " border-green-500 bg-green-500 text-white"
+										? "border-green-500 bg-green-500 text-white"
 										: isActive
-											? " border-blue-500 bg-blue-500 text-white"
+											? "border-blue-500 bg-blue-500 text-white"
 											: isAccessible
-												? " cursor-pointer border-gray-300 text-gray-400 hover:border-gray-400"
-												: " border-gray-200 text-gray-300"
+												? "cursor-pointer border-gray-300 text-gray-400 hover:border-gray-400"
+												: "border-gray-200 text-gray-300"
 								}`}
 								onClick={() => {
 									if (step === STEPS.FILTERS) goBackToFilters();

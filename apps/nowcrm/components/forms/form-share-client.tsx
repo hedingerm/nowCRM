@@ -603,7 +603,7 @@ const FormShareClient: React.FC<FormShareClientProps> = ({
 			const response = await submitFormData(formSubmitData);
 
 			if (!response.success) {
-				console.log(response)
+				console.log(response);
 				setError(response.message || "Form submission failed");
 				return;
 			}

@@ -26,7 +26,6 @@ export default async function Page(props: {
 
 	const session = await auth();
 
-
 	const response = await contactsService.find(session?.jwt, {
 		fields: [
 			"id",

@@ -1,41 +1,32 @@
-FROM node:22-slim AS base
+FROM node:22-alpine AS common-deps
+
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
 
-# ----------------------
-# Build stage
-# ----------------------
-FROM base AS build
-WORKDIR /usr/src/app
+WORKDIR /app
 
-# Copy only dependency manifests first (for caching)
-COPY pnpm-lock.yaml ./
-COPY pnpm-workspace.yaml ./
-COPY package.json ./
-COPY tsconfig.base.json ./
-COPY tsconfig.json ./
+COPY ./package.json ./pnpm-lock.yaml ./pnpm-workspace.yaml ./tsconfig.base.json ./tsconfig.json /app/
 
-# Copy only required packages and apps
-COPY libs ./libs
-COPY apps/composer ./apps/composer
 
-# Install dependencies with cache mount
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+COPY ./apps/composer/package.json /app/apps/composer/
+COPY ./libs/services/package.json /app/libs/services/
 
-# Build the selected app
-RUN pnpm run -r build
+RUN pnpm install --frozen-lockfile
 
-# Deploy only composer app
+FROM common-deps AS builder
+
+COPY ./apps/composer /app/apps/composer
+COPY ./libs/services /app/libs/services
+
+RUN pnpm --filter @nowcrm/composer build
+
 RUN pnpm deploy --filter=composer --prod /prod/composer
 
-# ----------------------
-# Runtime stage
-# ----------------------
-FROM base AS runner
-COPY --from=build /prod/composer /prod/composer
+FROM common-deps AS runner
 
+COPY --from=builder /prod/composer /prod/composer
 WORKDIR /prod/composer
 
-EXPOSE 3010
+EXPOSE 3020
 CMD ["pnpm", "start"]

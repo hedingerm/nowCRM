@@ -110,7 +110,7 @@ export default function EditableTitle({ title }: EditableTitleProps) {
 								type="submit"
 								size="icon"
 								variant="ghost"
-								className="h-8 w-8 "
+								className="h-8 w-8"
 							>
 								<Check className="h-4 w-4" />
 								<span className="sr-only">Save</span>

@@ -1,0 +1,49 @@
+# Gitleaks configuration file
+# https://github.com/gitleaks/gitleaks
+
+title = "nowCRM Gitleaks Configuration"
+
+[extend]
+# Extend the default gitleaks config
+useDefault = true
+
+[allowlist]
+description = "Allowlist for false positives"
+
+# Allowlist specific paths
+paths = [
+  '''\.github/workflows/screenshots/.*''',  # Screenshot files
+  '''pnpm-lock\.yaml''',                   # Lock files contain hashes
+  '''\.env\.example''',                    # Example env files
+]
+
+# Allowlist specific regexes
+regexes = [
+  '''localhost:[0-9]{4}''',                # Localhost URLs
+  '''example\.com''',                      # Example domains
+  '''EXAMPLE_.*''',                        # Example variables
+  '''YOUR_.*_HERE''',                      # Placeholder values
+]
+
+# Allowlist specific commits (if you have known safe commits with secrets)
+# commits = [
+#   "commit-hash-here"
+# ]
+
+[[rules]]
+description = "Generic API Key"
+id = "generic-api-key"
+regex = '''(?i)(api_key|apikey|api-key)\s*[:=]\s*['"][a-z0-9]{20,}['"]'''
+tags = ["key", "API"]
+
+[[rules]]
+description = "AWS Access Key"
+id = "aws-access-key"
+regex = '''(A3T[A-Z0-9]|AKIA|AGPA|AIDA|AROA|AIPA|ANPA|ANVA|ASIA)[A-Z0-9]{16}'''
+tags = ["key", "AWS"]
+
+[[rules]]
+description = "Generic Secret"
+id = "generic-secret"
+regex = '''(?i)(secret|password|passwd|pwd)\s*[:=]\s*['"][^'"]{8,}['"]'''
+tags = ["secret", "password"]

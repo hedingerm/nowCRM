@@ -10,7 +10,7 @@ export async function scheduleJourneys() {
 	const now = Date.now();
 
 	for (const journey of activeJourneys) {
-		const redisKey = `journey-job:${journey.id}`;
+		const redisKey = `journey-job:${journey.documentId}`;
 		const jobStr = await redis.get(redisKey);
 
 		if (jobStr) {
@@ -18,16 +18,18 @@ export async function scheduleJourneys() {
 			const processedDate = new Date(jobData.processedDate).getTime();
 
 			if (now - processedDate >= JOURNEY_TIME_CHECK_SEC * 1000) {
-				logger.info(`Journey ${journey.id} expired; scheduling new job.`);
+				logger.info(
+					`Journey ${journey.documentId} expired; scheduling new job.`,
+				);
 				await redis.del(redisKey);
 			} else {
-				logger.info(`Journey ${journey.id} job still valid; skipping.`);
+				logger.info(`Journey ${journey.documentId} job still valid; skipping.`);
 				continue;
 			}
 		}
 
 		const newJob = {
-			journeyId: journey.id,
+			journeyId: journey.documentId,
 			jobKey: redisKey,
 			processedDate: new Date().toISOString(),
 		};

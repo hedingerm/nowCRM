@@ -9,6 +9,7 @@ import {
 import {
 	actionScoreItemsService,
 	actionsService,
+	actionTypeService,
 } from "@nowcrm/services/server";
 import { env } from "@/common/utils/env-config";
 
@@ -58,8 +59,19 @@ export async function createContactActionAndScore(
 		);
 	}
 
+	const actionType = await actionTypeService.find(
+		env.JOURNEYS_STRAPI_API_TOKEN,
+		{ filters: { name: { $eq: actionTypes.STEP_REACHED } } },
+	);
+	if (!actionType.data || actionType.data.length === 0) {
+		return ServiceResponse.failure(
+			"Error in finding action type. Probably strapi is down",
+			null,
+		);
+	}
+
 	const data = {
-		action_type: actionTypes.STEP_REACHED,
+		action_type: actionType.data[0].documentId,
 		entity: actionEntities.JOURNEY_STEPS,
 		value: totalScore?.toString() || "0",
 		external_id: stepId.toString(),
@@ -87,7 +99,6 @@ export async function createContactActionAndScore(
 		},
 		env.JOURNEYS_STRAPI_API_TOKEN,
 	);
-
 	if (!response.data || !response.success) {
 		return ServiceResponse.failure(
 			"Error in creating action. Probably strapi is down",

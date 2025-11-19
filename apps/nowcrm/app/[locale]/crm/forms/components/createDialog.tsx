@@ -60,7 +60,7 @@ export default function CreateListDialog() {
 		<Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
 			<DialogTrigger asChild>
 				<Button size="sm" className="ml-2 hidden h-10 lg:flex">
-					<GrAddCircle className=" h-4 w-4" />
+					<GrAddCircle className="h-4 w-4" />
 					Create
 				</Button>
 			</DialogTrigger>
@@ -70,7 +70,7 @@ export default function CreateListDialog() {
 				</DialogHeader>
 
 				<Form {...form}>
-					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 ">
+					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
 						<FormField
 							control={form.control}
 							name="name"
