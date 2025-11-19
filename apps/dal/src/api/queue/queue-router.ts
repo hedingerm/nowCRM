@@ -1,7 +1,7 @@
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
 import express, { type Router } from "express";
 import { z } from "zod";
-import { createApiResponse } from "@/api-docs/open-API-responseBuilders";
+import { createApiResponse } from "@/api-docs/open-api-response-builders";
 import { queueController } from "./queue-controller";
 import { QueueDataQuerySchema, QueueJobSchema } from "./queue-model";
 
