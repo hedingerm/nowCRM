@@ -60,7 +60,7 @@ interface LinkedInHealthCheckProps {
 }
 
 import { useMessages } from "next-intl";
-import regions from "@/lib/static/aws_regions.json";
+import regions from "@/lib/static/aws-regions.json";
 
 export function SmsHealthCheck({ sns_credential }: LinkedInHealthCheckProps) {
 	const t = useMessages().Admin.Channels;
