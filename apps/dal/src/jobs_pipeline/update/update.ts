@@ -10,10 +10,10 @@ const RELATIONAL_FIELDS = new Set([
 	"salutation",
 	"title",
 	"consent",
-	"contact_extra_fields",
+	// "contact_extra_fields",
 	"keywords",
 	"tags",
-	"ranks",
+	"contact_ranks",
 	"contact_types",
 	"sources",
 	"notes",
@@ -89,14 +89,11 @@ async function resolveRelationIds(
 		}
 
 		try {
-			const createResp = await fetch(
-				`${env.DAL_STRAPI_API_URL}${endpoint}`,
-				{
-					method: "POST",
-					headers,
-					body: JSON.stringify({ data: { name } }),
-				},
-			);
+			const createResp = await fetch(`${env.DAL_STRAPI_API_URL}${endpoint}`, {
+				method: "POST",
+				headers,
+				body: JSON.stringify({ data: { name } }),
+			});
 			if (!createResp.ok)
 				throw new Error(`Create failed: HTTP ${createResp.status}`);
 
@@ -256,14 +253,20 @@ export const updateEntityItems = async (
 				relCol: "department_id",
 			},
 			keywords: { table: "contacts_keywords_lnk", relCol: "keyword_id" },
-			"job-titles": {
+			"contact-job-titles": {
 				table: "contacts_job_title_lnk",
-				relCol: "job_title_id",
+				relCol: "contact_job_title_id",
 			},
 			tags: { table: "contacts_tags_lnk", relCol: "tag_id" },
 			sources: { table: "contacts_sources_lnk", relCol: "source_id" },
-			notes: { table: "contact_notes_contact_lnk", relCol: "contact_note_id" },
-			ranks: { table: "contacts_ranks_lnk", relCol: "rank_id" },
+			"contact-notes": {
+				table: "contact_notes_contact_lnk",
+				relCol: "contact_note_id",
+			},
+			"contact-ranks": {
+				table: "contacts_ranks_lnk",
+				relCol: "contact_rank_id",
+			},
 			"contact-types": {
 				table: "contacts_contact_types_lnk",
 				relCol: "contact_type_id",

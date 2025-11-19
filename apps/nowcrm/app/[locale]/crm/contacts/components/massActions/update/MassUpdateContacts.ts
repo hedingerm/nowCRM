@@ -25,11 +25,11 @@ const relationServiceMap = {
 	contact_interests: contactInterestsService,
 	department: departmentsService,
 	keywords: keywordsService,
-	job_title: contactJobTitlesService,
-	ranks: contactRanksService,
+	contact_job_title: contactJobTitlesService,
+	contact_ranks: contactRanksService,
 	contact_types: contactTypesService,
 	sources: sourcesService,
-	notes: contactNotesService,
+	contact_notes: contactNotesService,
 	industry: industriesService,
 	title: contactTitlesService,
 	salutation: contactSalutationsService,
@@ -56,28 +56,22 @@ export async function MassUpdateContactField(
 				.map((s) => s.trim())
 				.filter(Boolean);
 
-			const svc = (relationServiceMap as any)[field] as {
-				find: (
-					opts: any,
-					isPublic?: boolean,
-				) => Promise<StandardResponse<any[]>>;
-				create: (
-					payload: any,
-					isPublic?: boolean,
-				) => Promise<StandardResponse<any>>;
-			};
+			const svc = (relationServiceMap as any)[field];
 
 			const ids = await Promise.all(
 				names.map(async (name) => {
 					const found = await svc.find(
 						{ filters: { name: { $eq: name } } },
-						/* isPublic */ true,
+						session.jwt
 					);
 					if (found.success && found.data && found.data.length > 0) {
 						return found.data[0].id;
 					}
 
-					const created = await svc.create({ name }, /* isPublic */ true);
+					const created = await svc.create(
+						{ name },
+						session.jwt
+					);
 					if (!created.success || !created.data) {
 						throw new Error(
 							`Failed to create "${field}" relation with name "${name}"`,

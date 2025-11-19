@@ -15,7 +15,9 @@ const relationFields: Record<string, string> = {
 	contact_interests: "contact_interests",
 	contact_ranks: "contact_ranks",
 	keywords: "keywords",
-	job_titles: "job_titles",
+	job_titles: "contact_job_titles",
+	contact_salutations: "contact_salutations",
+	contact_titles: "contact_titles",
 	tags: "tags",
 	organizations: "organizations",
 	industries: "industries",
@@ -36,7 +38,7 @@ export async function loadRelationDictionaries() {
 
 				if (table === "contacts") {
 					res = await pool.query(
-						`SELECT id, email, phone, mobile_phone, linkedin_url FROM "${table}"`,
+						`SELECT id, document_id, email, phone, mobile_phone, linkedin_url FROM "${table}"`,
 					);
 				} else {
 					res = await pool.query(`SELECT id, name FROM "${table}"`);
@@ -101,7 +103,7 @@ export async function loadRelationDictionaries() {
 
 				if (table === "contacts") {
 					const contactListRes = await pool.query(
-						"SELECT contact_id, list_id FROM contacts_lists_links",
+						"SELECT contact_id, list_id FROM contacts_lists_lnk",
 					);
 
 					for (const row of contactListRes.rows) {

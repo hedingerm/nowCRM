@@ -244,7 +244,7 @@ export default factories.createCoreController('api::contact.contact', ({ strapi 
           action: "Anonymized",
           description: "Contact data anonymized by user.",
           users_permissions_user: ctx.state.user?.id || null,
-          contact: contactId,
+          contact: updatedContact.id,
           publishedAt: new Date().toISOString(),
         },
       });
@@ -264,7 +264,7 @@ export default factories.createCoreController('api::contact.contact', ({ strapi 
     }
   },
 
-  //сheck if it returns both identifiers
+  //check if it returns both identifiers
   async bulkCreate(ctx) {
     const { entity, data } = ctx.request.body;
     if (!Array.isArray(data) || data.length === 0) {

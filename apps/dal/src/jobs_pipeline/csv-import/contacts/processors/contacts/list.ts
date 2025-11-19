@@ -6,9 +6,6 @@ import { listContactsMap, relationCache } from "../helpers/cache";
 export const createList = async (
 	listData?: {
 		name?: string;
-		description?: string;
-		is_active?: boolean;
-		source_file?: string;
 		[key: string]: any;
 	},
 	contactIds: number[] = [],
@@ -25,9 +22,6 @@ export const createList = async (
 		const baseFilename = path.basename(filename, path.extname(filename));
 		finalListData = {
 			name: `${baseFilename}`,
-			description: `List of contacts imported from ${filename}`,
-			is_active: true,
-			source_file: filename,
 		};
 	} else {
 		const now = new Date();
@@ -41,14 +35,16 @@ export const createList = async (
 
 		finalListData = {
 			name: `Contact List - ${formattedDate}`,
-			description: `List of contacts created on ${formattedDate}`,
-			is_active: true,
 		};
 	}
 
 	try {
 		const listResponse = await fetchJson<{
-			data: { id: number; attributes: any };
+			data: {
+				documentId: null;
+				id: number;
+				attributes: any;
+			};
 		}>(`${env.DAL_STRAPI_API_URL}lists`, {
 			method: "POST",
 			headers: {
@@ -116,8 +112,11 @@ export const createList = async (
 		);
 
 		return {
-			list: createdList,
-			linkedContacts: linkedContacts.length > 0 ? linkedContacts : undefined,
+			list: {
+				id: createdList.data.id,
+				documentId: createdList.data.documentId ?? null,
+				...createdList.data.attributes,
+			},
 		};
 	} catch (error: any) {
 		console.error(
