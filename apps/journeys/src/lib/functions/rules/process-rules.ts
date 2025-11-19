@@ -4,7 +4,7 @@ import {
 	type JourneyStepRuleScore,
 	ServiceResponse,
 } from "@nowcrm/services";
-import { applyRule } from "./applyRule";
+import { applyRule } from "./apply-rule";
 
 export async function processRules(
 	rules: JourneyStepRule[],

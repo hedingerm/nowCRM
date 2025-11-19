@@ -1,10 +1,10 @@
 import type { DocumentId } from "@nowcrm/services";
-import { composerService, compositionsService, contactsService } from "@nowcrm/services/server";
+import { composerService, contactsService } from "@nowcrm/services/server";
 import { env } from "@/common/utils/env-config";
 import { logger } from "@/server";
-import { getContact } from "./helpers/getContact";
-import { getJourney } from "./helpers/getJourney";
-import { getJourneyStep } from "./helpers/getJourneyStep";
+import { getContact } from "./helpers/get-contact";
+import { getJourney } from "./helpers/get-jouney";
+import { getJourneyStep } from "./helpers/get-journey-step";
 
 export async function processJob(
 	contactId: DocumentId,
@@ -46,7 +46,9 @@ export async function processJob(
 			channels: [step.responseObject.channel?.name.toLowerCase()],
 			to: contact.responseObject.email,
 			type: "contact",
-			subject: step.responseObject.composition.subject || step.responseObject.composition.name,
+			subject:
+				step.responseObject.composition.subject ||
+				step.responseObject.composition.name,
 			from: step.responseObject.identity.name,
 			ignoreSubscription,
 		});

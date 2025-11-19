@@ -2,8 +2,8 @@ import type { DocumentId } from "@nowcrm/services";
 import { journeyStepsService } from "@nowcrm/services/server";
 import { env } from "@/common/utils/env-config";
 import { createJob } from "../../../jobs/create-job";
-import { getJourney } from "../../../lib/functions/helpers/getJourney";
-import { passContactToNextStep } from "../../../lib/functions/passContactToNextStep";
+import { getJourney } from "../../../lib/functions/helpers/get-jouney";
+import { passContactToNextStep } from "../../../lib/functions/pass-contact-to-next-step";
 import { logger } from "../../../logger";
 
 /**

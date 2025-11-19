@@ -1,8 +1,8 @@
 import type { DocumentId, JourneyTiming } from "@nowcrm/services";
-import { getJourney } from "../lib/functions/helpers/getJourney";
-import { getJourneyStep } from "../lib/functions/helpers/getJourneyStep";
-import { passContactToNextStep } from "../lib/functions/passContactToNextStep";
-import { createFinishActions } from "../lib/functions/rules/createFinishAction";
+import { getJourney } from "../lib/functions/helpers/get-jouney";
+import { getJourneyStep } from "../lib/functions/helpers/get-journey-step";
+import { passContactToNextStep } from "../lib/functions/pass-contact-to-next-step";
+import { createFinishActions } from "../lib/functions/rules/create-finish-action";
 import { logger } from "../logger";
 import { publishToJourneyQueue } from "../rabbitmq";
 

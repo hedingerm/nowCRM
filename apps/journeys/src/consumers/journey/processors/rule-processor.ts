@@ -1,9 +1,9 @@
 import type { ruleProcessorJobData } from "@nowcrm/services";
 import { CHECK_JOB_TTL_SEC } from "../../../config";
 import { closeJob, createNextJob } from "../../../jobs/create-job";
-import { getJourneyStep } from "../../../lib/functions/helpers/getJourneyStep";
-import { createContactActionAndScore } from "../../../lib/functions/rules/createActionAndScore";
-import { processStepConnections } from "../../../lib/functions/rules/processConnections";
+import { getJourneyStep } from "../../../lib/functions/helpers/get-journey-step";
+import { createContactActionAndScore } from "../../../lib/functions/rules/create-action-and-score";
+import { processStepConnections } from "../../../lib/functions/rules/process-connections";
 import { logger } from "../../../logger";
 import { publishToJourneyQueue } from "../../../rabbitmq";
 

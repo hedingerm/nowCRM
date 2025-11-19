@@ -5,7 +5,7 @@ import {
 	type JourneyStepRuleScore,
 	ServiceResponse,
 } from "@nowcrm/services";
-import { processRules } from "./processRules";
+import { processRules } from "./process-rules";
 
 export async function processStepConnections(
 	connections: JourneyStepConnection[], // they come here sorted by priority
