@@ -18,7 +18,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
-import ContactsPageClient from "../contact-dialog/contactsDataTable";
+import ContactsPageClient from "../contact-dialog/contacts-data-table";
 
 type DelayConfig = {
 	days: number;

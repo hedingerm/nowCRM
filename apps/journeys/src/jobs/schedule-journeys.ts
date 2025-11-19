@@ -1,5 +1,5 @@
 import { JOURNEY_TIME_CHECK_SEC } from "../config";
-import { fetchActiveJourneys } from "../lib/functions/helpers/fetchActiveJourneys";
+import { fetchActiveJourneys } from "../lib/functions/helpers/fetch-active-journeys";
 import { logger } from "../logger";
 import { publishToJourneyQueue } from "../rabbitmq";
 import { redis } from "../redis";

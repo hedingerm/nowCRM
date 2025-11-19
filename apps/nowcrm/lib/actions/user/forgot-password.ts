@@ -2,7 +2,7 @@
 "use server";
 
 import { usersService } from "@nowcrm/services/server";
-import { env } from "@/lib/config/envConfig";
+import { env } from "@/lib/config/env-config";
 
 type ForgotPasswordValues = {
 	email: string;

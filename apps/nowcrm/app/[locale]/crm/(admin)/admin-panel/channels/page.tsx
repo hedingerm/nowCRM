@@ -1,9 +1,9 @@
 import { settingsService } from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import ErrorMessage from "@/components/ErrorMessage";
-import { env } from "@/lib/config/envConfig";
-import { ChannelHealthCheck } from "./components/channelsHealthCheck/channelsHealthCheck";
-import { ChannelSettingsForm } from "./components/channelsSettings";
+import ErrorMessage from "@/components/error-message";
+import { env } from "@/lib/config/env-config";
+import { ChannelSettingsForm } from "./components/channel-settings";
+import { ChannelHealthCheck } from "./components/channelsHealthCheck/channels-health-check";
 
 export default async function Page() {
 	const session = await auth();

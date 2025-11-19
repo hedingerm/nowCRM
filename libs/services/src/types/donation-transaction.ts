@@ -1,4 +1,4 @@
-import type { BaseFormType, BaseType, DocumentId } from "./common/base_type";
+import type { BaseFormType, BaseType, DocumentId } from "./common/base-type";
 import type { Contact } from "./contact";
 export interface DonationTransaction extends Omit<BaseType, "name"> {
 	ammount: number;

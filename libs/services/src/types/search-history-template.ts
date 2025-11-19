@@ -1,4 +1,4 @@
-import type { BaseFormType, BaseType } from "./common/base_type";
+import type { BaseFormType, BaseType } from "./common/base-type";
 
 export type SearchHistoryType = "contacts" | "organizations";
 

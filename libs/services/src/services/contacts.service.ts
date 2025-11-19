@@ -1,7 +1,7 @@
 import { API_ROUTES_STRAPI } from "../api-routes/api-routes-strapi";
-import { envServices } from "../envConfig";
+import { envServices } from "../env-config";
 import type { CommunicationChannelKeys } from "../static/communication-channel";
-import type { DocumentId } from "../types/common/base_type";
+import type { DocumentId } from "../types/common/base-type";
 import type { Contact, Form_Contact } from "../types/contact";
 import BaseService from "./common/base.service";
 import {

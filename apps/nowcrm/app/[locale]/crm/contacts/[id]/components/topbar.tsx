@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { buttonVariants } from "@/components/ui/button";
-import { RouteConfig } from "@/lib/config/RoutesConfig";
+import { RouteConfig } from "@/lib/config/routes-config";
 import { cn } from "@/lib/utils";
 
 export default function TopBarContacts({ id }: { id: DocumentId }) {

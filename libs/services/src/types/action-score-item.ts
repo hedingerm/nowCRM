@@ -1,5 +1,5 @@
 import type { Action } from "./action";
-import type { BaseFormType, BaseType, DocumentId } from "./common/base_type";
+import type { BaseFormType, BaseType, DocumentId } from "./common/base-type";
 export interface Action_ScoreItem extends BaseType {
 	value: number;
 	action: Action;

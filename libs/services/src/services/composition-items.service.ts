@@ -1,5 +1,5 @@
 import { API_ROUTES_STRAPI } from "../api-routes/api-routes-strapi";
-import { envServices } from "../envConfig";
+import { envServices } from "../env-config";
 import type { Asset } from "../types/common/asset";
 import type {
 	CompositionItem,

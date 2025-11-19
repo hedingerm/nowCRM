@@ -31,7 +31,7 @@ import { toast } from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "../ui/alert";
 import { ConnectionPanel } from "./connection-panel/connection-panel";
-import { HeaderBar } from "./headerBar";
+import { HeaderBar } from "./header-bar";
 import { initialEdges, initialNodes } from "./initial-data";
 import { ChannelNode } from "./nodes/channel-node";
 import { SchedulerTriggerNode } from "./nodes/scheduler-trigger-node";

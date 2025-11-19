@@ -8,7 +8,7 @@ import {
 	settingsService,
 } from "@nowcrm/services/server";
 import { StatusCodes } from "http-status-codes";
-import { CALLBACK_URL_LINKEDIN, env } from "@/common/utils/envConfig";
+import { CALLBACK_URL_LINKEDIN, env } from "@/common/utils/env-config";
 
 export async function getLinkedInAccessToken(
 	auth_code: string,

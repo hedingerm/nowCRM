@@ -1,0 +1,474 @@
+"use client";
+
+import type { DocumentId } from "@nowcrm/services";
+import {
+	type ActionsConfig,
+	massActionsGenerator,
+} from "@/components/generativeComponents/mass-actions-generator";
+import { addContactsToOrganizationByFilters } from "@/lib/actions/filters/mass-actions/add-contact-to-organization";
+import { addContactsToListByFilters } from "@/lib/actions/filters/mass-actions/add-contacts-by-filter";
+import { addContactsToJourneyByFilters } from "@/lib/actions/filters/mass-actions/add-contacts-to-journey-by-filters";
+import { anonymizeContactsByFilters } from "@/lib/actions/filters/mass-actions/anonymize-contact-by-filter";
+import { deleteContactsByFilters } from "@/lib/actions/filters/mass-actions/delete-contacts-by-filters";
+import { exportContactsByFilters } from "@/lib/actions/filters/mass-actions/export-contacts-by-filter";
+import { sendCompositionByFilters } from "@/lib/actions/filters/mass-actions/send-composition-by-filters";
+import { updateContactsByFilters } from "@/lib/actions/filters/mass-actions/update-contacts-by-filters";
+import { UpdateSubscriptionContactsByFilters } from "@/lib/actions/filters/mass-actions/update-subscription-by-filters";
+import AddToJourneyDialog from "./addToJourney/add-to-journey";
+import AddToJourneyWithFiltersDialog from "./addToJourney/add-to-journey-with-filters";
+import { MassAddToJourney } from "./addToJourney/mass-add-to-journey";
+import AssignToListDialog from "./addToList/add-to-list";
+import AssignToListWithFiltersDialog from "./addToList/add-to-list-with-filters";
+import { MassAddToList } from "./addToList/mass-add-to-list";
+import AddToOrganizationWithFiltersDialog from "./addToOrganisation/add-to-org";
+import AddToOrganisationDialog from "./addToOrganisation/add-to-org-action";
+import { MassAddToOrganization } from "./addToOrganisation/mass-add-to-org";
+import AnonymizeContactsDialog from "./anonymize/anonymize-contact";
+import AnonymizeWithFiltersDialog from "./anonymize/anonymize-with-filters";
+import { MassAnonymizeContacts } from "./anonymize/mass-anonymize-contacts";
+import DeleteContactsDialog from "./delete/delete-contacts-dialog";
+import DeleteWithFiltersDialog from "./delete/delete-with-filters";
+import { MassDeleteContacts } from "./delete/mass-delete-contacts";
+import ExportContactsDialog from "./export/export-contacts-dialog";
+import ExportWithFiltersDialog from "./export/export-with-filters";
+import { MassExportContacts } from "./export/mass-export-contacts";
+import { MassSendComposition } from "./sendComposition/mass-send-composition";
+import SendCompositionDialog from "./sendComposition/send-composition";
+import SendCompositionWithFiltersDialog from "./sendComposition/send-composition-with-filters";
+import { MassUpdateContactField } from "./update/mass-update-contact";
+import UpdateContactFieldDialog from "./update/update";
+import UpdateContactFieldWithFiltersDialog from "./update/update-with-filters";
+import { MassUpdateSubscription } from "./updateSubscription/mass-update-subscription";
+import UpdateSubscriptionWithFiltersDialog from "./updateSubscription/update-subscribption-with-filters";
+import UpdateSubscriptionDialog from "./updateSubscription/update-subscription";
+
+// Define the actions configuration for contacts
+const actionsConfig: ActionsConfig = {
+	assignToList: {
+		requiresDialog: true,
+		selectedOptionNeeded: true,
+		label: "Add to list", // e.g., "Assign to List"
+		dialogContent: ({ selectedOption, setSelectedOption, selectedRows }) => (
+			<AssignToListDialog
+				selectedOption={selectedOption}
+				setSelectedOption={setSelectedOption}
+				selectedRows={selectedRows?.length}
+			/>
+		),
+		onAction: async (selectedRows: DocumentId[], selectedOption: any) => {
+			return await MassAddToList(selectedRows, selectedOption.value);
+		},
+
+		labelWithFilters: "Add to list with filters",
+		dialogContentWithFilters: ({
+			selectedOption,
+			setSelectedOption,
+			closeDialog,
+			setFilters,
+			setDialogNeeded,
+		}) => (
+			<AssignToListWithFiltersDialog
+				selectedOption={selectedOption}
+				setSelectedOption={setSelectedOption}
+				closeDialog={closeDialog}
+				setFilters={setFilters}
+				setDialogNeeded={setDialogNeeded}
+			/>
+		),
+		onFilterAction: async (
+			filters: Record<string, any>,
+			selectedOption: { value: DocumentId },
+		) => {
+			return await addContactsToListByFilters(filters, selectedOption.value);
+		},
+		dialogSubmitLabel: "Add to list",
+		successMessage:
+			"The process of adding contacts to the list has started. Depending on the number of selected contacts, it may take up to 10–15 minutes.",
+		errorMessage: "Error during adding contacts to list",
+	},
+	deleteContacts: {
+		label: "Delete", // e.g., "Delete"
+		requiresDialog: true,
+		dialogContent: ({ selectedRows }) => (
+			<DeleteContactsDialog selectedRows={selectedRows} />
+		),
+		onAction: async (selectedRows: DocumentId[]) => {
+			return await MassDeleteContacts(selectedRows);
+		},
+
+		labelWithFilters: "Delete with filters",
+		dialogContentWithFilters: ({
+			filters,
+			closeDialog,
+			setFilters,
+			onSubmit,
+		}) => (
+			<DeleteWithFiltersDialog
+				filters={filters}
+				closeDialog={closeDialog}
+				setFilters={setFilters}
+				onSubmit={onSubmit}
+			/>
+		),
+		onFilterActionWithoutApprove: async (filters: Record<string, any>) => {
+			return await deleteContactsByFilters({
+				entity: "contacts",
+				searchMask: filters,
+				mass_action: "delete",
+			});
+		},
+		dialogSubmitLabel: "Delete",
+		successMessage:
+			"The deletion process has started. Depending on the number of selected contacts, it may take up to 10–15 minutes.",
+		errorMessage: "Error during deleting contacts",
+	},
+	anonymize: {
+		label: "Anonymize",
+		requiresDialog: true,
+		dialogContent: ({ selectedRows }) => (
+			<AnonymizeContactsDialog selectedRows={selectedRows} />
+		),
+		onAction: async (selectedRows: DocumentId[]) => {
+			return await MassAnonymizeContacts(selectedRows);
+		},
+		labelWithFilters: "Anonymize with filters",
+		dialogContentWithFilters: ({
+			filters,
+			closeDialog,
+			setFilters,
+			onSubmit,
+		}) => (
+			<AnonymizeWithFiltersDialog
+				filters={filters}
+				closeDialog={closeDialog}
+				setFilters={setFilters}
+				onSubmit={onSubmit}
+			/>
+		),
+		onFilterActionWithoutApprove: async (filters: Record<string, any>) => {
+			return await anonymizeContactsByFilters({
+				entity: "contacts",
+				searchMask: filters,
+				mass_action: "anonymize",
+			});
+		},
+		dialogSubmitLabel: "Anonymize",
+		successMessage:
+			"The anonymization process has started. Depending on the number of selected contacts, it may take up to 10–15 minutes.",
+		errorMessage: "Error during anonymizing contacts",
+	},
+	export: {
+		label: "Export",
+		requiresDialog: true,
+		dialogContent: ({ selectedRows }) => (
+			<ExportContactsDialog selectedRows={selectedRows} />
+		),
+		onAction: async (selectedRows: DocumentId[]) => {
+			const res = await MassExportContacts(selectedRows);
+			if (!res.success || !res.data) throw new Error("Export failed");
+
+			const a = document.createElement("a");
+			a.href = `data:text/csv;charset=utf-8,\uFEFF${encodeURIComponent(res.data)}`;
+			a.download = `contacts_${new Date().toISOString()}.csv`;
+			a.click();
+
+			return { data: null, status: 200, success: true };
+		},
+
+		labelWithFilters: "Export with filters",
+		dialogContentWithFilters: ({
+			filters,
+			closeDialog,
+			setFilters,
+			onSubmit,
+		}) => (
+			<ExportWithFiltersDialog
+				filters={filters}
+				closeDialog={closeDialog}
+				setFilters={setFilters}
+				onSubmit={onSubmit}
+			/>
+		),
+		onFilterActionWithoutApprove: async (filters: Record<string, any>) => {
+			const res = await exportContactsByFilters({
+				entity: "contacts",
+				searchMask: filters,
+				mass_action: "export",
+			});
+
+			if (!res.success || !res.data)
+				throw new Error("Export with filters failed");
+
+			return { data: null, status: 200, success: true };
+		},
+
+		dialogSubmitLabel: "Export",
+		successMessage:
+			"The export process has started. Depending on the number of selected contacts, it may take up to 10–15 minutes.",
+		errorMessage: "Error during exporting contacts",
+	},
+	update: {
+		requiresDialog: true,
+		selectedOptionNeeded: true,
+		label: "Update",
+		dialogContent: ({ selectedOption, setSelectedOption }) => (
+			<UpdateContactFieldDialog
+				selectedOption={selectedOption}
+				setSelectedOption={setSelectedOption}
+			/>
+		),
+		onAction: async (selectedRows: DocumentId[], selectedOption: any) => {
+			return await MassUpdateContactField(
+				selectedRows,
+				selectedOption.field,
+				selectedOption.value,
+			);
+		},
+		labelWithFilters: "Update with filters",
+		dialogContentWithFilters: ({
+			selectedOption,
+			setSelectedOption,
+			closeDialog,
+			setFilters,
+			setDialogNeeded,
+		}) => (
+			<UpdateContactFieldWithFiltersDialog
+				selectedOption={selectedOption}
+				setSelectedOption={setSelectedOption}
+				closeDialog={closeDialog}
+				setFilters={setFilters}
+				setDialogNeeded={setDialogNeeded}
+			/>
+		),
+		onFilterAction: async (
+			filters: Record<string, any>,
+			selectedOption: { field: string; value: string },
+		) => {
+			return await updateContactsByFilters(filters, selectedOption);
+		},
+		dialogSubmitLabel: "Update",
+		successMessage:
+			"The update process has started. Depending on the number of selected contacts, it may take up to 10–15 minutes.",
+		errorMessage: "Error updating contact fields",
+	},
+	updateSubscription: {
+		requiresDialog: true,
+		selectedOptionNeeded: true,
+		label: "Update subscription", // e.g., "Assign to List"
+		dialogContent: ({ selectedOption, setSelectedOption }) => (
+			<UpdateSubscriptionDialog
+				selectedOption={selectedOption}
+				setSelectedOption={setSelectedOption}
+			/>
+		),
+		onAction: async (
+			selectedRows: DocumentId[],
+			selectedOption: { value: DocumentId; isSubscribed?: boolean },
+		) => {
+			const isSubscribe = !!selectedOption.isSubscribed;
+			return await MassUpdateSubscription(
+				selectedRows,
+				selectedOption.value,
+				isSubscribe,
+			);
+		},
+
+		labelWithFilters: "Update subscription with filters",
+		dialogContentWithFilters: ({
+			selectedOption,
+			setSelectedOption,
+			closeDialog,
+			setFilters,
+			setDialogNeeded,
+		}) => (
+			<UpdateSubscriptionWithFiltersDialog
+				selectedOption={selectedOption}
+				setSelectedOption={setSelectedOption}
+				closeDialog={closeDialog}
+				setFilters={setFilters}
+				setDialogNeeded={setDialogNeeded}
+			/>
+		),
+		onFilterAction: async (
+			filters: Record<string, any>,
+			selectedOption: { value: DocumentId; isSubscribed?: boolean },
+		) => {
+			const isSubscribe = !!selectedOption.isSubscribed;
+			return await UpdateSubscriptionContactsByFilters(
+				filters,
+				selectedOption.value,
+				isSubscribe,
+			);
+		},
+		dialogSubmitLabel: "Update subscription",
+		successMessage:
+			"The process of updating subscriptions to contacts has started. Depending on the number of selected contacts, it may take up to 10–15 minutes.",
+		errorMessage: "Error during updating contacts",
+	},
+	send: {
+		requiresDialog: true,
+		selectedOptionNeeded: true,
+		label: "Send composition",
+		dialogContent: ({ selectedOption, setSelectedOption }) => (
+			<SendCompositionDialog
+				selectedOption={selectedOption}
+				setSelectedOption={setSelectedOption}
+				defaultThrottle={null}
+			/>
+		),
+		onAction: async (selectedRows: DocumentId[], selectedOption: any) => {
+			const compositionId = selectedOption.composition_id;
+			const channels = selectedOption.channels;
+			const subject = selectedOption.subject;
+			const from = selectedOption.from;
+			const interval = selectedOption.interval;
+			const result = await MassSendComposition(
+				selectedRows,
+				compositionId,
+				channels,
+				subject,
+				from,
+				interval,
+			);
+			return result;
+		},
+
+		labelWithFilters: "Send composition with filters",
+		dialogContentWithFilters: ({
+			selectedOption,
+			setSelectedOption,
+			closeDialog,
+			setFilters,
+			setDialogNeeded,
+		}) => {
+			return (
+				<SendCompositionWithFiltersDialog
+					selectedOption={selectedOption}
+					setSelectedOption={setSelectedOption}
+					closeDialog={closeDialog}
+					setFilters={setFilters}
+					setDialogNeeded={setDialogNeeded}
+					defaultThrottle={null}
+				/>
+			);
+		},
+		onFilterAction: async (
+			filters: Record<string, any>,
+			selectedOption: {
+				composition_id: DocumentId;
+				channels: string[];
+				subject: string;
+				from: string;
+				interval: number;
+			},
+		) => {
+			const compositionId = selectedOption.composition_id;
+			const channels = selectedOption.channels;
+			const subject = selectedOption.subject;
+			const from = selectedOption.from;
+			const interval = selectedOption.interval;
+
+			return await sendCompositionByFilters(
+				filters,
+				compositionId,
+				channels,
+				subject,
+				from,
+				interval,
+			);
+		},
+		dialogSubmitLabel: "Send composition",
+		successMessage:
+			"The sending process has started. Depending on the number of selected contacts, it may take up to 10–15 minutes.",
+		errorMessage: "Error during sending composition",
+	},
+	addToJourney: {
+		label: "Add to journey step",
+		requiresDialog: true,
+		selectedOptionNeeded: true,
+		dialogContent: ({ selectedOption, setSelectedOption }) => (
+			<AddToJourneyDialog
+				selectedOption={selectedOption}
+				setSelectedOption={setSelectedOption}
+			/>
+		),
+		onAction: async (selectedRows: DocumentId[], selectedOption: any) => {
+			return await MassAddToJourney(selectedRows, selectedOption.value);
+		},
+		labelWithFilters: "Add to journey step with filters",
+		dialogContentWithFilters: ({
+			selectedOption,
+			setSelectedOption,
+			closeDialog,
+			setFilters,
+			setDialogNeeded,
+		}) => (
+			<AddToJourneyWithFiltersDialog
+				selectedOption={selectedOption}
+				setSelectedOption={setSelectedOption}
+				closeDialog={closeDialog}
+				setFilters={setFilters}
+				setDialogNeeded={setDialogNeeded}
+			/>
+		),
+		onFilterAction: async (
+			filters: Record<string, any>,
+			selectedOption: { value: DocumentId },
+		) => {
+			return await addContactsToJourneyByFilters(filters, selectedOption.value);
+		},
+		dialogSubmitLabel: "Add to journey step",
+		successMessage:
+			"The process of adding contacts to the journey step has started. Depending on the number of selected contacts, it may take up to 10–15 minutes.",
+		errorMessage: "Error during adding contacts to journey step",
+	},
+	addToOrganization: {
+		requiresDialog: true,
+		selectedOptionNeeded: true,
+		label: "Add to organization", // e.g., "Assign to List"
+		dialogContent: ({ selectedOption, setSelectedOption }) => (
+			<AddToOrganisationDialog
+				selectedOption={selectedOption}
+				setSelectedOption={setSelectedOption}
+			/>
+		),
+		onAction: async (selectedRows: DocumentId[], selectedOption: any) => {
+			return await MassAddToOrganization(selectedRows, selectedOption.value);
+		},
+
+		labelWithFilters: "Add to organization with filters",
+		dialogContentWithFilters: ({
+			selectedOption,
+			setSelectedOption,
+			closeDialog,
+			setFilters,
+			setDialogNeeded,
+		}) => (
+			<AddToOrganizationWithFiltersDialog
+				selectedOption={selectedOption}
+				setSelectedOption={setSelectedOption}
+				closeDialog={closeDialog}
+				setFilters={setFilters}
+				setDialogNeeded={setDialogNeeded}
+			/>
+		),
+		onFilterAction: async (
+			filters: Record<string, any>,
+			selectedOption: { value: DocumentId },
+		) => {
+			return await addContactsToOrganizationByFilters(
+				filters,
+				selectedOption.value,
+			);
+		},
+		dialogSubmitLabel: "Add to organization",
+		successMessage:
+			"The process of adding contacts to the organization has started. Depending on the number of selected contacts, it may take up to 10–15 minutes.",
+		errorMessage: "Error during adding contacts to organization",
+	},
+};
+
+// Create the MassActions component using the generator
+const ContactsMassActions = massActionsGenerator(actionsConfig);
+
+export default ContactsMassActions;

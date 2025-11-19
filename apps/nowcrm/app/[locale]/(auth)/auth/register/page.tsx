@@ -7,8 +7,8 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { RouteConfig } from "@/lib/config/RoutesConfig";
-import { RegisterUserForm } from "./components/registerForm";
+import { RouteConfig } from "@/lib/config/routes-config";
+import { RegisterUserForm } from "./components/register-form";
 
 export default async function RegisterPage() {
 	const t = await getTranslations("Auth");

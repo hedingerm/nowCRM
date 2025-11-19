@@ -8,8 +8,8 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 // contactsapp/app/[locale]/(auth)/auth/page.tsx
-import { RouteConfig } from "@/lib/config/RoutesConfig";
-import { LoginForm } from "./components/loginForm";
+import { RouteConfig } from "@/lib/config/routes-config";
+import { LoginForm } from "./components/login-form";
 
 export default async function AuthenticationPage() {
 	const t = await getTranslations("Auth");

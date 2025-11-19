@@ -3,7 +3,7 @@ import helmet from "helmet";
 import { pino } from "pino";
 import { healthCheckRouter } from "@/api/health-check/health-check-router";
 import { massActionsRouter } from "@/api/mass-actions/mass-actions-router";
-import { openAPIRouter } from "@/api-docs/open-API-router";
+import { openAPIRouter } from "@/api-docs/open-api-routers";
 import errorHandler from "@/common/middleware/error-handler";
 import rateLimiter from "@/common/middleware/rate-limiter";
 import requestLogger from "@/common/middleware/request-logger";

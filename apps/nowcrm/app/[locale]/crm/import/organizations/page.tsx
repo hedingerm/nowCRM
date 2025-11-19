@@ -42,9 +42,9 @@ import {
 } from "@/components/ui/tooltip";
 import { uploadCSV } from "@/lib/actions/import/upload-csv";
 import { cn } from "@/lib/utils";
-import { CSVMappingModal } from "./components/csvMappingModal";
-import PreviousImportsModal from "./components/PreviousImportsModal";
-import { contactCSVTemplateFields } from "./templates/contactCSVFields";
+import { CSVMappingModal } from "./components/csv-mapping-modal";
+import PreviousImportsModal from "./components/previous-import-modal";
+import { contactCSVTemplateFields } from "./templates/organization-csv-fields";
 
 interface CSVData {
 	headers: string[];

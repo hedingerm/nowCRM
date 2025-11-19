@@ -3,8 +3,8 @@
 import { usersService } from "@nowcrm/services/server";
 import { cookies } from "next/headers";
 import { signIn } from "@/auth";
-import { env } from "@/lib/config/envConfig";
-import { RouteConfig } from "@/lib/config/RoutesConfig";
+import { env } from "@/lib/config/env-config";
+import { RouteConfig } from "@/lib/config/routes-config";
 
 export async function onSubmitLogin(values: {
 	password: string;

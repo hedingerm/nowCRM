@@ -6,9 +6,9 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import SetTimezoneCookie from "@/hooks/set-timezone";
 import { routing } from "@/i18n/routing";
-import { env } from "@/lib/config/envConfig";
-import { ThemeProvider } from "../providers/ThemeProvider";
-import { ToastProvider } from "../providers/ToastProvder";
+import { env } from "@/lib/config/env-config";
+import { ThemeProvider } from "../providers/theme-provider";
+import { ToastProvider } from "../providers/toast-provider";
 
 export default async function RootLayout(props: {
 	children: React.ReactNode;

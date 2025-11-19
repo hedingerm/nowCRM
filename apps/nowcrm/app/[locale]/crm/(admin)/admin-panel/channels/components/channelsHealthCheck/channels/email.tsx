@@ -23,7 +23,7 @@ import {
 import {
 	getStatusColor,
 	getStatusIcon,
-} from "@/lib/static/healthCheckStatuses";
+} from "@/lib/static/health-check-statuses";
 
 interface EmailHealthCheckProps {
 	email_credential: Omit<SettingCredential, "setting">;

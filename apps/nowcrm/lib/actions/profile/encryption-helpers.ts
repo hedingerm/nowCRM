@@ -1,5 +1,5 @@
 import crypto from "node:crypto";
-import { env } from "@/lib/config/envConfig";
+import { env } from "@/lib/config/env-config";
 
 /**
  * Encrypts the TOTP secret for secure storage

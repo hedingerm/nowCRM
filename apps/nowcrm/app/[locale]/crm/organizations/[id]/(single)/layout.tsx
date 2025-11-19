@@ -4,11 +4,11 @@ import type { Metadata } from "next";
 import type React from "react";
 import { FaBuilding, FaEnvelope } from "react-icons/fa";
 import { auth } from "@/auth";
-import DeleteButton from "@/components/deleteButton/deleteButton";
-import ErrorMessage from "@/components/ErrorMessage";
-import { TypographyH4 } from "@/components/Typography";
+import DeleteButton from "@/components/deleteButton/delete-button";
+import ErrorMessage from "@/components/error-message";
+import { TypographyH4 } from "@/components/typography";
 import { Separator } from "@/components/ui/separator";
-import { RouteConfig } from "@/lib/config/RoutesConfig";
+import { RouteConfig } from "@/lib/config/routes-config";
 
 interface LayoutProps {
 	children: React.ReactNode;

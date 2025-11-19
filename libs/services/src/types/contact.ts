@@ -1,6 +1,6 @@
 import type { LanguageKeys } from "../static/languages";
 import type { Action } from "./action";
-import type { BaseFormType, BaseType, DocumentId } from "./common/base_type";
+import type { BaseFormType, BaseType, DocumentId } from "./common/base-type";
 import type { StrapiConnect } from "./common/StrapiQuery";
 import type { Consent } from "./consent";
 import type { ContactDocument } from "./contact-document";

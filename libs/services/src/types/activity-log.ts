@@ -1,4 +1,4 @@
-import type { BaseFormType, BaseType, DocumentId } from "./common/base_type";
+import type { BaseFormType, BaseType, DocumentId } from "./common/base-type";
 import type { Contact } from "./contact";
 import type { User } from "./user";
 export interface ActivityLog extends Omit<BaseType, "name"> {

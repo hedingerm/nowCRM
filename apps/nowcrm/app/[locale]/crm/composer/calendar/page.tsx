@@ -1,5 +1,5 @@
+import MyEventCalendar from "@/components/composer-calendar";
 import type { CalendarEventType } from "@/components/event-calendar/types";
-import MyEventCalendar from "@/components/MyEventCalendar";
 import { fetchScheduledCompositions } from "@/lib/actions/scheduled_composition/get-scheduled-composition";
 import { mapToCalendarEvents } from "@/lib/utils";
 

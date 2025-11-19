@@ -7,7 +7,7 @@ import { useMessages } from "next-intl";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { RouteConfig } from "@/lib/config/RoutesConfig";
+import { RouteConfig } from "@/lib/config/routes-config";
 
 interface ProcessingScreenProps {
 	onSubmit: () => Promise<string | null>;

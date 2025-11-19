@@ -53,14 +53,14 @@ import { updateSettingCredentials } from "@/lib/actions/settings/credentials/upd
 import {
 	getStatusColor,
 	getStatusIcon,
-} from "@/lib/static/healthCheckStatuses";
+} from "@/lib/static/health-check-statuses";
 
 interface LinkedInHealthCheckProps {
 	sns_credential: Omit<SettingCredential, "setting">;
 }
 
 import { useMessages } from "next-intl";
-import regions from "@/lib/static/aws_regions.json";
+import regions from "@/lib/static/aws-regions.json";
 
 export function SmsHealthCheck({ sns_credential }: LinkedInHealthCheckProps) {
 	const t = useMessages().Admin.Channels;

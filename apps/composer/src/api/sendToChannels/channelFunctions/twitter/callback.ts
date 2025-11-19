@@ -9,7 +9,7 @@ import {
 } from "@nowcrm/services/server";
 import { StatusCodes } from "http-status-codes";
 import { TwitterApi } from "twitter-api-v2";
-import { CALLBACK_URL_TWITTER, env } from "@/common/utils/envConfig";
+import { CALLBACK_URL_TWITTER, env } from "@/common/utils/env-config";
 
 export async function refreshToken(
 	twitter_credential: Omit<SettingCredential, "setting">,

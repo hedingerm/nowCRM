@@ -4,7 +4,7 @@
 
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import BottomNavigationLinks from "@/components/bottomBar/bottomNavigationLinks";
+import BottomNavigationLinks from "@/components/bottomBar/bottom-navigation-links";
 import FormShareClient from "@/components/forms/form-share-client";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";

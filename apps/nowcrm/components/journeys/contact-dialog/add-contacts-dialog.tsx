@@ -21,8 +21,8 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import * as z from "zod";
-import { AsyncSelectField } from "@/components/autoComplete/asyncSelectField";
-import Spinner from "@/components/Spinner";
+import { AsyncSelectField } from "@/components/autoComplete/async-select-field";
+import Spinner from "@/components/spinner";
 import { DialogClose } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -115,7 +115,7 @@ export default function AddContactsToStepDialog({
 		if (isValid && submissionData) {
 			try {
 				setIsLoading(true);
-				const { addToStepAction } = await import("./addToStepContacts");
+				const { addToStepAction } = await import("./add-to-step-contacts");
 				const answer = await addToStepAction(submissionData);
 				if (answer.success) {
 					toast.success("Contacts added");

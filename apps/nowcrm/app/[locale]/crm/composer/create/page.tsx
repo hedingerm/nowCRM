@@ -1,8 +1,8 @@
 import { channelsService } from "@nowcrm/services/server";
 import type { Metadata } from "next";
 import { auth } from "@/auth";
-import ErrorMessage from "@/components/ErrorMessage";
-import CreateCompositionCard from "./components/CreateCard";
+import ErrorMessage from "@/components/error-message";
+import CreateCompositionCard from "./components/create-card";
 
 export const metadata: Metadata = {
 	title: "Create Composition",

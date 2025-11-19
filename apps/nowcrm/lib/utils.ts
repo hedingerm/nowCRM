@@ -4,7 +4,7 @@ import type {
 } from "@nowcrm/services";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import type { Option } from "@/components/autoComplete/autoComplete";
+import type { Option } from "@/components/autoComplete/auto-complete";
 import type { CalendarEventType } from "@/components/event-calendar/types";
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));

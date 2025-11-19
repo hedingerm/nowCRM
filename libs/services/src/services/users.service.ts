@@ -1,5 +1,5 @@
 import { API_ROUTES_STRAPI } from "../api-routes/api-routes-strapi";
-import { envServices } from "../envConfig";
+import { envServices } from "../env-config";
 import { handleError, handleResponse, type StandardResponse } from "../server";
 import type { Asset } from "../types/common/asset";
 import type { Form_User, strapi_user, User } from "../types/user";

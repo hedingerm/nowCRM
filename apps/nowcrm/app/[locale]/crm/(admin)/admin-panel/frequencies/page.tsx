@@ -3,11 +3,11 @@ import { frequenciesService } from "@nowcrm/services/server";
 import type { Session } from "next-auth";
 import { getTranslations } from "next-intl/server";
 import { auth } from "@/auth";
-import DataTable from "@/components/dataTable/dataTable";
-import ErrorMessage from "@/components/ErrorMessage";
-import { columns } from "./components/columns/frequenciesColumns";
-import CreateFrequencyDialog from "./components/createDialog";
-import FrequencyMassActions from "./components/massActions/massActions";
+import DataTable from "@/components/dataTable/data-table";
+import ErrorMessage from "@/components/error-message";
+import { columns } from "./components/columns/frequency-columns";
+import CreateFrequencyDialog from "./components/create-dialog";
+import FrequencyMassActions from "./components/massActions/mass-actions";
 
 export default async function Page(props: {
 	searchParams: Promise<PaginationParams>;

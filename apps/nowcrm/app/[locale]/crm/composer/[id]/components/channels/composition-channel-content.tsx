@@ -29,7 +29,7 @@ import type { UseFormReturn } from "react-hook-form";
 import toast from "react-hot-toast";
 import type { Editor as EditorType } from "reactjs-tiptap-editor";
 import Editor from "@/components/editor/Editor";
-import EventTable from "@/components/events/EventTable";
+import EventTable from "@/components/events/event-table";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -56,9 +56,9 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import SendToChannelButton from "../../../../../../../components/send-to-channels/sendToChannel";
+import SendToChannelButton from "../../../../../../../components/send-to-channels/send-to-channel";
 import { FileUploadHandler } from "../../../../../../../components/uploaders/file-uploader-handler";
-import { AnalyticsSection } from "../analytics/EmailAnalyticsSection";
+import { AnalyticsSection } from "../analytics/email-analytics";
 import { channelAnalyticsConfigs } from "../analytics/metrics";
 import { ResultPreview } from "../result-preview";
 

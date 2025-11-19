@@ -17,7 +17,7 @@ import {
 import type React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Edge, Node } from "reactflow";
-import { AsyncSelect } from "@/components/autoComplete/AsyncSelect";
+import { AsyncSelect } from "@/components/autoComplete/async-select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

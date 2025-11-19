@@ -2,16 +2,16 @@ import { organizationsService } from "@nowcrm/services/server";
 import type { Metadata } from "next";
 import type { Session } from "next-auth";
 import { auth } from "@/auth";
-import DataTable from "@/components/dataTable/dataTable";
-import ErrorMessage from "@/components/ErrorMessage";
+import DataTable from "@/components/dataTable/data-table";
+import ErrorMessage from "@/components/error-message";
 import {
 	parseQueryToFilterValues,
 	transformFilters,
 } from "@/lib/actions/filters/filters-search";
-import AdvancedFilters from "./components/advancedFilters/advancedFilters";
-import { columns } from "./components/columns/organizationColumns";
-import createOrganizationDialog from "./components/createDialog";
-import MassActionsContacts from "./components/massActions/MassActions";
+import AdvancedFilters from "./components/advancedFilters/advanced-filters";
+import { columns } from "./components/columns/org-columns";
+import createOrganizationDialog from "./components/create-dialog";
+import MassActionsContacts from "./components/massActions/mass-actions";
 export const metadata: Metadata = {
 	title: "Organizations",
 };
