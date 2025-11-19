@@ -11,7 +11,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { RouteConfig } from "@/lib/config/RoutesConfig";
+import { RouteConfig } from "@/lib/config/routes-config";
 
 export async function generateMetadata(): Promise<Metadata> {
 	const t = await getTranslations("Auth.Layout");

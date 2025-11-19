@@ -14,8 +14,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Switch } from "@/components/ui/switch";
 import { updateSubscription } from "@/lib/actions/subscriptions/update-subscription";
-import { RouteConfig } from "@/lib/config/RoutesConfig";
-import { formatDateTimeStrapi } from "@/lib/strapiDate";
+import { RouteConfig } from "@/lib/config/routes-config";
+import { formatDateTimeStrapi } from "@/lib/strapi-date";
 
 const DeleteAction: React.FC<{ subscription: Subscription }> = ({
 	subscription,

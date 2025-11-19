@@ -1,7 +1,7 @@
 import type { DocumentId } from "@nowcrm/services";
 import { compositionsService } from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import ErrorMessage from "@/components/ErrorMessage";
+import ErrorMessage from "@/components/error-message";
 import { CompositionView } from "./components/composition-view";
 
 // This would be replaced with your actual data fetching logic

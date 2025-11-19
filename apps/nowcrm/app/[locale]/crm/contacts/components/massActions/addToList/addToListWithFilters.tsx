@@ -6,7 +6,7 @@ import * as React from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-import MassActionPreview from "@/components/generativeComponents/MassActionPreview";
+import MassActionPreview from "@/components/generativeComponents/mass-actions-preview";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {

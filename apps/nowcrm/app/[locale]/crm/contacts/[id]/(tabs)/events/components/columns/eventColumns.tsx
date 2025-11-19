@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import type React from "react";
 import { FaRegTrashCan } from "react-icons/fa6";
-import { SortableHeader } from "@/components/dataTable/SortableHeader";
+import { SortableHeader } from "@/components/dataTable/sortable-header";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
 	DropdownMenu,
@@ -13,7 +13,7 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { formatDateTimeStrapi } from "@/lib/strapiDate";
+import { formatDateTimeStrapi } from "@/lib/strapi-date";
 
 const DeleteAction: React.FC<{ event: Event }> = ({ event }) => {
 	const router = useRouter();

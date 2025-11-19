@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { auth } from "@/auth";
-import BottomNavigationLinks from "@/components/bottomBar/bottomNavigationLinks";
-import { RouteConfig } from "@/lib/config/RoutesConfig";
+import BottomNavigationLinks from "@/components/bottomBar/bottom-navigation-links";
+import { RouteConfig } from "@/lib/config/routes-config";
 export async function generateMetadata(): Promise<Metadata> {
 	const t = await getTranslations("Auth.Layout");
 	return {

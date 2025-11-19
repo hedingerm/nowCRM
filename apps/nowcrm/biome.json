@@ -12,7 +12,7 @@
 			"!components/ui",
 			"!components/event-calendar",
 			"!tests",
-			"!tests/**"
+			"!tests"
 		]
 	},
 	"linter": {

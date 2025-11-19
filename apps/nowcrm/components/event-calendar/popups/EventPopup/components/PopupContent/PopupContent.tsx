@@ -32,10 +32,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { EVENT_COLOR_OPTIONS } from "@/components/event-calendar/constants/eventColors"
 import type { CalendarEventType, EventCalendarTranslations } from "@/components/event-calendar/types"
 import { eventFormSchema } from "@/components/event-calendar/types/CalendarEventType"
-import { AsyncSelect } from "@/components/autoComplete/AsyncSelect"
+import { AsyncSelect } from "@/components/autoComplete/async-select"
 import { cn } from "@/lib/utils"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Option } from "@/components/autoComplete/autoComplete"
+import { Option } from "@/components/autoComplete/auto-complete"
 
 interface EventPopupContent {
   event?: Partial<CalendarEventType>

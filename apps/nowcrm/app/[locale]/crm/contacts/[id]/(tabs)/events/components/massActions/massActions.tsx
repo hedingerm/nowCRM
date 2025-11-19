@@ -6,7 +6,7 @@ import {
 	type ActionsConfig,
 	type MassActionsComponentProps,
 	massActionsGenerator,
-} from "@/components/generativeComponents/MassActionsGenerator";
+} from "@/components/generativeComponents/mass-actions-generator";
 import AddToListDialog from "../AddToListDialog";
 import { getContactIdByEventId } from "./getContactIdByEvent";
 import { massDeleteEvents } from "./massDeleteEvents";

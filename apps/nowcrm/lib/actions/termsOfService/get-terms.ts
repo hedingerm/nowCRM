@@ -2,7 +2,7 @@
 
 import type { Term } from "@nowcrm/services";
 import { type StandardResponse, termsService } from "@nowcrm/services/server";
-import { env } from "@/lib/config/envConfig";
+import { env } from "@/lib/config/env-config";
 
 export async function getLatestTerms(
 	_locale = "en",

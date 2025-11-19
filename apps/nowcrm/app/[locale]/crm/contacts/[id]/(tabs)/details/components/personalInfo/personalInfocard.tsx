@@ -38,7 +38,7 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { formatDateStrapi } from "@/lib/strapiDate";
+import { formatDateStrapi } from "@/lib/strapi-date";
 import { EditDialog } from "./editDialog";
 import { EnrichDialog } from "./enrichDialog";
 import { PersonalDetailsDialog } from "./personalDetails";

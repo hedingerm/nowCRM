@@ -14,7 +14,7 @@ import {
 } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { z } from "zod";
-import { AsyncSelectField } from "@/components/autoComplete/asyncSelectField";
+import { AsyncSelectField } from "@/components/autoComplete/async-select-field";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,

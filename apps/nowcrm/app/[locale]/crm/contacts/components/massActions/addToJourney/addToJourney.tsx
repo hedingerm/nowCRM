@@ -1,6 +1,6 @@
 "use client";
 
-import { AsyncSelect } from "@/components/autoComplete/AsyncSelect";
+import { AsyncSelect } from "@/components/autoComplete/async-select";
 import {
 	DialogDescription,
 	DialogHeader,

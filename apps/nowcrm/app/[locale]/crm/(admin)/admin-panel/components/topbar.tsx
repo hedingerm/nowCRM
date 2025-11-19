@@ -11,7 +11,7 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { RouteConfig } from "@/lib/config/RoutesConfig";
+import { RouteConfig } from "@/lib/config/routes-config";
 import { cn } from "@/lib/utils";
 
 export default function TopBarAdmin() {

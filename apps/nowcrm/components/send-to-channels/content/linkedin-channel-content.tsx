@@ -4,7 +4,7 @@ import { Linkedin } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import Spinner from "@/components/Spinner";
+import Spinner from "@/components/spinner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { DialogClose } from "@/components/ui/dialog";
@@ -28,7 +28,7 @@ export function LinkedInChannelContent({
 		};
 		try {
 			setIsLoading(true);
-			const { sendToChannelAction } = await import("../sendToChannelAction");
+			const { sendToChannelAction } = await import("../send-to-channel-action");
 			const answer = await sendToChannelAction(submissionData);
 
 			if (answer.success) {

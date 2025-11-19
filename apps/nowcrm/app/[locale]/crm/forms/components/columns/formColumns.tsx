@@ -5,7 +5,7 @@ import { Copy, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { SortableHeader } from "@/components/dataTable/SortableHeader";
+import { SortableHeader } from "@/components/dataTable/sortable-header";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -18,8 +18,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Switch } from "@/components/ui/switch";
 import { updateForm } from "@/lib/actions/forms/update-form";
-import { RouteConfig } from "@/lib/config/RoutesConfig";
-import { formatDateTimeStrapi } from "@/lib/strapiDate";
+import { RouteConfig } from "@/lib/config/routes-config";
+import { formatDateTimeStrapi } from "@/lib/strapi-date";
 import { shareForm } from "./shareForm";
 
 const ViewActions: React.FC<{ form: FormEntity }> = ({ form }) => {

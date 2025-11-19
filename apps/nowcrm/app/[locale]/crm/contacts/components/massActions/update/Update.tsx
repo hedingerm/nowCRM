@@ -4,8 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { AsyncSelect } from "@/components/autoComplete/AsyncSelect";
-import { DateTimePicker } from "@/components/dateTimePicker";
+import { AsyncSelect } from "@/components/autoComplete/async-select";
+import { DateTimePicker } from "@/components/date-time-picker";
 import {
 	DialogDescription,
 	DialogHeader,

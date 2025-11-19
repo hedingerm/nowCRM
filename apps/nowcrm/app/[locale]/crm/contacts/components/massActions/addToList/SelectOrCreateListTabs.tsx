@@ -3,7 +3,7 @@
 import { CheckCircle, ListPlus, Search } from "lucide-react";
 import * as React from "react";
 import type { UseFormReturn } from "react-hook-form";
-import { AsyncSelect } from "@/components/autoComplete/AsyncSelect";
+import { AsyncSelect } from "@/components/autoComplete/async-select";
 import { Button } from "@/components/ui/button";
 import {
 	Form,

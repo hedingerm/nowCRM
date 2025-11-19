@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { z } from "zod";
-import { AsyncSelectField } from "@/components/autoComplete/asyncSelectField";
+import { AsyncSelectField } from "@/components/autoComplete/async-select-field";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,

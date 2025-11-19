@@ -5,7 +5,7 @@ import type { DocumentId } from "@nowcrm/services";
 import {
 	type ActionsConfig,
 	massActionsGenerator,
-} from "@/components/generativeComponents/MassActionsGenerator";
+} from "@/components/generativeComponents/mass-actions-generator";
 import { MassDeleteOrganizations } from "./MassDeleteOrganizations";
 
 // Define the actions configuration for contacts

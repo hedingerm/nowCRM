@@ -3,7 +3,7 @@
 import type { Tag } from "@nowcrm/services";
 import { Filter, TagIcon, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useUrlState } from "@/components/dataTable/dataTableContacts";
+import { useUrlState } from "@/components/dataTable/data-table-contacts";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {

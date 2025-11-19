@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { useMessages } from "next-intl";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { SortableHeader } from "@/components/dataTable/SortableHeader";
+import { SortableHeader } from "@/components/dataTable/sortable-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -20,8 +20,8 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { RouteConfig } from "@/lib/config/RoutesConfig";
-import { formatDateTimeStrapi } from "@/lib/strapiDate";
+import { RouteConfig } from "@/lib/config/routes-config";
+import { formatDateTimeStrapi } from "@/lib/strapi-date";
 import { toNames } from "@/lib/utils";
 import { CountryFilterHeader } from "./countries/CountryFilterHeader";
 import { TagsCell } from "./tags/TagCell";

@@ -3,7 +3,7 @@
 import type { Contact, DocumentId } from "@nowcrm/services";
 import { contactsService, subscriptionsService } from "@nowcrm/services/server";
 import { logUnsubscribeEvent } from "@/lib/actions/events/log-event";
-import { env } from "../config/envConfig";
+import { env } from "../config/env-config";
 
 export async function unsubscribeUser(
 	email: string,

@@ -5,8 +5,8 @@ import type { CommunicationChannel } from "@nowcrm/services";
 import * as React from "react";
 import { useForm, useWatch } from "react-hook-form";
 import * as z from "zod";
-import { AsyncSelect } from "@/components/autoComplete/AsyncSelect";
-import { ChannelContent } from "@/components/ChannelContent";
+import { AsyncSelect } from "@/components/autoComplete/async-select";
+import { ChannelContent } from "@/components/channel-content";
 import {
 	Form,
 	FormControl,

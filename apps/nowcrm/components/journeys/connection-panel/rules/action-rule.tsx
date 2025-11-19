@@ -2,8 +2,8 @@
 
 import { HelpCircle } from "lucide-react";
 import { useState } from "react";
-import { AsyncSelect } from "@/components/autoComplete/AsyncSelect";
-import type { Option } from "@/components/autoComplete/autoComplete";
+import { AsyncSelect } from "@/components/autoComplete/async-select";
+import type { Option } from "@/components/autoComplete/auto-complete";
 import { Input } from "@/components/ui/input";
 import {
 	Select,

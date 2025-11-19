@@ -8,7 +8,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { ResetPasswordForm } from "../components/resetPasswordForm";
+import { ResetPasswordForm } from "../components/reset-password-form";
 
 export default async function Page() {
 	const t = await getTranslations();

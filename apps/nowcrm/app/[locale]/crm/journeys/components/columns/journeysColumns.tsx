@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { SortableHeader } from "@/components/dataTable/SortableHeader";
+import { SortableHeader } from "@/components/dataTable/sortable-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -19,8 +19,8 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Switch } from "@/components/ui/switch";
-import { RouteConfig } from "@/lib/config/RoutesConfig";
-import { formatDateTimeStrapi } from "@/lib/strapiDate";
+import { RouteConfig } from "@/lib/config/routes-config";
+import { formatDateTimeStrapi } from "@/lib/strapi-date";
 import { activateJourney } from "../../[id]/actions";
 
 type Props = {

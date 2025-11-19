@@ -12,7 +12,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { ensureValidUrl } from "@/lib/ensureValidUrl";
+import { ensureValidUrl } from "@/lib/ensure-valid-url";
 import { EditDialogOrganizationProfessional } from "./editDialogProfessional";
 
 interface OrganizationProfessionalInfoCardProps {

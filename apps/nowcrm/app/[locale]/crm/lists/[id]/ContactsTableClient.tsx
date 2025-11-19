@@ -2,10 +2,10 @@
 
 import type { Session } from "next-auth";
 import * as React from "react";
-import { fetchDataForVisibleColumns } from "@/components/dataTable/actions/fetchDataForVisibleColumns";
+import { fetchDataForVisibleColumns } from "@/components/dataTable/actions/fetch-data-for-visible-columns";
 import DataTable, {
 	useUrlState,
-} from "@/components/dataTable/dataTableContacts";
+} from "@/components/dataTable/data-table-contacts";
 import { transformFilters } from "@/lib/actions/filters/filters-search";
 import AdvancedFilters from "../../contacts/components/advancedFilters/advancedFilters";
 import AddToListDialog from "./components/addToListDialog";

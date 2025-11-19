@@ -5,7 +5,7 @@ import type { DocumentId } from "@nowcrm/services";
 import {
 	type ActionsConfig,
 	massActionsGenerator,
-} from "@/components/generativeComponents/MassActionsGenerator";
+} from "@/components/generativeComponents/mass-actions-generator";
 import { massActivateSubscriptions } from "./massActivateSubscriptions";
 import { massDeactivateSubscriptions } from "./massDeactivateSubscription";
 import { massDeleteSubscriptions } from "./massDeleteSubscriptions";

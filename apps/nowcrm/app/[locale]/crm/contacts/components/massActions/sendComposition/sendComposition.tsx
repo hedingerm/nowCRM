@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { throttleUtils } from "@/components/ChannelThrottleField";
+import { throttleUtils } from "@/components/channel-throttle-field";
 import {
 	DialogDescription,
 	DialogHeader,

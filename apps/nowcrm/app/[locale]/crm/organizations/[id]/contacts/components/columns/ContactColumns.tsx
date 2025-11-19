@@ -6,7 +6,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { FaRegTrashCan } from "react-icons/fa6";
-import { SortableHeader } from "@/components/dataTable/SortableHeader";
+import { SortableHeader } from "@/components/dataTable/sortable-header";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -17,8 +17,8 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { RouteConfig } from "@/lib/config/RoutesConfig";
-import { formatDateTimeStrapi } from "@/lib/strapiDate";
+import { RouteConfig } from "@/lib/config/routes-config";
+import { formatDateTimeStrapi } from "@/lib/strapi-date";
 import { removeContactFromListAction } from "./removeContactFromListAction";
 
 const DeleteAction: React.FC<{ contact: Contact }> = ({ contact }) => {

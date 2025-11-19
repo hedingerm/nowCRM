@@ -16,8 +16,8 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import * as z from "zod";
-import { ReturnButton } from "@/components/ReturnButton";
-import Spinner from "@/components/Spinner";
+import { ReturnButton } from "@/components/return-button";
+import Spinner from "@/components/spinner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {

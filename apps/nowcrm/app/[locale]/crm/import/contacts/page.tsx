@@ -12,7 +12,7 @@ import Papa from "papaparse";
 import { useCallback, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import toast from "react-hot-toast";
-import { AsyncSelect } from "@/components/autoComplete/AsyncSelect";
+import { AsyncSelect } from "@/components/autoComplete/async-select";
 import { Button } from "@/components/ui/button";
 import {
 	Command,

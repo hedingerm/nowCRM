@@ -9,7 +9,7 @@ import {
 	type StandardResponse,
 	subscriptionsService,
 } from "@nowcrm/services/server";
-import { env } from "@/lib/config/envConfig";
+import { env } from "@/lib/config/env-config";
 
 export interface ItemProps {
 	value: DocumentId;

@@ -3,11 +3,11 @@ import { contactSalutationsService } from "@nowcrm/services/server";
 import type { Session } from "next-auth";
 import { getTranslations } from "next-intl/server";
 import { auth } from "@/auth";
-import DataTable from "@/components/dataTable/dataTable";
-import ErrorMessage from "@/components/ErrorMessage";
-import { columns } from "./components/columns/contactSalutationsColumns";
-import createContactSalutationDialog from "./components/createDialog";
-import MassActionsContactSalutations from "./components/massActions/massActions";
+import DataTable from "@/components/dataTable/data-table";
+import ErrorMessage from "@/components/error-message";
+import { columns } from "./components/columns/contact-salutation-columns";
+import createContactSalutationDialog from "./components/create-dialog";
+import MassActionsContactSalutations from "./components/massActions/mass-actions";
 
 export default async function Page(props: {
 	searchParams: Promise<PaginationParams>;

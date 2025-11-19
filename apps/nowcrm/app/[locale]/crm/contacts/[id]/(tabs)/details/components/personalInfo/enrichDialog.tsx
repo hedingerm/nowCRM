@@ -4,7 +4,7 @@ import type { Contact } from "@nowcrm/services";
 import { Check, Sparkles, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { findData } from "@/components/autoComplete/findData";
+import { findData } from "@/components/autoComplete/find-data";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";

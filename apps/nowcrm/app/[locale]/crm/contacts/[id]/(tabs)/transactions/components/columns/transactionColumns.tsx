@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import React from "react";
 import { FaRegTrashCan } from "react-icons/fa6";
-import { SortableHeader } from "@/components/dataTable/SortableHeader";
+import { SortableHeader } from "@/components/dataTable/sortable-header";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
@@ -18,7 +18,7 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { formatDateTimeStrapi } from "@/lib/strapiDate";
+import { formatDateTimeStrapi } from "@/lib/strapi-date";
 import EditTransactionDialog from "./editTransactionDialog";
 
 const DeleteAction: React.FC<{ transaction: DonationTransaction }> = ({

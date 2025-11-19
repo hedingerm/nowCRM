@@ -15,7 +15,7 @@ import {
 	FaMapMarkerAlt,
 } from "react-icons/fa";
 import { z } from "zod";
-import { SearchableComboboxDialog } from "@/components/SearchableComboboxDialog";
+import { SearchableComboboxDialog } from "@/components/searchable-combobox-dialog";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,

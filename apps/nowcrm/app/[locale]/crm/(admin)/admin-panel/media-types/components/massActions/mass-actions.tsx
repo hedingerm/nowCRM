@@ -1,0 +1,24 @@
+"use client";
+import type { DocumentId } from "@nowcrm/services";
+// IdentitityMassActions.tsx
+import {
+	type ActionsConfig,
+	massActionsGenerator,
+} from "@/components/generativeComponents/mass-actions-generator";
+import { MassDeleteMediaTypes } from "./mass-delete-media-types";
+
+const actionsConfig: ActionsConfig = {
+	deleteContacts: {
+		label: "Delete", // e.g., "Delete"
+		onAction: async (selectedRows: DocumentId[]) => {
+			return await MassDeleteMediaTypes(selectedRows);
+		},
+		successMessage: "Media Type deleted",
+		errorMessage: "Error deleting media type",
+	},
+};
+
+// Create the MassActions component using the generator
+const MediaTypeMassActions = massActionsGenerator(actionsConfig);
+
+export default MediaTypeMassActions;

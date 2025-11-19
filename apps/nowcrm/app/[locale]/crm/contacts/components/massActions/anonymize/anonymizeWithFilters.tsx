@@ -2,7 +2,7 @@
 import { CheckCircle, Eye, Filter } from "lucide-react";
 import { useRouter } from "next/navigation";
 import * as React from "react";
-import MassActionPreview from "@/components/generativeComponents/MassActionPreview";
+import MassActionPreview from "@/components/generativeComponents/mass-actions-preview";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {

@@ -2,8 +2,8 @@
 
 import { CheckCircle, Eye, Filter } from "lucide-react";
 import * as React from "react";
-import { AsyncSelect } from "@/components/autoComplete/AsyncSelect";
-import MassActionPreview from "@/components/generativeComponents/MassActionPreview";
+import { AsyncSelect } from "@/components/autoComplete/async-select";
+import MassActionPreview from "@/components/generativeComponents/mass-actions-preview";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {

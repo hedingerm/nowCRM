@@ -2,8 +2,8 @@ import { organizationsService } from "@nowcrm/services/server";
 import type { Metadata } from "next";
 import type { Session } from "next-auth";
 import { auth } from "@/auth";
-import DataTable from "@/components/dataTable/dataTable";
-import ErrorMessage from "@/components/ErrorMessage";
+import DataTable from "@/components/dataTable/data-table";
+import ErrorMessage from "@/components/error-message";
 import {
 	parseQueryToFilterValues,
 	transformFilters,

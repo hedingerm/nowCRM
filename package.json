@@ -11,8 +11,7 @@
     "lint:all": "pnpm -r run lint:fix",
     "generate-index:services": "pnpm --filter @nowcrm/services run generate-index",
     "generate-service-factory": "pnpm --filter @nowcrm/services run generate-service-factory",
-    "generate-app": "tsx scripts/generate-app/index.ts",
-    "rename-to-kebab": "tsx scripts/rename-to-kebab/index.ts"
+    "generate-app": "tsx scripts/generate-app/index.ts"
   },
   "keywords": [],
   "author": "",

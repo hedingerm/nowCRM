@@ -8,7 +8,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { ForgotPasswordForm } from "../components/forgotPasswordForm";
+import { ForgotPasswordForm } from "../components/forgot-password-form";
 
 export default async function Page() {
 	const t = await getTranslations();

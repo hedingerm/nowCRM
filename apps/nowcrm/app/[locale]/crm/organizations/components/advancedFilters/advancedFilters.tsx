@@ -11,7 +11,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { AsyncSelectField } from "@/components/autoComplete/asyncSelectField";
+import { AsyncSelectField } from "@/components/autoComplete/async-select-field";
 import { Button } from "@/components/ui/button";
 import {
 	Drawer,

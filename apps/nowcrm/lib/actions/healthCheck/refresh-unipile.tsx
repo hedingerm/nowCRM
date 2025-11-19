@@ -2,7 +2,7 @@
 "use server";
 import { handleError, type StandardResponse } from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { env } from "@/lib/config/envConfig";
+import { env } from "@/lib/config/env-config";
 
 export async function AddNewIdentityUnipile(
 	name: string,

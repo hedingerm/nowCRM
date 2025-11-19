@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { FaRegTrashCan } from "react-icons/fa6";
-import { SortableHeader } from "@/components/dataTable/SortableHeader";
+import { SortableHeader } from "@/components/dataTable/sortable-header";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -25,7 +25,7 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { getSurveyItemsBySurveyId } from "@/lib/actions/surveyItems/get-survey-items";
-import { formatDateTimeStrapi } from "@/lib/strapiDate";
+import { formatDateTimeStrapi } from "@/lib/strapi-date";
 
 const DeleteAction: React.FC<{ survey: Survey }> = ({ survey }) => {
 	const router = useRouter();

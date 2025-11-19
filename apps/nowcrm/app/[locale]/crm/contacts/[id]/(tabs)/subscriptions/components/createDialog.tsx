@@ -8,7 +8,7 @@ import * as React from "react";
 import { useForm } from "react-hook-form";
 import { GrAddCircle } from "react-icons/gr";
 import * as z from "zod";
-import { AsyncSelectField } from "@/components/autoComplete/asyncSelectField";
+import { AsyncSelectField } from "@/components/autoComplete/async-select-field";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,

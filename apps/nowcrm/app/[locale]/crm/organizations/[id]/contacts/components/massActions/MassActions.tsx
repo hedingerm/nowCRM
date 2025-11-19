@@ -5,7 +5,7 @@ import type { DocumentId } from "@nowcrm/services";
 import {
 	type ActionsConfig,
 	massActionsGenerator,
-} from "@/components/generativeComponents/MassActionsGenerator";
+} from "@/components/generativeComponents/mass-actions-generator";
 import AssignToListDialog from "./dialogs/addToList";
 import { MassDisconnectContacts } from "./MassDisconnectContacts";
 import { MassAddToList } from "./massAddToList";

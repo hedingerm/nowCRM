@@ -20,8 +20,8 @@ import {
 	FaVenusMars,
 } from "react-icons/fa";
 import { z } from "zod";
-import { AsyncSelectField } from "@/components/autoComplete/asyncSelectField";
-import { DateTimePicker } from "@/components/dateTimePicker";
+import { AsyncSelectField } from "@/components/autoComplete/async-select-field";
+import { DateTimePicker } from "@/components/date-time-picker";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -90,7 +90,7 @@ export function EditDialog({ contact, isOpen, onClose }: EditDialogProps) {
 
 	useEffect(() => {
 		async function fetchContactTypes() {
-			const { findData } = await import("@/components/autoComplete/findData");
+			const { findData } = await import("@/components/autoComplete/find-data");
 
 			try {
 				const res = await findData("contactTypesService", {

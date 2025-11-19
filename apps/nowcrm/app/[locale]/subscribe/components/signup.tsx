@@ -9,8 +9,8 @@ import { useEffect, useLayoutEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import * as z from "zod";
-import EmbedDrawer from "@/components/embedDrawer";
-import Spinner from "@/components/Spinner";
+import EmbedDrawer from "@/components/embed-drawer";
+import Spinner from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {

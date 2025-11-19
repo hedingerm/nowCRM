@@ -3,7 +3,7 @@ import { contactsService, listsService } from "@nowcrm/services/server";
 import type { Metadata } from "next";
 import type { Session } from "next-auth";
 import { auth } from "@/auth";
-import ErrorMessage from "@/components/ErrorMessage";
+import ErrorMessage from "@/components/error-message";
 import ContactsTableClient from "./ContactsTableClient";
 import EditableTitle from "./components/editTitle";
 

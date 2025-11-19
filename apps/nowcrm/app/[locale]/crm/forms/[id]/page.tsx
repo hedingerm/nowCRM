@@ -2,7 +2,7 @@
 
 import type { DocumentId } from "@nowcrm/services";
 import type { Metadata } from "next";
-import FormBuilder from "@/components/forms/FormBuilder";
+import FormBuilder from "@/components/forms/form-builder";
 
 // Standard metadata export remains unchanged
 export const metadata: Metadata = {

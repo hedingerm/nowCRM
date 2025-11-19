@@ -1,8 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import Footer from "@/components/footer";
-import { ThemeSwitcher } from "@/components/ThemeSwitcher";
-import NavigationLinks from "@/components/topbar/navigationLinks";
+import { ThemeSwitcher } from "@/components/theme-switcher";
+import NavigationLinks from "@/components/topbar/navigation-links";
 
 export default async function RootLayout({
 	children,

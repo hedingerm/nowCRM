@@ -7,9 +7,9 @@ import { useParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { FaRegTrashCan } from "react-icons/fa6";
-import { SortableHeader } from "@/components/dataTable/SortableHeader";
-import ErrorMessage from "@/components/ErrorMessage";
-import Spinner from "@/components/Spinner";
+import { SortableHeader } from "@/components/dataTable/sortable-header";
+import ErrorMessage from "@/components/error-message";
+import Spinner from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -21,8 +21,8 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { getListCount } from "@/lib/actions/lists/get-list-count";
-import { RouteConfig } from "@/lib/config/RoutesConfig";
-import { formatDateTimeStrapi } from "@/lib/strapiDate";
+import { RouteConfig } from "@/lib/config/routes-config";
+import { formatDateTimeStrapi } from "@/lib/strapi-date";
 
 const DeleteAction: React.FC<{ list: List }> = ({ list }) => {
 	const router = useRouter();

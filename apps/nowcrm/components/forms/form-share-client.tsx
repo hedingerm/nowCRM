@@ -17,7 +17,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { shareForm } from "@/app/[locale]/crm/forms/components/columns/shareForm";
-import { DateTimePicker } from "@/components/dateTimePicker";
+import { DateTimePicker } from "@/components/date-time-picker";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -64,7 +64,7 @@ import {
 	submitFormData,
 } from "@/lib/actions/forms/get-form";
 import { cn } from "@/lib/utils";
-import CustomProgress from "../CustomProgress";
+import CustomProgress from "../custom-progress";
 import ShareSocial from "./share-social";
 
 // Import the useTheme hook at the top of the file with other imports

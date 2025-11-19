@@ -5,7 +5,7 @@ import type { StandardResponse } from "@nowcrm/services/server";
 import { ListPlus, Search } from "lucide-react";
 import * as React from "react";
 import { massAddContactsToList } from "@/app/[locale]/crm/contacts/[id]/(tabs)/events/components/massActions/massAddToList";
-import { AsyncSelect } from "@/components/autoComplete/AsyncSelect";
+import { AsyncSelect } from "@/components/autoComplete/async-select";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,

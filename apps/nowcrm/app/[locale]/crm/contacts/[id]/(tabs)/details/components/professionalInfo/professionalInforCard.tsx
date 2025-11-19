@@ -21,7 +21,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { RouteConfig } from "@/lib/config/RoutesConfig";
+import { RouteConfig } from "@/lib/config/routes-config";
 import { EditDialogProfessional } from "./editDialogProfessional";
 
 interface ProfessionalInfoCardProps {

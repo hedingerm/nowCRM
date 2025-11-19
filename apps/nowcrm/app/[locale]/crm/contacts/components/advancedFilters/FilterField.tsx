@@ -5,10 +5,10 @@ import { format } from "date-fns";
 import { X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { type UseFormReturn, useWatch } from "react-hook-form";
-import { AsyncSelectField } from "@/components/autoComplete/asyncSelectField";
+import { AsyncSelectField } from "@/components/autoComplete/async-select-field";
 // Import types and utilities from the base component
-import { DateTimePicker } from "@/components/dateTimePicker";
-import { SearchableComboboxDialog } from "@/components/SearchableComboboxDialog";
+import { DateTimePicker } from "@/components/date-time-picker";
+import { SearchableComboboxDialog } from "@/components/searchable-combobox-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
