@@ -104,7 +104,9 @@ export default function AnonymizeWithFiltersDialog({
 				const result = await onSubmit(appliedFilters);
 				const { default: toast } = await import("react-hot-toast");
 				if (result.success) {
-					toast.success("Contacts anonymized");
+					toast.success(
+						"The anonymization process has started. Depending on the number of selected contacts, it may take up to 10–15 minutes."
+					  );
 					router.refresh();
 				} else {
 					toast.error(result.errorMessage || "Error anonymizing contacts");

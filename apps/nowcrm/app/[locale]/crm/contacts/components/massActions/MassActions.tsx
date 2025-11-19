@@ -119,7 +119,7 @@ const actionsConfig: ActionsConfig = {
 		},
 		dialogSubmitLabel: "Delete",
 		successMessage:
-			"The deletion process has started. Depending on the number of selected contacts, it may take up to 10–15 minutes.",
+			"Contacts deleted",
 		errorMessage: "Error during deleting contacts",
 	},
 	anonymize: {
@@ -154,7 +154,7 @@ const actionsConfig: ActionsConfig = {
 		},
 		dialogSubmitLabel: "Anonymize",
 		successMessage:
-			"The anonymization process has started. Depending on the number of selected contacts, it may take up to 10–15 minutes.",
+			"Contacts anonymized",
 		errorMessage: "Error during anonymizing contacts",
 	},
 	export: {
