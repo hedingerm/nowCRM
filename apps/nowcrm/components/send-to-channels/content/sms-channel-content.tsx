@@ -19,7 +19,7 @@ import {
 	ChannelThrottleField,
 	throttleUtils,
 } from "@/components/channel-throttle-field";
-import Spinner from "@/components/spinner-";
+import Spinner from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import { DialogClose } from "@/components/ui/dialog";
 import {

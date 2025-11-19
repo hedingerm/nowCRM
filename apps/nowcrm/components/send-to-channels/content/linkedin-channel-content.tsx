@@ -4,7 +4,7 @@ import { Linkedin } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import Spinner from "@/components/spinner-";
+import Spinner from "@/components/spinner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { DialogClose } from "@/components/ui/dialog";

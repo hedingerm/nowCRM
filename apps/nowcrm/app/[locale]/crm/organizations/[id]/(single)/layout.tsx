@@ -6,7 +6,7 @@ import { FaBuilding, FaEnvelope } from "react-icons/fa";
 import { auth } from "@/auth";
 import DeleteButton from "@/components/deleteButton/delete-button";
 import ErrorMessage from "@/components/error-message";
-import { TypographyH4 } from "@/components/typography-";
+import { TypographyH4 } from "@/components/typography";
 import { Separator } from "@/components/ui/separator";
 import { RouteConfig } from "@/lib/config/routes-config";
 

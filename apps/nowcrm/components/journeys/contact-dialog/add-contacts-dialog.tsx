@@ -22,7 +22,7 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import * as z from "zod";
 import { AsyncSelectField } from "@/components/autoComplete/async-select-field";
-import Spinner from "@/components/spinner-";
+import Spinner from "@/components/spinner";
 import { DialogClose } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";

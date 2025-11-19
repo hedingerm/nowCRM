@@ -1,6 +1,6 @@
 "use client";
 import { DateTimePicker } from "@/components/date-time-picker";
-import { TypographyH2 } from "@/components/typography-";
+import { TypographyH2 } from "@/components/typography";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 export default function ExamplePage() {
 	return (
