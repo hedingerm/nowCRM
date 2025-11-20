@@ -33,7 +33,7 @@ export interface JobCompositionRecord {
 	type?: string;
 	massAction?: string | null;
 	listName?: string | null;
-	listField?: string | null;
+	typeField?: string | null;
 	parsedSearchMask?: string;
 	result?: string;
 	composition_id?: number;

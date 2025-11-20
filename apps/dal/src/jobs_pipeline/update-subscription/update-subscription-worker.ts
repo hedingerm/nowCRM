@@ -1,12 +1,14 @@
+import { randomUUID } from "node:crypto";
 import { Worker as BullWorker, type Job } from "bullmq";
 import { pino } from "pino";
 import { env } from "@/common/utils/env-config";
+import { resolveDocumentId } from "@/jobs_pipeline/common/helpers/resolve-document-id";
 import { pool } from "@/jobs_pipeline/csv-import/contacts/processors/helpers/db";
 import { SQL } from "@/jobs_pipeline/csv-import/sql/queries";
 
 interface UpdateSubscriptionJobData {
 	items: Array<number | { id: number }>;
-	channelId: number;
+	channelId: number | string;
 	isSubscribe: boolean;
 	addEvent?: boolean;
 }
@@ -31,6 +33,7 @@ export const startUpdateSubscriptionWorker = () => {
 				);
 
 				const { items, channelId, isSubscribe } = job.data;
+
 				if (!Array.isArray(items) || items.length === 0) {
 					throw new Error("items must be a non-empty array");
 				}
@@ -41,20 +44,27 @@ export const startUpdateSubscriptionWorker = () => {
 					throw new Error("isSubscribe must be boolean");
 				}
 
+				// Resolve channel id (documentId -> numeric id)
+				let resolvedChannelId: number;
+				if (typeof channelId === "string") {
+					logger.info(
+						`[${workerId}] Resolving channel documentId ${channelId}`,
+					);
+					resolvedChannelId = await resolveDocumentId("channels", channelId);
+				} else {
+					resolvedChannelId = channelId;
+				}
+
+				logger.info(
+					`[${workerId}] Using channel numeric id ${resolvedChannelId}`,
+				);
+
 				// Normalize contact IDs
 				const contactIds: number[] = items.map((it) => {
 					if (typeof it === "number") return it;
 					if (typeof it === "object" && it !== null && "id" in it) return it.id;
 					throw new Error("Invalid item in items array");
 				});
-
-				// 1) Fetch the 'Basic' subscription type ID
-				logger.info(`[${workerId}] Fetching 'Basic' subscription type ID`);
-				const typeRes = await pool.query(SQL.SELECT_BASIC_TYPE_ID, ["Basic"]);
-				if ((typeRes.rowCount ?? 0) === 0) {
-					throw new Error("Subscription type 'Basic' not found");
-				}
-				const basicTypeId = typeRes.rows[0].id as number;
 
 				const BATCH_SIZE = 100;
 				let totalProcessed = 0;
@@ -72,27 +82,65 @@ export const startUpdateSubscriptionWorker = () => {
 						// 2) Reactivate existing subscriptions (draft → publish)
 						const reactRes = await pool.query(SQL.REACTIVATE_SUBSCRIPTIONS, [
 							chunk,
-							channelId,
+							resolvedChannelId,
 						]);
 						const reactivated = reactRes.rowCount ?? 0;
 
 						// 3) Find which contacts still need new subscriptions
 						const existRes = await pool.query(SQL.SELECT_EXISTING_CONTACT_IDS, [
 							chunk,
-							channelId,
+							resolvedChannelId,
 						]);
 						const existedIds = existRes.rows.map((r) => r.contact_id as number);
 
 						// 4) Insert new subscriptions for the rest
 						let inserted = 0;
+						// get type Basic
+						const typeRes = await pool.query(SQL.SELECT_BASIC_TYPE_ID, [
+							"Basic",
+						]);
+						const typeId = typeRes.rows[0]?.id;
+
+						// get consent Privacy Policy
+						const consentRes = await pool.query(SQL.SELECT_CONSENT_ID, [
+							"Privacy Policy",
+						]);
+						const consentId = consentRes.rows[0]?.id;
+
 						for (const contactId of chunk) {
 							if (!existedIds.includes(contactId)) {
-								const insSub = await pool.query(SQL.INSERT_SUBSCRIPTION, []);
+								const newDocumentId = randomUUID();
+								const unsubscribeToken = randomUUID();
+
+								// create subscription
+								const insSub = await pool.query(SQL.INSERT_SUBSCRIPTION, [
+									newDocumentId,
+								]);
 								const subId = insSub.rows[0].id as number;
 
+								// add unsubscribe_token
+								await pool.query(SQL.UPDATE_SUBSCRIPTION_UNSUBSCRIBE_TOKEN, [
+									unsubscribeToken,
+									subId,
+								]);
+
+								// link contact
 								await pool.query(SQL.LINK_TO_CONTACT, [subId, contactId]);
-								await pool.query(SQL.LINK_TO_CHANNEL, [subId, channelId]);
-								await pool.query(SQL.LINK_TO_TYPE, [subId, basicTypeId]);
+
+								// link channel
+								await pool.query(SQL.LINK_TO_CHANNEL, [
+									subId,
+									resolvedChannelId,
+								]);
+
+								// link type
+								await pool.query(SQL.INSERT_SUBSCRIPTION_TYPE_LNK, [
+									subId,
+									typeId,
+								]);
+
+								// link consent
+								await pool.query(SQL.INSERT_CONSENT_LNK, [subId, consentId]);
 
 								inserted++;
 							}
@@ -106,7 +154,7 @@ export const startUpdateSubscriptionWorker = () => {
 						// Unsubscribe path
 						const unRes = await pool.query(SQL.DEACTIVATE_SUBSCRIPTIONS, [
 							chunk,
-							channelId,
+							resolvedChannelId,
 						]);
 						const deactivated = unRes.rowCount ?? 0;
 						totalProcessed += deactivated;
@@ -122,16 +170,18 @@ export const startUpdateSubscriptionWorker = () => {
 								);
 
 								for (const contactId of chunk) {
+									const eventDocumentId = randomUUID();
 									const insertEvent = await pool.query(
 										SQL.INSERT_UNSUBSCRIBE_EVENT,
 										[
-											"unsubscribe", // action
-											"unsubscribed", // status
-											"Unsubscribe", // source
-											"", // destination
-											"", // external_id
-											"Unsubscribe event", // title
+											"unsubscribe",
+											"unsubscribed",
+											"Unsubscribe",
 											"",
+											"",
+											"Unsubscribe event",
+											"",
+											eventDocumentId,
 										],
 									);
 									const eventId = insertEvent.rows[0].id;
@@ -142,7 +192,7 @@ export const startUpdateSubscriptionWorker = () => {
 									]);
 									await pool.query(SQL.LINK_EVENT_TO_CHANNEL, [
 										eventId,
-										channelId,
+										resolvedChannelId,
 									]);
 								}
 

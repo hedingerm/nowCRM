@@ -112,7 +112,7 @@ const massActionHandlers: Record<
 		await addToListQueue.add("addToListBatch", {
 			entity,
 			items,
-			listField: "lists",
+			typeField: "lists",
 			listId,
 		});
 	},
@@ -196,7 +196,7 @@ const massActionHandlers: Record<
 		await addToOrganizationQueue.add("addToOrganizationBatch", {
 			entity,
 			items,
-			listField: "organizations",
+			typeField: "organizations",
 			organizationId,
 		});
 	},
@@ -215,7 +215,7 @@ const massActionHandlers: Record<
 		await addToJourneyQueue.add("addToJourneyBatch", {
 			entity,
 			items,
-			listField: "journeys",
+			typeField: "journeys",
 			journeyStepId,
 		});
 	},

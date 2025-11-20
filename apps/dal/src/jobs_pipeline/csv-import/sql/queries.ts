@@ -1,10 +1,32 @@
-// src/lib/sql/queries.ts
 export const SQL = {
 	SELECT_BASIC_TYPE_ID: `
       SELECT id
       FROM subscription_types
       WHERE name = $1
       LIMIT 1
+    ` as const,
+
+	SELECT_CONSENT_ID: `
+      SELECT id
+      FROM consents
+      WHERE title = $1
+      LIMIT 1
+    ` as const,
+
+	INSERT_SUBSCRIPTION_TYPE_LNK: `
+      INSERT INTO subscriptions_subscription_type_lnk (subscription_id, subscription_type_id)
+      VALUES ($1, $2)
+    ` as const,
+
+	INSERT_CONSENT_LNK: `
+      INSERT INTO subscriptions_consent_lnk (subscription_id, consent_id)
+      VALUES ($1, $2)
+    ` as const,
+
+	UPDATE_SUBSCRIPTION_UNSUBSCRIBE_TOKEN: `
+      UPDATE subscriptions
+      SET unsubscribe_token = $1
+      WHERE id = $2
     ` as const,
 
 	REACTIVATE_SUBSCRIPTIONS: `
@@ -35,9 +57,9 @@ export const SQL = {
     ` as const,
 
 	INSERT_SUBSCRIPTION: `
-      INSERT INTO subscriptions (active, subscribed_at, published_at)
-      VALUES (TRUE, NOW(), NOW())
-      RETURNING id
+      INSERT INTO subscriptions (active, subscribed_at, published_at, document_id)
+      VALUES (TRUE, NOW(), NOW(), $1)
+      RETURNING id, document_id
     ` as const,
 
 	LINK_TO_CONTACT: `
@@ -50,28 +72,23 @@ export const SQL = {
       VALUES ($1, $2)
     ` as const,
 
-	LINK_TO_TYPE: `
-      INSERT INTO subscriptions_subscription_type_lnk (subscription_id, subscription_type_id)
-      VALUES ($1, $2)
-    ` as const,
-
 	INSERT_UNSUBSCRIBE_EVENT: `
     INSERT INTO events
-      (action, status, source, destination, external_id, title, payload, created_at, published_at)
+      (action, status, source, destination, external_id, title, payload, created_at, published_at, document_id)
     VALUES
-      ($1, $2, $3, $4, $5, $6, $7, NOW(), NOW())
-    RETURNING id
+      ($1, $2, $3, $4, $5, $6, $7, NOW(), NOW(), $8)
+    RETURNING id, document_id
   ` as const,
 
 	LINK_EVENT_TO_CONTACT: `
-    INSERT INTO events_contact_lnk (event_id, contact_id)
-    VALUES ($1, $2)
-  ` as const,
+      INSERT INTO events_contact_lnk (event_id, contact_id)
+      VALUES ($1, $2)
+    ` as const,
 
 	LINK_EVENT_TO_CHANNEL: `
-    INSERT INTO events_channel_lnk (event_id, channel_id)
-    VALUES ($1, $2)
-  ` as const,
+      INSERT INTO events_channel_lnk (event_id, channel_id)
+      VALUES ($1, $2)
+    ` as const,
 
 	DEACTIVATE_SUBSCRIPTIONS: `
       UPDATE subscriptions s

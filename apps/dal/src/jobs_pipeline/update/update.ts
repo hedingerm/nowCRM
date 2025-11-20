@@ -23,7 +23,7 @@ const RELATIONAL_FIELDS = new Set([
 
 const MANY_TO_ONE_ENDPOINTS = new Set([
 	"organizations",
-	"job_titles",
+	"contact-job-titles",
 	"contact-salutations",
 	"contact-titles",
 	"industries",
@@ -40,6 +40,7 @@ function toEndpoint(fieldKey: string): string {
 	const specialMap: Record<string, string> = {
 		salutation: "contact-salutations",
 		title: "contact-titles",
+		job_title: "contact-job-titles",
 	};
 	if (specialMap[fieldKey]) return specialMap[fieldKey];
 	const base = fieldKey.replace(/_/g, "-");
@@ -177,8 +178,11 @@ export const updateEntityItems = async (
 							"Content-Type": "application/json",
 						},
 						body: JSON.stringify({
-							where: { documentId: { $in: grpIds } },
-							data: payload,
+							entity,
+							data: grpIds.map((documentId) => ({
+								documentId,
+								...payload,
+							})),
 						}),
 					},
 				);
