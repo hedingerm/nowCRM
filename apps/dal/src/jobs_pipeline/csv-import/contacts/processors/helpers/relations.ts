@@ -23,14 +23,14 @@ export const contactsJoinConfig: Record<
 		relCol: "department_id",
 	},
 	keywords: {
-		table: "keywords_contacts_lnk",
+		table: "contacts_keywords_lnk",
 		leftCol: "contact_id",
 		relCol: "keyword_id",
 	},
-	job_titles: {
+	"contact-job-titles": {
 		table: "contacts_job_title_lnk",
 		leftCol: "contact_id",
-		relCol: "job_title_id",
+		relCol: "contact_job_title_id",
 	},
 	tags: {
 		table: "contacts_tags_lnk",
@@ -38,19 +38,19 @@ export const contactsJoinConfig: Record<
 		relCol: "tag_id",
 	},
 	sources: {
-		table: "sources_contacts_lnk",
+		table: "contacts_sources_lnk",
 		leftCol: "contact_id",
 		relCol: "source_id",
 	},
-	contact_notes: {
-		table: "notes_contact_lnk",
+	"contact-notes": {
+		table: "contact_notes_contact_lnk",
 		leftCol: "contact_id",
-		relCol: "note_id",
+		relCol: "contact_note_id",
 	},
-	contact_ranks: {
-		table: "ranks_contacts_lnk",
+	"contact-ranks": {
+		table: "contacts_ranks_lnk",
 		leftCol: "contact_id",
-		relCol: "rank_id",
+		relCol: "contact_rank_id",
 	},
 	"contact-types": {
 		table: "contacts_contact_types_lnk",
@@ -147,12 +147,12 @@ export const relationFields = {
 	consent: "consents",
 	// contact_extra_fields: "contact-extra-fields",
 	keywords: "keywords",
-	job_title: "job_titles",
+	job_title: "contact-job-titles",
 	tags: "tags",
-	contact_ranks: "contact_ranks",
+	contact_ranks: "contact-ranks",
 	contact_types: "contact-types",
 	sources: "sources",
-	contact_notes: "contact_notes",
+	contact_notes: "contact-notes",
 	industry: "industries",
 	title: "contact-titles",
 	salutation: "contact-salutations",
@@ -237,7 +237,7 @@ export async function handleRelations(contact: any): Promise<any> {
 					const searchValue = getSearchValue(val);
 					if (!searchValue) return null;
 
-					const id = cache.get(searchValue)?.id; //check
+					const id = cache.get(searchValue)?.id;
 					if (id) relationStats.resolved++;
 					else relationStats.missing++;
 
@@ -251,7 +251,7 @@ export async function handleRelations(contact: any): Promise<any> {
 
 			const searchValue = getSearchValue(rawValue);
 			if (searchValue) {
-				const id = cache.get(searchValue)?.id; //check
+				const id = cache.get(searchValue)?.id;
 				if (id) {
 					relationStats.resolved++;
 					contact[fieldKey] = id;

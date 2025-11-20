@@ -19,9 +19,9 @@ import { relationCache } from "./processors/helpers/cache";
 function buildFullContactsArray(
 	originalContacts: any[],
 	updateContacts: any[],
-	existingContactIds: DocumentId[],
+	existingContactIds: CreatedPair[],
 	newContacts: any[],
-	createdIds: DocumentId[],
+	createdIds: CreatedPair[],
 ): Array<any & { documentId: DocumentId }> {
 	const full: Array<any & { documentId: DocumentId }> = [];
 	let newIdx = 0;
@@ -29,9 +29,18 @@ function buildFullContactsArray(
 
 	for (const contact of originalContacts) {
 		if (updateContacts.includes(contact)) {
-			full.push({ ...contact, documentId: existingContactIds[existingIdx++] });
+			const ex = existingContactIds[existingIdx++];
+			full.push({
+				...contact,
+				id: ex.id,
+				documentId: ex.documentId,
+			});
 		} else {
-			full.push({ ...newContacts[newIdx], documentId: createdIds[newIdx] });
+			full.push({
+				...newContacts[newIdx],
+				id: createdIds[newIdx].id,
+				documentId: createdIds[newIdx].documentId,
+			});
 			newIdx++;
 		}
 	}
@@ -59,6 +68,11 @@ let httpLimit = pLimit(httpConcurrency);
 function reinitHttpLimiter(newConc: number) {
 	httpConcurrency = newConc;
 	httpLimit = pLimit(httpConcurrency);
+}
+
+interface CreatedPair {
+	id: number | null;
+	documentId: string;
 }
 
 async function postWithRetry<T>(
@@ -239,14 +253,17 @@ export const startContactsWorkers = () => {
 				await sleep(300);
 
 				const newContacts: any[] = [];
-				const existingContactIds: DocumentId[] = [];
+				const existingContactIds: CreatedPair[] = [];
 				const updateContacts: any[] = [];
 
 				for (const contact of contacts) {
 					const cached = getCachedContactId(contact);
-					if (cached.documentId) {
+					if (cached?.id && cached.documentId) {
 						updateContacts.push(contact);
-						existingContactIds.push(cached.documentId);
+						existingContactIds.push({
+							id: cached.id,
+							documentId: cached.documentId,
+						});
 					} else {
 						newContacts.push(contact);
 					}
@@ -272,7 +289,7 @@ export const startContactsWorkers = () => {
 				}
 
 				const BULK_SIZE = 1000;
-				const createdIds: DocumentId[] = [];
+				const createdIds: CreatedPair[] = [];
 				let successCount = 0;
 
 				for (let offset = 0; offset < toCreate.length; offset += BULK_SIZE) {
@@ -287,10 +304,10 @@ export const startContactsWorkers = () => {
 						const body = await postWithRetry<{
 							success: boolean;
 							count: number;
-							ids?: Array<{ documentId: DocumentId }>;
+							ids?: Array<{ id: number; documentId: string }>;
 							message?: string;
 						}>(
-							"/api/contacts/bulk-create",
+							"contacts/bulk-create",
 							{ data: batch },
 							{
 								Authorization: `Bearer ${env.DAL_STRAPI_API_TOKEN}`,
@@ -305,19 +322,26 @@ export const startContactsWorkers = () => {
 						}
 
 						const docs = Array.isArray(body.ids) ? body.ids : [];
-						const ids = docs.map((d) => d.documentId);
-						const cacheMap =
-							relationCache.contacts || new Map<string, number>();
-						for (let i = 0; i < ids.length && i < batch.length; i++) {
+						const cacheMap = relationCache.contacts || new Map<string, any>();
+
+						for (let i = 0; i < docs.length && i < batch.length; i++) {
 							const email = (batch[i].email || "").trim();
+							const d = docs[i];
 							if (email && !cacheMap.has(email)) {
-								cacheMap.set(email, { id: null, documentId: ids[i] });
+								cacheMap.set(email, {
+									id: d.id,
+									documentId: d.documentId,
+								});
 							}
 						}
+
 						relationCache.contacts = cacheMap;
 
-						for (const id of ids) {
-							createdIds.push(id);
+						for (const d of docs) {
+							createdIds.push({
+								id: d.id,
+								documentId: d.documentId,
+							});
 							successCount++;
 						}
 
@@ -325,7 +349,7 @@ export const startContactsWorkers = () => {
 						recordResponseTime(dur, false);
 						onHttpSuccess();
 						logger.info(
-							`[${workerId}] → created ${ids.length} items, time=${dur}ms`,
+							`[${workerId}] → created ${docs.length} items, time=${dur}ms`,
 						);
 					} catch (err: any) {
 						const dur = Date.now() - batchStart;
@@ -365,7 +389,10 @@ export const startContactsWorkers = () => {
 							}
 							return c;
 						})
-						.map((c, i) => ({ documentId: existingContactIds[i], ...c }));
+						.map((c, i) => ({
+							documentId: existingContactIds[i].documentId,
+							...c,
+						}));
 
 					const UPDATED_BATCH = 1000;
 					let updatedCount = 0;
@@ -384,7 +411,7 @@ export const startContactsWorkers = () => {
 								count: number;
 								message?: string;
 							}>(
-								"/api/contacts/bulk-update",
+								"contacts/bulk-update",
 								{ data: batch },
 								{
 									Authorization: `Bearer ${env.DAL_STRAPI_API_TOKEN}`,

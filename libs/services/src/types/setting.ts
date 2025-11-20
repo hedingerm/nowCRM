@@ -1,5 +1,5 @@
 import type { BaseFormType, BaseType } from "./common/base-type";
-import type { StrapiConnect } from "./common/StrapiQuery";
+import type { StrapiConnect } from "./common/strapi-query";
 import type { SettingCredential } from "./setting-credential";
 
 export type settingSubscriptionCheck = "verify" | "ignore";

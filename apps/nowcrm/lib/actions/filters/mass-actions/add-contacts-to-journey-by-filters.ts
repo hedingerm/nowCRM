@@ -9,7 +9,7 @@ import {
 import { auth } from "@/auth";
 export async function addContactsToJourneyByFilters(
 	filters: Record<string, any>,
-	journey_id: DocumentId,
+	JourneyId: DocumentId,
 ): Promise<StandardResponse<any>> {
 	const session = await auth();
 	if (!session) {
@@ -23,7 +23,7 @@ export async function addContactsToJourneyByFilters(
 	try {
 		const res = await dalService.addContactsToJourneyByFilters(
 			filters,
-			journey_id,
+			JourneyId,
 		);
 
 		return res;

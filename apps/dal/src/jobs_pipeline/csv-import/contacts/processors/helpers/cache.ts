@@ -15,7 +15,9 @@ const relationFields: Record<string, string> = {
 	contact_interests: "contact_interests",
 	contact_ranks: "contact_ranks",
 	keywords: "keywords",
-	job_titles: "job_titles",
+	job_titles: "contact_job_titles",
+	contact_salutations: "contact_salutations",
+	contact_titles: "contact_titles",
 	tags: "tags",
 	organizations: "organizations",
 	industries: "industries",
@@ -36,7 +38,7 @@ export async function loadRelationDictionaries() {
 
 				if (table === "contacts") {
 					res = await pool.query(
-						`SELECT id, email, phone, mobile_phone, linkedin_url FROM "${table}"`,
+						`SELECT id, document_id, email, phone, mobile_phone, linkedin_url FROM "${table}"`,
 					);
 				} else {
 					res = await pool.query(`SELECT id, name FROM "${table}"`);
@@ -44,8 +46,10 @@ export async function loadRelationDictionaries() {
 
 				console.log(`Query executed for "${table}", rows: ${res.rows.length}`);
 
+				relationCache[table] = new Map();
+
 				if (!res.rows.length) {
-					console.warn(`Table "${table}" returned 0 rows`);
+					console.warn(`Table "${table}" returned 0 rows → cache cleared`);
 					return;
 				}
 
@@ -86,39 +90,27 @@ export async function loadRelationDictionaries() {
 								id: row.id,
 								documentId: row.document_id ?? null,
 							});
-						} else if (table === "job_titles") {
 						}
 					}
 				}
 
-				if (map.size > 0) {
-					relationCache[table] = map;
-				} else {
-					console.warn(
-						`⚠ Table "${table}" produced an empty map (rows=${res.rows.length})`,
-					);
-				}
+				relationCache[table] = map;
 
 				if (table === "contacts") {
 					const contactListRes = await pool.query(
-						"SELECT contact_id, list_id FROM contacts_lists_links",
+						"SELECT contact_id, list_id FROM contacts_lists_lnk",
 					);
 
+					listContactsMap.clear();
 					for (const row of contactListRes.rows) {
-						const listId = row.list_id;
-						const contactId = row.contact_id;
-						if (!listContactsMap.has(listId)) {
-							listContactsMap.set(listId, []);
+						if (!listContactsMap.has(row.list_id)) {
+							listContactsMap.set(row.list_id, []);
 						}
-						listContactsMap.get(listId)?.push(contactId);
+						listContactsMap.get(row.list_id)?.push(row.contact_id);
 					}
 				}
 			} catch (err: unknown) {
-				if (err instanceof Error) {
-					console.error(`Error loading table "${table}": ${err.message}`);
-				} else {
-					console.error(`Unknown error loading table "${table}"`);
-				}
+				console.error(`Error loading table "${table}":`, err);
 			}
 		}),
 	);

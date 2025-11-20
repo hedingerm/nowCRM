@@ -11,6 +11,7 @@ import { deletionQueue } from "@/jobs_pipeline/delete/deletion-queue";
 import { exportQueue } from "@/jobs_pipeline/export/export-queue";
 import { updateQueue } from "../../update/update-queue";
 import { updateSubscriptionQueue } from "../../update-subscription/update-subscription";
+import { resolveDocumentId } from "../helpers/resolve-document-id";
 
 type MassActionType =
 	| "delete"
@@ -26,11 +27,11 @@ type JobData = {
 	entity: string;
 	searchMask: Record<string, any>;
 	mass_action: MassActionType;
-	list_id?: number;
+	list_id?: string;
 	channelId?: number;
 	isSubscribe?: boolean;
-	organization_id?: number;
-	journey_id?: number;
+	organization_id?: string;
+	journey_id?: string;
 	userEmail?: string;
 	addEvent?: boolean;
 	update_data?: {
@@ -45,7 +46,6 @@ type StrapiItem = {
 	documentId: DocumentId;
 };
 
-//check if it returns id and document_id
 export const fetchPage = async (
 	entity: string,
 	searchMask: Record<string, any>,
@@ -105,14 +105,15 @@ const massActionHandlers: Record<
 		if (!jobData.list_id) {
 			throw new Error("Missing list_id for add_to_list");
 		}
+		const listId = await resolveDocumentId("lists", jobData.list_id);
 		console.log(
-			`[add_to_list] Enqueuing ${items.length} items to list ${jobData.list_id}`,
+			`[add_to_list] Enqueuing ${items.length} items to list ${listId}`,
 		);
 		await addToListQueue.add("addToListBatch", {
 			entity,
 			items,
-			listField: "lists",
-			listId: jobData.list_id,
+			typeField: "lists",
+			listId,
 		});
 	},
 
@@ -185,23 +186,37 @@ const massActionHandlers: Record<
 		if (!jobData.organization_id) {
 			throw new Error("Missing organization_id for add_to_organization");
 		}
+		const organizationId = await resolveDocumentId(
+			"organizations",
+			jobData.organization_id,
+		);
+		console.log(
+			`[add_to_organization] Enqueuing ${items.length} items to organization ${organizationId}`,
+		);
 		await addToOrganizationQueue.add("addToOrganizationBatch", {
 			entity,
 			items,
-			listField: "organizations",
-			organizationId: jobData.organization_id,
+			typeField: "organizations",
+			organizationId,
 		});
 	},
 
 	add_to_journey: async ({ entity, items, jobData }) => {
-		if (!jobData.list_id) {
+		if (!jobData.journey_id) {
 			throw new Error("Missing journey_id for add_to_journey");
 		}
+		const journeyStepId = await resolveDocumentId(
+			"journeys",
+			jobData.journey_id,
+		);
+		console.log(
+			`[add_to_journey] Enqueuing ${items.length} items to journey step ${journeyStepId}`,
+		);
 		await addToJourneyQueue.add("addToJourneyBatch", {
 			entity,
 			items,
-			listField: "journeys",
-			journeyStepId: jobData.list_id,
+			typeField: "journeys",
+			journeyStepId,
 		});
 	},
 };

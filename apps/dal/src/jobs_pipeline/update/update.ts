@@ -10,20 +10,20 @@ const RELATIONAL_FIELDS = new Set([
 	"salutation",
 	"title",
 	"consent",
-	"contact_extra_fields",
+	// "contact_extra_fields",
 	"keywords",
 	"tags",
 	"ranks",
 	"contact_types",
 	"sources",
-	"notes",
+	"contact_notes",
 	"industry",
 	"job_title",
 ]);
 
 const MANY_TO_ONE_ENDPOINTS = new Set([
 	"organizations",
-	"job_titles",
+	"contact-job-titles",
 	"contact-salutations",
 	"contact-titles",
 	"industries",
@@ -40,6 +40,7 @@ function toEndpoint(fieldKey: string): string {
 	const specialMap: Record<string, string> = {
 		salutation: "contact-salutations",
 		title: "contact-titles",
+		job_title: "contact-job-titles",
 	};
 	if (specialMap[fieldKey]) return specialMap[fieldKey];
 	const base = fieldKey.replace(/_/g, "-");
@@ -177,8 +178,11 @@ export const updateEntityItems = async (
 							"Content-Type": "application/json",
 						},
 						body: JSON.stringify({
-							where: { documentId: { $in: grpIds } },
-							data: payload,
+							entity,
+							data: grpIds.map((documentId) => ({
+								documentId,
+								...payload,
+							})),
 						}),
 					},
 				);
@@ -253,14 +257,20 @@ export const updateEntityItems = async (
 				relCol: "department_id",
 			},
 			keywords: { table: "contacts_keywords_lnk", relCol: "keyword_id" },
-			"job-titles": {
+			"contact-job-titles": {
 				table: "contacts_job_title_lnk",
-				relCol: "job_title_id",
+				relCol: "contact_job_title_id",
 			},
 			tags: { table: "contacts_tags_lnk", relCol: "tag_id" },
 			sources: { table: "contacts_sources_lnk", relCol: "source_id" },
-			notes: { table: "contact_notes_contact_lnk", relCol: "contact_note_id" },
-			ranks: { table: "contacts_ranks_lnk", relCol: "rank_id" },
+			"contact-notes": {
+				table: "contact_notes_contact_lnk",
+				relCol: "contact_note_id",
+			},
+			"contact-ranks": {
+				table: "contacts_ranks_lnk",
+				relCol: "contact_rank_id",
+			},
 			"contact-types": {
 				table: "contacts_contact_types_lnk",
 				relCol: "contact_type_id",

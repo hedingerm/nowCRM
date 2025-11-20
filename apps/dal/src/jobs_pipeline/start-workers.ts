@@ -1,4 +1,5 @@
 import { startAddToJourneyWorker } from "./add-to-journey/add-to-journey-worker";
+import "./csv-import/csv-worker";
 import { startAddToListWorker } from "./add-to-list/add-to-list-worker";
 import { startAddToOrganizationWorker } from "./add-to-organization/add-to-organization-worker";
 import { startAnonymizeWorker } from "./anonymize/anonymize-worker";

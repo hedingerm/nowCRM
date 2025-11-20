@@ -1,6 +1,6 @@
 import type { Channel } from "./channel";
 import type { BaseFormType, BaseType, DocumentId } from "./common/base-type";
-import type { StrapiConnect } from "./common/StrapiQuery";
+import type { StrapiConnect } from "./common/strapi-query";
 import type { Composition } from "./composition";
 import type { Contact } from "./contact";
 import type { Identity } from "./identity";

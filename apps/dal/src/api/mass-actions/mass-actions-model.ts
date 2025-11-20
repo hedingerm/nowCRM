@@ -32,7 +32,7 @@ export const MassAddToListSchema = z.object({
 	searchMask: z
 		.record(z.any())
 		.openapi({ description: "Search filters to apply" }),
-	listField: z.string().openapi({
+	typeField: z.string().openapi({
 		description: "Field name to assign list ID to (e.g. 'listId')",
 	}),
 	listId: z
@@ -47,7 +47,7 @@ export const MassAddToOrganizationSchema = z.object({
 	searchMask: z
 		.record(z.any())
 		.openapi({ description: "Search filters to apply" }),
-	listField: z.string().openapi({
+	typeField: z.string().openapi({
 		description: "Field name to assign list ID to (e.g. 'listId')",
 	}),
 	organization_id: z
@@ -62,10 +62,10 @@ export const MassAddToJourneySchema = z.object({
 	searchMask: z
 		.record(z.any())
 		.openapi({ description: "Search filters to apply" }),
-	listField: z.string().openapi({
+	typeField: z.string().openapi({
 		description: "Field name to assign list ID to (e.g. 'listId')",
 	}),
-	listId: z
+	JourneyId: z
 		.number()
 		.openapi({ description: "ID of the list to assign items to" }),
 });
@@ -77,7 +77,7 @@ export const MassExportSchema = z.object({
 	searchMask: z
 		.record(z.any())
 		.openapi({ description: "Search filters to apply" }),
-	listField: z.string().openapi({
+	typeField: z.string().openapi({
 		description: "Field name to assign list ID to (e.g. 'listId')",
 	}),
 	listId: z
@@ -92,7 +92,7 @@ export const MassAnonymizeSchema = z.object({
 	searchMask: z
 		.record(z.any())
 		.openapi({ description: "Search filters to apply" }),
-	listField: z.string().openapi({
+	typeField: z.string().openapi({
 		description: "Field name to assign list ID to (e.g. 'listId')",
 	}),
 	listId: z

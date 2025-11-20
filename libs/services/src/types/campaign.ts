@@ -1,7 +1,7 @@
 import type { Action } from "./action";
 import type { CampaignCategory } from "./campaign-category";
 import type { BaseFormType, BaseType } from "./common/base-type";
-import type { StrapiConnect } from "./common/StrapiQuery";
+import type { StrapiConnect } from "./common/strapi-query";
 import type { Composition } from "./composition";
 import type { DonationTransaction } from "./donation-transaction";
 import type { Journey } from "./journey";

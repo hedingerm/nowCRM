@@ -1,6 +1,6 @@
 import type { Asset } from "./common/asset";
 import type { BaseFormType, BaseType, DocumentId } from "./common/base-type";
-import type { StrapiConnect } from "./common/StrapiQuery";
+import type { StrapiConnect } from "./common/strapi-query";
 import type { FormEntityItem, FormEntityItemType } from "./form-item";
 
 export interface FormEntity extends BaseType {

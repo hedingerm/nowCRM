@@ -36,6 +36,8 @@ export const env = cleanEnv(process.env, {
 	DAL_SMTP_PORT: port({ default: 18000, devDefault: testOnly(587) }),
 	DAL_SMTP_USER: str({ devDefault: testOnly("username") }),
 	DAL_SMTP_PASS: str({ devDefault: testOnly("password") }),
+	DAL_BASIC_AUTH_USERNAME: str({ devDefault: testOnly("admin") }),
+	DAL_BASIC_AUTH_PASSWORD: str({ devDefault: testOnly("admin") }),
 	DAL_SMTP_FROM: str({ devDefault: testOnly("") }),
 	STRAPI_URL: str({ devDefault: testOnly("http://localhost:1337/api/") }),
 	COMPOSER_URL: str({ devDefault: testOnly("http://localhost:3020/") }),

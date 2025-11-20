@@ -63,7 +63,7 @@ export const contactCSVTemplateFields = [
 	"ranks",
 	"contact_types",
 	"sources",
-	"notes",
+	"contact_notes",
 	"industry",
 	"connection_degree",
 	"duration_role",

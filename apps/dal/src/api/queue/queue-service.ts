@@ -112,7 +112,7 @@ class QueueServiceApi {
 						type: job.data?.type,
 						massAction: job.data?.mass_action || null,
 						listName: job.data?.list_name || null,
-						listField: job.data?.listField || null,
+						typeField: job.data?.typeField || null,
 						searchMask: job.data?.searchMask || null,
 						parsedSearchMask: parseSearchMaskToString(job.data?.searchMask),
 						logs: [] as string[],

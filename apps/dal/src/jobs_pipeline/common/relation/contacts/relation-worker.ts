@@ -113,13 +113,16 @@ export const startRelationsWorkers = async () => {
 									);
 								}
 
-								const items = Array.isArray(resp.items) ? resp.items : [];
+								const items = Array.isArray(resp.items)
+									? resp.items
+									: Array.isArray((resp as any).ids)
+										? (resp as any).ids
+										: [];
 								if (items.length !== batchNames.length) {
 									logger.warn(
 										`bulkCreate for ${entity}: returned ${items.length}/${batchNames.length} items`,
 									);
 								}
-								//сheck here
 								batchNames.forEach((name, idx) => {
 									const created = items[idx];
 									if (created) {
@@ -224,17 +227,23 @@ export const startRelationsWorkers = async () => {
 								relCol: "department_id",
 							},
 							keywords: {
-								table: "keywords_contacts_lnk",
+								table: "contacts_keywords_lnk",
 								relCol: "keyword_id",
 							},
-							job_titles: {
+							"contact-job-titles": {
 								table: "contacts_job_title_lnk",
-								relCol: "job_title_id",
+								relCol: "contact_job_title_id",
 							},
 							tags: { table: "contacts_tags_lnk", relCol: "tag_id" },
-							sources: { table: "sources_contacts_lnk", relCol: "source_id" },
-							contact_notes: { table: "notes_contact_lnk", relCol: "note_id" },
-							contact_ranks: { table: "ranks_contacts_lnk", relCol: "rank_id" },
+							sources: { table: "contacts_sources_lnk", relCol: "source_id" },
+							"contact-notes": {
+								table: "contact_notes_contact_lnk",
+								relCol: "contact_note_id",
+							},
+							"contact-ranks": {
+								table: "contacts_ranks_lnk",
+								relCol: "contact_rank_id",
+							},
 							"contact-types": {
 								table: "contacts_contact_types_lnk",
 								relCol: "contact_type_id",
@@ -270,7 +279,6 @@ export const startRelationsWorkers = async () => {
 								.map((_, idx) => `($${idx * 2 + 1},$${idx * 2 + 2})`)
 								.join(",");
 							const flat = chunk.flat();
-
 							const start = Date.now();
 							try {
 								await pool.query(

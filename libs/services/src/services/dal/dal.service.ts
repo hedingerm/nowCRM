@@ -52,7 +52,7 @@ class DalService {
 				failedOrgs: Array.isArray(job.failedOrgs) ? job.failedOrgs : [],
 				massAction: job.massAction ?? null,
 				listName: job.listName ?? null,
-				listField: job.listField ?? null,
+				typeField: job.typeField ?? null,
 				parsedSearchMask: job.parsedSearchMask ?? "",
 			}));
 
@@ -325,14 +325,14 @@ class DalService {
 
 	async addContactsToJourneyByFilters(
 		filters: Record<string, any>,
-		listId: DocumentId,
+		JourneyId: DocumentId,
 	): Promise<StandardResponse<any>> {
 		try {
 			const payload = {
 				entity: "contacts",
 				searchMask: filters,
 				mass_action: "add_to_journey",
-				list_id: listId,
+				journey_id: JourneyId,
 			};
 
 			console.log(
