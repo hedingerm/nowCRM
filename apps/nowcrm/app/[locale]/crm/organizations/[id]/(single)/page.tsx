@@ -2,17 +2,17 @@ import type { DocumentId, PaginationParams } from "@nowcrm/services";
 import { contactsService, organizationsService } from "@nowcrm/services/server";
 import type { Session } from "next-auth";
 import { auth } from "@/auth";
-import DataTable from "@/components/dataTable/dataTable";
-import ErrorMessage from "@/components/ErrorMessage";
-import { TypographyH3 } from "@/components/Typography";
+import DataTable from "@/components/dataTable/data-table";
+import ErrorMessage from "@/components/error-message";
+import { TypographyH3 } from "@/components/typography";
 import { transformFilters } from "@/lib/actions/filters/filters-search";
-import AdvancedFilters from "../../../contacts/components/advancedFilters/advancedFilters";
-import addToListDialog from "../contacts/components/addToListDialog";
-import { columns } from "../contacts/components/columns/ContactColumns";
-import MassActionsContacts from "../contacts/components/massActions/MassActions";
-import { OrganizationAddressCard } from "./components/adressInfo/addressCard";
-import { OrganizationGeneralInfoCard } from "./components/generalInfo/generalInfoCard";
-import { OrganizationProfessionalInfoCard } from "./components/professionalInfo/professionalInfoCard";
+import AdvancedFilters from "../../../contacts/components/advancedFilters/advanced-filters";
+import addToListDialog from "../contacts/components/add-to-list-dialog";
+import { columns } from "../contacts/components/columns/contact-columns";
+import MassActionsContacts from "../contacts/components/massActions/mass-actions";
+import { OrganizationAddressCard } from "./components/adressInfo/address-info";
+import { OrganizationGeneralInfoCard } from "./components/generalInfo/general-info";
+import { OrganizationProfessionalInfoCard } from "./components/professionalInfo/proff-info";
 
 export default async function Home(props: {
 	params: Promise<{ id: DocumentId }>;

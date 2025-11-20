@@ -1,5 +1,5 @@
 import type { CommunicationChannelKeys } from "../static/communication-channel";
-import type { BaseFormType, BaseType } from "./common/base_type";
+import type { BaseFormType, BaseType } from "./common/base-type";
 
 export type EditorTextTypes = "text" | "html";
 export type FileUploadTypes = "image" | "all" | "none";

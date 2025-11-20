@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useMessages } from "next-intl";
 import toast from "react-hot-toast";
 import { FaRegTrashCan } from "react-icons/fa6";
-import { SortableHeader } from "@/components/dataTable/SortableHeader";
+import { SortableHeader } from "@/components/dataTable/sortable-header";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -18,8 +18,8 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { RouteConfig } from "@/lib/config/RoutesConfig";
-import { formatDateTimeStrapi } from "@/lib/strapiDate";
+import { RouteConfig } from "@/lib/config/routes-config";
+import { formatDateTimeStrapi } from "@/lib/strapi-date";
 
 const DeleteAction: React.FC<{
 	contact: Contact;
@@ -36,7 +36,7 @@ const DeleteAction: React.FC<{
 				<DropdownMenuItem
 					onClick={async () => {
 						const { removeFromStepContact } = await import(
-							"./remove_from_step"
+							"./remove-from-step"
 						);
 						const res = await removeFromStepContact(contact.documentId, stepId);
 						if (!res.success) {

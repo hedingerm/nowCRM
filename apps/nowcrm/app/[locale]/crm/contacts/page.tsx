@@ -6,9 +6,9 @@ import type { Metadata } from "next";
 import type { Session } from "next-auth";
 import { getTranslations } from "next-intl/server";
 import { auth } from "@/auth";
-import ErrorMessage from "@/components/ErrorMessage";
-import { HelloMessage } from "@/components/HelloMessage";
-import ContactsTableClient from "./ContactsTableClient";
+import ErrorMessage from "@/components/error-message";
+import { HelloMessage } from "@/components/hello-message";
+import ContactsTableClient from "./contacts-table-client";
 
 export const metadata: Metadata = { title: "Contacts" };
 

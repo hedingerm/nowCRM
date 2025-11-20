@@ -1,7 +1,7 @@
 import type { CompositionScheduled } from "@nowcrm/services";
 import { compositionScheduledsService } from "@nowcrm/services/server";
 import amqp from "amqplib";
-import { env } from "@/common/utils/envConfig";
+import { env } from "@/common/utils/env-config";
 import { logger } from "@/logger";
 
 const QUEUE_NAME = "delayed_composer_jobs";

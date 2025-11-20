@@ -1,7 +1,7 @@
 "use client";
 
-import { AsyncSelect } from "@/components/autoComplete/AsyncSelect";
-import type { Option } from "@/components/autoComplete/autoComplete";
+import { AsyncSelect } from "@/components/autoComplete/async-select";
+import type { Option } from "@/components/autoComplete/auto-complete";
 import {
 	Select,
 	SelectContent,

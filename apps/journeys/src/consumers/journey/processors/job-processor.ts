@@ -4,10 +4,10 @@ import {
 	createNextJob,
 	createRuleCheckJob,
 } from "../../../jobs/create-job";
-import { addJourneyPassedStep } from "../../../lib/functions/addJourneyPassedStep";
-import { getJourneyStep } from "../../../lib/functions/helpers/getJourneyStep";
-import { processJob } from "../../../lib/functions/processJob";
-import { createContactActionAndScore } from "../../../lib/functions/rules/createActionAndScore";
+import { addJourneyPassedStep } from "../../../lib/functions/add-journey-passed-step";
+import { getJourneyStep } from "../../../lib/functions/helpers/get-journey-step";
+import { processJob } from "../../../lib/functions/process-job";
+import { createContactActionAndScore } from "../../../lib/functions/rules/create-action-and-score";
 import { logger } from "../../../logger";
 
 export async function processJobMessage(data: jobProcessorJobData) {

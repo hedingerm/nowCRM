@@ -4,13 +4,13 @@ import type { Metadata } from "next";
 import type { Session } from "next-auth";
 import { getTranslations } from "next-intl/server";
 import { auth } from "@/auth";
-import DataTable from "@/components/dataTable/dataTable";
-import ErrorMessage from "@/components/ErrorMessage";
+import DataTable from "@/components/dataTable/data-table";
+import ErrorMessage from "@/components/error-message";
 import {
 	columns,
 	renderSubComponent,
-} from "./components/columns/surveyColumns";
-import DonationTransactionMassActions from "./components/massActions/massActions";
+} from "./components/columns/survey-columns";
+import DonationTransactionMassActions from "./components/massActions/mass-actions";
 
 export const metadata: Metadata = {
 	title: "Contact surveys",

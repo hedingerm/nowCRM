@@ -1,5 +1,5 @@
 import type { Asset } from "../client";
-import type { BaseFormType, BaseType } from "./common/base_type";
+import type { BaseFormType, BaseType } from "./common/base-type";
 
 interface UserRole {
 	id: number;

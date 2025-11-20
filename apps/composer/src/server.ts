@@ -1,22 +1,22 @@
 import express, { type Express } from "express";
 import helmet from "helmet";
 import { pino } from "pino";
-import { healthCheckRouter } from "@/api/healthCheck/healthCheckRouter";
-import errorHandler from "@/common/middleware/errorHandler";
-import rateLimiter from "@/common/middleware/rateLimiter";
-import requestLogger from "@/common/middleware/requestLogger";
-import "@/lib/workers/MassSendWorker";
-import "./lib/workers/SendWorker";
-import { serverAdapter } from "./views/BullBoard";
+import { healthCheckRouter } from "@/api/healthCheck/healt-check-router";
+import errorHandler from "@/common/middleware/error-handler";
+import rateLimiter from "@/common/middleware/rate-limiter";
+import requestLogger from "@/common/middleware/request-logger";
+import "@/lib/workers/mass-send-worker";
+import "./lib/workers/send-worker";
+import { serverAdapter } from "./views/bull-board";
 
 const logger = pino({ name: "server start" });
 
 import path from "node:path";
-import { snsWebhookRouter } from "@/api/sesEvents/snsWebhookRouter";
-import { composerRouter } from "./api/composer/composerRouter";
-import { queueRouter } from "./api/queue/queueRouter";
-import { sendToChannelsRouter } from "./api/sendToChannels/sendRouter";
-import { openAPIRouter } from "./api-docs/openAPIRouter";
+import { snsWebhookRouter } from "@/api/ses-events/sns-webhook-router";
+import { composerRouter } from "./api/composer/composer-router";
+import { queueRouter } from "./api/queue/queue-router";
+import { sendToChannelsRouter } from "./api/sendToChannels/send-router";
+import { openAPIRouter } from "./api-docs/open-api-router";
 import { initRabbitWorker } from "./scheduler/rabit-worker";
 
 const __dirname = path.resolve();

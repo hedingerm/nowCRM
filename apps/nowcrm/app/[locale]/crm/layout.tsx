@@ -4,10 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import Footer from "@/components/footer";
-import Spinner from "@/components/Spinner";
-import { ThemeSwitcher } from "@/components/ThemeSwitcher";
-import NavigationLinks from "@/components/topbar/navigationLinks";
-import UserMenu from "@/components/topbar/userMenu";
+import Spinner from "@/components/spinner";
+import { ThemeSwitcher } from "@/components/theme-switcher";
+import NavigationLinks from "@/components/topbar/navigation-links";
+import UserMenu from "@/components/topbar/user-menu";
 
 export default async function RootLayout({
 	children,

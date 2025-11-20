@@ -26,7 +26,7 @@ import {
 	updateUser,
 	uploadImage,
 } from "@/lib/actions/profile/edit-profile";
-import { RouteConfig } from "@/lib/config/RoutesConfig";
+import { RouteConfig } from "@/lib/config/routes-config";
 
 interface SessionUser {
 	username: string;

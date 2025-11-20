@@ -5,7 +5,7 @@ import { usersService } from "@nowcrm/services/server"
 import { headers } from "next/headers";
 
 import { parse } from "cookie"; // make sure you're using named import
-import { env } from "./lib/config/envConfig";
+import { env } from "./lib/config/env-config";
 
 
 

@@ -13,12 +13,12 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import * as z from "zod";
-import { AsyncSelectField } from "@/components/autoComplete/asyncSelectField";
+import { AsyncSelectField } from "@/components/autoComplete/async-select-field";
 import {
 	ChannelThrottleField,
 	throttleUtils,
-} from "@/components/ChannelThrottleField";
-import Spinner from "@/components/Spinner";
+} from "@/components/channel-throttle-field";
+import Spinner from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import { DialogClose } from "@/components/ui/dialog";
 import {
@@ -43,7 +43,7 @@ import {
 	getChannelThrottle,
 } from "@/lib/actions/channels/get-channel-throttle";
 import { getComposition } from "@/lib/actions/composer/get-composition";
-import { normalizePhone } from "@/lib/normalizePhone";
+import { normalizePhone } from "@/lib/normalize-phone";
 
 export interface WhatsAppChannelContentProps {
 	mode?: "composer" | "mass_actions";
@@ -422,7 +422,9 @@ export function WhatsAppChannelContent({
 			// Composer mode: send right away
 			try {
 				setIsLoading(true);
-				const { sendToChannelAction } = await import("../sendToChannelAction");
+				const { sendToChannelAction } = await import(
+					"../send-to-channel-action"
+				);
 				const answer = await sendToChannelAction(submissionData);
 				if (answer.success) {
 					toast.success(

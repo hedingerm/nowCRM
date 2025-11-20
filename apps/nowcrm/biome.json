@@ -10,7 +10,9 @@
 			"lib/**",
 			"!components/editor",
 			"!components/ui",
-			"!components/event-calendar"
+			"!components/event-calendar",
+			"!tests",
+			"!tests"
 		]
 	},
 	"linter": {

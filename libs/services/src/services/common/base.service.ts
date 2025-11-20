@@ -1,7 +1,7 @@
 // src/services/baseService.ts
 import qs from "qs";
-import { envServices } from "../../envConfig";
-import type { DocumentId } from "../../types/common/base_type";
+import { envServices } from "../../env-config";
+import type { DocumentId } from "../../types/common/base-type";
 import type { StrapiQuery } from "../../types/common/StrapiQuery";
 import type { StandardResponse } from "./response.service";
 import { handleError, handleResponse } from "./response.service";

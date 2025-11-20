@@ -2,8 +2,8 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { getCrmVersion } from "@/lib/actions/crmversion/getCrmVersion";
-import { RouteConfig } from "@/lib/config/RoutesConfig";
+import { getCrmVersion } from "@/lib/actions/crmversion/get-crm-version";
+import { RouteConfig } from "@/lib/config/routes-config";
 
 export default function Footer() {
 	const pathname = usePathname();

@@ -47,7 +47,7 @@ import { updateSettingCredentials } from "@/lib/actions/settings/credentials/upd
 import {
 	getStatusColor,
 	getStatusIcon,
-} from "@/lib/static/healthCheckStatuses";
+} from "@/lib/static/health-check-statuses";
 
 interface UnipileHealthCheckProps {
 	unipile_credential: Omit<SettingCredential, "setting">;

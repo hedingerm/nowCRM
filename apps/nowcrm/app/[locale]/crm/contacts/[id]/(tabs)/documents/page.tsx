@@ -4,10 +4,10 @@ import type { Metadata } from "next";
 import type { Session } from "next-auth";
 import { getTranslations } from "next-intl/server";
 import { auth } from "@/auth";
-import DataTable from "@/components/dataTable/dataTable";
-import ErrorMessage from "@/components/ErrorMessage";
-import { columns } from "./components/columns/documentColumns";
-import DocumentsMassActions from "./components/massActions/massActions";
+import DataTable from "@/components/dataTable/data-table";
+import ErrorMessage from "@/components/error-message";
+import { columns } from "./components/columns/docs-columns";
+import DocumentsMassActions from "./components/massActions/mass-actions";
 
 export const metadata: Metadata = {
 	title: "Contact documents",

@@ -8,7 +8,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { VerifyOtpForm } from "./components/verifyOtpFom";
+import { VerifyOtpForm } from "./components/verify-otp-form";
 
 export default async function Page() {
 	const t = await getTranslations("Auth");

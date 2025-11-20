@@ -1,6 +1,6 @@
 import { API_ROUTES_DAL } from "../../api-routes/api-routes-dal";
-import { envServices } from "../../envConfig";
-import type { DocumentId } from "../../types/common/base_type";
+import { envServices } from "../../env-config";
+import type { DocumentId } from "../../types/common/base-type";
 import type { ImportRecord } from "../../types/dal/import-record";
 import type { ServiceResponse } from "../../types/microservices/service-response";
 import { handleError, type StandardResponse } from "../common/response.service";

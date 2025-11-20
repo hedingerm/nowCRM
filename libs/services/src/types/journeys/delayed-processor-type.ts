@@ -1,4 +1,4 @@
-import type { DocumentId } from "../common/base_type";
+import type { DocumentId } from "../common/base-type";
 import type { JourneyStepTypes, JourneyTiming } from "../journey-step";
 
 export type delayedProcessorJobData = {

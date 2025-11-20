@@ -13,7 +13,7 @@ import {
 	type StandardResponse,
 } from "@nowcrm/services/server";
 import type { Session } from "next-auth";
-import { env } from "@/lib/config/envConfig";
+import { env } from "@/lib/config/env-config";
 
 /**
  * Server action to fetch a form by its slug/ID

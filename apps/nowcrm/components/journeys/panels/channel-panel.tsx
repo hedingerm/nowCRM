@@ -16,7 +16,7 @@ import Link from "next/link";
 import type React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Edge, Node } from "reactflow";
-import { AsyncSelect } from "@/components/autoComplete/AsyncSelect";
+import { AsyncSelect } from "@/components/autoComplete/async-select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -37,9 +37,9 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { RouteConfig } from "@/lib/config/RoutesConfig";
-import ContactsPageClient from "../contact-dialog/contactsDataTable";
-import { BranchingTab } from "./BranchingTab";
+import { RouteConfig } from "@/lib/config/routes-config";
+import ContactsPageClient from "../contact-dialog/contacts-data-table";
+import { BranchingTab } from "./branching-tab";
 
 type Condition = {
 	id: string;

@@ -1,6 +1,6 @@
 "use server";
 
-import ActionResult from "@/components/actionResult";
+import ActionResult from "@/components/action-result";
 import {
 	Card,
 	CardContent,

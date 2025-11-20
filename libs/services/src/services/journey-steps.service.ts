@@ -1,6 +1,6 @@
 import { API_ROUTES_STRAPI } from "../api-routes/api-routes-strapi";
 import { actionTypes } from "../client";
-import type { DocumentId } from "../types/common/base_type";
+import type { DocumentId } from "../types/common/base-type";
 import type { Form_JourneyStep, JourneyStep } from "../types/journey-step";
 import { actionsService } from "./action.service";
 import BaseService from "./common/base.service";

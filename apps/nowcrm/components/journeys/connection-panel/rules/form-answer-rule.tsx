@@ -4,8 +4,8 @@ import type { DocumentId } from "@nowcrm/services";
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { AsyncSelect } from "@/components/autoComplete/AsyncSelect";
-import type { Option } from "@/components/autoComplete/autoComplete";
+import { AsyncSelect } from "@/components/autoComplete/async-select";
+import type { Option } from "@/components/autoComplete/auto-complete";
 import { Input } from "@/components/ui/input";
 import {
 	Select,
@@ -14,7 +14,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { RouteConfig } from "@/lib/config/RoutesConfig";
+import { RouteConfig } from "@/lib/config/routes-config";
 import type { Condition } from "../connection-panel"; // adjust the path if your types live elsewhere
 
 interface FormCompleteRuleProps {

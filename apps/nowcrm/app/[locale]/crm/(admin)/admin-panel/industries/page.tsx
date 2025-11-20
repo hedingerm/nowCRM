@@ -3,11 +3,11 @@ import { industriesService } from "@nowcrm/services/server";
 import type { Session } from "next-auth";
 import { getTranslations } from "next-intl/server";
 import { auth } from "@/auth";
-import DataTable from "@/components/dataTable/dataTable";
-import ErrorMessage from "@/components/ErrorMessage";
-import { columns } from "./components/columns/industriesColumns";
-import createIndustryDialog from "./components/createDialog";
-import MassActionsIndustries from "./components/massActions/massActions";
+import DataTable from "@/components/dataTable/data-table";
+import ErrorMessage from "@/components/error-message";
+import { columns } from "./components/columns/industries-columns";
+import createIndustryDialog from "./components/create-dialog";
+import MassActionsIndustries from "./components/massActions/mass-actions";
 
 export default async function Page(props: {
 	searchParams: Promise<PaginationParams>;

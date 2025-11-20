@@ -3,11 +3,11 @@ import { formsService } from "@nowcrm/services/server";
 import type { Metadata } from "next";
 import type { Session } from "next-auth";
 import { auth } from "@/auth";
-import DataTable from "@/components/dataTable/dataTable";
-import ErrorMessage from "@/components/ErrorMessage";
-import { columns } from "./components/columns/formColumns";
-import createListDialog from "./components/createDialog";
-import MassActionsLists from "./components/massActions/massActions";
+import DataTable from "@/components/dataTable/data-table";
+import ErrorMessage from "@/components/error-message";
+import { columns } from "./components/columns/form-columns";
+import createListDialog from "./components/create-dialog";
+import MassActionsLists from "./components/massActions/mass-actions";
 export const metadata: Metadata = {
 	title: "Forms",
 };

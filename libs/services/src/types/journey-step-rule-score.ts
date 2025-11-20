@@ -1,4 +1,4 @@
-import type { BaseFormType, BaseType, DocumentId } from "./common/base_type";
+import type { BaseFormType, BaseType, DocumentId } from "./common/base-type";
 import type { JourneyStepRule } from "./journey-step-rule";
 export interface JourneyStepRuleScore extends BaseType {
 	value: string;

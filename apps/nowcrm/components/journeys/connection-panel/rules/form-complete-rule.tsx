@@ -2,8 +2,8 @@
 
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
-import { AsyncSelect } from "@/components/autoComplete/AsyncSelect";
-import type { Option } from "@/components/autoComplete/autoComplete";
+import { AsyncSelect } from "@/components/autoComplete/async-select";
+import type { Option } from "@/components/autoComplete/auto-complete";
 import {
 	Select,
 	SelectContent,
@@ -11,7 +11,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { RouteConfig } from "@/lib/config/RoutesConfig";
+import { RouteConfig } from "@/lib/config/routes-config";
 import type { Condition } from "../connection-panel"; // adjust the path if your types live elsewhere
 
 interface FormCompleteRuleProps {

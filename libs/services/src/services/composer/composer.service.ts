@@ -1,7 +1,11 @@
 import { API_ROUTES_COMPOSER } from "../../api-routes/api-routes-composer";
-import type { createComposition, sendToChannelsData } from "../../client";
-import { envServices } from "../../envConfig";
-import type { DocumentId } from "../../types/common/base_type";
+import type {
+	createComposition,
+	StructuredResponseModel,
+	sendToChannelsData,
+} from "../../client";
+import { envServices } from "../../env-config";
+import type { DocumentId } from "../../types/common/base-type";
 
 import type { ServiceResponse } from "../../types/microservices/service-response";
 import { handleError, type StandardResponse } from "../common/response.service";
@@ -201,6 +205,34 @@ class ComposerService {
 				success: false,
 				errorMessage: error.message,
 			};
+		}
+	}
+
+	async requestStructuredResponse(
+		data: StructuredResponseModel,
+	): Promise<StandardResponse<{ result: string }>> {
+		try {
+			const url = `${envServices.COMPOSER_URL}${API_ROUTES_COMPOSER.COMPOSER_STRUCTURED_RESPONSE}`;
+			const response = await fetch(url, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				cache: "no-store",
+				body: JSON.stringify(data),
+			});
+			const json = (await response.json()) as ServiceResponse<{
+				result: string;
+			}>;
+
+			return {
+				data: json.responseObject,
+				status: json.statusCode,
+				success: json.success,
+				errorMessage: json.message,
+			};
+		} catch (error: any) {
+			return handleError(error);
 		}
 	}
 }
