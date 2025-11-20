@@ -118,8 +118,7 @@ const actionsConfig: ActionsConfig = {
 			});
 		},
 		dialogSubmitLabel: "Delete",
-		successMessage:
-			"Contacts deleted",
+		successMessage: "Contacts deleted",
 		errorMessage: "Error during deleting contacts",
 	},
 	anonymize: {
@@ -153,8 +152,7 @@ const actionsConfig: ActionsConfig = {
 			});
 		},
 		dialogSubmitLabel: "Anonymize",
-		successMessage:
-			"Contacts anonymized",
+		successMessage: "Contacts anonymized",
 		errorMessage: "Error during anonymizing contacts",
 	},
 	export: {

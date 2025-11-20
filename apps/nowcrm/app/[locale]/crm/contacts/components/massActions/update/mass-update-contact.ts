@@ -62,16 +62,13 @@ export async function MassUpdateContactField(
 				names.map(async (name) => {
 					const found = await svc.find(
 						{ filters: { name: { $eq: name } } },
-						session.jwt
+						session.jwt,
 					);
 					if (found.success && found.data && found.data.length > 0) {
 						return found.data[0].id;
 					}
 
-					const created = await svc.create(
-						{ name },
-						session.jwt
-					);
+					const created = await svc.create({ name }, session.jwt);
 					if (!created.success || !created.data) {
 						throw new Error(
 							`Failed to create "${field}" relation with name "${name}"`,
