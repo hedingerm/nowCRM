@@ -46,7 +46,6 @@ type StrapiItem = {
 	documentId: DocumentId;
 };
 
-//check if it returns id and document_id
 export const fetchPage = async (
 	entity: string,
 	searchMask: Record<string, any>,

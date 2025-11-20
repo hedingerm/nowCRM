@@ -60,7 +60,7 @@ export const contactCSVTemplateFields = [
 	"keywords",
 	"last_access",
 	"account_created_at",
-	"contact_ranks",
+	"ranks",
 	"contact_types",
 	"sources",
 	"contact_notes",

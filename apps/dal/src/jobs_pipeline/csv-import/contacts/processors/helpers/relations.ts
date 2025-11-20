@@ -43,12 +43,12 @@ export const contactsJoinConfig: Record<
 		relCol: "source_id",
 	},
 	"contact-notes": {
-		table: "notes_contact_lnk",
+		table: "contact_notes_contact_lnk",
 		leftCol: "contact_id",
-		relCol: "note_id",
+		relCol: "contact_note_id",
 	},
 	"contact-ranks": {
-		table: "ranks_contacts_lnk",
+		table: "contacts_ranks_lnk",
 		leftCol: "contact_id",
 		relCol: "contact_rank_id",
 	},
@@ -237,7 +237,7 @@ export async function handleRelations(contact: any): Promise<any> {
 					const searchValue = getSearchValue(val);
 					if (!searchValue) return null;
 
-					const id = cache.get(searchValue)?.id; //check
+					const id = cache.get(searchValue)?.id;
 					if (id) relationStats.resolved++;
 					else relationStats.missing++;
 
@@ -251,7 +251,7 @@ export async function handleRelations(contact: any): Promise<any> {
 
 			const searchValue = getSearchValue(rawValue);
 			if (searchValue) {
-				const id = cache.get(searchValue)?.id; //check
+				const id = cache.get(searchValue)?.id;
 				if (id) {
 					relationStats.resolved++;
 					contact[fieldKey] = id;

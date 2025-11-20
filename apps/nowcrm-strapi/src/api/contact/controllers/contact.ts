@@ -264,7 +264,6 @@ export default factories.createCoreController('api::contact.contact', ({ strapi 
     }
   },
 
-  //check if it returns both identifiers
   async bulkCreate(ctx) {
     const { entity, data } = ctx.request.body;
     if (!Array.isArray(data) || data.length === 0) {
@@ -328,7 +327,7 @@ export default factories.createCoreController('api::contact.contact', ({ strapi 
 
         return ctx.send({
           success: bad.length === 0,
-          updated: ok.length,
+          count: ok.length,
           failed: bad.length,
           ids: ok.map(r => r.documentId),
         });

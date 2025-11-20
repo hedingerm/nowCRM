@@ -13,10 +13,10 @@ const RELATIONAL_FIELDS = new Set([
 	// "contact_extra_fields",
 	"keywords",
 	"tags",
-	"contact_ranks",
+	"ranks",
 	"contact_types",
 	"sources",
-	"notes",
+	"contact_notes",
 	"industry",
 	"job_title",
 ]);
