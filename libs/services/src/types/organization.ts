@@ -1,6 +1,6 @@
 import type { LanguageKeys } from "../static/languages";
 import type { BaseFormType, BaseType, DocumentId } from "./common/base-type";
-import type { StrapiConnect } from "./common/StrapiQuery";
+import type { StrapiConnect } from "./common/strapi-query";
 import type { Contact } from "./contact";
 import type { Frequency } from "./frequncy";
 import type { Industry } from "./industry";

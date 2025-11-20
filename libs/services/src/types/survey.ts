@@ -1,5 +1,5 @@
 import type { BaseFormType, BaseType, DocumentId } from "./common/base-type";
-import type { StrapiConnect } from "./common/StrapiQuery";
+import type { StrapiConnect } from "./common/strapi-query";
 import type { Contact } from "./contact";
 import type { SurveyItem } from "./survey-item";
 export interface Survey extends BaseType {

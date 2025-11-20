@@ -3,7 +3,7 @@ import type { LanguageKeys } from "../static/languages";
 import type { Campaign } from "./campaign";
 import type { BaseFormType, BaseType } from "./common/base-type";
 import type { Option } from "./common/option";
-import type { StrapiConnect } from "./common/StrapiQuery";
+import type { StrapiConnect } from "./common/strapi-query";
 import type { CompositionItem } from "./composition-item";
 export type CompositionStatusKeys = "Finished" | "Pending" | "Errored";
 

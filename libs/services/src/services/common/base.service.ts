@@ -2,7 +2,7 @@
 import qs from "qs";
 import { envServices } from "../../env-config";
 import type { DocumentId } from "../../types/common/base-type";
-import type { StrapiQuery } from "../../types/common/StrapiQuery";
+import type { StrapiQuery } from "../../types/common/strapi-query";
 import type { StandardResponse } from "./response.service";
 import { handleError, handleResponse } from "./response.service";
 
