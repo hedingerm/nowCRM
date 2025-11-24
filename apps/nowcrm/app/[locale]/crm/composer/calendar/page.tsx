@@ -6,7 +6,15 @@ import { mapToCalendarEvents } from "@/lib/utils";
 export default async function CalendarPage() {
 	const now = new Date();
 	const start = new Date(now.getFullYear(), now.getMonth(), 1);
-	const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+	const end = new Date(
+		now.getFullYear(),
+		now.getMonth() + 1,
+		0,
+		23,
+		59,
+		59,
+		999,
+	);
 
 	const res = await fetchScheduledCompositions(
 		start.toISOString(),

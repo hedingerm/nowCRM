@@ -349,6 +349,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ formId }) => {
 		toast.loading("Saving form…", { id: "save" });
 
 		try {
+			console.log("Before save - items:", formData.form_items.length);
 			// Strip media and id from payload
 			const {
 				documentId: formId,
@@ -414,6 +415,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ formId }) => {
 			const fresh = await getFormBySlugOrId(formId, false);
 			if (fresh.success && fresh.data?.length) {
 				const fullForm = fresh.data[0];
+				console.log("After refetch - items:", fullForm.form_items?.length);
 				setFormData({
 					...fullForm,
 					form_items: fullForm.form_items || [],
@@ -421,6 +423,10 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ formId }) => {
 				toast.success("Form saved!", { id: "save" });
 				setShowPreviewButton(true);
 			} else {
+				console.log(
+					"After refetch (fallback) - items:",
+					response.data?.form_items?.length,
+				);
 				setFormData({
 					...response.data!,
 					form_items: response.data!.form_items || [],

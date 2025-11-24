@@ -111,15 +111,15 @@ export function EditDialog({ contact, isOpen, onClose }: EditDialogProps) {
 	}, []);
 
 	const formSchema = z.object({
-		first_name: z
-			.string()
-			.min(1, t("Contacts.details.personal.edit.nameSchema")),
+		first_name: z.string().optional(),
 		last_name: z.string().optional(),
 		email: z
-			.string()
-			.email(t("Contacts.details.personal.edit.emailSchema"))
-			.optional()
-			.or(z.literal("")),
+			.union([
+				z.string().email(t("Contacts.details.personal.edit.emailSchema")),
+				z.literal(""),
+			])
+			.transform((val) => (val === "" ? undefined : val))
+			.optional(),
 		phone: z
 			.string()
 			.regex(/^[+0-9-]*$/, t("Contacts.details.personal.edit.phoneSchema"))
@@ -154,7 +154,7 @@ export function EditDialog({ contact, isOpen, onClose }: EditDialogProps) {
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			first_name: contact.first_name,
+			first_name: contact.first_name || "",
 			last_name: contact.last_name || "",
 			email: contact.email || "",
 			contact_types: contact.contact_types?.length
@@ -205,7 +205,7 @@ export function EditDialog({ contact, isOpen, onClose }: EditDialogProps) {
 		} else {
 			toast.success(
 				t("Contacts.details.personal.edit.success", {
-					name: values.first_name,
+					name: values.first_name ?? "",
 				}),
 			);
 			router.refresh();

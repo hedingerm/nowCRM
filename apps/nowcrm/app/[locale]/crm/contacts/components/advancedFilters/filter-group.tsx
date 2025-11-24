@@ -92,14 +92,25 @@ const FilterGroupComponent = ({
 
 	const addFilter = () => {
 		if (!selectedField) return;
-		const current = group.filters || {};
+		const current = currentFilters();
 		const newFilters = { ...current };
 
-		newFilters[selectedField] = "";
+		// Append unique suffix for duplicate fields
+		let fieldKey = selectedField;
+		if (selectedField in current) {
+			// Find the next available index for this field
+			let index = 0;
+			while (`${selectedField}_${index}` in current) {
+				index++;
+			}
+			fieldKey = `${selectedField}_${index}`;
+		}
+
+		newFilters[fieldKey] = "";
 
 		// only for non-relation fields
 		if (FIELD_TYPES[selectedField] !== "relation") {
-			newFilters[`${selectedField}_operator`] =
+			newFilters[`${fieldKey}_operator`] =
 				getOperatorsForField(selectedField)[0].value;
 		}
 
