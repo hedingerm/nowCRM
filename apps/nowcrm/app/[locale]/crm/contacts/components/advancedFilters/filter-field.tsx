@@ -44,11 +44,13 @@ const FilterField = ({
 	groupIndex: number;
 }) => {
 	const t = useTranslations();
-	const fieldType = FIELD_TYPES[fieldName] || "text";
-	const operators = getOperatorsForField(fieldName);
+	// Strip numeric suffix for base field name
+	const baseFieldName = fieldName.replace(/_\d+$/, "");
+	const fieldType = FIELD_TYPES[baseFieldName] || "text";
+	const operators = getOperatorsForField(baseFieldName);
 	const isNullOperator = operator === "$null" || operator === "$notNull";
 
-	const relationMeta = RELATION_META[fieldName];
+	const relationMeta = RELATION_META[baseFieldName];
 	const relationPath = `groups.${groupIndex}.filters.${fieldName}` as const;
 
 	const surveyId = useWatch({
@@ -64,7 +66,7 @@ const FilterField = ({
 		<div className="flex items-center gap-2 rounded-lg border bg-muted/30 p-3">
 			<div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
 				<div className="min-w-[120px] flex-shrink-0 font-medium text-sm">
-					{fieldName
+					{baseFieldName
 						.replace(/_/g, " ")
 						.replace(/\b\w/g, (l) => l.toUpperCase())}
 				</div>
@@ -96,7 +98,7 @@ const FilterField = ({
 									onValueChange(date ? format(date, "yyyy-MM-dd") : "")
 								}
 							/>
-						) : fieldType === "enum" && fieldName === "language" ? (
+						) : fieldType === "enum" && baseFieldName === "language" ? (
 							<Select value={value || ""} onValueChange={onValueChange}>
 								<SelectTrigger className="h-8">
 									<SelectValue placeholder="Select..." />
@@ -108,21 +110,21 @@ const FilterField = ({
 									<SelectItem value="it">Italian</SelectItem>
 								</SelectContent>
 							</Select>
-						) : fieldType === "text" && fieldName === "country" ? (
+						) : fieldType === "text" && baseFieldName === "country" ? (
 							<SearchableComboboxDialog
 								options={countries}
 								value={value ?? ""}
 								onChange={onValueChange}
 								placeholder={t("AdvancedFilters.placeholders.country")}
 							/>
-						) : fieldType === "text" && fieldName === "canton" ? (
+						) : fieldType === "text" && baseFieldName === "canton" ? (
 							<SearchableComboboxDialog
 								options={cantons}
 								value={value ?? ""}
 								onChange={onValueChange}
 								placeholder={t("AdvancedFilters.placeholders.canton")}
 							/>
-						) : fieldName === "organization" ? (
+						) : baseFieldName === "organization" ? (
 							<AsyncSelectField
 								form={form}
 								name={relationPath}
@@ -130,7 +132,7 @@ const FilterField = ({
 								useFormClear
 								filterKey="name"
 							/>
-						) : fieldName === "organization_createdAt" ? (
+						) : baseFieldName === "organization_createdAt" ? (
 							<DateTimePicker
 								granularity="day"
 								value={value ? new Date(value) : undefined}
@@ -138,7 +140,7 @@ const FilterField = ({
 									onValueChange(date ? format(date, "yyyy-MM-dd") : "")
 								}
 							/>
-						) : fieldName === "organization_updatedAt" ? (
+						) : baseFieldName === "organization_updatedAt" ? (
 							<DateTimePicker
 								granularity="day"
 								value={value ? new Date(value) : undefined}
@@ -146,7 +148,7 @@ const FilterField = ({
 									onValueChange(date ? format(date, "yyyy-MM-dd") : "")
 								}
 							/>
-						) : fieldType === "enum" && fieldName === "status" ? (
+						) : fieldType === "enum" && baseFieldName === "status" ? (
 							<Select value={value || ""} onValueChange={onValueChange}>
 								<SelectTrigger className="h-8">
 									<SelectValue placeholder="Select..." />
@@ -172,7 +174,7 @@ const FilterField = ({
 									</SelectItem>
 								</SelectContent>
 							</Select>
-						) : fieldType === "enum" && fieldName === "priority" ? (
+						) : fieldType === "enum" && baseFieldName === "priority" ? (
 							<Select value={value || ""} onValueChange={onValueChange}>
 								<SelectTrigger className="h-8">
 									<SelectValue placeholder="Select..." />
@@ -185,7 +187,7 @@ const FilterField = ({
 									<SelectItem value="p5">p5</SelectItem>
 								</SelectContent>
 							</Select>
-						) : fieldType === "enum" && fieldName === "gender" ? (
+						) : fieldType === "enum" && baseFieldName === "gender" ? (
 							<Select value={value || ""} onValueChange={onValueChange}>
 								<SelectTrigger className="h-8">
 									<SelectValue placeholder="Select..." />
@@ -203,7 +205,7 @@ const FilterField = ({
 								</SelectContent>
 							</Select>
 						) : fieldType === "relation" ? (
-							fieldName === "surveys" ? (
+							baseFieldName === "surveys" ? (
 								<AsyncSelectField
 									form={form}
 									name={relationPath}
@@ -211,7 +213,7 @@ const FilterField = ({
 									useFormClear
 									filterKey={relationMeta.filterKey}
 								/>
-							) : fieldName === "survey_items_question" ? (
+							) : baseFieldName === "survey_items_question" ? (
 								<AsyncSelectField
 									form={form}
 									name={relationPath}
@@ -223,7 +225,7 @@ const FilterField = ({
 									}
 									deduplicateByLabel
 								/>
-							) : fieldName === "survey_items_answer" ? (
+							) : baseFieldName === "survey_items_answer" ? (
 								<AsyncSelectField
 									form={form}
 									name={relationPath}

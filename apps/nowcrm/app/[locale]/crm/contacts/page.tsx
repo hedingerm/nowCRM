@@ -32,6 +32,8 @@ export default async function Page(props: {
 			"first_name",
 			"last_name",
 			"email",
+			"gender",
+			"language",
 			"country",
 			"job_description",
 			"duration_role",

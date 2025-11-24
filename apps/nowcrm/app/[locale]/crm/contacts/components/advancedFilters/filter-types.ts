@@ -140,6 +140,7 @@ export const FILTER_CATEGORIES = {
 		label: "Preferences",
 		fields: [
 			"language",
+			"language_free_form",
 			"contact_types",
 			"contact_interests",
 			"subscriptions",
@@ -159,7 +160,6 @@ export const FILTER_CATEGORIES = {
 			"organization_createdAt",
 			"organization_updatedAt",
 			"industry",
-			"function",
 			"job_description",
 			"duration_role",
 			"connection_degree",
@@ -240,6 +240,7 @@ export const FIELD_TYPES: Record<
 	facebook_url: "text",
 	twitter_url: "text",
 	language: "enum",
+	language_free_form: "text",
 	contact_types: "relation",
 	contact_interests: "relation",
 	subscriptions: "relation",

@@ -1,4 +1,6 @@
 import qs from "qs";
+import languages from "@/lib/static/iso639-languages.json";
+import { normalizeLanguageValue } from "@/lib/utils/language-utils";
 
 const FIELD_OVERRIDES: Record<string, string[]> = {
 	subscriptions: ["channel", "name"],
@@ -21,6 +23,7 @@ const FIELD_OVERRIDES: Record<string, string[]> = {
 };
 
 const FIELD_ALIASES: Record<string, string> = {
+	language_free_form: "language",
 	organization_name: "organization.name",
 	organization_createdAt: "organization.createdAt",
 	organization_updatedAt: "organization.updatedAt",
@@ -150,6 +153,41 @@ function buildFieldCondition(key: string, rawValue: any, operator?: string) {
 		return cond;
 	}
 
+	// Handle language field with flexible matching (code OR name formats)
+	// Matches both ISO code ("de"), English name ("German"), AND native name ("Deutsch")
+	if (
+		(key === "language" || key === "language_free_form") &&
+		typeof rawValue === "string"
+	) {
+		const normalized = normalizeLanguageValue(rawValue);
+		if (normalized) {
+			// Get the language info to find both the code and the full name
+			const languageInfo = languages.find((l: any) => l.code === normalized);
+			const languageName = languageInfo?.name;
+			const nativeName = languageInfo?.nativeName;
+
+			// Create proper $or structure at top level with case-insensitive matching
+			// Strapi requires: {$or: [{language: {$eqi: "de"}}, {language: {$eqi: "German"}}, {language: {$eqi: "Deutsch"}}]}
+			// Using $eqi (case-insensitive equals) to handle "GeRmAn", "german", "GERMAN", etc.
+			if (languageName) {
+				const aliased = FIELD_ALIASES[key] || key;
+				const orConditions = [
+					buildNestedObject(aliased.split("."), { $eqi: normalized }),
+					buildNestedObject(aliased.split("."), { $eqi: languageName }),
+				];
+
+				// Add native name if it's different from English name
+				if (nativeName && nativeName !== languageName) {
+					orConditions.push(
+						buildNestedObject(aliased.split("."), { $eqi: nativeName }),
+					);
+				}
+
+				return { $or: orConditions };
+			}
+		}
+	}
+
 	// plain scalar
 	const aliased = FIELD_ALIASES[key] || key;
 	setNested(cond, aliased, { [op]: rawValue });
@@ -158,27 +196,69 @@ function buildFieldCondition(key: string, rawValue: any, operator?: string) {
 
 /* Build one group from its filters object */
 function buildGroup(filtersObj: Record<string, any>, groupLogic: "AND" | "OR") {
-	const conditions: any[] = [];
+	// Group all filters by their base field name (stripping _0, _1, etc. suffixes)
+	const fieldGroups: Record<
+		string,
+		Array<{ key: string; value: any; operator?: string }>
+	> = {};
 
 	for (const [k, v] of Object.entries(filtersObj || {})) {
 		if (k.endsWith("_operator")) continue;
+
+		// Extract base field name by removing numeric suffix (_0, _1, etc.)
+		const baseField = k.replace(/_\d+$/, "");
 		const op = filtersObj[`${k}_operator`];
 
-		// skip blanks unless operator is null/notNull
-		const treatAsPresent =
-			op === "$null" ||
-			op === "$notNull" ||
-			(v !== "" && v != null && !(Array.isArray(v) && v.length === 0));
-		if (!treatAsPresent) continue;
+		if (!fieldGroups[baseField]) {
+			fieldGroups[baseField] = [];
+		}
 
-		const fieldCond = buildFieldCondition(k, v, op);
-		if (Object.keys(fieldCond).length) conditions.push(fieldCond);
+		fieldGroups[baseField].push({ key: k, value: v, operator: op });
+	}
+
+	// Build conditions for each field group
+	const conditions: any[] = [];
+
+	for (const [baseField, instances] of Object.entries(fieldGroups)) {
+		const fieldConditions: any[] = [];
+
+		for (const instance of instances) {
+			// skip blanks unless operator is null/notNull
+			const treatAsPresent =
+				instance.operator === "$null" ||
+				instance.operator === "$notNull" ||
+				(instance.value !== "" &&
+					instance.value != null &&
+					!(Array.isArray(instance.value) && instance.value.length === 0));
+
+			if (!treatAsPresent) continue;
+
+			const fieldCond = buildFieldCondition(
+				baseField,
+				instance.value,
+				instance.operator,
+			);
+			if (Object.keys(fieldCond).length) fieldConditions.push(fieldCond);
+		}
+
+		// If multiple conditions for the same field, use explicit $and/$or
+		// because andMerge can't handle duplicate paths (e.g., language=X AND language=Y)
+		if (fieldConditions.length > 1) {
+			const combined =
+				groupLogic === "OR"
+					? { $or: fieldConditions }
+					: { $and: fieldConditions };
+			conditions.push(combined);
+		} else if (fieldConditions.length === 1) {
+			conditions.push(fieldConditions[0]);
+		}
 	}
 
 	if (conditions.length === 0) return null;
 	if (conditions.length === 1) return conditions[0];
 
-	return groupLogic === "OR" ? { $or: conditions } : andMerge(conditions);
+	// Use explicit $and/$or for combining different fields
+	return groupLogic === "OR" ? { $or: conditions } : { $and: conditions };
 }
 
 // merge list of objects with AND semantics

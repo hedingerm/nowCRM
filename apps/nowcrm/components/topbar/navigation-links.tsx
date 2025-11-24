@@ -121,7 +121,7 @@ export default function NavigationLinks({
 						<Button
 							variant="ghost"
 							className={navLinkClasses(
-								pathname.includes(RouteConfig.import.base),
+								pathname.includes(RouteConfig.composer.base),
 							)}
 						>
 							Composer

@@ -127,10 +127,12 @@ export default function ContactsTableClient({
 			sortBy?: string;
 			sortOrder?: "asc" | "desc";
 			filters?: any;
+			visibleColumns?: string[];
 		}) => {
 			setIsLoading(true);
 
-			const visibleColumns = columns
+			const visibleColumns = (params.visibleColumns ?? columns)
+				.filter((c: any) => c.meta?.hidden !== true)
 				.map((c: any) => c.id ?? c.accessorKey)
 				.filter(Boolean);
 			const res = await fetchDataForVisibleColumns({
@@ -184,9 +186,10 @@ export default function ContactsTableClient({
 				filters: effectiveFilters,
 				sortBy,
 				sortOrder,
+				visibleColumns: _ids,
 			});
 		},
-		[fetchData, pagination.pageSize, effectiveFilters, sortBy, sortOrder],
+		[fetchData, effectiveFilters, sortBy, sortOrder],
 	);
 
 	const handlePaginationChange = React.useCallback(

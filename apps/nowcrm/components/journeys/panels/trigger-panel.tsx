@@ -569,8 +569,13 @@ export function TriggerPanel({
 														<AsyncSelect
 															presetOption={config.attribute as any}
 															serviceName="actionTypeService"
-															onValueChange={(value) =>
-																handleConfigChange({ attribute: value })
+															onValueChange={(val) =>
+																handleConfigChange({
+																	attribute: {
+																		label: "action_type",
+																		value: val.value,
+																	},
+																})
 															}
 															useFormClear={false}
 															label="action type"
@@ -590,11 +595,11 @@ export function TriggerPanel({
 														<AsyncSelect
 															presetOption={config.attribute as any}
 															serviceName="formsService"
-															onValueChange={(value) =>
+															onValueChange={(val) =>
 																handleConfigChange({
 																	attribute: {
-																		attribute_name: "form_id",
-																		...value,
+																		label: "form_id",
+																		value: val.value,
 																	},
 																})
 															}
