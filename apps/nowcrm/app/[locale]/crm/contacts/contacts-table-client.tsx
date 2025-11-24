@@ -127,14 +127,14 @@ export default function ContactsTableClient({
 			sortBy?: string;
 			sortOrder?: "asc" | "desc";
 			filters?: any;
-			visibleColumns?: string[]; 
+			visibleColumns?: string[];
 		}) => {
 			setIsLoading(true);
 
 			const visibleColumns = (params.visibleColumns ?? columns)
 				.filter((c: any) => c.meta?.hidden !== true)
-			.map((c: any) => c.id ?? c.accessorKey)
-			.filter(Boolean);
+				.map((c: any) => c.id ?? c.accessorKey)
+				.filter(Boolean);
 			const res = await fetchDataForVisibleColumns({
 				visibleIds: visibleColumns,
 				page: params.page ?? pagination.page,

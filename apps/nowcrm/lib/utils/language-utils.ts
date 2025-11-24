@@ -1,8 +1,6 @@
 import languages from "@/lib/static/iso639-languages.json";
 
-const languagesByCode = new Map(
-	languages.map((lang) => [lang.code, lang]),
-);
+const languagesByCode = new Map(languages.map((lang) => [lang.code, lang]));
 const languagesByName = new Map(
 	languages.map((lang) => [lang.name.toLowerCase(), lang]),
 );
@@ -48,4 +46,3 @@ export function normalizeLanguageValue(value: any): string | null {
 
 	return null;
 }
-

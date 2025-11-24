@@ -1,6 +1,6 @@
 import qs from "qs";
-import { normalizeLanguageValue } from "@/lib/utils/language-utils";
 import languages from "@/lib/static/iso639-languages.json";
+import { normalizeLanguageValue } from "@/lib/utils/language-utils";
 
 const FIELD_OVERRIDES: Record<string, string[]> = {
 	subscriptions: ["channel", "name"],
@@ -155,7 +155,10 @@ function buildFieldCondition(key: string, rawValue: any, operator?: string) {
 
 	// Handle language field with flexible matching (code OR name formats)
 	// Matches both ISO code ("de"), English name ("German"), AND native name ("Deutsch")
-	if ((key === "language" || key === "language_free_form") && typeof rawValue === "string") {
+	if (
+		(key === "language" || key === "language_free_form") &&
+		typeof rawValue === "string"
+	) {
 		const normalized = normalizeLanguageValue(rawValue);
 		if (normalized) {
 			// Get the language info to find both the code and the full name

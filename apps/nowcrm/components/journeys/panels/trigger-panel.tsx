@@ -571,7 +571,10 @@ export function TriggerPanel({
 															serviceName="actionTypeService"
 															onValueChange={(val) =>
 																handleConfigChange({
-																	attribute: { label: "action_type", value: val.value },
+																	attribute: {
+																		label: "action_type",
+																		value: val.value,
+																	},
 																})
 															}
 															useFormClear={false}
@@ -594,7 +597,10 @@ export function TriggerPanel({
 															serviceName="formsService"
 															onValueChange={(val) =>
 																handleConfigChange({
-																	attribute: { label: "form_id", value: val.value },
+																	attribute: {
+																		label: "form_id",
+																		value: val.value,
+																	},
 																})
 															}
 															useFormClear={false}
