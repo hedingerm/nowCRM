@@ -2,19 +2,25 @@ import { organizationsService } from "@nowcrm/services/server";
 import type { Metadata } from "next";
 import type { Session } from "next-auth";
 import { auth } from "@/auth";
-import DataTable from "@/components/dataTable/data-table";
 import ErrorMessage from "@/components/error-message";
 import {
 	parseQueryToFilterValues,
 	transformFilters,
 } from "@/lib/actions/filters/filters-search";
-import AdvancedFilters from "./components/advancedFilters/advanced-filters";
-import { columns } from "./components/columns/org-columns";
-import createOrganizationDialog from "./components/create-dialog";
-import MassActionsContacts from "./components/massActions/mass-actions";
+import OrganizationsTableClient from "./components/organizations-table-client";
+
 export const metadata: Metadata = {
 	title: "Organizations",
 };
+
+// Default visible fields - columns that are shown by default (used for initial fetch)
+const DEFAULT_VISIBLE_FIELDS = [
+	"documentId",
+	"id",
+	"name",
+	"email",
+	"address_line1",
+] as const;
 
 export default async function Page(props: { searchParams: Promise<any> }) {
 	const searchParams = await props.searchParams;
@@ -26,13 +32,15 @@ export default async function Page(props: { searchParams: Promise<any> }) {
 		sortOrder = "desc",
 		...urlFilters
 	} = searchParams;
+
 	const flatFilters = parseQueryToFilterValues<Record<string, any>>(
 		new URLSearchParams(urlFilters),
 	);
 	const transformedFilters = transformFilters(flatFilters);
-	// Fetch data from the contactService
+
 	const session = await auth();
 	const response = await organizationsService.find(session?.jwt, {
+		fields: DEFAULT_VISIBLE_FIELDS as any,
 		populate: "*",
 		sort: [`${sortBy}:${sortOrder}` as any],
 		pagination: {
@@ -55,18 +63,14 @@ export default async function Page(props: { searchParams: Promise<any> }) {
 
 	return (
 		<div className="container">
-			<DataTable
-				data={response.data}
-				columns={columns}
-				table_name="organizations"
-				table_title="Organizations"
-				mass_actions={MassActionsContacts}
-				pagination={meta.pagination}
-				createDialog={createOrganizationDialog}
-				advancedFilters={AdvancedFilters}
+			<OrganizationsTableClient
+				initialData={response.data}
+				initialPagination={meta.pagination}
+				sortBy={sortBy}
+				sortOrder={sortOrder}
 				session={session as Session}
-				showStatusModal
-				sorting={{ sortBy, sortOrder }}
+				serverFilters={transformedFilters}
+				search={search}
 			/>
 		</div>
 	);

@@ -18,8 +18,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { RouteConfig } from "@/lib/config/routes-config";
 import { formatDateTimeStrapi } from "@/lib/strapi-date";
-import { TagsCell } from "../../../contacts/components/columns/tags/tag-cell";
-import { TagFilterHeader } from "../../../contacts/components/columns/tags/tag-filter-header";
+import { TagsCell } from "../../../../../../components/dataTable/shared_cols/tags/tag-cell";
+import { TagFilterHeader } from "../../../../../../components/dataTable/shared_cols/tags/tag-filter-header";
 
 const ViewActions: React.FC<{ organization: Organization }> = ({
 	organization,
@@ -123,18 +123,12 @@ export const columns: ColumnDef<Organization>[] = [
 		cell: ({ row }) => {
 			return <div>{formatDateTimeStrapi(row.original.createdAt)}</div>;
 		},
-		meta: {
-			hidden: true,
-		},
 	},
 	{
 		accessorKey: "updatedAt",
 		header: ({ column }) => <SortableHeader column={column} label="Updated" />,
 		cell: ({ row }) => {
 			return <div>{formatDateTimeStrapi(row.original.updatedAt)}</div>;
-		},
-		meta: {
-			hidden: true,
 		},
 	},
 	{
@@ -184,9 +178,6 @@ export const columns: ColumnDef<Organization>[] = [
 		header: ({ column }) => (
 			<SortableHeader column={column} label="Contact Person" />
 		),
-		meta: {
-			hidden: true,
-		},
 	},
 	{
 		accessorKey: "address_line1",
@@ -196,9 +187,6 @@ export const columns: ColumnDef<Organization>[] = [
 	{
 		accessorKey: "location",
 		header: ({ column }) => <SortableHeader column={column} label="Location" />,
-		meta: {
-			hidden: true,
-		},
 	},
 	{
 		accessorKey: "contacts",
@@ -210,9 +198,6 @@ export const columns: ColumnDef<Organization>[] = [
 				.join(", ");
 			return <p>{names}</p>;
 		},
-		meta: {
-			hidden: true,
-		},
 	},
 	{
 		accessorKey: "frequency",
@@ -220,9 +205,6 @@ export const columns: ColumnDef<Organization>[] = [
 		cell: ({ row }) => {
 			const organization = row.original;
 			return <div>{organization.frequency?.name}</div>;
-		},
-		meta: {
-			hidden: true,
 		},
 	},
 	{
@@ -232,128 +214,74 @@ export const columns: ColumnDef<Organization>[] = [
 			const organization = row.original;
 			return <div>{organization.media_type?.name}</div>;
 		},
-		meta: {
-			hidden: true,
-		},
 	},
 	{
 		accessorKey: "zip",
 		header: "ZIP",
-		meta: {
-			hidden: true,
-		},
 	},
 	{
 		accessorKey: "canton",
 		header: ({ column }) => <SortableHeader column={column} label="Canton" />,
-		meta: {
-			hidden: true,
-		},
 	},
 	{
 		accessorKey: "country",
 		header: ({ column }) => <SortableHeader column={column} label="Country" />,
-		meta: {
-			hidden: true,
-		},
 	},
 	{
 		accessorKey: "url",
 		header: "URL",
-		meta: {
-			hidden: true,
-		},
 	},
 	{
 		accessorKey: "twitter_url",
 		header: "Twitter(X) URL",
-		meta: {
-			hidden: true,
-		},
 	},
 	{
 		accessorKey: "facebook_url",
 		header: "Facebook URL",
-		meta: {
-			hidden: true,
-		},
 	},
 	{
 		accessorKey: "whatsapp_channel",
 		header: "Whatsapp Channel",
-		meta: {
-			hidden: true,
-		},
 	},
 	{
 		accessorKey: "linkedin_url",
 		header: "Linkedin URL",
-		meta: {
-			hidden: true,
-		},
 	},
 	{
 		accessorKey: "telegram_url",
 		header: "Telegram URL",
-		meta: {
-			hidden: true,
-		},
 	},
 	{
 		accessorKey: "telegram_channel",
 		header: "Telegram Channel",
-		meta: {
-			hidden: true,
-		},
 	},
 	{
 		accessorKey: "instagram_url",
 		header: "Instagram URL",
-		meta: {
-			hidden: true,
-		},
 	},
 	{
 		accessorKey: "tiktok_url",
 		header: "TikTok URL",
-		meta: {
-			hidden: true,
-		},
 	},
 	{
 		accessorKey: "whatsapp_phone",
 		header: "WhatsApp Phone",
-		meta: {
-			hidden: true,
-		},
 	},
 	{
 		accessorKey: "phone",
 		header: "Phone",
-		meta: {
-			hidden: true,
-		},
 	},
 	{
 		accessorKey: "tag",
 		header: "Tag",
-		meta: {
-			hidden: true,
-		},
 	},
 	{
 		accessorKey: "description",
 		header: "Description",
-		meta: {
-			hidden: true,
-		},
 	},
 	{
 		accessorKey: "language",
 		header: "Language",
-		meta: {
-			hidden: true,
-		},
 	},
 	{
 		accessorKey: "sources",
@@ -363,9 +291,6 @@ export const columns: ColumnDef<Organization>[] = [
 			const names = organization.sources.map((item) => item.name).join(", ");
 			return <p>{names}</p>;
 		},
-		meta: {
-			hidden: true,
-		},
 	},
 	{
 		accessorKey: "industry",
@@ -373,9 +298,6 @@ export const columns: ColumnDef<Organization>[] = [
 		cell: ({ row }) => {
 			const organization = row.original;
 			return <div>{organization.industry?.name}</div>;
-		},
-		meta: {
-			hidden: true,
 		},
 	},
 	{

@@ -24,7 +24,8 @@ interface DataTableViewOptionsProps<TData> {
 	table_name: string;
 	onDownloadCSV: () => void;
 	showStatusModal: boolean;
-	createDialog?: React.ComponentType;
+	createDialog?: React.ComponentType<any>;
+	createDialogProps?: Record<string, any>;
 	hiddenExport?: boolean;
 	hiddenCreate?: boolean;
 }
@@ -33,6 +34,7 @@ export function DataTableViewOptions<TData>({
 	table,
 	table_name,
 	createDialog: CreateDialogComponent,
+	createDialogProps,
 	hiddenCreate,
 	showStatusModal,
 }: DataTableViewOptionsProps<TData>) {
@@ -100,7 +102,7 @@ export function DataTableViewOptions<TData>({
 				mode={table_name}
 			/>
 			{CreateDialogComponent ? (
-				<CreateDialogComponent />
+				<CreateDialogComponent {...(createDialogProps || {})} />
 			) : (
 				<Button
 					asChild

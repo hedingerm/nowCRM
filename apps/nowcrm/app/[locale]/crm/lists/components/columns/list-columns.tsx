@@ -22,8 +22,8 @@ import {
 import { getListCount } from "@/lib/actions/lists/get-list-count";
 import { RouteConfig } from "@/lib/config/routes-config";
 import { formatDateTimeStrapi } from "@/lib/strapi-date";
-import { TagsCell } from "../../../contacts/components/columns/tags/tag-cell";
-import { TagFilterHeader } from "../../../contacts/components/columns/tags/tag-filter-header";
+import { TagsCell } from "../../../../../../components/dataTable/shared_cols/tags/tag-cell";
+import { TagFilterHeader } from "../../../../../../components/dataTable/shared_cols/tags/tag-filter-header";
 import CreateListDialog from "../create-dialog";
 
 const ViewActions: React.FC<{ list: List }> = ({ list }) => {

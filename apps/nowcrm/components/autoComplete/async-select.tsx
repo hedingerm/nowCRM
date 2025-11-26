@@ -102,7 +102,7 @@ export const AsyncSelect = ({
 						},
 						...(extraOptions ?? {}),
 					});
-
+					console.log("response", response);
 					const newOptions = response
 						.data!.map((item: any) => {
 							const label = labelBuilder
@@ -139,7 +139,6 @@ export const AsyncSelect = ({
 		);
 
 		handler(1, search);
-
 		return () => handler.cancel();
 	}, [
 		search,
