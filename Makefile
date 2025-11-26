@@ -286,10 +286,56 @@ print-crm-creds:
 	@echo "Use this account to log in to the CRM. CRM URL: http://localhost:3000/crm"
 	
 # ============================================================
+# Build checks
+# ============================================================
+
+build-if-missing:
+	@echo "🔍 Checking if Docker images need to be built..."
+	@set -e; \
+	IMAGES_TO_BUILD=""; \
+	if ! docker image inspect nowcrm-strapi >/dev/null 2>&1; then \
+		echo "⚠️  Image nowcrm-strapi not found, will build"; \
+		IMAGES_TO_BUILD="$$IMAGES_TO_BUILD strapi"; \
+	else \
+		echo "✅ Image nowcrm-strapi exists"; \
+	fi; \
+	if ! docker image inspect nowcrm >/dev/null 2>&1; then \
+		echo "⚠️  Image nowcrm not found, will build"; \
+		IMAGES_TO_BUILD="$$IMAGES_TO_BUILD nowcrm"; \
+	else \
+		echo "✅ Image nowcrm exists"; \
+	fi; \
+	if ! docker image inspect nowcrm-journeys >/dev/null 2>&1; then \
+		echo "⚠️  Image nowcrm-journeys not found, will build"; \
+		IMAGES_TO_BUILD="$$IMAGES_TO_BUILD journeys"; \
+	else \
+		echo "✅ Image nowcrm-journeys exists"; \
+	fi; \
+	if ! docker image inspect nowcrm-composer >/dev/null 2>&1; then \
+		echo "⚠️  Image nowcrm-composer not found, will build"; \
+		IMAGES_TO_BUILD="$$IMAGES_TO_BUILD composer"; \
+	else \
+		echo "✅ Image nowcrm-composer exists"; \
+	fi; \
+	if ! docker image inspect nowcrm-dal >/dev/null 2>&1; then \
+		echo "⚠️  Image nowcrm-dal not found, will build"; \
+		IMAGES_TO_BUILD="$$IMAGES_TO_BUILD dal"; \
+	else \
+		echo "✅ Image nowcrm-dal exists"; \
+	fi; \
+	if [ -n "$$IMAGES_TO_BUILD" ]; then \
+		echo "🔨 Building missing images:$$IMAGES_TO_BUILD"; \
+		sudo docker compose --env-file $(ENV_FILE) -f $(COMPOSE_FILE) build $$IMAGES_TO_BUILD; \
+		echo "✅ Build complete"; \
+	else \
+		echo "✅ All images exist, skipping build"; \
+	fi
+
+# ============================================================
 # Main commands
 # ============================================================
 
-up: init-env check-network
+up: init-env check-network build-if-missing
 	@echo "Starting Docker containers except nowcrm..."
 	docker compose --env-file $(ENV_FILE) -f $(COMPOSE_FILE) up -d $(DEV_SERVICES) $(ALL_SERVICES)
 	@$(MAKE) inject-strapi-token
@@ -300,7 +346,7 @@ up: init-env check-network
 	@$(MAKE) print-strapi-creds
 	@$(MAKE) print-crm-creds
 
-dev: init-env check-network
+dev: init-env check-network build-if-missing
 	@echo "Starting DEV stack (Strapi + DB + RabbitMQ + Redis)..."
 	docker compose --env-file $(ENV_FILE) -f $(COMPOSE_FILE) up -d $(DEV_SERVICES)
 	@$(MAKE) inject-strapi-token
@@ -362,4 +408,4 @@ help:
 	@echo "  make inject-strapi-token - manually fetch token and inject it"
 	@echo ""
 
-.PHONY: up down restart logs rebuild ps clean help setup-envs inject-strapi-token init-env generate-env
+.PHONY: up down restart logs rebuild ps clean help setup-envs inject-strapi-token init-env generate-env build-if-missing
