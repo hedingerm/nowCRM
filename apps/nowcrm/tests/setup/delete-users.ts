@@ -2,7 +2,7 @@ import { APIRequestContext } from '@playwright/test';
 import dotenv from 'dotenv';
 import path from 'path';
 
-dotenv.config({ path: path.resolve(__dirname, '../../..', '.env') });
+dotenv.config({ path: path.resolve(__dirname, '../../../..', '.env') });
 
 const adminLoginUrl = 'http://localhost:1337/admin/login';
 const usersUrl = 'http://localhost:1337/content-manager/collection-types/plugin::users-permissions.user';

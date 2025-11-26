@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 
 // Load .env file from the root project directory
-dotenv.config({ path: path.resolve(__dirname, '../../..', '.env') });
+dotenv.config({ path: path.resolve(__dirname, '../../../..', '.env') });
 
 // --- CONSTANTS ---
 export const adminLoginUrl = 'http://localhost:1337/admin/login';
