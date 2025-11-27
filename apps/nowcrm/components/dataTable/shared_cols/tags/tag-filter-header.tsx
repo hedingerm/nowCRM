@@ -1,9 +1,10 @@
 "use client";
 
 import type { Tag } from "@nowcrm/services";
+import type { Session } from "next-auth";
 import { Filter, TagIcon, X } from "lucide-react";
+import * as React from "react";
 import { useEffect, useState } from "react";
-import { useUrlState } from "@/components/dataTable/data-table-contacts";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,10 +17,44 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { fetchTags } from "@/lib/actions/tags/fetch-tags";
 
-export function TagFilterHeader() {
+interface TagFilterHeaderProps {
+	session?: Session | null;
+	selectedTag?: string | null;
+	onTagChange?: (tagId: string | null) => void;
+	entityName?: string; // Entity name for localStorage key (e.g., "contacts", "organizations")
+}
+
+export function TagFilterHeader({
+	session,
+	selectedTag: externalSelectedTag,
+	onTagChange,
+	entityName = "organizations", // Default to organizations for backward compatibility
+}: TagFilterHeaderProps) {
 	const [tags, setTags] = useState<Tag[]>([]);
-	const { updateUrl, getParam } = useUrlState();
-	const selectedTag = getParam?.("tag");
+	
+	// Get localStorage key for tag filter
+	const tagFilterKey = React.useMemo(() => {
+		const userId = session?.user?.strapi_id || session?.user?.email || "anonymous";
+		return `filters.tag.${entityName}.${userId}`;
+	}, [session, entityName]);
+
+	// Load selected tag from localStorage if not provided externally
+	const [internalSelectedTag, setInternalSelectedTag] = useState<string | null>(() => {
+		if (externalSelectedTag !== undefined) {
+			return externalSelectedTag;
+		}
+		if (typeof window === "undefined") {
+			return null;
+		}
+		try {
+			const stored = localStorage.getItem(tagFilterKey);
+			return stored || null;
+		} catch {
+			return null;
+		}
+	});
+
+	const selectedTag = externalSelectedTag !== undefined ? externalSelectedTag : internalSelectedTag;
 
 	useEffect(() => {
 		const fetchAndSetTags = async () => {
@@ -34,7 +69,24 @@ export function TagFilterHeader() {
 	}, []);
 
 	const handleSelect = (tagId: string | null) => {
-		updateUrl?.({ tag: tagId });
+		if (onTagChange) {
+			// If parent provides callback, use it
+			onTagChange(tagId);
+		} else {
+			// Otherwise, manage internally with localStorage
+			setInternalSelectedTag(tagId);
+			try {
+				if (tagId) {
+					localStorage.setItem(tagFilterKey, tagId);
+				} else {
+					localStorage.removeItem(tagFilterKey);
+				}
+				// Trigger a custom event so the table can refetch
+				window.dispatchEvent(new CustomEvent("tagFilterChanged"));
+			} catch {
+				// Ignore localStorage errors
+			}
+		}
 	};
 
 	const selectedTagData = tags.find(

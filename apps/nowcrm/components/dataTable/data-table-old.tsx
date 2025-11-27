@@ -64,6 +64,9 @@ interface DataTableProps<TData, TValue> {
 	showStatusModal?: boolean;
 	sorting?: { sortBy: string; sortOrder: "asc" | "desc" };
 	onVisibleColumnsChange?: (visibleColumnIds: string[]) => void;
+	onPaginationChange?: (page: number, pageSize: number) => void;
+	onSearchChange?: (search: string) => void;
+	initialSearch?: string;
 	isLoading?: boolean;
 	availableFields?: Set<string>;
 }
@@ -108,6 +111,9 @@ export default function DataTable<TData, TValue>({
 	showStatusModal = false,
 	sorting,
 	onVisibleColumnsChange,
+	onPaginationChange,
+	onSearchChange,
+	initialSearch,
 	isLoading = false,
 	availableFields,
 }: DataTableProps<TData, TValue>) {
@@ -120,27 +126,50 @@ export default function DataTable<TData, TValue>({
 
 	const handleSearch = React.useCallback(
 		(term: string, page?: number, pageSize?: number) => {
+			// Remove search and pagination from URL (both are stored in localStorage)
 			const params = new URLSearchParams(searchParams as any);
-			if (term) {
-				params.set("search", term);
-			} else {
-				params.delete("search");
+			params.delete("search");
+			params.delete("page");
+			params.delete("pageSize");
+			// Only update URL if there are other params, otherwise remove all params
+			const newUrl = params.toString() 
+				? `${pathname}?${params.toString()}`
+				: pathname;
+			router.replace(newUrl, { scroll: false });
+			// Notify parent component of search changes (for localStorage persistence)
+			if (onSearchChange) {
+				onSearchChange(term || "");
 			}
-			if (page !== undefined) {
-				params.set("page", page.toString());
+			// Notify parent component of pagination changes (pagination is handled via localStorage)
+			if ((page !== undefined || pageSize !== undefined) && onPaginationChange) {
+				const finalPage = page ?? 1;
+				const finalPageSize = pageSize ?? 10;
+				onPaginationChange(finalPage, finalPageSize);
 			}
-			if (pageSize !== undefined) {
-				params.set("pageSize", pageSize.toString());
-			}
-			router.replace(`${pathname}?${params.toString()}`, { scroll: false });
 		},
-		[searchParams, pathname, router],
+		[searchParams, pathname, router, onPaginationChange, onSearchChange],
 	);
 
 	const debouncedHandleSearch = React.useMemo(
 		() => debounce(handleSearch, 300),
 		[handleSearch],
 	);
+
+	// Clean up pagination and search from URL on mount (both are stored in localStorage)
+	React.useEffect(() => {
+		const params = new URLSearchParams(searchParams.toString());
+		if (params.has("page") || params.has("pageSize") || params.has("search")) {
+			params.delete("page");
+			params.delete("pageSize");
+			params.delete("search");
+			// Only update URL if there are other params, otherwise remove all params
+			const newUrl = params.toString() 
+				? `${pathname}?${params.toString()}`
+				: pathname;
+			router.replace(newUrl, { scroll: false });
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []); // Only run on mount
 
 	// Initialize sorting state from server props
 	const [sortingState, setSortingState] = React.useState<SortingState>(() => {
@@ -177,17 +206,25 @@ export default function DataTable<TData, TValue>({
 				updateURL({
 					sortBy: id,
 					sortOrder: desc ? "desc" : "asc",
-					page: 1, // Reset to first page when sorting changes
+					// Don't set page in URL - pagination is in localStorage
 				});
+				// Reset pagination to page 1 via callback (pagination is in localStorage)
+				if (onPaginationChange) {
+					onPaginationChange(1, pagination.pageSize);
+				}
 			} else {
 				updateURL({
 					sortBy: undefined,
 					sortOrder: undefined,
-					page: 1,
+					// Don't set page in URL - pagination is in localStorage
 				});
+				// Reset pagination to page 1 via callback (pagination is in localStorage)
+				if (onPaginationChange) {
+					onPaginationChange(1, pagination.pageSize);
+				}
 			}
 		},
-		[sortingState, updateURL],
+		[sortingState, updateURL, onPaginationChange, pagination.pageSize],
 	);
 
 	// Initialize visibility from localStorage or default from column meta
@@ -232,14 +269,14 @@ export default function DataTable<TData, TValue>({
 	const filteredColumns = React.useMemo(() => {
 		return columns
 			.filter((column) => {
-				if (column.id === "delete") {
-					if (session && session.user.role.toLowerCase() !== "admin")
-						return false;
-				}
-				if (column?.id && hiddenCollumnIds?.includes(column.id)) {
+			if (column.id === "delete") {
+				if (session && session.user.role.toLowerCase() !== "admin")
 					return false;
-				}
-				return true;
+			}
+			if (column?.id && hiddenCollumnIds?.includes(column.id)) {
+				return false;
+			}
+			return true;
 			})
 			.map((column) => {
 				// Wrap cell renderer to show skeleton if field is not available
@@ -381,7 +418,7 @@ export default function DataTable<TData, TValue>({
 						<Input
 							placeholder={`Filter ${table_title}...`}
 							onChange={(e) => debouncedHandleSearch(e.target.value)}
-							defaultValue={searchParams.get("search")?.toString()}
+							defaultValue={initialSearch || searchParams.get("search")?.toString() || ""}
 							className="max-w-sm"
 						/>
 					</div>
@@ -479,7 +516,7 @@ export default function DataTable<TData, TValue>({
 							autoFocus
 							ref={mobileSearchRef}
 							placeholder={`Filter ${table_title}...`}
-							defaultValue={searchParams.get("search")?.toString()}
+							defaultValue={initialSearch || searchParams.get("search")?.toString() || ""}
 							onBlur={() => setTimeout(() => setIsMobileSearchOpen(false), 200)}
 							className="w-full border-none focus:ring-2"
 						/>

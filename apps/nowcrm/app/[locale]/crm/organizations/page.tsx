@@ -7,6 +7,8 @@ import {
 	parseQueryToFilterValues,
 	transformFilters,
 } from "@/lib/actions/filters/filters-search";
+import { buildPopulateFromVisible } from "@/lib/populate/populate-builder";
+import { ORGANIZATIONS_POPULATE_MAPPINGS } from "@/lib/populate/organizations-populate-config";
 import OrganizationsTableClient from "./components/organizations-table-client";
 
 export const metadata: Metadata = {
@@ -39,9 +41,18 @@ export default async function Page(props: { searchParams: Promise<any> }) {
 	const transformedFilters = transformFilters(flatFilters);
 
 	const session = await auth();
+	
+	// Build populate structure based on default visible fields
+	// Note: DEFAULT_VISIBLE_FIELDS includes "tags" which needs to be populated
+	const defaultVisibleIds = [...DEFAULT_VISIBLE_FIELDS, "tags"] as string[];
+	const populate = buildPopulateFromVisible(
+		defaultVisibleIds,
+		ORGANIZATIONS_POPULATE_MAPPINGS,
+	);
+	
 	const response = await organizationsService.find(session?.jwt, {
 		fields: DEFAULT_VISIBLE_FIELDS as any,
-		populate: "*",
+		populate: populate === "*" ? "*" : (populate as any),
 		sort: [`${sortBy}:${sortOrder}` as any],
 		pagination: {
 			page,
@@ -55,7 +66,6 @@ export default async function Page(props: { searchParams: Promise<any> }) {
 			],
 		},
 	});
-
 	if (!response.success || !response.data || !response.meta) {
 		return <ErrorMessage response={response} />;
 	}

@@ -102,7 +102,6 @@ export const AsyncSelect = ({
 						},
 						...(extraOptions ?? {}),
 					});
-					console.log("response", response);
 					const newOptions = response
 						.data!.map((item: any) => {
 							const label = labelBuilder

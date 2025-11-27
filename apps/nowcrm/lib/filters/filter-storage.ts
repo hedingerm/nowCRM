@@ -61,3 +61,99 @@ export function clearFiltersFromStorage(
 	}
 }
 
+/**
+ * Get user-specific localStorage key for pagination
+ */
+export function getPaginationStorageKey(
+	entityName: string,
+	session?: Session | null,
+): string {
+	const userId = session?.user?.strapi_id || session?.user?.email || "anonymous";
+	return `pagination.${entityName}.${userId}`;
+}
+
+/**
+ * Load pagination from localStorage
+ */
+export function loadPaginationFromStorage(
+	entityName: string,
+	session?: Session | null,
+): { page: number; pageSize: number } | null {
+	try {
+		const key = getPaginationStorageKey(entityName, session);
+		const stored = localStorage.getItem(key);
+		if (stored) {
+			return JSON.parse(stored) as { page: number; pageSize: number };
+		}
+	} catch {
+		// Ignore localStorage errors
+	}
+	return null;
+}
+
+/**
+ * Save pagination to localStorage
+ */
+export function savePaginationToStorage(
+	entityName: string,
+	pagination: { page: number; pageSize: number },
+	session?: Session | null,
+): void {
+	try {
+		const key = getPaginationStorageKey(entityName, session);
+		localStorage.setItem(key, JSON.stringify(pagination));
+	} catch {
+		// Ignore localStorage errors
+	}
+}
+
+/**
+ * Get user-specific localStorage key for search
+ */
+export function getSearchStorageKey(
+	entityName: string,
+	session?: Session | null,
+): string {
+	const userId = session?.user?.strapi_id || session?.user?.email || "anonymous";
+	return `search.${entityName}.${userId}`;
+}
+
+/**
+ * Load search from localStorage
+ */
+export function loadSearchFromStorage(
+	entityName: string,
+	session?: Session | null,
+): string | null {
+	try {
+		const key = getSearchStorageKey(entityName, session);
+		const stored = localStorage.getItem(key);
+		if (stored) {
+			return stored;
+		}
+	} catch {
+		// Ignore localStorage errors
+	}
+	return null;
+}
+
+/**
+ * Save search to localStorage
+ */
+export function saveSearchToStorage(
+	entityName: string,
+	search: string,
+	session?: Session | null,
+): void {
+	try {
+		const key = getSearchStorageKey(entityName, session);
+		if (search && search.trim()) {
+			localStorage.setItem(key, search.trim());
+		} else {
+			localStorage.removeItem(key);
+		}
+	} catch {
+		// Ignore localStorage errors
+	}
+}
+

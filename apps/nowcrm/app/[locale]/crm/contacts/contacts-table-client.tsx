@@ -1,16 +1,22 @@
 "use client";
 
 import type { Session } from "next-auth";
+import type { VisibilityState } from "@tanstack/react-table";
 import * as React from "react";
-import { fetchDataForVisibleColumns } from "@/components/dataTable/actions/fetch-data-for-visible-columns";
-import DataTable, {
-	useUrlState,
-} from "@/components/dataTable/data-table-contacts";
-import { transformFilters } from "@/lib/actions/filters/filters-search";
+import { fetchContactsForVisibleColumns } from "@/lib/actions/contacts/fetch-contacts";
+import DataTable from "@/components/dataTable/data-table-old";
+import { getColumns } from "./components/columns/contact-columns";
 import AdvancedFilters from "./components/advancedFilters/advanced-filters";
-import { columns } from "./components/columns/contact-columns";
 import createContactDialog from "./components/create-dialog";
 import MassActionsContacts from "./components/massActions/mass-actions";
+import {
+	loadFiltersFromStorage,
+	loadPaginationFromStorage,
+	savePaginationToStorage,
+	loadSearchFromStorage,
+	saveSearchToStorage,
+} from "@/lib/filters/filter-storage";
+import { transformFilters } from "@/lib/actions/filters/filters-search";
 
 type Props = {
 	initialData: any[];
@@ -26,32 +32,8 @@ type Props = {
 	tableName: string;
 	session?: Session;
 	serverFilters?: any;
+	search?: string;
 };
-
-// Helper function to restore filters from localStorage
-function getInitialFilters(serverFilters?: any) {
-	// Only access localStorage on the client side
-	if (typeof window === "undefined") {
-		return serverFilters ?? {};
-	}
-
-	try {
-		const storedFilters = localStorage.getItem("contacts.filters.v2");
-		if (storedFilters) {
-			const parsed = JSON.parse(storedFilters);
-			const strapiFilters = transformFilters(parsed);
-
-			if (strapiFilters && Object.keys(strapiFilters).length > 0) {
-				return serverFilters && Object.keys(serverFilters).length > 0
-					? { $and: [serverFilters, strapiFilters] }
-					: strapiFilters;
-			}
-		}
-	} catch (error) {
-		console.error("Failed to restore filters from localStorage:", error);
-	}
-	return serverFilters ?? {};
-}
 
 export default function ContactsTableClient({
 	initialData,
@@ -62,63 +44,235 @@ export default function ContactsTableClient({
 	tableName,
 	session,
 	serverFilters,
+	search = "",
 }: Props) {
-	const [data, setData] = React.useState(initialData);
-	const [pagination, setPagination] = React.useState(initialPagination);
-	const [isLoading, setIsLoading] = React.useState(false);
-	const [searchTerm, setSearchTerm] = React.useState("");
-	const [filters, setFilters] = React.useState<any>(() =>
-		getInitialFilters(serverFilters),
-	);
-	const { getParam, updateUrl } = useUrlState();
-	const selectedTag = getParam("tag");
-	const selectedCountry = getParam("country");
+	// Load filters from localStorage synchronously before any state initialization
+	// Only check on client side (localStorage is not available during SSR)
+	const initialLocalFilters = React.useMemo(() => {
+		if (typeof window === "undefined") {
+			return {};
+		}
+		try {
+			const storedFilters = loadFiltersFromStorage("contacts", session);
+			if (storedFilters) {
+				// Transform UI filters to Strapi filters
+				return transformFilters(storedFilters);
+			}
+		} catch {
+			// Ignore localStorage errors
+		}
+		return {};
+	}, [session]);
 
-	const combineWithSearch = React.useCallback(
-		(transformed: any, term: string) => {
-			const baseOr: any[] = !term
-				? []
-				: [
-						{ email: { $containsi: term } },
-						{ phone: { $containsi: term } },
-						{ first_name: { $containsi: term } },
-						{ last_name: { $containsi: term } },
-						{ contact_types: { name: { $containsi: term } } },
-						{ subscriptions: { channel: { name: { $containsi: term } } } },
-						{
-							actions: {
-								action_normalized_type: { name: { $containsi: term } },
-							},
-						},
-					];
-			if (!baseOr.length) return transformed || {};
-			const isEmptyFilter = (obj: any) =>
-				!obj || (typeof obj === "object" && Object.keys(obj).length === 0);
-			if (isEmptyFilter(transformed)) return { $or: baseOr };
-			return { $and: [transformed, { $or: baseOr }] };
+	// Load pagination from localStorage
+	const initialPaginationFromStorage = React.useMemo(() => {
+		if (typeof window === "undefined") {
+			return null;
+		}
+		try {
+			return loadPaginationFromStorage("contacts", session);
+		} catch {
+			return null;
+		}
+	}, [session]);
+
+	// Load search from localStorage
+	const initialSearchFromStorage = React.useMemo(() => {
+		if (typeof window === "undefined") {
+			return null;
+		}
+		try {
+			return loadSearchFromStorage("contacts", session);
+		} catch {
+			return null;
+		}
+	}, [session]);
+
+	// Check if we have localFilters - if so, we should refetch immediately and not show initialData
+	const hasLocalFilters = React.useMemo(() => {
+		return initialLocalFilters && Object.keys(initialLocalFilters).length > 0;
+	}, [initialLocalFilters]);
+
+	// Check if we have stored pagination that differs from initial
+	const hasStoredPagination = React.useMemo(() => {
+		return (
+			initialPaginationFromStorage &&
+			(initialPaginationFromStorage.page !== initialPagination.page ||
+				initialPaginationFromStorage.pageSize !== initialPagination.pageSize)
+		);
+	}, [initialPaginationFromStorage, initialPagination]);
+
+	// Check if we have stored search that differs from initial
+	const hasStoredSearch = React.useMemo(() => {
+		return (
+			initialSearchFromStorage &&
+			initialSearchFromStorage !== search &&
+			initialSearchFromStorage.trim() !== ""
+		);
+	}, [initialSearchFromStorage, search]);
+
+	const [data, setData] = React.useState(() => {
+		// If we have localFilters, stored pagination, or stored search, start with empty data to prevent flash
+		// The useEffect will immediately fetch with correct filters/pagination/search
+		return hasLocalFilters || hasStoredPagination || hasStoredSearch ? [] : initialData;
+	});
+	
+	// Initialize pagination from localStorage if available, otherwise use initialPagination
+	// Merge stored page/pageSize with initial pagination to preserve pageCount and total
+	const [pagination, setPagination] = React.useState(() => {
+		if (initialPaginationFromStorage) {
+			return {
+				...initialPagination,
+				page: initialPaginationFromStorage.page,
+				pageSize: initialPaginationFromStorage.pageSize,
+			};
+		}
+		return initialPagination;
+	});
+	
+	const [isLoading, setIsLoading] = React.useState(
+		hasLocalFilters || hasStoredPagination || hasStoredSearch,
+	); // Show loading if we need to refetch
+	const [currentSortBy] = React.useState(sortBy);
+	const [currentSortOrder] = React.useState(sortOrder);
+	// Use search from localStorage if available, otherwise use prop search
+	const [currentSearch, setCurrentSearch] = React.useState(
+		initialSearchFromStorage || search,
+	);
+	
+	// Track which fields are available in current data
+	const [availableFields, setAvailableFields] = React.useState<Set<string>>(() => {
+		if (!hasLocalFilters && initialData.length > 0) {
+			return new Set(Object.keys(initialData[0]));
+		}
+		return new Set();
+	});
+
+	// Load filters from localStorage and transform them
+	const [localFilters, setLocalFilters] = React.useState<any>(initialLocalFilters);
+
+	// Get tag filter key for reading from localStorage
+	const tagFilterKey = React.useMemo(() => {
+		const userId = session?.user?.strapi_id || session?.user?.email || "anonymous";
+		return `filters.tag.contacts.${userId}`;
+	}, [session]);
+
+	// Helper to get selected tag from localStorage
+	const getSelectedTag = React.useCallback((): string | null => {
+		if (typeof window === "undefined") {
+			return null;
+		}
+		try {
+			return localStorage.getItem(tagFilterKey);
+		} catch {
+			return null;
+		}
+	}, [tagFilterKey]);
+
+	// Ref to prevent multiple simultaneous fetch calls
+	const isFetchingRef = React.useRef(false);
+
+	// Create user-specific localStorage key
+	const LS_COLUMN_VISIBILITY_KEY = React.useMemo(
+		() => {
+			const userId = session?.user?.strapi_id || session?.user?.email || "anonymous";
+			return `datatable.columnVisibility.contacts.${userId}`;
 		},
-		[],
+		[session?.user?.strapi_id, session?.user?.email],
 	);
 
-	const effectiveFilters = React.useMemo(() => {
-		let baseFilters = combineWithSearch(filters, searchTerm);
+	// Get columns with session
+	const columns = React.useMemo(() => getColumns(session), [session]);
 
-		if (selectedTag) {
-			const tagFilter = { tags: { id: { $eq: selectedTag } } };
-			baseFilters = baseFilters
-				? { $and: [baseFilters, tagFilter] }
-				: tagFilter;
+	// Default visible columns (matching default visible fields from page.tsx)
+	const DEFAULT_VISIBLE_COLUMN_IDS = React.useMemo(() => {
+		return ["select", "actions", "first_name", "last_name", "email", "tags"];
+	}, []);
+
+	// Initialize default column visibility in localStorage if empty (synchronously, before DataTable reads it)
+	React.useMemo(() => {
+		try {
+			const stored = localStorage.getItem(LS_COLUMN_VISIBILITY_KEY);
+			if (!stored) {
+				// Set default visibility: hide all columns except default ones
+				const defaultVisibility: VisibilityState = {};
+				columns.forEach((col) => {
+					const colId = (col as any)?.id || (col as any)?.accessorKey;
+					if (colId && !DEFAULT_VISIBLE_COLUMN_IDS.includes(colId)) {
+						defaultVisibility[colId] = false;
+					}
+				});
+				localStorage.setItem(LS_COLUMN_VISIBILITY_KEY, JSON.stringify(defaultVisibility));
+			}
+		} catch {
+			// Ignore localStorage errors
 		}
+		return null; // useMemo must return a value
+	}, [LS_COLUMN_VISIBILITY_KEY, DEFAULT_VISIBLE_COLUMN_IDS]);
 
-		if (selectedCountry) {
-			const countryFilter = { country: { $eq: selectedCountry } };
-			baseFilters = baseFilters
-				? { $and: [baseFilters, countryFilter] }
-				: countryFilter;
+	// Get visible column IDs from localStorage (for DataTable component)
+	const getVisibleColumnIds = React.useCallback((): string[] => {
+		try {
+			const stored = localStorage.getItem(LS_COLUMN_VISIBILITY_KEY);
+			if (stored) {
+				const parsed = JSON.parse(stored) as VisibilityState;
+				// Extract visible column IDs
+				const visibleIds = columns
+					.filter((col) => {
+						const colId = (col as any)?.id || (col as any)?.accessorKey;
+						// If column visibility is explicitly set to false, hide it
+						// If not set (undefined), show it (default visible)
+						return colId && parsed[colId] !== false;
+					})
+					.map((col) => (col as any)?.id || (col as any)?.accessorKey)
+					.filter(Boolean);
+				
+				// If we have stored visibility, use it
+				if (visibleIds.length > 0) {
+					return visibleIds;
+				}
+			}
+		} catch {
+			// Fallback to default columns
 		}
+		// Return default visible columns if no localStorage or empty localStorage
+		return DEFAULT_VISIBLE_COLUMN_IDS;
+	}, [LS_COLUMN_VISIBILITY_KEY, DEFAULT_VISIBLE_COLUMN_IDS]);
 
-		return baseFilters;
-	}, [filters, searchTerm, selectedTag, selectedCountry, combineWithSearch]);
+	// Get visible field names (accessorKeys) for API calls
+	const getVisibleFieldNames = React.useCallback((): string[] => {
+		try {
+			const stored = localStorage.getItem(LS_COLUMN_VISIBILITY_KEY);
+			if (stored) {
+				const parsed = JSON.parse(stored) as VisibilityState;
+				// Extract visible column accessorKeys (field names)
+				const visibleFields = columns
+					.filter((col) => {
+						const colId = (col as any)?.id || (col as any)?.accessorKey;
+						// If column visibility is explicitly set to false, hide it
+						// If not set (undefined), show it (default visible)
+						return colId && parsed[colId] !== false && (col as any)?.accessorKey;
+					})
+					.map((col) => (col as any)?.accessorKey)
+					.filter(Boolean);
+				
+				// If we have stored visibility, use it
+				if (visibleFields.length > 0) {
+					return visibleFields;
+				}
+			}
+		} catch {
+			// Fallback to default columns
+		}
+		// Return default visible fields (accessorKeys) if no localStorage or empty localStorage
+		return columns
+			.filter((col) => {
+				const colId = (col as any)?.id || (col as any)?.accessorKey;
+				return colId && DEFAULT_VISIBLE_COLUMN_IDS.includes(colId) && (col as any)?.accessorKey;
+			})
+			.map((col) => (col as any)?.accessorKey)
+			.filter(Boolean);
+	}, [LS_COLUMN_VISIBILITY_KEY, DEFAULT_VISIBLE_COLUMN_IDS]);
 
 	const fetchData = React.useCallback(
 		async (params: {
@@ -127,135 +281,169 @@ export default function ContactsTableClient({
 			sortBy?: string;
 			sortOrder?: "asc" | "desc";
 			filters?: any;
-			visibleColumns?: string[];
+			search?: string;
 		}) => {
+			// Prevent multiple simultaneous calls
+			if (isFetchingRef.current) {
+				return;
+			}
+			isFetchingRef.current = true;
 			setIsLoading(true);
 
-			const visibleColumns = (params.visibleColumns ?? columns)
-				.filter((c: any) => c.meta?.hidden !== true)
-				.map((c: any) => c.id ?? c.accessorKey)
-				.filter(Boolean);
-			const res = await fetchDataForVisibleColumns({
-				visibleIds: visibleColumns,
-				page: params.page ?? pagination.page,
-				pageSize: params.pageSize ?? pagination.pageSize,
-				sortBy: params.sortBy ?? sortBy,
-				sortOrder: params.sortOrder ?? sortOrder,
-				filters: params.filters ?? effectiveFilters,
-				serviceName: "contactsService",
-			});
+			try {
+				// Get visible column IDs for populate mapping (don't include in deps to avoid loops)
+				const visibleIds = getVisibleColumnIds();
+				// Get visible field names (accessorKeys) for fields array
+				const visibleFields = getVisibleFieldNames();
+				// Merge filters: params.filters takes highest precedence, then localFilters, then serverFilters
+				let mergedFilters = params.filters !== undefined
+					? params.filters // If filters are explicitly passed, use them directly
+					: {
+							...(serverFilters ?? {}),
+							...(localFilters ?? {}),
+						};
 
-			if (res?.success) {
-				setData(res.data ?? []);
-				if (res.meta?.pagination) {
-					setPagination(res.meta.pagination);
+				// Add tag filter if selected (read from localStorage)
+				const selectedTag = getSelectedTag();
+				if (selectedTag) {
+					// Tags use documentId for filtering (TagFilterHeader stores documentId)
+					const tagFilter = { tags: { documentId: { $eq: selectedTag } } };
+					if (Object.keys(mergedFilters).length > 0) {
+						// Flatten $and structures instead of nesting
+						const filterArray = mergedFilters.$and ? mergedFilters.$and : [mergedFilters];
+						mergedFilters = { $and: [...filterArray, tagFilter] };
+					} else {
+						mergedFilters = tagFilter;
+					}
 				}
+
+				const pageToUse = params.page ?? pagination.page;
+				const pageSizeToUse = params.pageSize ?? pagination.pageSize;
+				
+				// Normalize search: use param if provided, otherwise use currentSearch, treat empty/null as no search
+				const searchToUse = params.search !== undefined 
+					? (params.search?.trim() || "") 
+					: (currentSearch?.trim() || "");
+				
+				const res = await fetchContactsForVisibleColumns({
+					visibleIds, // For populate mapping
+					visibleFields, // For fields array
+					page: pageToUse,
+					pageSize: pageSizeToUse,
+					sortBy: params.sortBy ?? currentSortBy,
+					sortOrder: params.sortOrder ?? currentSortOrder,
+					filters: mergedFilters,
+					search: searchToUse,
+				});
+				if (res?.success && res.data) {
+					setData(res.data);
+					if (res.meta?.pagination) {
+						const newPagination = res.meta.pagination;
+						setPagination(newPagination);
+						// Save pagination to localStorage
+						savePaginationToStorage(
+							"contacts",
+							{ page: newPagination.page, pageSize: newPagination.pageSize },
+							session,
+						);
+					}
+					// Update available fields
+					if (res.data.length > 0) {
+						setAvailableFields(new Set(Object.keys(res.data[0])));
+					}
+				}
+			} finally {
+				setIsLoading(false);
+				isFetchingRef.current = false;
 			}
-			setIsLoading(false);
 		},
-		[pagination.page, pagination.pageSize, sortBy, sortOrder, effectiveFilters],
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[
+			pagination.page,
+			pagination.pageSize,
+			currentSortBy,
+			currentSortOrder,
+			currentSearch,
+			serverFilters,
+			localFilters,
+			getSelectedTag,
+			// Don't include getVisibleColumnIds - we call it fresh each time
+		],
 	);
 
-	const debouncedFetch = React.useMemo(() => {
-		let timeoutId: NodeJS.Timeout;
-		return (params: Parameters<typeof fetchData>[0]) => {
-			clearTimeout(timeoutId);
-			timeoutId = setTimeout(() => fetchData(params), 300);
+	const handleVisibleColumnsChange = React.useRef((_ids: string[]) => {
+		// Refetch data when column visibility changes
+		fetchData({
+			page: 1, // Reset to first page
+		});
+	});
+
+	// Update the ref when fetchData changes
+	React.useEffect(() => {
+		handleVisibleColumnsChange.current = (_ids: string[]) => {
+			fetchData({
+				page: 1,
+			});
 		};
 	}, [fetchData]);
 
-	const handleSearchChange = React.useCallback(
-		(term: string) => {
-			setSearchTerm(term);
+	// On mount, check if we need to refetch with merged filters or different columns
+	React.useEffect(() => {
+		const visibleFields = getVisibleFieldNames();
+		const initialFields = new Set(Object.keys(initialData[0] || {}));
 
-			updateUrl({ page: 1 });
-			debouncedFetch({
-				page: 1,
-				filters: combineWithSearch(filters, term),
-			});
-		},
-		[updateUrl, debouncedFetch, filters, combineWithSearch],
-	);
+		// Check if any visible field is missing from initial data
+		const missingFields = visibleFields.filter(
+			(field) => !initialFields.has(field as string)
+		);
 
-	const handleVisibleColumnsChange = React.useCallback(
-		(_ids: string[], opts?: { page: number; pageSize: number }) => {
-			// Reset page if column visibility changes
-			fetchData({
-				page: opts?.page ?? 1,
-				pageSize: opts?.pageSize ?? pagination.pageSize,
-				filters: effectiveFilters,
-				sortBy,
-				sortOrder,
-				visibleColumns: _ids,
-			});
-		},
-		[fetchData, effectiveFilters, sortBy, sortOrder],
-	);
-
-	const handlePaginationChange = React.useCallback(
-		(page: number, pageSize: number) => {
-			updateUrl({ page, pageSize });
-			fetchData({ page, pageSize });
-		},
-		[updateUrl, fetchData],
-	);
-
-	const handleSortingChange = React.useCallback(
-		(newSortBy: string, newSortOrder: "asc" | "desc") => {
-			updateUrl({ sortBy: newSortBy, sortOrder: newSortOrder, page: 1 });
-			fetchData({
-				sortBy: newSortBy,
-				sortOrder: newSortOrder,
-				page: 1,
-			});
-		},
-		[updateUrl, fetchData],
-	);
-
-	const handleFiltersApplied = React.useCallback(
-		({
-			strapiFilters,
-			query,
-		}: {
-			uiFilters: any;
-			strapiFilters: any;
-			query?: string;
-		}) => {
-			// Merge advanced filters with serverFilters instead of replacing
-			const mergedFilters =
-				serverFilters && Object.keys(serverFilters).length > 0
-					? { $and: [serverFilters, strapiFilters ?? {}] }
-					: (strapiFilters ?? {});
-
-			setFilters(mergedFilters);
-			if (typeof query === "string") {
-				setSearchTerm(query);
+		// If we have localFilters OR missing fields OR tag filter OR stored pagination OR stored search, refetch with correct fields/filters/pagination/search
+		// This ensures we always fetch with merged filters if localFilters or tag filter exist, or if pagination/search differs
+		const hasTagFilter = getSelectedTag() !== null;
+		if (
+			(hasLocalFilters ||
+				missingFields.length > 0 ||
+				hasTagFilter ||
+				hasStoredPagination ||
+				hasStoredSearch) &&
+			!isFetchingRef.current
+		) {
+			fetchData({});
+		}
+		
+		// Initialize column visibility if localStorage is empty
+		try {
+			const storedVisibility = localStorage.getItem(LS_COLUMN_VISIBILITY_KEY);
+			if (!storedVisibility) {
+				// Set default visibility: hide all columns except default ones
+				const defaultVisibility: VisibilityState = {};
+				columns.forEach((col) => {
+					const colId = (col as any)?.id || (col as any)?.accessorKey;
+					if (colId && !DEFAULT_VISIBLE_COLUMN_IDS.includes(colId)) {
+						defaultVisibility[colId] = false;
+					}
+				});
+				localStorage.setItem(LS_COLUMN_VISIBILITY_KEY, JSON.stringify(defaultVisibility));
 			}
+		} catch {
+			// Ignore localStorage errors
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []); // Only run on mount
 
-			updateUrl({ page: 1 });
-			const newFilters = combineWithSearch(mergedFilters, query || searchTerm);
-			fetchData({ page: 1, filters: newFilters });
-		},
-		[updateUrl, fetchData, searchTerm, combineWithSearch, serverFilters],
-	);
-
-	// Memoize with STABLE function reference - never recreate
-	const advancedFiltersComponent = React.useMemo(
-		() => {
-			const FilterComponent = (props: any) => (
-				<AdvancedFilters
-					{...props}
-					currentSearchTerm={searchTerm}
-					historyType="contacts"
-					onSubmitComplete={handleFiltersApplied}
-					isLoading={isLoading}
-					key="advanced-filters-singleton" // Force single instance
-				/>
-			);
-			return FilterComponent;
-		},
-		[], // EMPTY - never recreate the component function
-	);
+	// Listen for tag filter changes
+	React.useEffect(() => {
+		const handleTagFilterChange = () => {
+			// Small delay to ensure localStorage is updated
+			setTimeout(() => {
+				fetchData({ page: 1 });
+			}, 0);
+		};
+		window.addEventListener("tagFilterChanged", handleTagFilterChange);
+		return () => {
+			window.removeEventListener("tagFilterChanged", handleTagFilterChange);
+		};
+	}, [fetchData]);
 
 	return (
 		<DataTable
@@ -263,35 +451,64 @@ export default function ContactsTableClient({
 			columns={columns}
 			table_name={tableName}
 			table_title={tableTitle}
-			mass_actions={(props) => (
-				<MassActionsContacts
-					{...props}
-					refreshData={() =>
-						fetchData({
-							page: pagination.page,
-							pageSize: pagination.pageSize,
-							sortBy,
-							sortOrder,
-							filters: effectiveFilters,
-						})
-					}
-				/>
-			)}
+			mass_actions={MassActionsContacts}
 			pagination={pagination}
-			advancedFilters={advancedFiltersComponent}
 			createDialog={createContactDialog}
+			createDialogProps={{
+				onSuccess: () => {
+					// Refetch data after creating contact
+					fetchData({ page: 1 });
+				},
+			}}
+			advancedFilters={React.useMemo(
+				() => {
+					const handleFilterSubmit = (filters: any) => {
+						// Update filters state immediately
+						setLocalFilters(filters || {});
+						// Refetch with new filters directly (filters param takes precedence)
+						// Use a small delay to ensure state update is processed
+						setTimeout(() => {
+							fetchData({ page: 1, filters: filters || {} });
+						}, 0);
+					};
+					
+					return function ContactsAdvancedFilters() {
+						return (
+							<AdvancedFilters
+								session={session}
+								onSubmitComplete={handleFilterSubmit}
+							/>
+						);
+					};
+				},
+				[session, fetchData],
+			)}
 			session={session}
 			showStatusModal
-			sorting={{ sortBy, sortOrder }}
-			onVisibleColumnsChange={handleVisibleColumnsChange}
-			onSearchChange={handleSearchChange}
-			onSortingChange={handleSortingChange}
-			onPaginationChange={handlePaginationChange}
-			filtersActive={
-				Boolean(searchTerm) || (filters && Object.keys(filters).length > 0)
-			}
-			onFiltersApplied={handleFiltersApplied}
+			sorting={{ sortBy: currentSortBy, sortOrder: currentSortOrder }}
+			onVisibleColumnsChange={(ids) => handleVisibleColumnsChange.current(ids)}
+			onPaginationChange={(page, pageSize) => {
+				// Save pagination to localStorage immediately
+				savePaginationToStorage("contacts", { page, pageSize }, session);
+				// Update local state
+				setPagination((prev) => ({ ...prev, page, pageSize }));
+				// Fetch data with new pagination
+				fetchData({ page, pageSize });
+			}}
+			onSearchChange={(searchTerm) => {
+				// Trim and normalize search term
+				const normalizedSearch = searchTerm?.trim() || "";
+				// Save search to localStorage immediately (empty string clears it)
+				saveSearchToStorage("contacts", normalizedSearch, session);
+				// Update local state
+				setCurrentSearch(normalizedSearch);
+				// Fetch data with new search (reset to page 1)
+				// Pass empty string explicitly to clear search filters
+				fetchData({ page: 1, search: normalizedSearch });
+			}}
+			initialSearch={currentSearch}
 			isLoading={isLoading}
+			availableFields={availableFields}
 		/>
 	);
 }

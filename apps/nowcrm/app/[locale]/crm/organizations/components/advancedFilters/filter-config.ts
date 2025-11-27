@@ -27,7 +27,6 @@ export const organizationsFilterConfig: FilterConfig = {
 		whatsapp_phone: "text",
 
 		// Relations
-		contacts: "relation",
 		organization_type: "relation",
 		industry: "relation",
 		frequency: "relation",
@@ -94,12 +93,6 @@ export const organizationsFilterConfig: FilterConfig = {
 			name: "whatsapp_phone",
 			type: "text",
 			label: "WhatsApp Phone",
-		},
-		contacts: {
-			name: "contacts",
-			type: "relation",
-			label: "Contacts",
-			serviceName: "contactService",
 		},
 		organization_type: {
 			name: "organization_type",
@@ -177,8 +170,8 @@ export const organizationsFilterConfig: FilterConfig = {
 			],
 		},
 		organization: {
-			label: "Organization and Contacts",
-			fields: ["contacts", "organization_type", "industry"],
+			label: "Organization Types and Industries",
+			fields: [ "organization_type", "industry"],
 		},
 		preferences: {
 			label: "Preferences / Other",
@@ -187,10 +180,6 @@ export const organizationsFilterConfig: FilterConfig = {
 	},
 
 	relationMeta: {
-		contacts: {
-			serviceName: "contactService",
-			labelKey: "AdvancedFilters.fields.contacts",
-		},
 		organization_type: {
 			serviceName: "organizationTypesService",
 			labelKey: "AdvancedFilters.fields.organization_type",

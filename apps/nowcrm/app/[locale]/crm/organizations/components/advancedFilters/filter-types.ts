@@ -30,7 +30,6 @@ export const FIELD_TYPES: Record<
 	whatsapp_phone: "text",
 
 	// Relations
-	contacts: "relation",
 	organization_type: "relation",
 	industry: "relation",
 	frequency: "relation",
@@ -53,11 +52,6 @@ export const RELATION_META: Record<
 		deduplicateByLabel?: boolean;
 	}
 > = {
-	contacts: {
-		serviceName: "contactsService",
-		labelKey: "AdvancedFilters.fields.contacts",
-		filterKey: "first_name",
-	},
 	organization_type: {
 		serviceName: "organizationTypesService",
 		labelKey: "AdvancedFilters.fields.organization_type",
@@ -111,8 +105,8 @@ export const FILTER_CATEGORIES = {
 		],
 	},
 	organization: {
-		label: "Organization and Contacts",
-		fields: ["contacts", "organization_type", "industry"],
+		label: "Organization Types and Industries",
+		fields: ["organization_type", "industry"],
 	},
 	preferences: {
 		label: "Preferences / Other",

@@ -260,8 +260,8 @@ const AdvancedFilters = forwardRef<
 	return (
 		<div className="ml-1">
 			{showTrigger && (
-				<Button
-					variant="outline"
+					<Button
+						variant="outline"
 					size="sm"
 					onClick={() => setOpenState(true)}
 					className="h-10"
@@ -273,7 +273,7 @@ const AdvancedFilters = forwardRef<
 							{activeFiltersCount}
 						</Badge>
 					)}
-				</Button>
+					</Button>
 			)}
 
 			<Dialog open={open} onOpenChange={setOpenState}>
@@ -318,7 +318,7 @@ const AdvancedFilters = forwardRef<
 											<FilterGroupComponent
 												form={form}
 												groupIndex={index}
-												control={form.control}
+											control={form.control}
 												onUpdateGroup={(updates) =>
 													handleUpdateGroup(index, updates as Partial<FilterGroup>)
 												}
@@ -335,11 +335,11 @@ const AdvancedFilters = forwardRef<
 													<Badge variant="outline" className="bg-background">
 														{groupLogic}
 													</Badge>
-												</div>
+													</div>
 											)}
-										</div>
+													</div>
 									))}
-								</div>
+									</div>
 
 								{/* Add Group Button */}
 								<Button

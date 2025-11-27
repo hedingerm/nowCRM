@@ -23,9 +23,10 @@ import {
 import { RouteConfig } from "@/lib/config/routes-config";
 import { formatDateTimeStrapi } from "@/lib/strapi-date";
 import { toNames } from "@/lib/utils";
+import type { Session } from "next-auth";
 import { CountryFilterHeader } from "./countries/country-filter-header";
-import { TagsCell } from "./tags/tag-cell";
-import { TagFilterHeader } from "./tags/tag-filter-header";
+import { TagsCell } from "@/components/dataTable/shared_cols/tags/tag-cell";
+import { TagFilterHeader } from "@/components/dataTable/shared_cols/tags/tag-filter-header";
 
 const ViewActions: React.FC<{ contact: Contact }> = ({ contact }) => {
 	const t = useMessages();
@@ -145,7 +146,7 @@ const ViewContact: React.FC<{ contact: Contact; cell: any }> = ({
 	);
 };
 
-export const columns: ColumnDef<Contact>[] = [
+export const getColumns = (session?: Session | null): ColumnDef<Contact>[] => [
 	{
 		id: "select",
 		header: ({ table }) => (
@@ -488,7 +489,7 @@ export const columns: ColumnDef<Contact>[] = [
 	},
 	{
 		accessorKey: "tags",
-		header: () => <TagFilterHeader />,
+		header: () => <TagFilterHeader session={session} entityName="contacts" />,
 		cell: ({ row }) => {
 			const tags = row.original.tags || [];
 			return (

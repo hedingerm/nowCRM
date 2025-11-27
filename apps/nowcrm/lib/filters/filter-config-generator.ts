@@ -7,6 +7,7 @@ export interface FilterFieldConfig {
 	type: FieldType;
 	label?: string;
 	serviceName?: string; // For relation fields
+	filterKey?: string; // For relation fields - specifies which field to filter on in the related entity
 	enumValues?: string[]; // For enum fields
 	hasOperator?: boolean; // Default true for text/number/date
 }
@@ -77,7 +78,7 @@ export function getOperatorsForFieldType(
 	// Import operators dynamically to avoid circular dependencies
 	if (fieldType === "number") {
 		return [
-			{ value: "$eq", label: "Equals" },
+			{ value: "$eqi", label: "Equals (case insensitive)" },
 			{ value: "$ne", label: "Not equals" },
 			{ value: "$gt", label: "Greater than" },
 			{ value: "$gte", label: "Greater than or equal" },
@@ -99,7 +100,7 @@ export function getOperatorsForFieldType(
 	return [
 		{ value: "$containsi", label: "Contains" },
 		{ value: "$notContainsi", label: "Does not contain" },
-		{ value: "$eq", label: "Equals" },
+		{ value: "$eqi", label: "Equals (case insensitive)" },
 		{ value: "$ne", label: "Not equals" },
 		{ value: "$startsWithi", label: "Starts with" },
 		{ value: "$endsWithi", label: "Ends with" },

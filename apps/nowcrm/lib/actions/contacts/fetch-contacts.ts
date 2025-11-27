@@ -1,22 +1,30 @@
 "use server";
 
-import { organizationsService } from "@nowcrm/services/server";
+import { contactsService } from "@nowcrm/services/server";
 import { auth } from "@/auth";
 import { buildPopulateFromVisible } from "@/lib/populate/populate-builder";
-import { ORGANIZATIONS_POPULATE_MAPPINGS } from "@/lib/populate/organizations-populate-config";
+import { CONTACTS_POPULATE_MAPPINGS } from "@/lib/populate/contacts-populate-config";
 import { getSearchFields } from "@/lib/search/search-fields-config";
 
 const IGNORE = new Set(["select", "actions", "delete"]);
 
-// Relation names in Organization model
+// Relation names in Contact model
 const RELATIONS = new Set([
-	"organization_type",
 	"tags",
-	"contacts",
-	"frequency",
-	"media_type",
 	"industry",
-	"sources",
+	"contact_types",
+	"title",
+	"salutation",
+	"job_title",
+	"organization",
+	"department",
+	"lists",
+	"keywords",
+	"contact_interests",
+	"journeys",
+	"journey_steps",
+	"survey_items",
+	"subscriptions",
 ]);
 
 function fieldsFromVisible(
@@ -37,7 +45,7 @@ function fieldsFromVisible(
 	return Array.from(s);
 }
 
-export async function fetchOrganizationsForVisibleColumns(input: {
+export async function fetchContactsForVisibleColumns(input: {
 	visibleIds: string[]; // Column IDs for populate mapping
 	visibleFields?: string[]; // Field names (accessorKeys) for fields array
 	page: number;
@@ -72,7 +80,7 @@ export async function fetchOrganizationsForVisibleColumns(input: {
 		: fieldsFromVisible(visibleIds, [sortBy, "id", "documentId"]);
 
 	// Build search filters using configured search fields
-	const searchFields = getSearchFields("organizations");
+	const searchFields = getSearchFields("contacts");
 	const searchFilters = search && search.trim()
 		? {
 				$or: searchFields.map((field) => ({
@@ -104,10 +112,10 @@ export async function fetchOrganizationsForVisibleColumns(input: {
 	// Build populate structure based on visible columns
 	const populate = buildPopulateFromVisible(
 		visibleIds,
-		ORGANIZATIONS_POPULATE_MAPPINGS,
+		CONTACTS_POPULATE_MAPPINGS,
 	);
 
-	return await organizationsService.find(session?.jwt, {
+	return await contactsService.find(session?.jwt, {
 		fields: fields as any,
 		populate: populate === "*" ? "*" : (populate as any),
 		sort: [`${sortBy}:${sortOrder}`] as any,

@@ -81,7 +81,7 @@ export default function CreateListDialog({ onSuccess }: CreateDialogProps = {}) 
 				if (onSuccess) {
 					onSuccess();
 				} else {
-					router.refresh();
+				router.refresh();
 				}
 			} else {
 				// For the "create" action, refresh and let the dialog close.
@@ -90,7 +90,7 @@ export default function CreateListDialog({ onSuccess }: CreateDialogProps = {}) 
 				if (onSuccess) {
 					onSuccess();
 				} else {
-					router.refresh();
+				router.refresh();
 				}
 			}
 		}

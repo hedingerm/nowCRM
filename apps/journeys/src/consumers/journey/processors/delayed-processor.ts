@@ -28,7 +28,7 @@ export async function processDelayedMessage(data: delayedProcessorJobData) {
 		logger.error(`Job ${jobId} missing timing`);
 		return;
 	}
-	if (type === "wait" || type === "scheduler-trigger") {
+	if (type === "wait" || type === "scheduler-trigger" || "publish") {
 		// what we do here is that if we know its just a wait node(or a schedule node)
 		//all we need is to wait time and pass contact to the next step
 		//So when time is on and this function is runned we start job for all connected steps or ending if for some reason this is the last one node
