@@ -1,22 +1,22 @@
 "use client";
 
-import type { Session } from "next-auth";
 import type { VisibilityState } from "@tanstack/react-table";
+import type { Session } from "next-auth";
 import * as React from "react";
-import { fetchContactsForVisibleColumns } from "@/lib/actions/contacts/fetch-contacts";
 import DataTable from "@/components/dataTable/data-table-old";
-import { getColumns } from "./components/columns/contact-columns";
-import AdvancedFilters from "./components/advancedFilters/advanced-filters";
-import createContactDialog from "./components/create-dialog";
-import MassActionsContacts from "./components/massActions/mass-actions";
+import { fetchContactsForVisibleColumns } from "@/lib/actions/contacts/fetch-contacts";
+import { transformFilters } from "@/lib/actions/filters/filters-search";
 import {
 	loadFiltersFromStorage,
 	loadPaginationFromStorage,
-	savePaginationToStorage,
 	loadSearchFromStorage,
+	savePaginationToStorage,
 	saveSearchToStorage,
 } from "@/lib/filters/filter-storage";
-import { transformFilters } from "@/lib/actions/filters/filters-search";
+import AdvancedFilters from "./components/advancedFilters/advanced-filters";
+import { getColumns } from "./components/columns/contact-columns";
+import createContactDialog from "./components/create-dialog";
+import MassActionsContacts from "./components/massActions/mass-actions";
 
 type Props = {
 	initialData: any[];
@@ -114,9 +114,11 @@ export default function ContactsTableClient({
 	const [data, setData] = React.useState(() => {
 		// If we have localFilters, stored pagination, or stored search, start with empty data to prevent flash
 		// The useEffect will immediately fetch with correct filters/pagination/search
-		return hasLocalFilters || hasStoredPagination || hasStoredSearch ? [] : initialData;
+		return hasLocalFilters || hasStoredPagination || hasStoredSearch
+			? []
+			: initialData;
 	});
-	
+
 	// Initialize pagination from localStorage if available, otherwise use initialPagination
 	// Merge stored page/pageSize with initial pagination to preserve pageCount and total
 	const [pagination, setPagination] = React.useState(() => {
@@ -129,7 +131,7 @@ export default function ContactsTableClient({
 		}
 		return initialPagination;
 	});
-	
+
 	const [isLoading, setIsLoading] = React.useState(
 		hasLocalFilters || hasStoredPagination || hasStoredSearch,
 	); // Show loading if we need to refetch
@@ -139,21 +141,25 @@ export default function ContactsTableClient({
 	const [currentSearch, setCurrentSearch] = React.useState(
 		initialSearchFromStorage || search,
 	);
-	
+
 	// Track which fields are available in current data
-	const [availableFields, setAvailableFields] = React.useState<Set<string>>(() => {
-		if (!hasLocalFilters && initialData.length > 0) {
-			return new Set(Object.keys(initialData[0]));
-		}
-		return new Set();
-	});
+	const [availableFields, setAvailableFields] = React.useState<Set<string>>(
+		() => {
+			if (!hasLocalFilters && initialData.length > 0) {
+				return new Set(Object.keys(initialData[0]));
+			}
+			return new Set();
+		},
+	);
 
 	// Load filters from localStorage and transform them
-	const [localFilters, setLocalFilters] = React.useState<any>(initialLocalFilters);
+	const [localFilters, setLocalFilters] =
+		React.useState<any>(initialLocalFilters);
 
 	// Get tag filter key for reading from localStorage
 	const tagFilterKey = React.useMemo(() => {
-		const userId = session?.user?.strapi_id || session?.user?.email || "anonymous";
+		const userId =
+			session?.user?.strapi_id || session?.user?.email || "anonymous";
 		return `filters.tag.contacts.${userId}`;
 	}, [session]);
 
@@ -173,13 +179,11 @@ export default function ContactsTableClient({
 	const isFetchingRef = React.useRef(false);
 
 	// Create user-specific localStorage key
-	const LS_COLUMN_VISIBILITY_KEY = React.useMemo(
-		() => {
-			const userId = session?.user?.strapi_id || session?.user?.email || "anonymous";
-			return `datatable.columnVisibility.contacts.${userId}`;
-		},
-		[session?.user?.strapi_id, session?.user?.email],
-	);
+	const LS_COLUMN_VISIBILITY_KEY = React.useMemo(() => {
+		const userId =
+			session?.user?.strapi_id || session?.user?.email || "anonymous";
+		return `datatable.columnVisibility.contacts.${userId}`;
+	}, [session?.user?.strapi_id, session?.user?.email]);
 
 	// Get columns with session
 	const columns = React.useMemo(() => getColumns(session), [session]);
@@ -202,7 +206,10 @@ export default function ContactsTableClient({
 						defaultVisibility[colId] = false;
 					}
 				});
-				localStorage.setItem(LS_COLUMN_VISIBILITY_KEY, JSON.stringify(defaultVisibility));
+				localStorage.setItem(
+					LS_COLUMN_VISIBILITY_KEY,
+					JSON.stringify(defaultVisibility),
+				);
 			}
 		} catch {
 			// Ignore localStorage errors
@@ -226,7 +233,7 @@ export default function ContactsTableClient({
 					})
 					.map((col) => (col as any)?.id || (col as any)?.accessorKey)
 					.filter(Boolean);
-				
+
 				// If we have stored visibility, use it
 				if (visibleIds.length > 0) {
 					return visibleIds;
@@ -251,11 +258,13 @@ export default function ContactsTableClient({
 						const colId = (col as any)?.id || (col as any)?.accessorKey;
 						// If column visibility is explicitly set to false, hide it
 						// If not set (undefined), show it (default visible)
-						return colId && parsed[colId] !== false && (col as any)?.accessorKey;
+						return (
+							colId && parsed[colId] !== false && (col as any)?.accessorKey
+						);
 					})
 					.map((col) => (col as any)?.accessorKey)
 					.filter(Boolean);
-				
+
 				// If we have stored visibility, use it
 				if (visibleFields.length > 0) {
 					return visibleFields;
@@ -268,7 +277,11 @@ export default function ContactsTableClient({
 		return columns
 			.filter((col) => {
 				const colId = (col as any)?.id || (col as any)?.accessorKey;
-				return colId && DEFAULT_VISIBLE_COLUMN_IDS.includes(colId) && (col as any)?.accessorKey;
+				return (
+					colId &&
+					DEFAULT_VISIBLE_COLUMN_IDS.includes(colId) &&
+					(col as any)?.accessorKey
+				);
 			})
 			.map((col) => (col as any)?.accessorKey)
 			.filter(Boolean);
@@ -296,12 +309,13 @@ export default function ContactsTableClient({
 				// Get visible field names (accessorKeys) for fields array
 				const visibleFields = getVisibleFieldNames();
 				// Merge filters: params.filters takes highest precedence, then localFilters, then serverFilters
-				let mergedFilters = params.filters !== undefined
-					? params.filters // If filters are explicitly passed, use them directly
-					: {
-							...(serverFilters ?? {}),
-							...(localFilters ?? {}),
-						};
+				let mergedFilters =
+					params.filters !== undefined
+						? params.filters // If filters are explicitly passed, use them directly
+						: {
+								...(serverFilters ?? {}),
+								...(localFilters ?? {}),
+							};
 
 				// Add tag filter if selected (read from localStorage)
 				const selectedTag = getSelectedTag();
@@ -310,7 +324,9 @@ export default function ContactsTableClient({
 					const tagFilter = { tags: { documentId: { $eq: selectedTag } } };
 					if (Object.keys(mergedFilters).length > 0) {
 						// Flatten $and structures instead of nesting
-						const filterArray = mergedFilters.$and ? mergedFilters.$and : [mergedFilters];
+						const filterArray = mergedFilters.$and
+							? mergedFilters.$and
+							: [mergedFilters];
 						mergedFilters = { $and: [...filterArray, tagFilter] };
 					} else {
 						mergedFilters = tagFilter;
@@ -319,12 +335,13 @@ export default function ContactsTableClient({
 
 				const pageToUse = params.page ?? pagination.page;
 				const pageSizeToUse = params.pageSize ?? pagination.pageSize;
-				
+
 				// Normalize search: use param if provided, otherwise use currentSearch, treat empty/null as no search
-				const searchToUse = params.search !== undefined 
-					? (params.search?.trim() || "") 
-					: (currentSearch?.trim() || "");
-				
+				const searchToUse =
+					params.search !== undefined
+						? params.search?.trim() || ""
+						: currentSearch?.trim() || "";
+
 				const res = await fetchContactsForVisibleColumns({
 					visibleIds, // For populate mapping
 					visibleFields, // For fields array
@@ -394,7 +411,7 @@ export default function ContactsTableClient({
 
 		// Check if any visible field is missing from initial data
 		const missingFields = visibleFields.filter(
-			(field) => !initialFields.has(field as string)
+			(field) => !initialFields.has(field as string),
 		);
 
 		// If we have localFilters OR missing fields OR tag filter OR stored pagination OR stored search, refetch with correct fields/filters/pagination/search
@@ -410,7 +427,7 @@ export default function ContactsTableClient({
 		) {
 			fetchData({});
 		}
-		
+
 		// Initialize column visibility if localStorage is empty
 		try {
 			const storedVisibility = localStorage.getItem(LS_COLUMN_VISIBILITY_KEY);
@@ -423,7 +440,10 @@ export default function ContactsTableClient({
 						defaultVisibility[colId] = false;
 					}
 				});
-				localStorage.setItem(LS_COLUMN_VISIBILITY_KEY, JSON.stringify(defaultVisibility));
+				localStorage.setItem(
+					LS_COLUMN_VISIBILITY_KEY,
+					JSON.stringify(defaultVisibility),
+				);
 			}
 		} catch {
 			// Ignore localStorage errors
@@ -460,29 +480,51 @@ export default function ContactsTableClient({
 					fetchData({ page: 1 });
 				},
 			}}
-			advancedFilters={React.useMemo(
-				() => {
-					const handleFilterSubmit = (filters: any) => {
-						// Update filters state immediately
-						setLocalFilters(filters || {});
-						// Refetch with new filters directly (filters param takes precedence)
-						// Use a small delay to ensure state update is processed
-						setTimeout(() => {
-							fetchData({ page: 1, filters: filters || {} });
-						}, 0);
-					};
-					
-					return function ContactsAdvancedFilters() {
-						return (
-							<AdvancedFilters
-								session={session}
-								onSubmitComplete={handleFilterSubmit}
-							/>
-						);
-					};
-				},
-				[session, fetchData],
-			)}
+			advancedFilters={React.useMemo(() => {
+				const handleFilterSubmit = (filters: any, search?: string) => {
+					// Update filters state immediately
+					setLocalFilters(filters || {});
+					// Update search term if provided
+					if (search !== undefined) {
+						const normalizedSearch = search?.trim() || "";
+						saveSearchToStorage("contacts", normalizedSearch, session);
+						setCurrentSearch(normalizedSearch);
+					}
+					// Refetch with new filters and search
+					// Pass both explicitly to ensure they're used
+					fetchData({ page: 1, filters: filters || {}, search: search });
+				};
+
+				return function ContactsAdvancedFilters() {
+					return (
+						<AdvancedFilters
+							session={session}
+							onSubmitComplete={handleFilterSubmit}
+							onSearchChange={(search, filters) => {
+								// Update search term when applying search history
+								const normalizedSearch = search?.trim() || "";
+								saveSearchToStorage("contacts", normalizedSearch, session);
+								setCurrentSearch(normalizedSearch);
+								// If filters are provided, update localFilters state
+								if (filters !== undefined) {
+									setLocalFilters(filters || {});
+								}
+								// Fetch data with new search and filters
+								// Use provided filters if available, otherwise use current localFilters
+								const filtersToUse =
+									filters !== undefined ? filters : localFilters;
+								fetchData({
+									page: 1,
+									search: normalizedSearch,
+									filters: filtersToUse,
+								});
+							}}
+							entityType="contacts"
+							currentSearch={currentSearch}
+						/>
+					);
+				};
+			}, [session, fetchData])}
 			session={session}
 			showStatusModal
 			sorting={{ sortBy: currentSortBy, sortOrder: currentSortOrder }}

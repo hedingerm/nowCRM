@@ -13,8 +13,9 @@ export type SearchFieldsConfig = typeof SEARCH_FIELDS_CONFIG;
 /**
  * Get search fields for an entity
  */
-export function getSearchFields(entityName: keyof SearchFieldsConfig): string[] {
+export function getSearchFields(
+	entityName: keyof SearchFieldsConfig,
+): string[] {
 	const fields = SEARCH_FIELDS_CONFIG[entityName];
 	return fields ? [...fields] : [];
 }
-

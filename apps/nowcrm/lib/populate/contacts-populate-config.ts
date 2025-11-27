@@ -74,4 +74,3 @@ export const CONTACTS_POPULATE_MAPPINGS: PopulateMapping[] = [
 		},
 	},
 ];
-

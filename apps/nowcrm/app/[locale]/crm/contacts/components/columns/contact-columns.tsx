@@ -5,9 +5,12 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { ChevronDown, ChevronUp, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import type { Session } from "next-auth";
 import { useMessages } from "next-intl";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { TagsCell } from "@/components/dataTable/shared_cols/tags/tag-cell";
+import { TagFilterHeader } from "@/components/dataTable/shared_cols/tags/tag-filter-header";
 import { SortableHeader } from "@/components/dataTable/sortable-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -23,10 +26,7 @@ import {
 import { RouteConfig } from "@/lib/config/routes-config";
 import { formatDateTimeStrapi } from "@/lib/strapi-date";
 import { toNames } from "@/lib/utils";
-import type { Session } from "next-auth";
 import { CountryFilterHeader } from "./countries/country-filter-header";
-import { TagsCell } from "@/components/dataTable/shared_cols/tags/tag-cell";
-import { TagFilterHeader } from "@/components/dataTable/shared_cols/tags/tag-filter-header";
 
 const ViewActions: React.FC<{ contact: Contact }> = ({ contact }) => {
 	const t = useMessages();

@@ -1,22 +1,22 @@
 "use client";
 
-import type { Session } from "next-auth";
 import type { VisibilityState } from "@tanstack/react-table";
+import type { Session } from "next-auth";
 import * as React from "react";
-import { fetchOrganizationsForVisibleColumns } from "@/lib/actions/organizations/fetch-organizations";
 import DataTable from "@/components/dataTable/data-table-old";
-import { getColumns } from "./columns/org-columns";
-import AdvancedFilters from "./advancedFilters/advanced-filters";
-import createOrganizationDialog from "./create-dialog";
-import MassActionsContacts from "./massActions/mass-actions";
+import { transformFilters } from "@/lib/actions/filters/filters-search";
+import { fetchOrganizationsForVisibleColumns } from "@/lib/actions/organizations/fetch-organizations";
 import {
 	loadFiltersFromStorage,
 	loadPaginationFromStorage,
-	savePaginationToStorage,
 	loadSearchFromStorage,
+	savePaginationToStorage,
 	saveSearchToStorage,
 } from "@/lib/filters/filter-storage";
-import { transformFilters } from "@/lib/actions/filters/filters-search";
+import AdvancedFilters from "./advancedFilters/advanced-filters";
+import { getColumns } from "./columns/org-columns";
+import createOrganizationDialog from "./create-dialog";
+import MassActionsContacts from "./massActions/mass-actions";
 
 type Props = {
 	initialData: any[];
@@ -110,9 +110,11 @@ export default function OrganizationsTableClient({
 	const [data, setData] = React.useState(() => {
 		// If we have localFilters, stored pagination, or stored search, start with empty data to prevent flash
 		// The useEffect will immediately fetch with correct filters/pagination/search
-		return hasLocalFilters || hasStoredPagination || hasStoredSearch ? [] : initialData;
+		return hasLocalFilters || hasStoredPagination || hasStoredSearch
+			? []
+			: initialData;
 	});
-	
+
 	// Initialize pagination from localStorage if available, otherwise use initialPagination
 	// Merge stored page/pageSize with initial pagination to preserve pageCount and total
 	const [pagination, setPagination] = React.useState(() => {
@@ -125,7 +127,7 @@ export default function OrganizationsTableClient({
 		}
 		return initialPagination;
 	});
-	
+
 	const [isLoading, setIsLoading] = React.useState(
 		hasLocalFilters || hasStoredPagination || hasStoredSearch,
 	); // Show loading if we need to refetch
@@ -135,21 +137,25 @@ export default function OrganizationsTableClient({
 	const [currentSearch, setCurrentSearch] = React.useState(
 		initialSearchFromStorage || search,
 	);
-	
+
 	// Track which fields are available in current data
-	const [availableFields, setAvailableFields] = React.useState<Set<string>>(() => {
-		if (!hasLocalFilters && initialData.length > 0) {
-			return new Set(Object.keys(initialData[0]));
-		}
-		return new Set();
-	});
+	const [availableFields, setAvailableFields] = React.useState<Set<string>>(
+		() => {
+			if (!hasLocalFilters && initialData.length > 0) {
+				return new Set(Object.keys(initialData[0]));
+			}
+			return new Set();
+		},
+	);
 
 	// Load filters from localStorage and transform them
-	const [localFilters, setLocalFilters] = React.useState<any>(initialLocalFilters);
+	const [localFilters, setLocalFilters] =
+		React.useState<any>(initialLocalFilters);
 
 	// Get tag filter key for reading from localStorage
 	const tagFilterKey = React.useMemo(() => {
-		const userId = session?.user?.strapi_id || session?.user?.email || "anonymous";
+		const userId =
+			session?.user?.strapi_id || session?.user?.email || "anonymous";
 		return `filters.tag.organizations.${userId}`;
 	}, [session]);
 
@@ -169,13 +175,11 @@ export default function OrganizationsTableClient({
 	const isFetchingRef = React.useRef(false);
 
 	// Create user-specific localStorage key
-	const LS_COLUMN_VISIBILITY_KEY = React.useMemo(
-		() => {
-			const userId = session?.user?.strapi_id || session?.user?.email || "anonymous";
-			return `datatable.columnVisibility.organizations.${userId}`;
-		},
-		[session?.user?.strapi_id, session?.user?.email],
-	);
+	const LS_COLUMN_VISIBILITY_KEY = React.useMemo(() => {
+		const userId =
+			session?.user?.strapi_id || session?.user?.email || "anonymous";
+		return `datatable.columnVisibility.organizations.${userId}`;
+	}, [session?.user?.strapi_id, session?.user?.email]);
 
 	// Get columns with session
 	const columns = React.useMemo(() => getColumns(session), [session]);
@@ -183,7 +187,7 @@ export default function OrganizationsTableClient({
 	// Default visible columns (matching DEFAULT_VISIBLE_FIELDS from page.tsx)
 	// Note: "id" and "documentId" are always included in the data, so we don't need explicit columns for them
 	const DEFAULT_VISIBLE_COLUMN_IDS = React.useMemo(() => {
-		return ["select", "actions", "name", "email", "address_line1","tags"];
+		return ["select", "actions", "name", "email", "address_line1", "tags"];
 	}, []);
 
 	// Initialize default column visibility in localStorage if empty (synchronously, before DataTable reads it)
@@ -199,7 +203,10 @@ export default function OrganizationsTableClient({
 						defaultVisibility[colId] = false;
 					}
 				});
-				localStorage.setItem(LS_COLUMN_VISIBILITY_KEY, JSON.stringify(defaultVisibility));
+				localStorage.setItem(
+					LS_COLUMN_VISIBILITY_KEY,
+					JSON.stringify(defaultVisibility),
+				);
 			}
 		} catch {
 			// Ignore localStorage errors
@@ -223,7 +230,7 @@ export default function OrganizationsTableClient({
 					})
 					.map((col) => (col as any)?.id || (col as any)?.accessorKey)
 					.filter(Boolean);
-				
+
 				// If we have stored visibility, use it
 				if (visibleIds.length > 0) {
 					return visibleIds;
@@ -248,11 +255,13 @@ export default function OrganizationsTableClient({
 						const colId = (col as any)?.id || (col as any)?.accessorKey;
 						// If column visibility is explicitly set to false, hide it
 						// If not set (undefined), show it (default visible)
-						return colId && parsed[colId] !== false && (col as any)?.accessorKey;
+						return (
+							colId && parsed[colId] !== false && (col as any)?.accessorKey
+						);
 					})
 					.map((col) => (col as any)?.accessorKey)
 					.filter(Boolean);
-				
+
 				// If we have stored visibility, use it
 				if (visibleFields.length > 0) {
 					return visibleFields;
@@ -265,7 +274,11 @@ export default function OrganizationsTableClient({
 		return columns
 			.filter((col) => {
 				const colId = (col as any)?.id || (col as any)?.accessorKey;
-				return colId && DEFAULT_VISIBLE_COLUMN_IDS.includes(colId) && (col as any)?.accessorKey;
+				return (
+					colId &&
+					DEFAULT_VISIBLE_COLUMN_IDS.includes(colId) &&
+					(col as any)?.accessorKey
+				);
 			})
 			.map((col) => (col as any)?.accessorKey)
 			.filter(Boolean);
@@ -293,12 +306,13 @@ export default function OrganizationsTableClient({
 				// Get visible field names (accessorKeys) for fields array
 				const visibleFields = getVisibleFieldNames();
 				// Merge filters: params.filters takes highest precedence, then localFilters, then serverFilters
-				let mergedFilters = params.filters !== undefined
-					? params.filters // If filters are explicitly passed, use them directly
-					: {
-							...(serverFilters ?? {}),
-							...(localFilters ?? {}),
-						};
+				let mergedFilters =
+					params.filters !== undefined
+						? params.filters // If filters are explicitly passed, use them directly
+						: {
+								...(serverFilters ?? {}),
+								...(localFilters ?? {}),
+							};
 
 				// Add tag filter if selected (read from localStorage)
 				const selectedTag = getSelectedTag();
@@ -307,7 +321,9 @@ export default function OrganizationsTableClient({
 					const tagFilter = { tags: { documentId: { $eq: selectedTag } } };
 					if (Object.keys(mergedFilters).length > 0) {
 						// Flatten $and structures instead of nesting
-						const filterArray = mergedFilters.$and ? mergedFilters.$and : [mergedFilters];
+						const filterArray = mergedFilters.$and
+							? mergedFilters.$and
+							: [mergedFilters];
 						mergedFilters = { $and: [...filterArray, tagFilter] };
 					} else {
 						mergedFilters = tagFilter;
@@ -316,12 +332,13 @@ export default function OrganizationsTableClient({
 
 				const pageToUse = params.page ?? pagination.page;
 				const pageSizeToUse = params.pageSize ?? pagination.pageSize;
-				
+
 				// Normalize search: use param if provided, otherwise use currentSearch, treat empty/null as no search
-				const searchToUse = params.search !== undefined 
-					? (params.search?.trim() || "") 
-					: (currentSearch?.trim() || "");
-				
+				const searchToUse =
+					params.search !== undefined
+						? params.search?.trim() || ""
+						: currentSearch?.trim() || "";
+
 				const res = await fetchOrganizationsForVisibleColumns({
 					visibleIds, // For populate mapping
 					visibleFields, // For fields array
@@ -392,7 +409,7 @@ export default function OrganizationsTableClient({
 
 		// Check if any visible field is missing from initial data
 		const missingFields = visibleFields.filter(
-			(field) => !initialFields.has(field as string)
+			(field) => !initialFields.has(field as string),
 		);
 
 		// If we have localFilters OR missing fields OR tag filter OR stored pagination OR stored search, refetch with correct fields/filters/pagination/search
@@ -408,7 +425,7 @@ export default function OrganizationsTableClient({
 		) {
 			fetchData({});
 		}
-		
+
 		// Initialize column visibility if localStorage is empty
 		try {
 			const storedVisibility = localStorage.getItem(LS_COLUMN_VISIBILITY_KEY);
@@ -421,7 +438,10 @@ export default function OrganizationsTableClient({
 						defaultVisibility[colId] = false;
 					}
 				});
-				localStorage.setItem(LS_COLUMN_VISIBILITY_KEY, JSON.stringify(defaultVisibility));
+				localStorage.setItem(
+					LS_COLUMN_VISIBILITY_KEY,
+					JSON.stringify(defaultVisibility),
+				);
 			}
 		} catch {
 			// Ignore localStorage errors
@@ -458,29 +478,51 @@ export default function OrganizationsTableClient({
 					fetchData({ page: 1 });
 				},
 			}}
-			advancedFilters={React.useMemo(
-				() => {
-					const handleFilterSubmit = (filters: any) => {
-						// Update filters state immediately
-						setLocalFilters(filters || {});
-						// Refetch with new filters directly (filters param takes precedence)
-						// Use a small delay to ensure state update is processed
-						setTimeout(() => {
-							fetchData({ page: 1, filters: filters || {} });
-						}, 0);
-					};
-					
-					return function OrganizationsAdvancedFilters() {
-						return (
-							<AdvancedFilters
-								session={session}
-								onSubmitComplete={handleFilterSubmit}
-							/>
-						);
-					};
-				},
-				[session, fetchData],
-			)}
+			advancedFilters={React.useMemo(() => {
+				const handleFilterSubmit = (filters: any, search?: string) => {
+					// Update filters state immediately
+					setLocalFilters(filters || {});
+					// Update search term if provided
+					if (search !== undefined) {
+						const normalizedSearch = search?.trim() || "";
+						saveSearchToStorage("organizations", normalizedSearch, session);
+						setCurrentSearch(normalizedSearch);
+					}
+					// Refetch with new filters and search
+					// Pass both explicitly to ensure they're used
+					fetchData({ page: 1, filters: filters || {}, search: search });
+				};
+
+				return function OrganizationsAdvancedFilters() {
+					return (
+						<AdvancedFilters
+							session={session}
+							onSubmitComplete={handleFilterSubmit}
+							onSearchChange={(search, filters) => {
+								// Update search term when applying search history
+								const normalizedSearch = search?.trim() || "";
+								saveSearchToStorage("organizations", normalizedSearch, session);
+								setCurrentSearch(normalizedSearch);
+								// If filters are provided, update localFilters state
+								if (filters !== undefined) {
+									setLocalFilters(filters || {});
+								}
+								// Fetch data with new search and filters
+								// Use provided filters if available, otherwise use current localFilters
+								const filtersToUse =
+									filters !== undefined ? filters : localFilters;
+								fetchData({
+									page: 1,
+									search: normalizedSearch,
+									filters: filtersToUse,
+								});
+							}}
+							entityType="organizations"
+							currentSearch={currentSearch}
+						/>
+					);
+				};
+			}, [session, fetchData])}
 			session={session}
 			showStatusModal
 			sorting={{ sortBy: currentSortBy, sortOrder: currentSortOrder }}
@@ -493,16 +535,21 @@ export default function OrganizationsTableClient({
 				// Fetch data with new pagination
 				fetchData({ page, pageSize });
 			}}
-			onSearchChange={(searchTerm) => {
+			onSearchChange={(searchTerm, filters) => {
 				// Trim and normalize search term
 				const normalizedSearch = searchTerm?.trim() || "";
 				// Save search to localStorage immediately (empty string clears it)
 				saveSearchToStorage("organizations", normalizedSearch, session);
 				// Update local state
 				setCurrentSearch(normalizedSearch);
-				// Fetch data with new search (reset to page 1)
-				// Pass empty string explicitly to clear search filters
-				fetchData({ page: 1, search: normalizedSearch });
+				// If filters are provided, update localFilters state
+				if (filters !== undefined) {
+					setLocalFilters(filters || {});
+				}
+				// Fetch data with new search and filters
+				// Use provided filters if available, otherwise use current localFilters
+				const filtersToUse = filters !== undefined ? filters : localFilters;
+				fetchData({ page: 1, search: normalizedSearch, filters: filtersToUse });
 			}}
 			initialSearch={currentSearch}
 			isLoading={isLoading}
@@ -510,4 +557,3 @@ export default function OrganizationsTableClient({
 		/>
 	);
 }
-

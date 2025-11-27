@@ -8,8 +8,8 @@ import { getTranslations } from "next-intl/server";
 import { auth } from "@/auth";
 import ErrorMessage from "@/components/error-message";
 import { HelloMessage } from "@/components/hello-message";
-import { buildPopulateFromVisible } from "@/lib/populate/populate-builder";
 import { CONTACTS_POPULATE_MAPPINGS } from "@/lib/populate/contacts-populate-config";
+import { buildPopulateFromVisible } from "@/lib/populate/populate-builder";
 import ContactsTableClient from "./contacts-table-client";
 
 export const metadata: Metadata = { title: "Contacts" };

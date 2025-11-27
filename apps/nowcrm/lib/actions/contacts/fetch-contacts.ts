@@ -2,8 +2,8 @@
 
 import { contactsService } from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { buildPopulateFromVisible } from "@/lib/populate/populate-builder";
 import { CONTACTS_POPULATE_MAPPINGS } from "@/lib/populate/contacts-populate-config";
+import { buildPopulateFromVisible } from "@/lib/populate/populate-builder";
 import { getSearchFields } from "@/lib/search/search-fields-config";
 
 const IGNORE = new Set(["select", "actions", "delete"]);
@@ -81,7 +81,7 @@ export async function fetchContactsForVisibleColumns(input: {
 
 	// Build search filters using configured search fields
 	const searchFields = getSearchFields("contacts");
-	const searchFilters = search && search.trim()
+	const searchFilters = search?.trim()
 		? {
 				$or: searchFields.map((field) => ({
 					[field]: { $containsi: search.trim() },
@@ -120,7 +120,7 @@ export async function fetchContactsForVisibleColumns(input: {
 		populate: populate === "*" ? "*" : (populate as any),
 		sort: [`${sortBy}:${sortOrder}`] as any,
 		pagination: { page, pageSize },
-		filters: Object.keys(combinedFilters).length > 0 ? combinedFilters : undefined,
+		filters:
+			Object.keys(combinedFilters).length > 0 ? combinedFilters : undefined,
 	});
 }
-

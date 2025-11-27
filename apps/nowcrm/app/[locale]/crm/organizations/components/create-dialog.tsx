@@ -49,7 +49,9 @@ type CreateDialogProps = {
 	onSuccess?: () => void;
 };
 
-export default function CreateListDialog({ onSuccess }: CreateDialogProps = {}) {
+export default function CreateListDialog({
+	onSuccess,
+}: CreateDialogProps = {}) {
 	const router = useRouter();
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -81,7 +83,7 @@ export default function CreateListDialog({ onSuccess }: CreateDialogProps = {}) 
 				if (onSuccess) {
 					onSuccess();
 				} else {
-				router.refresh();
+					router.refresh();
 				}
 			} else {
 				// For the "create" action, refresh and let the dialog close.
@@ -90,7 +92,7 @@ export default function CreateListDialog({ onSuccess }: CreateDialogProps = {}) 
 				if (onSuccess) {
 					onSuccess();
 				} else {
-				router.refresh();
+					router.refresh();
 				}
 			}
 		}

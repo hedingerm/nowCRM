@@ -114,8 +114,6 @@ export function mergePopulateConfigs(
 				// Nested populate - merge nested structures
 				const existing = merged[key];
 				if (existing === true) {
-					// If already true, keep it (true is more permissive)
-					continue;
 				} else if (
 					existing &&
 					typeof existing === "object" &&
@@ -138,4 +136,3 @@ export function mergePopulateConfigs(
 
 	return merged;
 }
-

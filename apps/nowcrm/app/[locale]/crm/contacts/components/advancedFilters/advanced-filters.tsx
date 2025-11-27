@@ -1,15 +1,15 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Filter, Plus } from "lucide-react";
 import type { Session } from "next-auth";
-import {
-	Filter,
-	Plus,
-} from "lucide-react";
 import * as React from "react";
 import { forwardRef } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
+import { FilterDialogFooter } from "@/components/dataTable/advancedFilters/filter-dialog-footer";
+import FilterGroupComponent from "@/components/dataTable/advancedFilters/filter-group";
+import { SearchHistoryPanel } from "@/components/dataTable/advancedFilters/search-history-panel";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,6 +19,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
+import { Form } from "@/components/ui/form";
 import {
 	Select,
 	SelectContent,
@@ -26,15 +27,13 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { Form } from "@/components/ui/form";
 import { transformFilters } from "@/lib/actions/filters/filters-search";
+import { createSearch } from "@/lib/actions/search_history/create-search";
 import {
-	saveFiltersToStorage,
 	clearFiltersFromStorage,
 	loadFiltersFromStorage,
+	saveFiltersToStorage,
 } from "@/lib/filters/filter-storage";
-import FilterGroupComponent from "@/components/dataTable/advancedFilters/filter-group";
-import { FilterDialogFooter } from "@/components/dataTable/advancedFilters/filter-dialog-footer";
 import { FIELD_TYPES, FILTER_CATEGORIES, RELATION_META } from "./filter-types";
 
 // Enhanced filter schema with grouping and logic
@@ -54,11 +53,14 @@ export type FilterGroup = z.infer<typeof filterGroupSchema>;
 
 interface AdvancedFiltersProps {
 	session?: Session | null;
-	onSubmitComplete?: (filters: any) => void;
+	onSubmitComplete?: (filters: any, search?: string) => void;
+	onSearchChange?: (search: string, filters?: any) => void;
 	showTrigger?: boolean;
 	mode?: "search" | "mass-action";
 	onClose?: (val: boolean) => void;
 	isLoading?: boolean;
+	entityType?: "contacts" | "organizations";
+	currentSearch?: string;
 }
 
 const AdvancedFilters = forwardRef<
@@ -68,10 +70,13 @@ const AdvancedFilters = forwardRef<
 	{
 		session,
 		onSubmitComplete,
+		onSearchChange,
 		showTrigger = true,
 		mode = "search",
 		onClose,
 		isLoading = false,
+		entityType = "contacts",
+		currentSearch,
 	},
 	ref,
 ) {
@@ -86,7 +91,6 @@ const AdvancedFilters = forwardRef<
 			groupLogic: "AND",
 		},
 	});
-
 
 	const {
 		fields: groups,
@@ -117,13 +121,22 @@ const AdvancedFilters = forwardRef<
 	};
 
 	const handleUpdateGroup = React.useCallback(
-		(groupIndex: number, updates: Partial<{ id: string; logic: string; filters?: Record<string, any> }>) => {
+		(
+			groupIndex: number,
+			updates: Partial<{
+				id: string;
+				logic: string;
+				filters?: Record<string, any>;
+			}>,
+		) => {
 			const currentGroup = form.getValues(`groups.${groupIndex}`);
 			// Properly merge filters if they exist in updates
 			const mergedGroup: FilterGroup = {
 				...currentGroup,
 				...updates,
-				logic: (updates.logic === "AND" || updates.logic === "OR" ? updates.logic : currentGroup.logic) as "AND" | "OR",
+				logic: (updates.logic === "AND" || updates.logic === "OR"
+					? updates.logic
+					: currentGroup.logic) as "AND" | "OR",
 				...(updates.filters
 					? { filters: { ...currentGroup.filters, ...updates.filters } }
 					: {}),
@@ -170,7 +183,7 @@ const AdvancedFilters = forwardRef<
 
 	// Load filters from localStorage on mount
 	React.useEffect(() => {
-		const saved = loadFiltersFromStorage<FilterValues>("contacts", session);
+		const saved = loadFiltersFromStorage<FilterValues>(entityType, session);
 		if (!saved) {
 			setActiveFiltersCount(0);
 			return;
@@ -195,7 +208,7 @@ const AdvancedFilters = forwardRef<
 	// Reload filters from localStorage when dialog opens (only for search mode)
 	React.useEffect(() => {
 		if (open && mode === "search") {
-			const saved = loadFiltersFromStorage<FilterValues>("contacts", session);
+			const saved = loadFiltersFromStorage<FilterValues>(entityType, session);
 			if (saved && Array.isArray(saved.groups) && saved.groupLogic) {
 				// Use queueMicrotask to ensure form state is properly updated
 				queueMicrotask(() => {
@@ -227,7 +240,28 @@ const AdvancedFilters = forwardRef<
 				// Don't close dialog automatically in mass-action mode
 			} else {
 				// Save to localStorage (user-specific) - save the UI form values
-				saveFiltersToStorage("contacts", vals, session);
+				saveFiltersToStorage(entityType, vals, session);
+
+				// Auto-save to search history (without name - unnamed search)
+				if (session && entityType) {
+					try {
+						const filtersPayload = JSON.stringify({
+							ui: vals,
+							strapiFilters: strapiFilters,
+						});
+						const queryPayload = JSON.stringify(currentSearch || "");
+
+						await createSearch(
+							"", // Empty name for auto-saved searches
+							entityType,
+							filtersPayload,
+							queryPayload,
+						);
+					} catch (error) {
+						// Silently fail - search history save is not critical
+						console.error("Failed to auto-save search history:", error);
+					}
+				}
 
 				// Update active filters count immediately
 				const count = calculateActiveFilters();
@@ -235,7 +269,7 @@ const AdvancedFilters = forwardRef<
 
 				// Notify parent component
 				if (onSubmitComplete) {
-					onSubmitComplete(strapiFilters);
+					onSubmitComplete(strapiFilters, currentSearch);
 				}
 
 				setOpenState(false);
@@ -256,20 +290,20 @@ const AdvancedFilters = forwardRef<
 			} as FilterValues;
 			form.reset(blank);
 			replace(blank.groups);
-			
+
 			if (mode === "mass-action") {
 				// For mass actions, don't save to localStorage
 				setActiveFiltersCount(0);
 				// Inform parent that filters cleared - pass empty object
 				if (onSubmitComplete) {
-					onSubmitComplete({});
+					onSubmitComplete({}, currentSearch);
 				}
 			} else {
-				clearFiltersFromStorage("contacts", session);
+				clearFiltersFromStorage(entityType, session);
 				setActiveFiltersCount(0);
 				// Inform parent that filters cleared - pass empty object
 				if (onSubmitComplete) {
-					onSubmitComplete({});
+					onSubmitComplete({}, currentSearch);
 				}
 				setOpenState(false);
 			}
@@ -279,7 +313,6 @@ const AdvancedFilters = forwardRef<
 			setIsResetting(false);
 		}
 	}
-
 
 	return (
 		<div className="ml-1">
@@ -300,83 +333,144 @@ const AdvancedFilters = forwardRef<
 				</Button>
 			)}
 
-			<Dialog open={open} onOpenChange={setOpenState} modal={mode !== "mass-action"}>
-				<DialogContent className="flex h-[95vh] min-w-[95vw] flex-col">
-					<DialogHeader>
+			<Dialog
+				open={open}
+				onOpenChange={setOpenState}
+				modal={mode !== "mass-action"}
+			>
+				<DialogContent className="flex h-[95vh] min-w-[95vw] flex-col p-0">
+					<DialogHeader className="px-6 pt-6 pb-4">
 						<DialogTitle>Advanced Filters</DialogTitle>
 						<DialogDescription>
 							Apply advanced filters to refine your search
 						</DialogDescription>
 					</DialogHeader>
 
-					<div className="flex-1 overflow-y-auto pr-2">
-						<Form {...form}>
-							<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-								{/* Group Logic Selector */}
-								{groups.length > 1 && (
-									<div className="flex items-center gap-2 rounded-lg border p-3">
-										<span className="text-sm font-medium">
-											Combine groups with:
-										</span>
-										<Select
-											value={groupLogic}
-											onValueChange={(value: "AND" | "OR") =>
-												form.setValue("groupLogic", value)
-											}
-										>
-											<SelectTrigger className="h-8 w-24">
-												<SelectValue />
-											</SelectTrigger>
-											<SelectContent>
-												<SelectItem value="AND">AND</SelectItem>
-												<SelectItem value="OR">OR</SelectItem>
-											</SelectContent>
-										</Select>
-									</div>
-								)}
+					<div className="flex flex-1 overflow-hidden">
+						{/* Search History Sidebar */}
+						{mode === "search" && entityType && (
+							<div className="w-80 shrink-0">
+								<SearchHistoryPanel
+									entityType={entityType}
+									currentFilters={React.useMemo(() => {
+										// Get current form values as filters
+										const formValues = form.getValues();
+										return transformFilters(formValues);
+									}, [watchedGroups, groupLogic])}
+									currentSearch={currentSearch}
+									onLoadFilters={(filterValues) => {
+										// Load the saved filter values into the form
+										if (
+											filterValues &&
+											Array.isArray(filterValues.groups) &&
+											filterValues.groupLogic
+										) {
+											// Save to localStorage first so filters persist
+											saveFiltersToStorage(entityType, filterValues, session);
+											// Reset form with loaded values
+											form.reset(filterValues);
+											replace(filterValues.groups);
+											// Update active filters count
+											setTimeout(() => {
+												setActiveFiltersCount(calculateActiveFilters());
+											}, 50);
+										}
+									}}
+									onApplySearch={(filters, search) => {
+										// When applying a saved search, update search term first if provided
+										// This updates the state
+										if (search !== undefined && onSearchChange) {
+											onSearchChange(search, filters);
+										}
+										// Then apply filters to parent - pass search along so fetchData can use it
+										// This triggers the fetch with both filters and search
+										if (onSubmitComplete) {
+											onSubmitComplete(filters, search);
+										}
+										// Keep dialog open so user can see the loaded filters
+									}}
+								/>
+							</div>
+						)}
 
-								{/* Filter Groups */}
-								<div className="space-y-1">
-									{groups.map((group, index) => (
-										<div key={typeof group.key === "string" ? group.key : group.id} className="relative">
-											<FilterGroupComponent
-												form={form}
-												groupIndex={index}
-												control={form.control}
-												onUpdateGroup={(updates) =>
-													handleUpdateGroup(index, updates)
-												}
-												onRemoveGroup={() => handleRemoveGroup(index)}
-												config={{
-													FIELD_TYPES,
-													FILTER_CATEGORIES,
-													RELATION_META,
-												}}
-											/>
-											{/* Logic connector between groups */}
-											{index < groups.length - 1 && (
-												<div className="flex justify-center p-2">
-													<Badge variant="outline" className="bg-background">
-														{groupLogic}
-													</Badge>
-												</div>
-											)}
-										</div>
-									))}
-								</div>
-
-								{/* Add Group Button */}
-								<Button
-									type="button"
-									variant="outline"
-									onClick={handleAddGroup}
-									className="w-full border-dashed"
+						{/* Filters Content */}
+						<div className="flex-1 overflow-y-auto px-6 pb-6">
+							<Form {...form}>
+								<form
+									onSubmit={form.handleSubmit(onSubmit)}
+									className="space-y-4"
 								>
-									<Plus className="mr-2 h-4 w-4" />
-									Add Filter Group
-								</Button>
-							</form>
-						</Form>
+									{/* Group Logic Selector */}
+									{groups.length > 1 && (
+										<div className="flex items-center gap-2 rounded-lg border p-3">
+											<span className="font-medium text-sm">
+												Combine groups with:
+											</span>
+											<Select
+												value={groupLogic}
+												onValueChange={(value: "AND" | "OR") =>
+													form.setValue("groupLogic", value)
+												}
+											>
+												<SelectTrigger className="h-8 w-24">
+													<SelectValue />
+												</SelectTrigger>
+												<SelectContent>
+													<SelectItem value="AND">AND</SelectItem>
+													<SelectItem value="OR">OR</SelectItem>
+												</SelectContent>
+											</Select>
+										</div>
+									)}
+
+									{/* Filter Groups */}
+									<div className="space-y-1">
+										{groups.map((group, index) => (
+											<div
+												key={
+													typeof group.key === "string" ? group.key : group.id
+												}
+												className="relative"
+											>
+												<FilterGroupComponent
+													form={form}
+													groupIndex={index}
+													control={form.control}
+													onUpdateGroup={(updates) =>
+														handleUpdateGroup(index, updates)
+													}
+													onRemoveGroup={() => handleRemoveGroup(index)}
+													config={{
+														FIELD_TYPES,
+														FILTER_CATEGORIES,
+														RELATION_META,
+													}}
+												/>
+												{/* Logic connector between groups */}
+												{index < groups.length - 1 && (
+													<div className="flex justify-center p-2">
+														<Badge variant="outline" className="bg-background">
+															{groupLogic}
+														</Badge>
+													</div>
+												)}
+											</div>
+										))}
+									</div>
+
+									{/* Add Group Button */}
+									<Button
+										type="button"
+										variant="outline"
+										onClick={handleAddGroup}
+										className="w-full border-dashed"
+									>
+										<Plus className="mr-2 h-4 w-4" />
+										Add Filter Group
+									</Button>
+								</form>
+							</Form>
+						</div>
 					</div>
 
 					{/* Footer Actions */}

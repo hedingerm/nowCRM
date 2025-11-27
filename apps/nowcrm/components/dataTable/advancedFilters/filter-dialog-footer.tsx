@@ -19,7 +19,7 @@ export function FilterDialogFooter({
 	isResetting = false,
 }: FilterDialogFooterProps) {
 	return (
-		<div className="flex items-center justify-between border-t pt-4">
+		<div className="flex items-center justify-between border-t px-6 pt-4 pb-6">
 			<Button
 				variant="outline"
 				onClick={onCancel}
@@ -33,22 +33,14 @@ export function FilterDialogFooter({
 					onClick={onReset}
 					disabled={isSubmitting || isResetting}
 				>
-					{isResetting && (
-						<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-					)}
+					{isResetting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
 					Reset Filters
 				</Button>
-				<Button
-					onClick={onApply}
-					disabled={isSubmitting || isResetting}
-				>
-					{isSubmitting && (
-						<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-					)}
+				<Button onClick={onApply} disabled={isSubmitting || isResetting}>
+					{isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
 					Apply Filters
 				</Button>
 			</div>
 		</div>
 	);
 }
-

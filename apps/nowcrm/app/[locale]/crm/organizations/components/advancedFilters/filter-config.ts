@@ -57,7 +57,11 @@ export const organizationsFilterConfig: FilterConfig = {
 		country: { name: "country", type: "text", label: "Country" },
 		zip: { name: "zip", type: "number", label: "ZIP" },
 		canton: { name: "canton", type: "text", label: "Canton" },
-		twitter_url: { name: "twitter_url", type: "text", label: "Twitter (X) URL" },
+		twitter_url: {
+			name: "twitter_url",
+			type: "text",
+			label: "Twitter (X) URL",
+		},
 		facebook_url: {
 			name: "facebook_url",
 			type: "text",
@@ -171,11 +175,18 @@ export const organizationsFilterConfig: FilterConfig = {
 		},
 		organization: {
 			label: "Organization Types and Industries",
-			fields: [ "organization_type", "industry"],
+			fields: ["organization_type", "industry"],
 		},
 		preferences: {
 			label: "Preferences / Other",
-			fields: ["frequency", "media_type", "language", "tag", "description", "sources"],
+			fields: [
+				"frequency",
+				"media_type",
+				"language",
+				"tag",
+				"description",
+				"sources",
+			],
 		},
 	},
 
@@ -202,4 +213,3 @@ export const organizationsFilterConfig: FilterConfig = {
 		},
 	},
 };
-

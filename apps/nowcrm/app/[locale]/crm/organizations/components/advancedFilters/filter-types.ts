@@ -1,5 +1,5 @@
 // Organizations filter types and categories
-import { BaseServiceName } from "@nowcrm/services";
+import type { BaseServiceName } from "@nowcrm/services";
 
 export const FIELD_TYPES: Record<
 	string,
@@ -110,7 +110,13 @@ export const FILTER_CATEGORIES = {
 	},
 	preferences: {
 		label: "Preferences / Other",
-		fields: ["frequency", "media_type", "language", "tag", "description", "sources"],
+		fields: [
+			"frequency",
+			"media_type",
+			"language",
+			"tag",
+			"description",
+			"sources",
+		],
 	},
 };
-

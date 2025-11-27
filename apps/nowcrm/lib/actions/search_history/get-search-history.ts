@@ -13,6 +13,8 @@ import { auth } from "@/auth";
 
 export async function getSearchHistory(
 	type: SearchHistoryType,
+	page: number = 1,
+	pageSize: number = 10,
 ): Promise<StandardResponse<SearchHistoryTemplate[]>> {
 	const session = await auth();
 	if (!session) {
@@ -26,7 +28,7 @@ export async function getSearchHistory(
 		const res = await searchHistoryTemplatesService.find(session.jwt, {
 			sort: ["id:desc"],
 			filters: { type: { $eq: type } },
-			pagination: { page: 1, pageSize: 10 },
+			pagination: { page, pageSize },
 		});
 		return res;
 	} catch (error) {

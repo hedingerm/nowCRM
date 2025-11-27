@@ -1,10 +1,10 @@
 "use client";
 import type { Organization } from "@nowcrm/services";
 import type { ColumnDef } from "@tanstack/react-table";
-import type { Session } from "next-auth";
 import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import type { Session } from "next-auth";
 import toast from "react-hot-toast";
 import { SortableHeader } from "@/components/dataTable/sortable-header";
 import { Button } from "@/components/ui/button";
@@ -90,7 +90,9 @@ const ViewActions: React.FC<{ organization: Organization }> = ({
 	);
 };
 
-export const getColumns = (session?: Session | null): ColumnDef<Organization>[] => [
+export const getColumns = (
+	session?: Session | null,
+): ColumnDef<Organization>[] => [
 	{
 		id: "select",
 		header: ({ table }) => (
@@ -162,7 +164,9 @@ export const getColumns = (session?: Session | null): ColumnDef<Organization>[] 
 	},
 	{
 		accessorKey: "tags",
-		header: () => <TagFilterHeader session={session} entityName="organizations" />,
+		header: () => (
+			<TagFilterHeader session={session} entityName="organizations" />
+		),
 		cell: ({ row }) => {
 			const tags = row.original.tags || [];
 			return (

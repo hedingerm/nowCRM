@@ -1,5 +1,6 @@
 "use client";
 
+import type { DocumentId } from "@nowcrm/services";
 import {
 	type ColumnDef,
 	type ExpandedState,
@@ -33,7 +34,6 @@ import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
 import { DataTablePagination } from "./data-table-pagination";
 import { DataTableViewOptions } from "./data-table-view-options";
-import { DocumentId } from "@nowcrm/services";
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
@@ -65,7 +65,7 @@ interface DataTableProps<TData, TValue> {
 	sorting?: { sortBy: string; sortOrder: "asc" | "desc" };
 	onVisibleColumnsChange?: (visibleColumnIds: string[]) => void;
 	onPaginationChange?: (page: number, pageSize: number) => void;
-	onSearchChange?: (search: string) => void;
+	onSearchChange?: (search: string, filters?: any) => void;
 	initialSearch?: string;
 	isLoading?: boolean;
 	availableFields?: Set<string>;
@@ -132,7 +132,7 @@ export default function DataTable<TData, TValue>({
 			params.delete("page");
 			params.delete("pageSize");
 			// Only update URL if there are other params, otherwise remove all params
-			const newUrl = params.toString() 
+			const newUrl = params.toString()
 				? `${pathname}?${params.toString()}`
 				: pathname;
 			router.replace(newUrl, { scroll: false });
@@ -141,7 +141,10 @@ export default function DataTable<TData, TValue>({
 				onSearchChange(term || "");
 			}
 			// Notify parent component of pagination changes (pagination is handled via localStorage)
-			if ((page !== undefined || pageSize !== undefined) && onPaginationChange) {
+			if (
+				(page !== undefined || pageSize !== undefined) &&
+				onPaginationChange
+			) {
 				const finalPage = page ?? 1;
 				const finalPageSize = pageSize ?? 10;
 				onPaginationChange(finalPage, finalPageSize);
@@ -163,7 +166,7 @@ export default function DataTable<TData, TValue>({
 			params.delete("pageSize");
 			params.delete("search");
 			// Only update URL if there are other params, otherwise remove all params
-			const newUrl = params.toString() 
+			const newUrl = params.toString()
 				? `${pathname}?${params.toString()}`
 				: pathname;
 			router.replace(newUrl, { scroll: false });
@@ -269,23 +272,27 @@ export default function DataTable<TData, TValue>({
 	const filteredColumns = React.useMemo(() => {
 		return columns
 			.filter((column) => {
-			if (column.id === "delete") {
-				if (session && session.user.role.toLowerCase() !== "admin")
+				if (column.id === "delete") {
+					if (session && session.user.role.toLowerCase() !== "admin")
+						return false;
+				}
+				if (column?.id && hiddenCollumnIds?.includes(column.id)) {
 					return false;
-			}
-			if (column?.id && hiddenCollumnIds?.includes(column.id)) {
-				return false;
-			}
-			return true;
+				}
+				return true;
 			})
 			.map((column) => {
 				// Wrap cell renderer to show skeleton if field is not available
 				if (availableFields && (column as any)?.accessorKey) {
 					const accessorKey = (column as any).accessorKey;
 					const originalCell = column.cell;
-					
+
 					// Skip wrapping if it's a special column (select, actions, etc.)
-					if (!accessorKey || column.id === "select" || column.id === "actions") {
+					if (
+						!accessorKey ||
+						column.id === "select" ||
+						column.id === "actions"
+					) {
 						return column;
 					}
 
@@ -294,17 +301,17 @@ export default function DataTable<TData, TValue>({
 						cell: (props: any) => {
 							// Check if field exists in available fields
 							const fieldAvailable = availableFields.has(accessorKey);
-							
+
 							if (!fieldAvailable) {
 								// Show skeleton when field is not available (column was just made visible)
 								return <Skeleton className="h-4 w-20" />;
 							}
-							
+
 							// Use original cell renderer or default
 							if (originalCell && typeof originalCell === "function") {
 								return originalCell(props);
 							}
-							
+
 							// Default render
 							const value = props.row.original[accessorKey];
 							return <div>{value}</div>;
@@ -313,7 +320,13 @@ export default function DataTable<TData, TValue>({
 				}
 				return column;
 			});
-	}, [columns, session?.user?.role, hiddenCollumnIds, availableFields, isLoading]);
+	}, [
+		columns,
+		session?.user?.role,
+		hiddenCollumnIds,
+		availableFields,
+		isLoading,
+	]);
 
 	// Sync column visibility changes to localStorage
 	const handleColumnVisibilityChange = React.useCallback(
@@ -338,7 +351,12 @@ export default function DataTable<TData, TValue>({
 						const colId = (col as any)?.id || (col as any)?.accessorKey;
 						// Skip columns that are filtered out or don't have accessorKey
 						if (!colId || !(col as any)?.accessorKey) return false;
-						if (col.id === "delete" && session && session.user.role.toLowerCase() !== "admin") return false;
+						if (
+							col.id === "delete" &&
+							session &&
+							session.user.role.toLowerCase() !== "admin"
+						)
+							return false;
 						if (col?.id && hiddenCollumnIds?.includes(col.id)) return false;
 						// Check visibility
 						return newVisibility[colId] !== false;
@@ -352,7 +370,13 @@ export default function DataTable<TData, TValue>({
 			}
 		},
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[columnVisibility, LS_COLUMN_VISIBILITY_KEY, columns, hiddenCollumnIds, session],
+		[
+			columnVisibility,
+			LS_COLUMN_VISIBILITY_KEY,
+			columns,
+			hiddenCollumnIds,
+			session,
+		],
 		// Don't include onVisibleColumnsChange in deps to avoid infinite loops
 	);
 
@@ -367,7 +391,9 @@ export default function DataTable<TData, TValue>({
 		getSortedRowModel: getSortedRowModel(),
 		getExpandedRowModel: getExpandedRowModel(),
 		getRowId: (row) => (row as any).documentId,
-		meta: { session: session ? session : null },
+		meta: {
+			session: session ? session : null,
+		} as any,
 		state: {
 			sorting: sortingState,
 			columnVisibility,
@@ -418,7 +444,9 @@ export default function DataTable<TData, TValue>({
 						<Input
 							placeholder={`Filter ${table_title}...`}
 							onChange={(e) => debouncedHandleSearch(e.target.value)}
-							defaultValue={initialSearch || searchParams.get("search")?.toString() || ""}
+							defaultValue={
+								initialSearch || searchParams.get("search")?.toString() || ""
+							}
 							className="max-w-sm"
 						/>
 					</div>
@@ -516,7 +544,9 @@ export default function DataTable<TData, TValue>({
 							autoFocus
 							ref={mobileSearchRef}
 							placeholder={`Filter ${table_title}...`}
-							defaultValue={initialSearch || searchParams.get("search")?.toString() || ""}
+							defaultValue={
+								initialSearch || searchParams.get("search")?.toString() || ""
+							}
 							onBlur={() => setTimeout(() => setIsMobileSearchOpen(false), 200)}
 							className="w-full border-none focus:ring-2"
 						/>

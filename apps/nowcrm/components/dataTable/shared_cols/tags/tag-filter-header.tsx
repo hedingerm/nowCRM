@@ -1,8 +1,8 @@
 "use client";
 
 import type { Tag } from "@nowcrm/services";
-import type { Session } from "next-auth";
 import { Filter, TagIcon, X } from "lucide-react";
+import type { Session } from "next-auth";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -31,30 +31,36 @@ export function TagFilterHeader({
 	entityName = "organizations", // Default to organizations for backward compatibility
 }: TagFilterHeaderProps) {
 	const [tags, setTags] = useState<Tag[]>([]);
-	
+
 	// Get localStorage key for tag filter
 	const tagFilterKey = React.useMemo(() => {
-		const userId = session?.user?.strapi_id || session?.user?.email || "anonymous";
+		const userId =
+			session?.user?.strapi_id || session?.user?.email || "anonymous";
 		return `filters.tag.${entityName}.${userId}`;
 	}, [session, entityName]);
 
 	// Load selected tag from localStorage if not provided externally
-	const [internalSelectedTag, setInternalSelectedTag] = useState<string | null>(() => {
-		if (externalSelectedTag !== undefined) {
-			return externalSelectedTag;
-		}
-		if (typeof window === "undefined") {
-			return null;
-		}
-		try {
-			const stored = localStorage.getItem(tagFilterKey);
-			return stored || null;
-		} catch {
-			return null;
-		}
-	});
+	const [internalSelectedTag, setInternalSelectedTag] = useState<string | null>(
+		() => {
+			if (externalSelectedTag !== undefined) {
+				return externalSelectedTag;
+			}
+			if (typeof window === "undefined") {
+				return null;
+			}
+			try {
+				const stored = localStorage.getItem(tagFilterKey);
+				return stored || null;
+			} catch {
+				return null;
+			}
+		},
+	);
 
-	const selectedTag = externalSelectedTag !== undefined ? externalSelectedTag : internalSelectedTag;
+	const selectedTag =
+		externalSelectedTag !== undefined
+			? externalSelectedTag
+			: internalSelectedTag;
 
 	useEffect(() => {
 		const fetchAndSetTags = async () => {

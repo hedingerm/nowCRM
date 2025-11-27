@@ -1,7 +1,6 @@
 "use client";
 
-import type { DocumentId, Tag } from "@nowcrm/services";
-import type { BaseServiceName } from "@nowcrm/services";
+import type { BaseServiceName, DocumentId, Tag } from "@nowcrm/services";
 import { Loader2, X } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";

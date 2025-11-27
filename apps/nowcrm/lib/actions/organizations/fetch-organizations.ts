@@ -2,8 +2,8 @@
 
 import { organizationsService } from "@nowcrm/services/server";
 import { auth } from "@/auth";
-import { buildPopulateFromVisible } from "@/lib/populate/populate-builder";
 import { ORGANIZATIONS_POPULATE_MAPPINGS } from "@/lib/populate/organizations-populate-config";
+import { buildPopulateFromVisible } from "@/lib/populate/populate-builder";
 import { getSearchFields } from "@/lib/search/search-fields-config";
 
 const IGNORE = new Set(["select", "actions", "delete"]);
@@ -73,7 +73,7 @@ export async function fetchOrganizationsForVisibleColumns(input: {
 
 	// Build search filters using configured search fields
 	const searchFields = getSearchFields("organizations");
-	const searchFilters = search && search.trim()
+	const searchFilters = search?.trim()
 		? {
 				$or: searchFields.map((field) => ({
 					[field]: { $containsi: search.trim() },
@@ -112,7 +112,7 @@ export async function fetchOrganizationsForVisibleColumns(input: {
 		populate: populate === "*" ? "*" : (populate as any),
 		sort: [`${sortBy}:${sortOrder}`] as any,
 		pagination: { page, pageSize },
-		filters: Object.keys(combinedFilters).length > 0 ? combinedFilters : undefined,
+		filters:
+			Object.keys(combinedFilters).length > 0 ? combinedFilters : undefined,
 	});
 }
-

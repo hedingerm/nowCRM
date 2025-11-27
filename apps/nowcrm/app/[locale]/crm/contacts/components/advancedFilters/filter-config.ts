@@ -612,4 +612,3 @@ export const contactsFilterConfig: FilterConfig = {
 		},
 	},
 };
-

@@ -36,9 +36,7 @@ export interface FilterConfig {
 /**
  * Generates a Zod schema for filters based on field configurations
  */
-export function generateFilterSchema(
-	config: FilterConfig,
-): z.ZodObject<any> {
+export function generateFilterSchema(config: FilterConfig): z.ZodObject<any> {
 	const schemaFields: Record<string, z.ZodTypeAny> = {};
 
 	// Add fields based on field types
@@ -106,4 +104,3 @@ export function getOperatorsForFieldType(
 		{ value: "$endsWithi", label: "Ends with" },
 	];
 }
-

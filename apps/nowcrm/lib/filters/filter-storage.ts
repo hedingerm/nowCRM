@@ -7,7 +7,8 @@ export function getFilterStorageKey(
 	entityName: string,
 	session?: Session | null,
 ): string {
-	const userId = session?.user?.strapi_id || session?.user?.email || "anonymous";
+	const userId =
+		session?.user?.strapi_id || session?.user?.email || "anonymous";
 	return `filters.${entityName}.${userId}`;
 }
 
@@ -68,7 +69,8 @@ export function getPaginationStorageKey(
 	entityName: string,
 	session?: Session | null,
 ): string {
-	const userId = session?.user?.strapi_id || session?.user?.email || "anonymous";
+	const userId =
+		session?.user?.strapi_id || session?.user?.email || "anonymous";
 	return `pagination.${entityName}.${userId}`;
 }
 
@@ -114,7 +116,8 @@ export function getSearchStorageKey(
 	entityName: string,
 	session?: Session | null,
 ): string {
-	const userId = session?.user?.strapi_id || session?.user?.email || "anonymous";
+	const userId =
+		session?.user?.strapi_id || session?.user?.email || "anonymous";
 	return `search.${entityName}.${userId}`;
 }
 
@@ -147,7 +150,7 @@ export function saveSearchToStorage(
 ): void {
 	try {
 		const key = getSearchStorageKey(entityName, session);
-		if (search && search.trim()) {
+		if (search?.trim()) {
 			localStorage.setItem(key, search.trim());
 		} else {
 			localStorage.removeItem(key);
@@ -156,4 +159,3 @@ export function saveSearchToStorage(
 		// Ignore localStorage errors
 	}
 }
-

@@ -37,16 +37,30 @@ export interface FilterGroupConfig {
 	>;
 }
 
-interface FilterGroupProps<T extends { groups: Array<{ id: string; logic: string; filters?: Record<string, any> }> }> {
+interface FilterGroupProps<
+	T extends {
+		groups: Array<{ id: string; logic: string; filters?: Record<string, any> }>;
+	},
+> {
 	form: UseFormReturn<T>;
 	groupIndex: number;
 	control: Control<T>;
-	onUpdateGroup: (updates: Partial<{ id: string; logic: string; filters?: Record<string, any> }>) => void;
+	onUpdateGroup: (
+		updates: Partial<{
+			id: string;
+			logic: string;
+			filters?: Record<string, any>;
+		}>,
+	) => void;
 	onRemoveGroup: () => void;
 	config: FilterGroupConfig;
 }
 
-const FilterGroupComponent = <T extends { groups: Array<{ id: string; logic: string; filters?: Record<string, any> }> }>({
+const FilterGroupComponent = <
+	T extends {
+		groups: Array<{ id: string; logic: string; filters?: Record<string, any> }>;
+	},
+>({
 	form,
 	groupIndex,
 	control,
@@ -88,8 +102,10 @@ const FilterGroupComponent = <T extends { groups: Array<{ id: string; logic: str
 
 		// Only for non-relation fields
 		if (config.FIELD_TYPES[selectedField] !== "relation") {
-			newFilters[`${fieldKey}_operator`] =
-				getOperatorsForField(selectedField, config.FIELD_TYPES)[0].value;
+			newFilters[`${fieldKey}_operator`] = getOperatorsForField(
+				selectedField,
+				config.FIELD_TYPES,
+			)[0].value;
 		}
 
 		onUpdateGroup({ filters: newFilters });
@@ -211,11 +227,13 @@ const FilterGroupComponent = <T extends { groups: Array<{ id: string; logic: str
 							<SelectValue placeholder="Select category..." />
 						</SelectTrigger>
 						<SelectContent>
-							{Object.entries(config.FILTER_CATEGORIES).map(([key, category]) => (
-								<SelectItem key={key} value={key}>
-									{category.label}
-								</SelectItem>
-							))}
+							{Object.entries(config.FILTER_CATEGORIES).map(
+								([key, category]) => (
+									<SelectItem key={key} value={key}>
+										{category.label}
+									</SelectItem>
+								),
+							)}
 						</SelectContent>
 					</Select>
 

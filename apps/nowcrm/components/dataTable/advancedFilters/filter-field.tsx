@@ -4,7 +4,7 @@ import type { BaseServiceName } from "@nowcrm/services";
 import { format } from "date-fns";
 import { X } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { type UseFormReturn } from "react-hook-form";
+import type { UseFormReturn } from "react-hook-form";
 import { AsyncSelectField } from "@/components/autoComplete/async-select-field";
 import { DateTimePicker } from "@/components/date-time-picker";
 import { SearchableComboboxDialog } from "@/components/searchable-combobox-dialog";
@@ -35,7 +35,9 @@ export interface FilterFieldConfig {
 	>;
 }
 
-interface FilterFieldProps<T extends { groups: Array<{ filters?: Record<string, any> }> }> {
+interface FilterFieldProps<
+	T extends { groups: Array<{ filters?: Record<string, any> }> },
+> {
 	fieldName: string;
 	value: any;
 	operator: string;
@@ -47,7 +49,9 @@ interface FilterFieldProps<T extends { groups: Array<{ filters?: Record<string, 
 	config: FilterFieldConfig;
 }
 
-const FilterField = <T extends { groups: Array<{ filters?: Record<string, any> }> }>({
+const FilterField = <
+	T extends { groups: Array<{ filters?: Record<string, any> }> },
+>({
 	fieldName,
 	value,
 	operator,
