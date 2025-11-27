@@ -40,7 +40,13 @@ import {
 } from "@/components/ui/select";
 import { RouteConfig } from "@/lib/config/routes-config";
 
-export default function CreateContactDialog() {
+type CreateDialogProps = {
+	onSuccess?: () => void;
+};
+
+export default function CreateContactDialog({
+	onSuccess,
+}: CreateDialogProps = {}) {
 	const t = useTranslations();
 	const router = useRouter();
 
@@ -109,14 +115,22 @@ export default function CreateContactDialog() {
 				t("Contacts.createContact.toast.success", { name: values.first_name }),
 			);
 			if (submitAction === "continue") {
-				// Reset the form to continue creating new organizations.
+				// Reset the form to continue creating new contacts.
 				form.reset();
-				router.refresh();
+				if (onSuccess) {
+					onSuccess();
+				} else {
+					router.refresh();
+				}
 			} else {
 				// For the "create" action, refresh and let the dialog close.
 				setDialogOpen(false);
 				form.reset();
-				router.refresh();
+				if (onSuccess) {
+					onSuccess();
+				} else {
+					router.refresh();
+				}
 			}
 		}
 	}

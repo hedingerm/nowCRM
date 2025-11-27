@@ -250,7 +250,6 @@ export default function AddToJourneyWithFiltersDialog({
 						</Button>
 					</div>
 					<MassActionPreview
-						isOpen={showPreview}
 						onClose={handlePreviewClose}
 						onApprove={handlePreviewApprove}
 						actionType="add_to_journey"

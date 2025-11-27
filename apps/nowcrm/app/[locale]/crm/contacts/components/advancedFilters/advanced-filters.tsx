@@ -352,12 +352,6 @@ const AdvancedFilters = forwardRef<
 							<div className="w-80 shrink-0">
 								<SearchHistoryPanel
 									entityType={entityType}
-									currentFilters={React.useMemo(() => {
-										// Get current form values as filters
-										const formValues = form.getValues();
-										return transformFilters(formValues);
-									}, [watchedGroups, groupLogic])}
-									currentSearch={currentSearch}
 									onLoadFilters={(filterValues) => {
 										// Load the saved filter values into the form
 										if (

@@ -260,7 +260,6 @@ export default function AddToOrganizationWithFiltersDialog({
 						</Button>
 					</div>
 					<MassActionPreview
-						isOpen={showPreview}
 						onClose={handlePreviewClose}
 						onApprove={handlePreviewApprove}
 						actionType="add_to_organization"

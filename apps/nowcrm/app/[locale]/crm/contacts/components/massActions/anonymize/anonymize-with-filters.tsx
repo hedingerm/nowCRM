@@ -256,7 +256,6 @@ export default function AnonymizeWithFiltersDialog({
 						</Button>
 					</div>
 					<MassActionPreview
-						isOpen={showPreview}
 						onClose={handlePreviewClose}
 						onApprove={handleConfirmAnonymize}
 						actionType="anonymize"

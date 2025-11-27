@@ -49,8 +49,6 @@ import { updateSearchHistoryTemplate } from "@/lib/actions/search_history/update
 
 interface SearchHistoryPanelProps {
 	entityType: SearchHistoryType;
-	currentFilters?: any;
-	currentSearch?: string;
 	onApplySearch: (filters: any, search?: string) => void;
 	onLoadFilters?: (filterValues: any) => void;
 }
@@ -59,8 +57,6 @@ const PAGE_SIZE = 10;
 
 export function SearchHistoryPanel({
 	entityType,
-	currentFilters,
-	currentSearch,
 	onApplySearch,
 	onLoadFilters,
 }: SearchHistoryPanelProps) {
