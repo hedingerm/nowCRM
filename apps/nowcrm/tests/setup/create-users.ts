@@ -72,18 +72,38 @@ export const createTestUser = async (
     // 1. Wait for Strapi to be ready
     await waitForStrapiReady(adminLoginUrl);
 
-    // 2. Admin login
+    // 2. Admin login with retry logic for rate limits
     console.log(`Attempting admin login for ${ADMIN_CREDENTIALS.email} at ${adminLoginUrl}`);
     console.log('Admin Login Request Body:', JSON.stringify(ADMIN_CREDENTIALS));
 
-    const loginResponse = await request.post(adminLoginUrl, {
-      headers: { 'Content-Type': 'application/json' },
-      data: ADMIN_CREDENTIALS,
-      failOnStatusCode: false
-    });
+    let loginResponse;
+    let loginResponseBody;
+    const maxRetries = 3;
+    let retryCount = 0;
+    
+    while (retryCount < maxRetries) {
+      loginResponse = await request.post(adminLoginUrl, {
+        headers: { 'Content-Type': 'application/json' },
+        data: ADMIN_CREDENTIALS,
+        failOnStatusCode: false
+      });
 
-    const loginResponseBody = await loginResponse.text();
-    if (!loginResponse.ok()) {
+      loginResponseBody = await loginResponse.text();
+      
+      if (loginResponse.ok()) {
+        break; // Success, exit retry loop
+      }
+      
+      // Check if it's a rate limit error
+      if (loginResponse.status() === 429 && retryCount < maxRetries - 1) {
+        retryCount++;
+        const waitTime = Math.pow(2, retryCount) * 1000; // Exponential backoff: 2s, 4s, 8s
+        console.log(`Rate limit hit, waiting ${waitTime}ms before retry ${retryCount}/${maxRetries}...`);
+        await new Promise(resolve => setTimeout(resolve, waitTime));
+        continue;
+      }
+      
+      // Not a rate limit or max retries reached
       console.error(`Admin login failed (${loginResponse.status()}): ${loginResponseBody}`);
       throw new Error(`Admin login failed (${loginResponse.status()}): ${loginResponseBody}`);
     }

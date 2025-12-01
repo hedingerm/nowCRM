@@ -22,9 +22,10 @@ import { formatDateTimeStrapi } from "@/lib/strapi-date";
 import { TagsCell } from "../../../../../../components/dataTable/shared_cols/tags/tag-cell";
 import { TagFilterHeader } from "../../../../../../components/dataTable/shared_cols/tags/tag-filter-header";
 
-const ViewActions: React.FC<{ organization: Organization }> = ({
-	organization,
-}) => {
+const ViewActions: React.FC<{ 
+	organization: Organization;
+	onRefetch?: () => void;
+}> = ({ organization, onRefetch }) => {
 	const router = useRouter();
 
 	return (
@@ -59,7 +60,11 @@ const ViewActions: React.FC<{ organization: Organization }> = ({
 								return;
 							}
 							toast.success("Organization duplicated");
-							router.refresh();
+							if (onRefetch) {
+								onRefetch();
+							} else {
+								router.refresh();
+							}
 						}}
 					>
 						Duplicate
@@ -79,7 +84,11 @@ const ViewActions: React.FC<{ organization: Organization }> = ({
 								return;
 							}
 							toast.success("Organization deleted");
-							router.refresh();
+							if (onRefetch) {
+								onRefetch();
+							} else {
+								router.refresh();
+							}
 						}}
 					>
 						Delete
@@ -92,6 +101,7 @@ const ViewActions: React.FC<{ organization: Organization }> = ({
 
 export const getColumns = (
 	session?: Session | null,
+	onRefetch?: () => void,
 ): ColumnDef<Organization>[] => [
 	{
 		id: "select",
@@ -310,7 +320,7 @@ export const getColumns = (
 		header: ({ column }) => <div className="text-center">Actions</div>,
 		cell: ({ row }) => {
 			const contact = row.original;
-			return <ViewActions organization={contact} />;
+			return <ViewActions organization={contact} onRefetch={onRefetch} />;
 		},
 	},
 ];

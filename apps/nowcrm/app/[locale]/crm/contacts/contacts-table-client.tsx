@@ -185,13 +185,23 @@ export default function ContactsTableClient({
 		return `datatable.columnVisibility.contacts.${userId}`;
 	}, [session?.user?.strapi_id, session?.user?.email]);
 
-	// Get columns with session
-	const columns = React.useMemo(() => getColumns(session), [session]);
-
 	// Default visible columns (matching default visible fields from page.tsx)
 	const DEFAULT_VISIBLE_COLUMN_IDS = React.useMemo(() => {
 		return ["select", "actions", "first_name", "last_name", "email", "tags"];
 	}, []);
+
+	// Ref to store refetch callback for columns (to avoid circular dependency)
+	const refetchRef = React.useRef<(() => void) | null>(null);
+
+	// Get columns with session (using ref to avoid circular dependency with fetchData)
+	const columns = React.useMemo(
+		() => getColumns(session, () => {
+			if (refetchRef.current) {
+				refetchRef.current();
+			}
+		}),
+		[session],
+	);
 
 	// Initialize default column visibility in localStorage if empty (synchronously, before DataTable reads it)
 	React.useMemo(() => {
@@ -215,7 +225,7 @@ export default function ContactsTableClient({
 			// Ignore localStorage errors
 		}
 		return null; // useMemo must return a value
-	}, [LS_COLUMN_VISIBILITY_KEY, DEFAULT_VISIBLE_COLUMN_IDS]);
+	}, [LS_COLUMN_VISIBILITY_KEY, DEFAULT_VISIBLE_COLUMN_IDS, columns]);
 
 	// Get visible column IDs from localStorage (for DataTable component)
 	const getVisibleColumnIds = React.useCallback((): string[] => {
@@ -285,7 +295,7 @@ export default function ContactsTableClient({
 			})
 			.map((col) => (col as any)?.accessorKey)
 			.filter(Boolean);
-	}, [LS_COLUMN_VISIBILITY_KEY, DEFAULT_VISIBLE_COLUMN_IDS]);
+	}, [LS_COLUMN_VISIBILITY_KEY, DEFAULT_VISIBLE_COLUMN_IDS, columns]);
 
 	const fetchData = React.useCallback(
 		async (params: {
@@ -402,6 +412,8 @@ export default function ContactsTableClient({
 				page: 1,
 			});
 		};
+		// Update refetchRef for columns to use
+		refetchRef.current = () => fetchData({ page: 1 });
 	}, [fetchData]);
 
 	// On mount, check if we need to refetch with merged filters or different columns

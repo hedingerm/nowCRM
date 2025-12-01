@@ -182,13 +182,26 @@ export default function OrganizationsTableClient({
 	}, [session?.user?.strapi_id, session?.user?.email]);
 
 	// Get columns with session
-	const columns = React.useMemo(() => getColumns(session), [session]);
+	// Columns will be defined after fetchData to avoid circular dependency
 
 	// Default visible columns (matching DEFAULT_VISIBLE_FIELDS from page.tsx)
 	// Note: "id" and "documentId" are always included in the data, so we don't need explicit columns for them
 	const DEFAULT_VISIBLE_COLUMN_IDS = React.useMemo(() => {
 		return ["select", "actions", "name", "email", "address_line1", "tags"];
 	}, []);
+
+	// Ref to store refetch callback for columns (to avoid circular dependency)
+	const refetchRef = React.useRef<(() => void) | null>(null);
+
+	// Get columns with session (using ref to avoid circular dependency with fetchData)
+	const columns = React.useMemo(
+		() => getColumns(session, () => {
+			if (refetchRef.current) {
+				refetchRef.current();
+			}
+		}),
+		[session],
+	);
 
 	// Initialize default column visibility in localStorage if empty (synchronously, before DataTable reads it)
 	React.useMemo(() => {
@@ -212,7 +225,7 @@ export default function OrganizationsTableClient({
 			// Ignore localStorage errors
 		}
 		return null; // useMemo must return a value
-	}, [LS_COLUMN_VISIBILITY_KEY]);
+	}, [LS_COLUMN_VISIBILITY_KEY, DEFAULT_VISIBLE_COLUMN_IDS, columns]);
 
 	// Get visible column IDs from localStorage (for DataTable component)
 	const getVisibleColumnIds = React.useCallback((): string[] => {
@@ -400,6 +413,8 @@ export default function OrganizationsTableClient({
 				page: 1,
 			});
 		};
+		// Update refetchRef for columns to use
+		refetchRef.current = () => fetchData({ page: 1 });
 	}, [fetchData]);
 
 	// On mount, check if we need to refetch with merged filters or different columns

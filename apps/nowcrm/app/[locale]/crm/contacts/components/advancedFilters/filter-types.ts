@@ -114,7 +114,7 @@ export const RELATION_META: Record<
 		labelKey: "AdvancedFilters.fields.organization",
 	},
 	industry: {
-		serviceName: "industryService",
+		serviceName: "industriesService",
 		labelKey: "AdvancedFilters.fields.industry",
 	},
 	sources: {

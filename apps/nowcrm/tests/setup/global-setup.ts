@@ -53,7 +53,8 @@ async function globalSetup(config: FullConfig): Promise<void> {
         await page.getByRole('button', { name: 'Sign in' }).click();
 
         // Step 3: Wait for successful UI login confirmation
-        const postLoginUrlRegex = /\/crm$/;
+        // The app redirects to /en/crm/contacts after login, so we check for that
+        const postLoginUrlRegex = /\/crm(\/contacts)?$/;
         console.log(`Waiting for CRM URL to match: ${postLoginUrlRegex}`);
         await expect(page).toHaveURL(postLoginUrlRegex, { timeout: 15000 });
         console.log(`CRM UI Login successful. Current URL: ${page.url()}`);

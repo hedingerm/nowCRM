@@ -12,7 +12,7 @@ import { testCredentials } from "./data";
  */
 export async function loginUser(
   page: Page,
-  postLoginUrlRegex: RegExp = /\/crm$/ // Default check for '/crm' at the end of the URL path
+  postLoginUrlRegex: RegExp = /\/crm(\/contacts)?$/ // Default check for '/crm' or '/crm/contacts' at the end of the URL path
 ): Promise<void> {
 
   console.log(`Attempting login via UI for user: ${testCredentials.email}`);
@@ -20,6 +20,13 @@ export async function loginUser(
   try {
     await page.goto('/en/auth');
     console.log(`Navigated to relative path /en/auth (BaseURL: ${page.context()})`);
+
+    // Check if we're already logged in (redirected to CRM)
+    const currentUrl = page.url();
+    if (postLoginUrlRegex.test(currentUrl)) {
+      console.log(`Already logged in. Current URL: ${currentUrl}`);
+      return;
+    }
 
     await expect(page.getByRole('textbox', { name: 'Email' })).toBeVisible({ timeout: 10000 });
     await page.getByRole('textbox', { name: 'Email' }).fill(testCredentials.email);
@@ -35,6 +42,13 @@ export async function loginUser(
     console.log(`Login successful. Current URL: ${page.url()}`);
 
   } catch (error: any) {
+    // Check if we're already logged in (redirected to CRM) - this might happen if storage state is used
+    const currentUrl = page.url();
+    if (postLoginUrlRegex.test(currentUrl)) {
+      console.log(`Already logged in (caught in error handler). Current URL: ${currentUrl}`);
+      return;
+    }
+    
     // Log the original error for easier debugging
     console.error(`UI Login failed for ${testCredentials.email}. Original error: ${error.message}`);
     // Re-throw the error to ensure the test fails clearly at the login step

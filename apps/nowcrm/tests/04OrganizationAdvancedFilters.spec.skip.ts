@@ -2,7 +2,8 @@ import { test, expect } from '@playwright/test';
 import { OrganizationsPage } from './pages/OrganizationsPage';
 import { AdvancedFiltersPage } from './pages/AdvancedFiltersPage';
 
-// If authentication is required, add login steps here or use a helper
+
+//TODO: fix and make not skippable
 
 // Playwright test suite for Organizations Advanced Filters
 

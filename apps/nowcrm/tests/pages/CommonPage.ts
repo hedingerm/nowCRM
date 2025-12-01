@@ -39,12 +39,16 @@ export class CommonPage {
         // Wait for the logout button (located within the menu) to be visible
         await expect(this.logoutButton, 'Logout button should be visible in menu').toBeVisible();
         await this.logoutButton.click();
+        // Wait for logout to complete and redirect to login page
+        await expect(this.page, 'Should redirect to login page after logout').toHaveURL(/\/auth/, { timeout: 10000 });
     }
 
     /** Convenience method for logging out */
     async logout() {
         await this.openUserMenu();
         await this.clickLogout();
+        // Clear storage state to ensure we're logged out
+        await this.page.context().clearCookies();
     }
 
     // Assertions
@@ -54,7 +58,7 @@ export class CommonPage {
     }
 
      async expectDashboardVisible(timeout: number = 10000) {
-        // Assumes the URL includes '/crm' after successful login
-        await expect(this.page, 'URL should indicate CRM dashboard').toHaveURL(/\/crm$/, { timeout });
+        // Assumes the URL includes '/crm' or '/crm/contacts' after successful login
+        await expect(this.page, 'URL should indicate CRM dashboard').toHaveURL(/\/crm(\/contacts)?$/, { timeout });
      }
 }

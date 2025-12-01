@@ -28,7 +28,10 @@ import { formatDateTimeStrapi } from "@/lib/strapi-date";
 import { toNames } from "@/lib/utils";
 import { CountryFilterHeader } from "./countries/country-filter-header";
 
-const ViewActions: React.FC<{ contact: Contact }> = ({ contact }) => {
+const ViewActions: React.FC<{ 
+	contact: Contact;
+	onRefetch?: () => void;
+}> = ({ contact, onRefetch }) => {
 	const t = useMessages();
 	const router = useRouter();
 
@@ -60,7 +63,11 @@ const ViewActions: React.FC<{ contact: Contact }> = ({ contact }) => {
 								return;
 							}
 							toast.success("Contact duplicated");
-							router.refresh();
+							if (onRefetch) {
+								onRefetch();
+							} else {
+								router.refresh();
+							}
 						}}
 					>
 						Duplicate
@@ -74,7 +81,11 @@ const ViewActions: React.FC<{ contact: Contact }> = ({ contact }) => {
 								return;
 							}
 							toast.success(t.Contacts.deleteContact);
-							router.refresh();
+							if (onRefetch) {
+								onRefetch();
+							} else {
+								router.refresh();
+							}
 						}}
 					>
 						Delete
@@ -146,7 +157,10 @@ const ViewContact: React.FC<{ contact: Contact; cell: any }> = ({
 	);
 };
 
-export const getColumns = (session?: Session | null): ColumnDef<Contact>[] => [
+export const getColumns = (
+	session?: Session | null,
+	onRefetch?: () => void,
+): ColumnDef<Contact>[] => [
 	{
 		id: "select",
 		header: ({ table }) => (
@@ -534,7 +548,7 @@ export const getColumns = (session?: Session | null): ColumnDef<Contact>[] => [
 		header: ({ column }) => <div className="text-center">Actions</div>,
 		cell: ({ row }) => {
 			const contact = row.original;
-			return <ViewActions contact={contact} />;
+			return <ViewActions contact={contact} onRefetch={onRefetch} />;
 		},
 	},
 ];

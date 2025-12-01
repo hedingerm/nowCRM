@@ -2,15 +2,15 @@
 import { test, expect } from '@playwright/test';
 import { ImportPage } from './pages/ImportPage';
 import { loginUser } from './utils/authHelper';
-import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
+import { generateContactsCsv } from './files/generate-contacts';
 
-// Helper to generate CSV file dynamically using Python script
-async function generateContactsCsv(filename: string, count: number) {
-    const scriptPath = path.resolve(__dirname, 'files', 'generate_contacts.py');
-    execSync(`python3 ${scriptPath} ${filename} ${count}`, { cwd: path.dirname(scriptPath) });
-    const filePath = path.resolve(__dirname, 'files', filename);
+// Helper to generate CSV file dynamically using TypeScript script
+async function generateContactsCsvFile(filename: string, count: number): Promise<string> {
+    const filesDir = path.resolve(__dirname, 'files');
+    const filePath = path.resolve(filesDir, filename);
+    generateContactsCsv(filename, count, filesDir);
     if (!fs.existsSync(filePath)) {
         throw new Error(`CSV file was not generated: ${filePath}`);
     }
@@ -30,7 +30,7 @@ test.describe('CSV Import - Contacts', () => {
     test('User should be able to import a valid 10 contact CSV file', async ({ page }) => {
         const contactCount = 10;
         const csvFileName = `contacts_${contactCount}_uniq.csv`;
-        await generateContactsCsv(csvFileName, contactCount);
+        await generateContactsCsvFile(csvFileName, contactCount);
         await importPage.selectFileAndConfigureContacts(csvFileName);
         await importPage.selectRequiredColumnsForContacts('email');
         await importPage.submitImport();
@@ -40,7 +40,7 @@ test.describe('CSV Import - Contacts', () => {
     test('User should be able to import a valid 100 contact CSV file', async ({ page }) => {
         const contactCount = 100;
         const csvFileName = `contacts_${contactCount}_uniq.csv`;
-        await generateContactsCsv(csvFileName, contactCount);
+        await generateContactsCsvFile(csvFileName, contactCount);
         await importPage.selectFileAndConfigureContacts(csvFileName);
         await importPage.selectRequiredColumnsForContacts('email');
         await importPage.submitImport();
@@ -50,7 +50,7 @@ test.describe('CSV Import - Contacts', () => {
     test('User should be able to import a valid 1000 contact CSV file', async ({ page }) => {
         const contactCount = 1000;
         const csvFileName = `contacts_${contactCount}_uniq.csv`;
-        await generateContactsCsv(csvFileName, contactCount);
+        await generateContactsCsvFile(csvFileName, contactCount);
         await importPage.selectFileAndConfigureContacts(csvFileName);
         await importPage.selectRequiredColumnsForContacts('email');
         await importPage.submitImport();
@@ -61,7 +61,7 @@ test.describe('CSV Import - Contacts', () => {
     test.skip('User should be able to import a valid 10,000 contact CSV file', async ({ page }) => {
         const contactCount = 10000;
         const csvFileName = `contacts_${contactCount}_uniq.csv`;
-        await generateContactsCsv(csvFileName, contactCount);
+        await generateContactsCsvFile(csvFileName, contactCount);
         await importPage.selectFileAndConfigureContacts(csvFileName);
         await importPage.selectRequiredColumnsForContacts('email');
         await importPage.submitImport();
@@ -71,7 +71,7 @@ test.describe('CSV Import - Contacts', () => {
     test.skip('User should be able to import a valid 100,000 contact CSV file', async ({ page }) => {
         const contactCount = 100000;
         const csvFileName = `contacts_${contactCount}_uniq.csv`;
-        await generateContactsCsv(csvFileName, contactCount);
+        await generateContactsCsvFile(csvFileName, contactCount);
         await importPage.selectFileAndConfigureContacts(csvFileName);
         await importPage.selectRequiredColumnsForContacts('email');
         await importPage.submitImport();
@@ -81,7 +81,7 @@ test.describe('CSV Import - Contacts', () => {
     test.skip('User should be able to import a valid 1,000,000 contact CSV file', async ({ page }) => {
         const contactCount = 1000000;
         const csvFileName = `contacts_${contactCount}_uniq.csv`;
-        await generateContactsCsv(csvFileName, contactCount);
+        await generateContactsCsvFile(csvFileName, contactCount);
         await importPage.selectFileAndConfigureContacts(csvFileName);
         await importPage.selectRequiredColumnsForContacts('email');
         await importPage.submitImport();
@@ -101,7 +101,7 @@ test.describe('CSV Import - Contacts', () => {
     test('User should NOT be able to import when no required fields are selected', async ({ page }) => {
         const contactCount = 10;
         const csvFileName = `contacts_${contactCount}_uniq.csv`;
-        await generateContactsCsv(csvFileName, contactCount);
+        await generateContactsCsvFile(csvFileName, contactCount);
         await importPage.selectFileAndConfigureContacts(csvFileName);
         await expect(importPage.importSubmitButton).toBeDisabled();
     });
@@ -109,7 +109,7 @@ test.describe('CSV Import - Contacts', () => {
     test('User can enable email subscription before importing contacts', async ({ page }) => {
         const contactCount = 5;
         const csvFileName = `contacts_${contactCount}_uniq.csv`;
-        await generateContactsCsv(csvFileName, contactCount);
+        await generateContactsCsvFile(csvFileName, contactCount);
         await importPage.selectFileAndConfigureContacts(csvFileName);
         await page.getByRole('switch', { name: 'Enable email subscription' }).click();
         await importPage.selectRequiredColumnsForContacts('email');

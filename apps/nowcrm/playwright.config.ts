@@ -13,8 +13,8 @@ const CRM_BASE_URL = process.env.CRM_BASE_URL || 'http://localhost:3000';
 const TIMEOUT = Number(process.env.PLAYWRIGHT_TIMEOUT) || 30000;
 const EXPECT_TIMEOUT = Number(process.env.EXPECT_TIMEOUT) || 5000;
 // Run in headed mode by default (set PLAYWRIGHT_HEADED=false to run headless)
-const HEADLESS = process.env.PLAYWRIGHT_HEADED === 'false';
-
+// const HEADLESS = process.env.PLAYWRIGHT_HEADED === 'false';
+const HEADLESS = true;
 // Ensure output directories exist
 const testResultsDir = path.resolve(__dirname, './tests/reports/test-results');
 if (!fs.existsSync(testResultsDir)) fs.mkdirSync(testResultsDir, { recursive: true });

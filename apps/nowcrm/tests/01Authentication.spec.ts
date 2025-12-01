@@ -31,6 +31,14 @@ test.describe('Authentication Flow', () => {
 
     // Test: User should see an error message with invalid credentials
     test('User should see an error message with invalid credentials', async ({ page }) => {
+        // Logout first if already logged in
+        try {
+            await commonPage.logout();
+        } catch (e) {
+            // If logout fails, try to navigate to login page directly and clear cookies
+            await page.context().clearCookies();
+            await page.goto('/en/auth', { waitUntil: 'networkidle' });
+        }
         await loginPage.login('nonexistentuser@example.com', 'wrongpassword'); // Attempt login with invalid credentials
         await loginPage.expectInvalidCredentialsErrorVisible(); // Verify error message is displayed
         await loginPage.expectToBeOnLoginPage(); // Verify user remains on login page
@@ -38,6 +46,14 @@ test.describe('Authentication Flow', () => {
 
     // Test: User should see a validation error for invalid email format
     test('User should see a validation error for invalid email format', async ({ page }) => {
+        // Logout first if already logged in
+        try {
+            await commonPage.logout();
+        } catch (e) {
+            // If logout fails, try to navigate to login page directly and clear cookies
+            await page.context().clearCookies();
+            await page.goto('/en/auth', { waitUntil: 'networkidle' });
+        }
         await loginPage.goto(); // Navigate to login page
         await loginPage.fillCredentials('invalid-email-format', testCredentials.password); // Enter invalid email format
         await loginPage.clickSignIn(); // Attempt to sign in
@@ -70,6 +86,14 @@ test.describe('Authentication Flow', () => {
         });
 
         try {
+            // Logout first if already logged in
+            try {
+                await commonPage.logout();
+            } catch (e) {
+                // If logout fails, try to navigate to login page directly and clear cookies
+                await page.context().clearCookies();
+                await page.goto('/en/auth', { waitUntil: 'networkidle' });
+            }
             // Step 1: Navigate to the login page and access the "Forgot Password" section
             await loginPage.goto();
             await loginPage.gotoForgotPassword();
@@ -125,7 +149,12 @@ test.describe('Authentication Flow', () => {
         } finally {
             // Cleanup: Delete the test user from Strapi and all emails from Mailpit
             await deleteUserFromStrapi(request, uniqueEmail);
-            await request.delete('http://localhost:8025/api/v1/messages');
+            // Try to delete emails from Mailpit, but don't fail if Mailpit is not running
+            try {
+                await request.delete('http://localhost:8025/api/v1/messages');
+            } catch (error) {
+                console.warn('Could not delete emails from Mailpit (may not be running):', error);
+            }
         }
     });
 });

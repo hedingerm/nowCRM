@@ -16,7 +16,8 @@ export class ContactsListPage {
 
     constructor(page: Page) {
         this.page = page;
-        this.createButton = page.getByRole('button', { name: 'Create' });
+        // Use a more specific selector - the Create button has data-slot="dialog-trigger"
+        this.createButton = page.locator('button[data-slot="dialog-trigger"]').filter({ hasText: 'Create' }).first();
         this.contactsTable = page.locator('table'); // Adjust if more specific selector needed
     // Try to find filter input by role, label, or placeholder
     const filterByRole = page.getByRole('textbox', { name: 'Filter Contacts...' });
@@ -39,31 +40,34 @@ export class ContactsListPage {
     }
 
     async filterContacts(searchTerm: string) {
-        // Use a local variable for filter input
-        let filterInput = this.filterInput;
-        if (!(await filterInput.isVisible())) {
-            // Try by placeholder
-            const filterByPlaceholder = this.page.getByPlaceholder('Search Contacts...');
-            if (await filterByPlaceholder.isVisible()) {
-                filterInput = filterByPlaceholder;
+        // Try to find the filter/search input - it should be outside the table/form area
+        // Look for input with placeholder containing "Search" or "Filter"
+        const filterByPlaceholder = this.page.getByPlaceholder(/Search.*Contact/i).or(this.page.getByPlaceholder(/Filter.*Contact/i));
+        
+        if (await filterByPlaceholder.isVisible().catch(() => false)) {
+            await filterByPlaceholder.fill(searchTerm);
+        } else {
+            // Try by role with name containing "Search" or "Filter"
+            const filterByRole = this.page.getByRole('textbox', { name: /Search|Filter/i });
+            if (await filterByRole.first().isVisible().catch(() => false)) {
+                await filterByRole.first().fill(searchTerm);
             } else {
-                // Try by label
-                const filterByLabel = this.page.getByLabel('Search Contacts...');
-                if (await filterByLabel.isVisible()) {
-                    filterInput = filterByLabel;
-                } else {
-                    // Try generic textbox
-                    const genericTextbox = this.page.getByRole('textbox');
-                    if (await genericTextbox.isVisible()) {
-                        filterInput = genericTextbox;
-                    } else {
-                        throw new Error('Could not find filter input for contacts');
+                // Last resort: find input that's not inside a dialog or form with name/email fields
+                const allTextboxes = this.page.getByRole('textbox');
+                const count = await allTextboxes.count();
+                // The filter is usually one of the first textboxes, but not in a dialog
+                for (let i = 0; i < Math.min(count, 5); i++) {
+                    const tb = allTextboxes.nth(i);
+                    const placeholder = await tb.getAttribute('placeholder').catch(() => '');
+                    if (placeholder && (placeholder.toLowerCase().includes('search') || placeholder.toLowerCase().includes('filter'))) {
+                        await tb.fill(searchTerm);
+                        await this.page.waitForTimeout(300);
+                        return;
                     }
                 }
+                throw new Error('Could not find filter input for contacts');
             }
         }
-        await expect(filterInput).toBeVisible();
-        await filterInput.fill(searchTerm);
         // Add small wait or check for results if filtering is async
         await this.page.waitForTimeout(300);
     }
@@ -148,7 +152,8 @@ export class ContactsListPage {
     }
 
     getLinkForRow(rowLocator: Locator, linkText: string): Locator {
-        return rowLocator.getByRole('link', { name: linkText });
+        // Use first() to handle multiple links - prefer the one that's likely the name link
+        return rowLocator.getByRole('link', { name: linkText }).first();
     }
 
     getDeleteButtonForRow(rowLocator: Locator): Locator {
