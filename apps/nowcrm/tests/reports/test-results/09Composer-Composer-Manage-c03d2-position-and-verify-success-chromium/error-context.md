@@ -1,0 +1,301 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - link "nowCRM" [ref=e6] [cursor=pointer]:
+          - /url: /
+          - img "nowCRM" [ref=e7]
+        - navigation [ref=e8]:
+          - link "Contacts" [ref=e9] [cursor=pointer]:
+            - /url: /crm/contacts
+          - link "Lists" [ref=e10] [cursor=pointer]:
+            - /url: /crm/lists
+          - link "Organizations" [ref=e11] [cursor=pointer]:
+            - /url: /crm/organizations
+          - link "Journeys" [ref=e12] [cursor=pointer]:
+            - /url: /crm/journeys
+          - link "Forms" [ref=e13] [cursor=pointer]:
+            - /url: /crm/forms
+          - button "Composer" [ref=e14] [cursor=pointer]:
+            - text: Composer
+            - img
+          - button "Import" [ref=e15] [cursor=pointer]:
+            - text: Import
+            - img
+      - generic [ref=e16]:
+        - button "Switch to dark mode" [ref=e18] [cursor=pointer]:
+          - generic [ref=e19]: Toggle theme
+          - img [ref=e21]
+          - img [ref=e28]
+        - button "T" [ref=e32] [cursor=pointer]:
+          - generic [ref=e34]: T
+    - main [ref=e35]:
+      - generic [ref=e37]:
+        - generic [ref=e38]:
+          - button "Back" [ref=e39] [cursor=pointer]:
+            - img
+            - text: Back
+          - generic [ref=e40]:
+            - heading "AddChan Scratch FpwQF6r" [level=1] [ref=e42]
+            - generic [ref=e44]: Finished
+          - button "Edit" [ref=e45] [cursor=pointer]:
+            - img
+            - text: Edit
+        - generic [ref=e46]:
+          - generic [ref=e49]:
+            - generic [ref=e50]:
+              - generic [ref=e51]: Channels
+              - button "Refresh" [ref=e52] [cursor=pointer]:
+                - img
+            - generic [ref=e53]:
+              - button "Overview" [ref=e54] [cursor=pointer]
+              - button "Email" [ref=e55] [cursor=pointer]:
+                - img
+                - generic [ref=e57]: Email
+              - button "Add Channel" [ref=e58] [cursor=pointer]:
+                - img
+                - text: Add Channel
+          - generic [ref=e60]:
+            - generic [ref=e61]:
+              - generic [ref=e63]:
+                - generic [ref=e65]: Email Content
+                - generic [ref=e66]:
+                  - button "Variables" [ref=e67] [cursor=pointer]:
+                    - img
+                    - text: Variables
+                  - button "Preview" [disabled]:
+                    - img
+                    - text: Preview
+                  - button "Regenerate" [ref=e68] [cursor=pointer]:
+                    - img
+                    - text: Regenerate
+                  - button "Send - Email" [ref=e69] [cursor=pointer]:
+                    - img
+                    - text: Send - Email
+              - generic [ref=e70]:
+                - generic [ref=e71]:
+                  - generic [ref=e72]:
+                    - generic [ref=e73]: Result
+                    - generic [ref=e74]:
+                      - generic [ref=e75]: 1 / 50000
+                      - img [ref=e76]
+                  - progressbar [ref=e80]
+                  - generic [ref=e85]:
+                    - generic [ref=e87]:
+                      - textbox [ref=e89]:
+                        - paragraph [ref=e90]: "-"
+                      - generic [ref=e94]: 1/50000 CHARACTERS
+                      - button
+                    - region "Notifications (F8)":
+                      - list
+                - generic [ref=e96]:
+                  - generic [ref=e97]:
+                    - generic [ref=e98]: Attached files
+                    - generic [ref=e99]: 0 / 5 files
+                  - generic [ref=e101]:
+                    - img [ref=e102]
+                    - paragraph [ref=e105]: No attachments
+            - generic [ref=e108]:
+              - text: Additional Prompt
+              - paragraph [ref=e110]: No additional prompt provided
+            - generic [ref=e111]:
+              - generic [ref=e113]:
+                - generic [ref=e115]: Email Analytics
+                - generic [ref=e116]:
+                  - group [ref=e117]:
+                    - radio "Count" [checked] [ref=e118]
+                    - radio "Percentage" [ref=e119]
+                  - combobox [ref=e120]:
+                    - generic: Total
+                    - img [ref=e121]
+                  - combobox [ref=e123]
+                  - generic [ref=e124]: All Time
+              - generic [ref=e126]:
+                - generic [ref=e127]:
+                  - img [ref=e129]
+                  - generic [ref=e132]:
+                    - generic [ref=e133]:
+                      - paragraph [ref=e134]: Published (of Total)
+                      - img [ref=e136]
+                    - paragraph [ref=e139]: "0"
+                - generic [ref=e140]:
+                  - img [ref=e142]
+                  - generic [ref=e145]:
+                    - generic [ref=e146]:
+                      - paragraph [ref=e147]: Sent
+                      - img [ref=e149]
+                    - paragraph [ref=e152]: "0"
+                - generic [ref=e153]:
+                  - img [ref=e155]
+                  - generic [ref=e158]:
+                    - generic [ref=e159]:
+                      - paragraph [ref=e160]: Delivery Rate
+                      - img [ref=e162]
+                    - paragraph [ref=e165]: "0"
+                - generic [ref=e166]:
+                  - img [ref=e168]
+                  - generic [ref=e171]:
+                    - generic [ref=e172]:
+                      - paragraph [ref=e173]: Open Rate
+                      - img [ref=e175]
+                    - paragraph [ref=e178]: "0"
+                - generic [ref=e179]:
+                  - img [ref=e181]
+                  - generic [ref=e184]:
+                    - generic [ref=e185]:
+                      - paragraph [ref=e186]: Hard Bounce Rate
+                      - img [ref=e188]
+                    - paragraph [ref=e191]: "0"
+                - generic [ref=e192]:
+                  - img [ref=e194]
+                  - generic [ref=e197]:
+                    - generic [ref=e198]:
+                      - paragraph [ref=e199]: Soft Bounce Rate
+                      - img [ref=e201]
+                    - paragraph [ref=e204]: "0"
+                - generic [ref=e205]:
+                  - img [ref=e207]
+                  - generic [ref=e210]:
+                    - generic [ref=e211]:
+                      - paragraph [ref=e212]: Click-Through Rate
+                      - img [ref=e214]
+                    - paragraph [ref=e217]: "0"
+                - generic [ref=e218]:
+                  - img [ref=e220]
+                  - generic [ref=e223]:
+                    - generic [ref=e224]:
+                      - paragraph [ref=e225]: Click-Open Rate
+                      - img [ref=e227]
+                    - paragraph [ref=e230]: "0"
+                - generic [ref=e231]:
+                  - img [ref=e233]
+                  - generic [ref=e236]:
+                    - generic [ref=e237]:
+                      - paragraph [ref=e238]: Unsubscribe Rate
+                      - img [ref=e240]
+                    - paragraph [ref=e243]: "0"
+            - generic [ref=e244]:
+              - generic [ref=e246]: Events
+              - generic [ref=e247]:
+                - generic [ref=e249]:
+                  - generic [ref=e250]:
+                    - generic [ref=e251]:
+                      - img [ref=e252]
+                      - generic [ref=e254]: Error
+                    - generic [ref=e255]: "Status Code: 500"
+                  - paragraph [ref=e257]: Server Error. Our team is working to resolve the issue.
+                - generic [ref=e258]:
+                  - tablist [ref=e259]:
+                    - tab "Publish" [selected] [ref=e260]:
+                      - img [ref=e261]
+                      - text: Publish
+                    - tab "Sent" [ref=e264]:
+                      - img [ref=e265]
+                      - text: Sent
+                    - tab "Delivery" [ref=e268]:
+                      - img [ref=e269]
+                      - text: Delivery
+                    - tab "Open" [ref=e273]:
+                      - img [ref=e274]
+                      - text: Open
+                    - tab "Click" [ref=e277]:
+                      - img [ref=e278]
+                      - text: Click
+                    - tab "Links" [ref=e284]:
+                      - img [ref=e285]
+                      - text: Links
+                    - tab "Hard Bounce" [ref=e288]:
+                      - img [ref=e289]
+                      - text: Hard Bounce
+                    - tab "Soft Bounce" [ref=e291]:
+                      - img [ref=e292]
+                      - text: Soft Bounce
+                    - tab "Unsubscribe" [ref=e294]:
+                      - img [ref=e295]
+                      - text: Unsubscribe
+                  - tabpanel "Publish" [ref=e300]:
+                    - generic [ref=e301]:
+                      - generic [ref=e303]:
+                        - generic [ref=e304]:
+                          - generic:
+                            - img
+                          - textbox "Search ..." [ref=e305]
+                        - button "Mass Actions (0)" [ref=e306] [cursor=pointer]:
+                          - generic [ref=e307]: Mass Actions (0)
+                        - button "view" [ref=e308] [cursor=pointer]:
+                          - img
+                          - generic [ref=e309]: view
+                      - table [ref=e312]:
+                        - rowgroup [ref=e313]:
+                          - row "Select all Title Action External id Source Contact Status Destination" [ref=e314]:
+                            - cell "Select all" [ref=e315]:
+                              - checkbox "Select all" [ref=e316] [cursor=pointer]
+                              - checkbox
+                            - cell "Title" [ref=e317]:
+                              - button "Title" [ref=e318] [cursor=pointer]:
+                                - text: Title
+                                - img
+                            - cell "Action" [ref=e319]
+                            - cell "External id" [ref=e320]
+                            - cell "Source" [ref=e321]:
+                              - button "Source" [ref=e322] [cursor=pointer]:
+                                - text: Source
+                                - img
+                            - cell "Contact" [ref=e323]:
+                              - button "Contact" [ref=e324] [cursor=pointer]:
+                                - text: Contact
+                                - img
+                            - cell "Status" [ref=e325]:
+                              - button "Status" [ref=e326] [cursor=pointer]:
+                                - text: Status
+                                - img
+                            - cell "Destination" [ref=e327]
+                            - cell [ref=e328]
+                        - rowgroup [ref=e329]:
+                          - row "no results" [ref=e330]:
+                            - cell "no results" [ref=e331]
+                      - generic [ref=e333]:
+                        - generic [ref=e334]: 0 of 0 row(s) selected
+                        - generic [ref=e335]:
+                          - generic [ref=e336]:
+                            - paragraph [ref=e337]: Rows per page
+                            - combobox [ref=e338] [cursor=pointer]:
+                              - generic: "10"
+                              - img [ref=e339]
+                            - combobox [ref=e341]
+                          - generic [ref=e342]: Page 1 of 1
+                          - generic [ref=e343]:
+                            - button "Go to first page" [disabled]:
+                              - generic: Go to first page
+                              - img
+                            - button "Go to previous page" [disabled]:
+                              - generic: Go to previous page
+                              - img
+                            - button "Go to next page" [disabled]:
+                              - generic: Go to next page
+                              - img
+                            - button "Go to last page" [disabled]:
+                              - generic: Go to last page
+                              - img
+    - contentinfo [ref=e344]:
+      - generic [ref=e346]:
+        - generic [ref=e347]:
+          - generic [ref=e348]: © 2023 - 2025 nowCRM
+          - generic [ref=e349]: 1.0.1
+        - navigation [ref=e350]:
+          - link "Privacy Policy" [ref=e351] [cursor=pointer]:
+            - /url: /policy
+          - generic [ref=e352]: •
+          - link "Terms" [ref=e353] [cursor=pointer]:
+            - /url: /terms
+          - generic [ref=e354]: •
+          - link "Guide" [ref=e355] [cursor=pointer]:
+            - /url: /userguide
+          - generic [ref=e356]: •
+          - link "Subscribe" [ref=e357] [cursor=pointer]:
+            - /url: /subscribe
+  - alert [ref=e358]
+```

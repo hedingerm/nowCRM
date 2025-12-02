@@ -184,7 +184,7 @@ export async function processTriggerMessage(data: any) {
 					contact.data,
 					CommunicationChannel.EMAIL,
 				);
-				if(!checkSubscription.data) {
+				if (!checkSubscription.data) {
 					await subscriptionsService.create(
 						{
 							channel: email_channel.data[0].documentId,

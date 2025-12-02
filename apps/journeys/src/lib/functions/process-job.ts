@@ -41,17 +41,25 @@ export async function processJob(
 		).data;
 	}
 	if (check) {
-		await composerService.sendComposition({
-			composition_id: step.responseObject.composition.documentId,
-			channels: [step.responseObject.channel?.name.toLowerCase()],
-			to: contact.responseObject.email,
-			type: "contact",
-			subject:
-				step.responseObject.composition.subject ||
-				step.responseObject.composition.name,
-			from: step.responseObject.identity.name,
-			ignoreSubscription,
-		});
+		await composerService.sendComposition(
+			{
+				composition_id: step.responseObject.composition.documentId,
+				channels: [step.responseObject.channel?.name.toLowerCase()],
+				to: contact.responseObject.email,
+				type: "contact",
+				subject:
+					step.responseObject.composition.subject ||
+					step.responseObject.composition.name,
+				from: step.responseObject.identity.name,
+				ignoreSubscription,
+			},
+			{
+				stepId,
+				contactId,
+				token: env.JOURNEYS_STRAPI_API_TOKEN,
+				compositionId: step.responseObject.composition.documentId,
+			},
+		);
 	} else {
 		logger.warn(`contact: ${contactId} doesnt have active subscription`);
 		throw new Error(

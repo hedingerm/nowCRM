@@ -51,11 +51,12 @@ async function uniqueSlug(
 async function deepDuplicateFormItem(
   strapi: Core.Strapi,
   originalItem: any,
-  newFormId: string,
+  newFormId: any,
   trx: any
 ): Promise<any> {
   const {
     id: _itemId,
+	documentId: _documentId,
     createdAt: _c,
     updatedAt: _u,
     publishedAt: _p,
@@ -79,7 +80,6 @@ async function deepDuplicateFormItem(
     data: {
       ...itemData,
       form: newFormId,
-      publishedAt: new Date().toISOString(),
     },
     transacting: trx,
   });
@@ -114,6 +114,7 @@ async duplicate(ctx) {
       // Strip meta fields
       const {
         id: _id,
+		documentId: _documentId,
         createdAt: _c,
         updatedAt: _u,
         publishedAt: _p,
@@ -140,15 +141,13 @@ async duplicate(ctx) {
             active: false,
             cover: coverId || null,
 			logo:  logoId || null,
-            // If you want to keep it as draft, comment out the next line
-            publishedAt: new Date().toISOString(),
           },
           transacting: trx,
         });
 
         if (Array.isArray(form_items) && form_items.length > 0) {
           for (const item of form_items) {
-            await deepDuplicateFormItem(strapi ,item, newForm.documentId, trx);
+            await deepDuplicateFormItem(strapi ,item, newForm.id, trx);
           }
         }
 
@@ -157,6 +156,7 @@ async duplicate(ctx) {
 
       return ctx.send({ success: true, data: result }, 201);
     } catch (err) {
+		console.log(err)
       return ctx.send(
         {
           success: false,

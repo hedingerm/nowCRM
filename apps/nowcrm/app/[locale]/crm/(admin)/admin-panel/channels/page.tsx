@@ -18,6 +18,7 @@ export default async function Page() {
 		<div>
 			<ChannelHealthCheck settings={settings_item.data[0]} />
 			<ChannelSettingsForm
+				settings_id={settings_item.data[0].documentId}
 				initialSubscription={settings_item.data[0].subscription || "ignore"}
 				initialUnsubscribeText={settings_item.data[0].unsubscribe_text || ""}
 				baseLink={env.CRM_BASE_URL}

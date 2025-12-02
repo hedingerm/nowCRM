@@ -188,7 +188,7 @@ export function CompositionChannelContent({
 		const additionalPrompt = form.watch(
 			`composition_items.${formItemIndex}.additional_prompt`,
 		);
-		const itemId = form.watch(`composition_items.${formItemIndex}.id`);
+		const itemId = form.watch(`composition_items.${formItemIndex}.documentId`);
 		if (additionalPrompt) {
 			try {
 				setIsRegenerating(true);

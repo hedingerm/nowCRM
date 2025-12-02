@@ -109,10 +109,12 @@ export class ContactsListPage {
         // Click "View" in the menu
         const viewMenuItem = this.page.getByRole('menuitem', { name: 'View' });
         await expect(viewMenuItem).toBeVisible({ timeout: 3000 });
-        await viewMenuItem.click();
+        // Wait for menu to be stable before clicking
+        await this.page.waitForTimeout(200);
+        await viewMenuItem.click({ force: true });
 
-        // Wait for the details page to load
-        await expect(this.page).toHaveURL(/\/contacts\/\d+\/details/);
+        // Wait for the details page to load - contact IDs can be alphanumeric
+        await expect(this.page).toHaveURL(/\/contacts\/[^\/]+\/details/, { timeout: 10000 });
     }
 
     /**

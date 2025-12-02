@@ -41,11 +41,20 @@ export class ProfilePage {
             const inputType = await this.imageInput.getAttribute('type');
             if (inputType === 'file') {
                 await this.imageInput.setInputFiles(imagePath);
+                // Wait for image preview to appear (indicates file was selected)
+                await this.page.waitForTimeout(500);
             } else {
                 await this.imageInput.fill(imagePath);
             }
         }
-        await this.saveChangesBtn.click();
+        // Click save and wait for navigation back to profile page
+        await Promise.all([
+            this.page.waitForURL(/\/crm\/profile$/, { timeout: 15000 }),
+            this.saveChangesBtn.click(),
+        ]);
+        // Wait for page to fully load after navigation
+        await this.page.waitForLoadState('networkidle');
+        await this.page.waitForTimeout(1000);
     }
 
     async expectProfileHeader(username: string) {
@@ -53,11 +62,24 @@ export class ProfilePage {
     }
 
     async expectAvatarChanged(oldSrc?: string) {
-        await expect(this.avatarImg).toBeVisible();
-        const newSrc = await this.avatarImg.getAttribute('src');
+        // Wait for avatar to be visible and updated
+        await expect(this.avatarImg).toBeVisible({ timeout: 10000 });
+        
+        // Wait for avatar src to change (poll until it's different from oldSrc)
         if (oldSrc) {
-            expect(newSrc).not.toBe(oldSrc);
+            await expect.poll(async () => {
+                const newSrc = await this.avatarImg.getAttribute('src');
+                return newSrc;
+            }, {
+                message: 'Avatar src should change after upload',
+                timeout: 10000,
+            }).not.toBe(oldSrc);
         }
+        
+        // Get final src
+        const newSrc = await this.avatarImg.getAttribute('src');
+        // Verify it's not placeholder
+        expect(newSrc).not.toBe('/placeholder.svg');
         return newSrc;
     }
 

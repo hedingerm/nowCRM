@@ -38,6 +38,7 @@ export async function uploadImage(formData: FormData): Promise<string> {
 		userId,
 		session.jwt,
 	);
+	console.log(result);
 	const assets = result.data;
 
 	// 3. Return the first URL or a fallback

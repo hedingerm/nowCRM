@@ -57,7 +57,7 @@ class FormsService extends BaseService<FormEntity, Form_FormEntity> {
 
 	async uploadCoverOrLogo(
 		files: any,
-		formId: number,
+		formId: DocumentId,
 		targetField: string,
 		token: string,
 	): Promise<StandardResponse<Asset[]>> {
@@ -68,7 +68,7 @@ class FormsService extends BaseService<FormEntity, Form_FormEntity> {
 			formData.append("files", files[i]);
 		}
 		formData.append("ref", "api::form.form");
-		formData.append("refId", formId.toString());
+		formData.append("refId", String(formId));
 		formData.append("field", targetField);
 		try {
 			const response = await fetch(url, {

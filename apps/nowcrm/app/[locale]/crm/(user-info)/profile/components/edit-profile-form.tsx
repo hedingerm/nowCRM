@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { DocumentId } from "@nowcrm/services";
 import { ArrowLeft, Copy, Eye, EyeOff, RefreshCw } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -34,6 +35,7 @@ interface SessionUser {
 	image: { url?: string };
 	role: { name?: string };
 	strapi_id: number;
+	documentId: DocumentId;
 	twoFARequired?: boolean;
 	totpSecret?: string;
 }

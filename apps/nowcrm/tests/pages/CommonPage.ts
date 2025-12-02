@@ -1,5 +1,6 @@
 // contactsapp/tests/pages/CommonPage.ts
 import { type Locator, type Page, expect } from '@playwright/test';
+import { waitForNavigation, waitForToastsToDisappear, robustClick, waitForElementReady } from '../utils/waitHelpers';
 
 export class CommonPage {
     readonly page: Page;

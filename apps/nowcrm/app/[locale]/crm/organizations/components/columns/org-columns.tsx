@@ -22,7 +22,7 @@ import { formatDateTimeStrapi } from "@/lib/strapi-date";
 import { TagsCell } from "../../../../../../components/dataTable/shared_cols/tags/tag-cell";
 import { TagFilterHeader } from "../../../../../../components/dataTable/shared_cols/tags/tag-filter-header";
 
-const ViewActions: React.FC<{ 
+const ViewActions: React.FC<{
 	organization: Organization;
 	onRefetch?: () => void;
 }> = ({ organization, onRefetch }) => {

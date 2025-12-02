@@ -195,11 +195,12 @@ export default function OrganizationsTableClient({
 
 	// Get columns with session (using ref to avoid circular dependency with fetchData)
 	const columns = React.useMemo(
-		() => getColumns(session, () => {
-			if (refetchRef.current) {
-				refetchRef.current();
-			}
-		}),
+		() =>
+			getColumns(session, () => {
+				if (refetchRef.current) {
+					refetchRef.current();
+				}
+			}),
 		[session],
 	);
 

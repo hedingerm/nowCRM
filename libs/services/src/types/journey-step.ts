@@ -11,6 +11,7 @@ import type { JourneyStepConnection } from "./journey-step-connection";
 export type JourneyStepTypes =
 	| "trigger"
 	| "scheduler-trigger"
+	| "publish"
 	| "channel"
 	| "wait";
 

@@ -52,7 +52,7 @@ export async function updateForm(
 			.map((i) => i.documentId!);
 		const toDelete = existingIds.filter((eid) => !incomingIds.includes(eid));
 		await Promise.all(
-			toDelete.map((eid) => formsService.delete(eid, session.jwt)),
+			toDelete.map((eid) => formItemsService.delete(eid, session.jwt)),
 		);
 
 		if (items && items.length > 0) {
@@ -113,7 +113,7 @@ export async function uploadCoverOrLogo(
 	if (!formIdRaw) {
 		throw new Error("uploadImage: missing formId in formData");
 	}
-	const formId = Number(formIdRaw);
+	const formId = String(formIdRaw) as DocumentId;
 
 	const result = await formsService.uploadCoverOrLogo(
 		files,

@@ -28,7 +28,7 @@ import { formatDateTimeStrapi } from "@/lib/strapi-date";
 import { toNames } from "@/lib/utils";
 import { CountryFilterHeader } from "./countries/country-filter-header";
 
-const ViewActions: React.FC<{ 
+const ViewActions: React.FC<{
 	contact: Contact;
 	onRefetch?: () => void;
 }> = ({ contact, onRefetch }) => {
