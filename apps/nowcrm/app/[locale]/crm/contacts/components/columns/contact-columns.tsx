@@ -146,8 +146,7 @@ const ViewContact: React.FC<{ contact: Contact; cell: any }> = ({
 	cell,
 }) => {
 	const isEmailColumn =
-		cell.column.id === "email" ||
-		cell.column.columnDef.accessorKey === "email";
+		cell.column.id === "email" || cell.column.columnDef.accessorKey === "email";
 	return (
 		<div className="flex cursor-pointer space-x-2">
 			<Link
