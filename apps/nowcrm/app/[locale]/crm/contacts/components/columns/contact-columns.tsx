@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { RouteConfig } from "@/lib/config/routes-config";
 import { formatDateTimeStrapi } from "@/lib/strapi-date";
-import { toNames } from "@/lib/utils";
+import { cn, toNames } from "@/lib/utils";
 import { CountryFilterHeader } from "./countries/country-filter-header";
 
 const ViewActions: React.FC<{
@@ -145,11 +145,17 @@ const ViewContact: React.FC<{ contact: Contact; cell: any }> = ({
 	contact,
 	cell,
 }) => {
+	const isEmailColumn =
+		cell.column.id === "email" ||
+		cell.column.columnDef.accessorKey === "email";
 	return (
 		<div className="flex cursor-pointer space-x-2">
 			<Link
 				href={`${RouteConfig.contacts.single.base(contact.documentId)}`}
-				className="max-w-[150px] truncate font-medium"
+				className={cn(
+					"font-medium",
+					!isEmailColumn && "max-w-[150px] truncate",
+				)}
 			>
 				{cell.renderValue() as any}
 			</Link>

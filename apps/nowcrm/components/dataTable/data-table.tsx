@@ -370,14 +370,26 @@ export default function DataTable<TData, TValue>({
 							table.getRowModel().rows.map((row) => (
 								<React.Fragment key={row.id}>
 									<TableRow data-state={row.getIsSelected() && "selected"}>
-										{row.getVisibleCells().map((cell) => (
-											<TableCell key={cell.id} className="px-4 py-3">
-												{flexRender(
-													cell.column.columnDef.cell,
-													cell.getContext(),
-												)}
-											</TableCell>
-										))}
+										{row.getVisibleCells().map((cell) => {
+											const isEmailColumn =
+												cell.column.id === "email" ||
+												(cell.column.columnDef as any).accessorKey === "email";
+											return (
+												<TableCell
+													key={cell.id}
+													className={cn(
+														"px-4 py-3",
+														isEmailColumn &&
+															"min-w-[200px] max-w-none whitespace-normal break-all",
+													)}
+												>
+													{flexRender(
+														cell.column.columnDef.cell,
+														cell.getContext(),
+													)}
+												</TableCell>
+											);
+										})}
 									</TableRow>
 									{row.getIsExpanded() && renderSubComponent && (
 										<TableRow>
