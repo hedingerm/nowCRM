@@ -4,7 +4,7 @@ import path from 'path';
 import fs from 'fs';
 
 // Load environment variables from the .env file located in the parent directory
-dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
+dotenv.config({ path: path.resolve(__dirname, '../..', '.env') });
 
 const WORKERS = Number(process.env.PLAYWRIGHT_WORKERS) || 1;
 const RETRIES = Number(process.env.PLAYWRIGHT_RETRIES) || 0;
@@ -12,7 +12,9 @@ const CI = process.env.CI === 'true';
 const CRM_BASE_URL = process.env.CRM_BASE_URL || 'http://localhost:3000';
 const TIMEOUT = Number(process.env.PLAYWRIGHT_TIMEOUT) || 30000;
 const EXPECT_TIMEOUT = Number(process.env.EXPECT_TIMEOUT) || 5000;
-
+// Run in headed mode by default (set PLAYWRIGHT_HEADED=false to run headless)
+// const HEADLESS = process.env.PLAYWRIGHT_HEADED === 'false';
+const HEADLESS = true;
 // Ensure output directories exist
 const testResultsDir = path.resolve(__dirname, './tests/reports/test-results');
 if (!fs.existsSync(testResultsDir)) fs.mkdirSync(testResultsDir, { recursive: true });
@@ -39,6 +41,8 @@ export default defineConfig({
   ],
   use: {
     baseURL: CRM_BASE_URL,
+    headless: HEADLESS,
+    storageState: path.join(__dirname, './tests/.auth/user.json'),
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'on-first-retry',

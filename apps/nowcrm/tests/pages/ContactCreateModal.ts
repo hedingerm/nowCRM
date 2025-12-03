@@ -21,7 +21,7 @@ export class ContactCreateModal {
         this.firstNameInput = this.dialog.getByRole('textbox', { name: 'First name' });
         this.lastNameInput = this.dialog.getByRole('textbox', { name: 'Last name' });
         this.emailInput = this.dialog.getByRole('textbox', { name: 'Email' });
-        this.addressInput = this.dialog.getByRole('textbox', { name: 'Address Line' });
+        this.addressInput = this.dialog.getByRole('textbox', { name: 'Address Line 1' });
         this.languageCombobox = this.dialog.getByRole('combobox', { name: 'Language' });
         this.createButton = this.dialog.getByRole('button', { name: 'Create' }); // Scoped to dialog
     }

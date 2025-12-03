@@ -41,8 +41,8 @@ export default function AssignToListDialog({
 		setIsCreatingList(true);
 		try {
 			const res = await createList(values.name);
-			if (res?.data?.id) {
-				setSelectedOption({ value: res.data.id, label: res.data.name });
+			if (res?.data?.documentId) {
+				setSelectedOption({ value: res.data.documentId, label: res.data.name });
 				setListCreated(true);
 				setListCreationSuccess(true);
 				// bounce back to select tab shortly after success

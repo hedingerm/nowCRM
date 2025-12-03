@@ -37,7 +37,9 @@ async function globalSetup(config: FullConfig): Promise<void> {
 
         // Step 2: Perform UI Login
         console.log('Launching browser for UI login...');
-        browser = await chromium.launch();
+        // Run in headed mode by default (set PLAYWRIGHT_HEADED=false to run headless)
+        const headless = process.env.PLAYWRIGHT_HEADED === 'false';
+        browser = await chromium.launch({ headless });
         page = await browser.newPage();
 
         const loginUrl = `${baseURL}/en/auth`;
@@ -51,7 +53,8 @@ async function globalSetup(config: FullConfig): Promise<void> {
         await page.getByRole('button', { name: 'Sign in' }).click();
 
         // Step 3: Wait for successful UI login confirmation
-        const postLoginUrlRegex = /\/crm$/;
+        // The app redirects to /en/crm/contacts after login, so we check for that
+        const postLoginUrlRegex = /\/crm(\/contacts)?$/;
         console.log(`Waiting for CRM URL to match: ${postLoginUrlRegex}`);
         await expect(page).toHaveURL(postLoginUrlRegex, { timeout: 15000 });
         console.log(`CRM UI Login successful. Current URL: ${page.url()}`);

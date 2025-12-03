@@ -6,6 +6,7 @@ import { headers } from "next/headers";
 
 import { parse } from "cookie"; // make sure you're using named import
 import { env } from "./lib/config/env-config";
+import { DocumentId } from "@nowcrm/services";
 
 
 
@@ -108,6 +109,7 @@ export const { handlers, signIn, signOut, auth }: any = NextAuth({
           token.strapi_jwt = searchRes.data[0].jwt_token;
           token.username = searchRes.data[0].username
           token.strapi_id = searchRes.data[0].id
+          token.documentId = searchRes.data[0].documentId;
           token.twoFARequired = searchRes.data[0].is2FAEnabled
           token.image = searchRes.data[0].image;
         }
@@ -119,6 +121,7 @@ export const { handlers, signIn, signOut, auth }: any = NextAuth({
       session.jwt = (token.strapi_jwt as string) || "";
       session.user.username = (token.username as string) || "";
       session.user.strapi_id = (token.strapi_id as number);
+      session.user.documentId = (token.documentId as DocumentId);
       session.user.twoFARequired = (token.twoFARequired as boolean);
       session.user.image = token.image;
       return session;

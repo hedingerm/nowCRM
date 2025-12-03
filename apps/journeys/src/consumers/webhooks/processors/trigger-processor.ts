@@ -179,21 +179,23 @@ export async function processTriggerMessage(data: any) {
 				},
 			);
 			if (contact.data) {
-				await contactsService.checkSubscription(
+				const checkSubscription = await contactsService.checkSubscription(
 					env.JOURNEYS_STRAPI_API_TOKEN,
 					contact.data,
 					CommunicationChannel.EMAIL,
 				);
-				await subscriptionsService.create(
-					{
-						channel: email_channel.data[0].documentId,
-						active: true,
-						contact: contactId,
-						subscribed_at: new Date(),
-						publishedAt: new Date(),
-					},
-					env.JOURNEYS_STRAPI_API_TOKEN,
-				);
+				if (!checkSubscription.data) {
+					await subscriptionsService.create(
+						{
+							channel: email_channel.data[0].documentId,
+							active: true,
+							contact: contactId,
+							subscribed_at: new Date(),
+							publishedAt: new Date(),
+						},
+						env.JOURNEYS_STRAPI_API_TOKEN,
+					);
+				}
 			}
 		}
 	}

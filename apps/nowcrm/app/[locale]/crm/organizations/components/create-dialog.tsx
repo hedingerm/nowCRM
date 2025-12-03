@@ -45,7 +45,13 @@ const formSchema = z.object({
 	location: z.string().optional(),
 });
 
-export default function CreateListDialog() {
+type CreateDialogProps = {
+	onSuccess?: () => void;
+};
+
+export default function CreateListDialog({
+	onSuccess,
+}: CreateDialogProps = {}) {
 	const router = useRouter();
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -74,12 +80,20 @@ export default function CreateListDialog() {
 			if (submitAction === "continue") {
 				// Reset the form to continue creating new organizations.
 				form.reset();
-				router.refresh();
+				if (onSuccess) {
+					onSuccess();
+				} else {
+					router.refresh();
+				}
 			} else {
 				// For the "create" action, refresh and let the dialog close.
 				setDialogOpen(false);
 				form.reset();
-				router.refresh();
+				if (onSuccess) {
+					onSuccess();
+				} else {
+					router.refresh();
+				}
 			}
 		}
 	}

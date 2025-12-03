@@ -6,7 +6,6 @@ import DataTable from "../dataTable/data-table";
 import { columns } from "./columns";
 
 interface MassActionPreviewProps {
-	isOpen: boolean;
 	onClose: () => void;
 	onApprove: () => void;
 	actionType:
@@ -26,7 +25,6 @@ interface MassActionPreviewProps {
 }
 
 export default function MassActionPreview({
-	isOpen,
 	onClose,
 	onApprove,
 	actionType,

@@ -13,82 +13,74 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import type { FilterGroup, FilterValues } from "./advanced-filters";
 import FilterField from "./filter-field";
-import { FIELD_TYPES, FILTER_CATEGORIES } from "./filter-types";
 import { getOperatorsForField } from "./filters-shared";
 
-const FilterGroupComponent = ({
-	// group,
+export interface FilterGroupConfig {
+	FIELD_TYPES: Record<string, "text" | "number" | "date" | "relation" | "enum">;
+	FILTER_CATEGORIES: Record<
+		string,
+		{
+			label: string;
+			fields: string[];
+		}
+	>;
+	RELATION_META?: Record<
+		string,
+		{
+			serviceName: string;
+			labelKey: string;
+			filterKey?: string;
+			filter?: string;
+			deduplicateByLabel?: boolean;
+		}
+	>;
+}
+
+interface FilterGroupProps<
+	T extends {
+		groups: Array<{ id: string; logic: string; filters?: Record<string, any> }>;
+	},
+> {
+	form: UseFormReturn<T>;
+	groupIndex: number;
+	control: Control<T>;
+	onUpdateGroup: (
+		updates: Partial<{
+			id: string;
+			logic: string;
+			filters?: Record<string, any>;
+		}>,
+	) => void;
+	onRemoveGroup: () => void;
+	config: FilterGroupConfig;
+}
+
+const FilterGroupComponent = <
+	T extends {
+		groups: Array<{ id: string; logic: string; filters?: Record<string, any> }>;
+	},
+>({
 	form,
 	groupIndex,
 	control,
 	onUpdateGroup,
 	onRemoveGroup,
-}: {
-	// group: FilterGroup
-	form: UseFormReturn<FilterValues>;
-	groupIndex: number;
-	control: Control<FilterValues>;
-	onUpdateGroup: (updates: Partial<FilterGroup>) => void;
-	onRemoveGroup: () => void;
-}) => {
+	config,
+}: FilterGroupProps<T>) => {
 	const [selectedCategory, setSelectedCategory] = React.useState<string>("");
 	const [selectedField, setSelectedField] = React.useState<string>("");
 
-	// this is the key: always read the live group from RHF state
+	// Always read the live group from RHF state
 	const watchedGroup = useWatch({
 		control,
-		name: `groups.${groupIndex}`,
-	}) as FilterGroup;
+		name: `groups.${groupIndex}` as any,
+	}) as { id: string; logic: string; filters?: Record<string, any> };
 	const group = watchedGroup ?? { id: "", logic: "AND", filters: {} };
 
 	const filtersPath = `groups.${groupIndex}.filters` as const;
 	const currentFilters = () =>
-		(form.getValues(filtersPath) ?? {}) as Record<string, any>;
-
-	// watch only what we need for dependencies
-	const selectedSurveyValue = useWatch({
-		control,
-		name: `groups.${groupIndex}.filters.surveys.value` as const,
-	});
-	const selectedQuestionValue = useWatch({
-		control,
-		name: `groups.${groupIndex}.filters.survey_items_question.value` as const,
-	});
-	React.useEffect(() => {
-		if (!selectedSurveyValue) return;
-		const f = currentFilters();
-		// Only clear if the survey really changed
-		if (selectedSurveyValue !== f.surveys?.value) {
-			if ("survey_items_question" in f) {
-				form.setValue(
-					`groups.${groupIndex}.filters.survey_items_question` as const,
-					undefined,
-				);
-			}
-			if ("survey_items_answer" in f) {
-				form.setValue(
-					`groups.${groupIndex}.filters.survey_items_answer` as const,
-					undefined,
-				);
-			}
-		}
-	}, [selectedSurveyValue]);
-
-	React.useEffect(() => {
-		if (!selectedQuestionValue) return;
-		const f = currentFilters();
-		// Only clear if the question really changed
-		if (selectedQuestionValue !== f.survey_items_question?.value) {
-			if ("survey_items_answer" in f) {
-				form.setValue(
-					`groups.${groupIndex}.filters.survey_items_answer` as const,
-					undefined,
-				);
-			}
-		}
-	}, [selectedQuestionValue]);
+		(form.getValues(filtersPath as any) ?? {}) as Record<string, any>;
 
 	const addFilter = () => {
 		if (!selectedField) return;
@@ -108,10 +100,12 @@ const FilterGroupComponent = ({
 
 		newFilters[fieldKey] = "";
 
-		// only for non-relation fields
-		if (FIELD_TYPES[selectedField] !== "relation") {
-			newFilters[`${fieldKey}_operator`] =
-				getOperatorsForField(selectedField)[0].value;
+		// Only for non-relation fields
+		if (config.FIELD_TYPES[selectedField] !== "relation") {
+			newFilters[`${fieldKey}_operator`] = getOperatorsForField(
+				selectedField,
+				config.FIELD_TYPES,
+			)[0].value;
 		}
 
 		onUpdateGroup({ filters: newFilters });
@@ -132,19 +126,19 @@ const FilterGroupComponent = ({
 		delete current[`${fieldName}_operator`];
 		onUpdateGroup({ filters: current });
 
-		// also unregister so RHF forgets it entirely
-		form.unregister(`groups.${groupIndex}.filters.${fieldName}` as const);
+		// Also unregister so RHF forgets it entirely
+		form.unregister(`groups.${groupIndex}.filters.${fieldName}` as any);
 		form.unregister(
-			`groups.${groupIndex}.filters.${fieldName}_operator` as const,
+			`groups.${groupIndex}.filters.${fieldName}_operator` as any,
 		);
 	};
 
-	// show everything the user added
+	// Show everything the user added
 	const displayFilters = Object.keys(group.filters || {}).filter(
 		(key) => !key.endsWith("_operator"),
 	);
 
-	// count only the ones that are effectively active
+	// Count only the ones that are effectively active
 	const activeFiltersCount = displayFilters.filter((key) => {
 		const val = group.filters?.[key];
 		const op = group.filters?.[`${key}_operator`];
@@ -210,7 +204,7 @@ const FilterGroupComponent = ({
 						value={group.filters?.[fieldName]}
 						operator={
 							group.filters?.[`${fieldName}_operator`] ||
-							getOperatorsForField(fieldName)[0].value
+							getOperatorsForField(fieldName, config.FIELD_TYPES)[0].value
 						}
 						onValueChange={(value) => updateFilter(fieldName, value)}
 						onOperatorChange={(operator) =>
@@ -219,6 +213,10 @@ const FilterGroupComponent = ({
 						onRemove={() => removeFilter(fieldName)}
 						form={form}
 						groupIndex={groupIndex}
+						config={{
+							FIELD_TYPES: config.FIELD_TYPES,
+							RELATION_META: config.RELATION_META,
+						}}
 					/>
 				))}
 
@@ -229,11 +227,13 @@ const FilterGroupComponent = ({
 							<SelectValue placeholder="Select category..." />
 						</SelectTrigger>
 						<SelectContent>
-							{Object.entries(FILTER_CATEGORIES).map(([key, category]) => (
-								<SelectItem key={key} value={key}>
-									{category.label}
-								</SelectItem>
-							))}
+							{Object.entries(config.FILTER_CATEGORIES).map(
+								([key, category]) => (
+									<SelectItem key={key} value={key}>
+										{category.label}
+									</SelectItem>
+								),
+							)}
 						</SelectContent>
 					</Select>
 
@@ -247,8 +247,8 @@ const FilterGroupComponent = ({
 						</SelectTrigger>
 						<SelectContent>
 							{selectedCategory &&
-								FILTER_CATEGORIES[
-									selectedCategory as keyof typeof FILTER_CATEGORIES
+								config.FILTER_CATEGORIES[
+									selectedCategory as keyof typeof config.FILTER_CATEGORIES
 								]?.fields.map((field) => (
 									<SelectItem key={field} value={field}>
 										{field

@@ -9,6 +9,7 @@ import type { DocumentId } from "../../types/common/base-type";
 
 import type { ServiceResponse } from "../../types/microservices/service-response";
 import { handleError, type StandardResponse } from "../common/response.service";
+import { journeyStepsService } from "../journey-steps.service";
 
 class ComposerService {
 	async sendCompositionByFilters(
@@ -80,10 +81,33 @@ class ComposerService {
 
 	async sendComposition(
 		payload: sendToChannelsData,
+		journeys_data?: {
+			stepId: DocumentId;
+			contactId: DocumentId;
+			token: string;
+			compositionId: DocumentId;
+		},
 	): Promise<StandardResponse<null>> {
 		try {
 			const base = envServices.COMPOSER_URL;
 			const url = new URL(API_ROUTES_COMPOSER.SEND_TO_CHANNELS, base);
+
+			if (journeys_data?.stepId) {
+				const check = await journeyStepsService.checkPassedStep(
+					journeys_data.token,
+					journeys_data.stepId,
+					journeys_data.contactId,
+					journeys_data.compositionId,
+				);
+				if (!check.success) {
+					return {
+						errorMessage: check.errorMessage,
+						data: null,
+						status: check.status,
+						success: false,
+					};
+				}
+			}
 
 			const response = await fetch(url, {
 				method: "POST",

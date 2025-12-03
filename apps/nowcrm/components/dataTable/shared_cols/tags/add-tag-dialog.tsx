@@ -67,24 +67,27 @@ export function AddTagDialog({ currentTags, onTagAdded }: AddTagDialogProps) {
 	});
 
 	const refetchTags = async () => {
+		setLoading(true);
 		try {
 			const res = await fetchTags();
 			setTags(res.data || []);
 		} catch (e) {
 			console.error("Failed to fetch tags", e);
+		} finally {
+			setLoading(false);
 		}
 	};
 
+	// Only fetch tags when dialog opens
 	useEffect(() => {
-		refetchTags();
-	}, []);
+		if (open) {
+			refetchTags();
+		}
+	}, [open]);
 
 	// Auto-switch to select tab only after successful tag creation
 	useEffect(() => {
 		if (tagCreatedSuccessfully && activeTab === "create") {
-			console.log(
-				"[TAG DIALOG] Tag created successfully, switching to select tab",
-			);
 			setActiveTab("select");
 			setTagCreatedSuccessfully(false); // Reset flag
 		}
@@ -116,7 +119,6 @@ export function AddTagDialog({ currentTags, onTagAdded }: AddTagDialogProps) {
 				toast.error(`Failed to create tag: ${res.errorMessage}`);
 			} else {
 				toast.success(`Tag "${values.name}" created successfully!`);
-				console.log("[TAG DIALOG] Tag created, refetching tags...");
 				// Refetch tags to include the newly created one
 				await refetchTags();
 				// Reset form

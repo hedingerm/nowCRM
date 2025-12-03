@@ -251,7 +251,6 @@ export default function UpdateSubscriptionWithFiltersStepsDialog({
 						</Button>
 					</div>
 					<MassActionPreview
-						isOpen={showPreview}
 						onClose={handlePreviewClose}
 						onApprove={handlePreviewApprove}
 						actionType="update_subscription"

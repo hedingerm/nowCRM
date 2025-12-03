@@ -5,9 +5,12 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { ChevronDown, ChevronUp, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import type { Session } from "next-auth";
 import { useMessages } from "next-intl";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { TagsCell } from "@/components/dataTable/shared_cols/tags/tag-cell";
+import { TagFilterHeader } from "@/components/dataTable/shared_cols/tags/tag-filter-header";
 import { SortableHeader } from "@/components/dataTable/sortable-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -22,12 +25,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { RouteConfig } from "@/lib/config/routes-config";
 import { formatDateTimeStrapi } from "@/lib/strapi-date";
-import { toNames } from "@/lib/utils";
+import { cn, toNames } from "@/lib/utils";
 import { CountryFilterHeader } from "./countries/country-filter-header";
-import { TagsCell } from "./tags/tag-cell";
-import { TagFilterHeader } from "./tags/tag-filter-header";
 
-const ViewActions: React.FC<{ contact: Contact }> = ({ contact }) => {
+const ViewActions: React.FC<{
+	contact: Contact;
+	onRefetch?: () => void;
+}> = ({ contact, onRefetch }) => {
 	const t = useMessages();
 	const router = useRouter();
 
@@ -59,7 +63,11 @@ const ViewActions: React.FC<{ contact: Contact }> = ({ contact }) => {
 								return;
 							}
 							toast.success("Contact duplicated");
-							router.refresh();
+							if (onRefetch) {
+								onRefetch();
+							} else {
+								router.refresh();
+							}
 						}}
 					>
 						Duplicate
@@ -73,7 +81,11 @@ const ViewActions: React.FC<{ contact: Contact }> = ({ contact }) => {
 								return;
 							}
 							toast.success(t.Contacts.deleteContact);
-							router.refresh();
+							if (onRefetch) {
+								onRefetch();
+							} else {
+								router.refresh();
+							}
 						}}
 					>
 						Delete
@@ -133,11 +145,16 @@ const ViewContact: React.FC<{ contact: Contact; cell: any }> = ({
 	contact,
 	cell,
 }) => {
+	const isEmailColumn =
+		cell.column.id === "email" || cell.column.columnDef.accessorKey === "email";
 	return (
 		<div className="flex cursor-pointer space-x-2">
 			<Link
 				href={`${RouteConfig.contacts.single.base(contact.documentId)}`}
-				className="max-w-[150px] truncate font-medium"
+				className={cn(
+					"font-medium",
+					!isEmailColumn && "max-w-[150px] truncate",
+				)}
 			>
 				{cell.renderValue() as any}
 			</Link>
@@ -145,7 +162,10 @@ const ViewContact: React.FC<{ contact: Contact; cell: any }> = ({
 	);
 };
 
-export const columns: ColumnDef<Contact>[] = [
+export const getColumns = (
+	session?: Session | null,
+	onRefetch?: () => void,
+): ColumnDef<Contact>[] => [
 	{
 		id: "select",
 		header: ({ table }) => (
@@ -488,7 +508,7 @@ export const columns: ColumnDef<Contact>[] = [
 	},
 	{
 		accessorKey: "tags",
-		header: () => <TagFilterHeader />,
+		header: () => <TagFilterHeader session={session} entityName="contacts" />,
 		cell: ({ row }) => {
 			const tags = row.original.tags || [];
 			return (
@@ -533,7 +553,7 @@ export const columns: ColumnDef<Contact>[] = [
 		header: ({ column }) => <div className="text-center">Actions</div>,
 		cell: ({ row }) => {
 			const contact = row.original;
-			return <ViewActions contact={contact} />;
+			return <ViewActions contact={contact} onRefetch={onRefetch} />;
 		},
 	},
 ];

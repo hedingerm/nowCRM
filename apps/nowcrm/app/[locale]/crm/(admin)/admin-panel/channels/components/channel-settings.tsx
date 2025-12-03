@@ -1,6 +1,6 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { settingSubscriptionCheck } from "@nowcrm/services";
+import type { DocumentId, settingSubscriptionCheck } from "@nowcrm/services";
 import { HelpCircle, Pencil, Save, X } from "lucide-react";
 import { useMessages } from "next-intl";
 import { useState } from "react";
@@ -42,12 +42,14 @@ interface ChannelSettingsFormProps {
 	initialSubscription: settingSubscriptionCheck;
 	initialUnsubscribeText: string;
 	baseLink: string;
+	settings_id: DocumentId;
 }
 
 export function ChannelSettingsForm({
 	initialSubscription,
 	initialUnsubscribeText,
 	baseLink,
+	settings_id,
 }: ChannelSettingsFormProps) {
 	const t = useMessages();
 
@@ -80,8 +82,7 @@ export function ChannelSettingsForm({
 				"@/lib/actions/settings/update-settings"
 			);
 			setIsSaving(true);
-			//TODO: get settings id from database
-			await updateSettings("", data);
+			await updateSettings(settings_id, data);
 			toast.success(t.Admin.Channels.toast.updateSettings);
 			setIsEditing(false);
 		} catch (error) {

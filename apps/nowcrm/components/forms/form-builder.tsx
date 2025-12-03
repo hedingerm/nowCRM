@@ -168,7 +168,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ formId }) => {
 
 	useEffect(() => {
 		const generateShareUrl = async () => {
-			if (formData?.id) {
+			if (formData?.documentId) {
 				try {
 					const url = await shareForm(formData.documentId, formData.slug);
 					setShareUrl(url);
@@ -179,7 +179,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ formId }) => {
 		};
 
 		generateShareUrl();
-	}, [formData?.id, formData?.slug]);
+	}, [formData?.documentId, formData?.slug]);
 
 	useEffect(() => {
 		if (formData?.form_items) {
@@ -393,7 +393,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ formId }) => {
 
 			// change to Custom_FormEntityItem
 			const newFormItems: any[] = (form_items || []).map((item) => ({
-				...(item.id > 0 ? { id: item.id } : {}),
+				...(item.documentId ? { documentId: item.documentId } : {}),
 				name: item.name,
 				type: item.type,
 				label: item.label,
@@ -490,7 +490,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ formId }) => {
 						>
 							Form: {formData.name || "Untitled Form"}
 						</h1>
-						{formData?.id && (
+						{formData?.documentId && (
 							<Button
 								variant="outline"
 								size="sm"
@@ -1124,7 +1124,7 @@ const FormBuilderCustomization: React.FC<FormBuilderCustomizationProps> = ({
 
 		// Build FormData for the server action
 		const fd = new FormData();
-		fd.append("formIdRaw", String(formData.id));
+		fd.append("formIdRaw", String(formData.documentId));
 		fd.append("files", file);
 
 		try {

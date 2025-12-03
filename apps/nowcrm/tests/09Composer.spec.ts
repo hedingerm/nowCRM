@@ -438,6 +438,8 @@ test.describe('Composer Management - Independent Tests', () => {
             firstName: 'Test',
             lastName: 'Unsubscribed'
         });
+        // Wait for contact to be created and appear in list
+        await page.waitForTimeout(2000);
         await contactsListPage.openContactByEmail(testRecipient);
         await contactDetailPage.expectHeadingVisible('Test Unsubscribed');
         // Do NOT add or activate email subscription
@@ -482,14 +484,21 @@ test.describe('Composer Management - Independent Tests', () => {
         await composerPage.fillEmailRecipient(testRecipient, 'qa test');
         await composerPage.sendEmail();
 
-        // 7. Assert error message is shown
+        // 7. Assert error message is shown - wait a bit for it to appear
+        await page.waitForTimeout(2000);
         await composerPage.expectNoSubscriptionError();
 
-        // Close the error popup so navigation can continue
+        // Close the error popup/dialog so navigation can continue
         await composerPage.closePopup();
+        await page.waitForTimeout(1000);
+
+        // Navigate back to composer list page for cleanup
+        // The page might be on the composition detail page, so navigate explicitly
+        await page.goto('/en/crm/composer');
+        await page.waitForLoadState('networkidle');
+        await expect(composerPage.composerTable).toBeVisible({ timeout: 10000 });
 
         // Cleanup: Delete the created composition
-        await composerPage.goto();
         await composerPage.expectCompositionInList(uniqueTitle).catch(() => {
             console.warn(`Composition "${uniqueTitle}" not found in list, skipping delete.`);
         });

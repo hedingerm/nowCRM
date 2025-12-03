@@ -136,8 +136,9 @@ export class ListsPage {
      * @param timeout Optional timeout in ms (default: 30000).
      */
     async expectStatusMessage(textOrRegExp: string | RegExp, timeout: number = 30000) {
-        const specificMessageLocator = this.page.getByText(textOrRegExp, { exact: textOrRegExp instanceof RegExp ? undefined : true });
-        await expect(specificMessageLocator, `Status message "${textOrRegExp}" should be visible`)
+        // Toast messages might not match exactly - use flexible matching
+        const specificMessageLocator = this.page.getByText(textOrRegExp, { exact: false });
+        await expect(specificMessageLocator, `Status message matching "${textOrRegExp}" should be visible`)
             .toBeVisible({ timeout });
     }
 

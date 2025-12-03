@@ -288,7 +288,6 @@ export default function AssignToListWithFiltersDialog({
 						</Button>
 					</div>
 					<MassActionPreview
-						isOpen={showPreview}
 						onClose={handlePreviewClose}
 						onApprove={handlePreviewApprove}
 						actionType="add_to_list"

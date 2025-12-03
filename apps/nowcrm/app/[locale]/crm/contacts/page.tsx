@@ -8,6 +8,8 @@ import { getTranslations } from "next-intl/server";
 import { auth } from "@/auth";
 import ErrorMessage from "@/components/error-message";
 import { HelloMessage } from "@/components/hello-message";
+import { CONTACTS_POPULATE_MAPPINGS } from "@/lib/populate/contacts-populate-config";
+import { buildPopulateFromVisible } from "@/lib/populate/populate-builder";
 import ContactsTableClient from "./contacts-table-client";
 
 export const metadata: Metadata = { title: "Contacts" };
@@ -26,44 +28,29 @@ export default async function Page(props: {
 
 	const session = await auth();
 
+	// Default visible fields - columns that are shown by default (used for initial fetch)
+	const DEFAULT_VISIBLE_FIELDS = [
+		"id",
+		"first_name",
+		"last_name",
+		"email",
+	] as const;
+
+	// Build populate structure based on default visible fields
+	// Note: DEFAULT_VISIBLE_FIELDS includes "tags" which needs to be populated
+	const defaultVisibleIds = [...DEFAULT_VISIBLE_FIELDS, "tags"] as string[];
+	const populate = buildPopulateFromVisible(
+		defaultVisibleIds,
+		CONTACTS_POPULATE_MAPPINGS,
+	);
+
 	const response = await contactsService.find(session?.jwt, {
-		fields: [
-			"id",
-			"first_name",
-			"last_name",
-			"email",
-			"gender",
-			"language",
-			"country",
-			"job_description",
-			"duration_role",
-			"connection_degree",
-		],
-		populate: {
-			tags: {
-				fields: ["name"],
-			},
-			industry: {
-				fields: ["name"],
-			},
-			contact_types: {
-				fields: ["name"],
-			},
-			title: {
-				fields: ["name"],
-			},
-			salutation: {
-				fields: ["name"],
-			},
-			job_title: {
-				fields: ["name"],
-			},
-		},
+		fields: DEFAULT_VISIBLE_FIELDS as any,
+		populate: populate === "*" ? "*" : (populate as any),
 		sort: [`${sortBy}:${sortOrder}` as any],
 		pagination: { page, pageSize },
 		filters: finalFilters,
 	});
-	console.log(response);
 	if (!response.success || !response.data || !response.meta) {
 		return <ErrorMessage response={response} />;
 	}

@@ -50,6 +50,12 @@ export class LoginPage {
     // Actions
     async goto() {
         await this.page.goto('/en/auth');
+        // Check if we're already logged in (redirected to CRM)
+        const currentUrl = this.page.url();
+        if (/\/crm(\/contacts)?$/.test(currentUrl)) {
+            console.log(`Already logged in. Current URL: ${currentUrl}`);
+            return;
+        }
         await expect(this.signInButton, 'Sign in button should be visible on login page').toBeVisible({ timeout: 15000 });
     }
 

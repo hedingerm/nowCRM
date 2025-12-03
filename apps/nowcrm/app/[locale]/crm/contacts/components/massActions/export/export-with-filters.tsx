@@ -254,7 +254,6 @@ export default function ExportWithFiltersDialog({
 						</Button>
 					</div>
 					<MassActionPreview
-						isOpen={showPreview}
 						onClose={handlePreviewClose}
 						onApprove={handleConfirmExport}
 						actionType="export"

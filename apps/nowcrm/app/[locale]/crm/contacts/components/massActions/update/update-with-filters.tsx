@@ -255,7 +255,6 @@ export default function UpdateContactFieldWithFiltersStepsDialog({
 						</Button>
 					</div>
 					<MassActionPreview
-						isOpen={showPreview}
 						onClose={handlePreviewClose}
 						onApprove={handlePreviewApprove}
 						actionType="update_field"

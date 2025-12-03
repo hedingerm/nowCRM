@@ -248,7 +248,6 @@ export default function SendCompositionWithFiltersDialog({
 			{/* Step 2 */}
 			{currentStep === STEPS.PREVIEW && (
 				<MassActionPreview
-					isOpen
 					onClose={handlePreviewClose}
 					onApprove={handlePreviewApprove}
 					actionType="send"

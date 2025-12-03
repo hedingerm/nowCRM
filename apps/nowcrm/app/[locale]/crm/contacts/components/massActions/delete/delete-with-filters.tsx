@@ -248,7 +248,6 @@ export default function DeleteWithFiltersDialog({
 						</Button>
 					</div>
 					<MassActionPreview
-						isOpen={showPreview}
 						onClose={handlePreviewClose}
 						onApprove={handleConfirmDelete}
 						actionType="delete"

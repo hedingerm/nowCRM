@@ -1,37 +1,25 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-	NUMBER_OPERATORS,
-	type Operator,
-	TEXT_OPERATORS,
-} from "@nowcrm/services";
-import { Filter } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { Filter, Plus } from "lucide-react";
+import type { Session } from "next-auth";
 import * as React from "react";
-import { useForm } from "react-hook-form";
+import { forwardRef } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
-import { AsyncSelectField } from "@/components/autoComplete/async-select-field";
+import { FilterDialogFooter } from "@/components/dataTable/advancedFilters/filter-dialog-footer";
+import FilterGroupComponent from "@/components/dataTable/advancedFilters/filter-group";
+import { SearchHistoryPanel } from "@/components/dataTable/advancedFilters/search-history-panel";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-	Drawer,
-	DrawerClose,
-	DrawerContent,
-	DrawerDescription,
-	DrawerFooter,
-	DrawerHeader,
-	DrawerTitle,
-	DrawerTrigger,
-} from "@/components/ui/drawer";
-import {
-	Form,
-	FormControl,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog";
+import { Form } from "@/components/ui/form";
 import {
 	Select,
 	SelectContent,
@@ -39,882 +27,447 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import { transformFilters } from "@/lib/actions/filters/filters-search";
+import { createSearch } from "@/lib/actions/search_history/create-search";
 import {
-	parseFormIntoUrlFilters,
-	parseQueryToFilterValues,
-} from "@/lib/actions/filters/filters-search";
+	clearFiltersFromStorage,
+	loadFiltersFromStorage,
+	saveFiltersToStorage,
+} from "@/lib/filters/filter-storage";
+import { FIELD_TYPES, FILTER_CATEGORIES, RELATION_META } from "./filter-types";
 
-const FIELD_TYPES: Record<string, "text" | "number"> = {
-	name: "text",
-	email: "text",
-	url: "text",
-	address_line1: "text",
-	contact_person: "text",
-	location: "text",
-	country: "text",
-	zip: "number",
-	canton: "text",
-	twitter_url: "text",
-	facebook_url: "text",
-	whatsapp_channel: "text",
-	linkedin_url: "text",
-	telegram_url: "text",
-	telegram_channel: "text",
-	instagram_url: "text",
-	tiktok_url: "text",
-	whatsapp_phone: "text",
-};
-
-function getOperatorsForField(field: string): Operator[] {
-	return FIELD_TYPES[field] === "number" ? NUMBER_OPERATORS : TEXT_OPERATORS;
-}
-
-function OperatorSelect({
-	fieldName,
-	value,
-	onChange,
-}: {
-	fieldName: keyof FilterValues;
-	value?: string;
-	onChange: (v: string) => void;
-}) {
-	const ops = getOperatorsForField(fieldName as string);
-	return (
-		<Select value={value || ops[0].value} onValueChange={onChange}>
-			<SelectTrigger className="w-[100px]">
-				<SelectValue placeholder="Op" />
-			</SelectTrigger>
-			<SelectContent>
-				{ops.map((o) => (
-					<SelectItem key={o.value} value={o.value}>
-						{o.label}
-					</SelectItem>
-				))}
-			</SelectContent>
-		</Select>
-	);
-}
-
-// --- Schema and types ---
-const filterSchema = z.object({
-	// General Information
-	name: z.string().optional(),
-	name_operator: z.string().optional(),
-	email: z.string().optional(),
-	email_operator: z.string().optional(),
-	url: z.string().optional(),
-	url_operator: z.string().optional(),
-
-	// Address Information
-	address_line1: z.string().optional(),
-	address_line1_operator: z.string().optional(),
-	contact_person: z.string().optional(),
-	contact_person_operator: z.string().optional(),
-	location: z.string().optional(),
-	location_operator: z.string().optional(),
-	country: z.string().optional(),
-	country_operator: z.string().optional(),
-	zip: z.string().optional(),
-	zip_operator: z.string().optional(),
-	county_operator: z.string().optional(),
-	canton: z.string().optional(),
-	canton_operator: z.string().optional(),
-
-	// Social Media
-	twitter_url: z.string().optional(),
-	twitter_url_operator: z.string().optional(),
-	facebook_url: z.string().optional(),
-	facebook_url_operator: z.string().optional(),
-	whatsapp_channel: z.string().optional(),
-	whatsapp_channel_operator: z.string().optional(),
-	linkedin_url: z.string().optional(),
-	linkedin_url_operator: z.string().optional(),
-	telegram_url: z.string().optional(),
-	telegram_url_operator: z.string().optional(),
-	telegram_channel: z.string().optional(),
-	telegram_channel_operator: z.string().optional(),
-	instagram_url: z.string().optional(),
-	instagram_url_operator: z.string().optional(),
-	tiktok_url: z.string().optional(),
-	tiktok_url_operator: z.string().optional(),
-	whatsapp_phone: z.string().optional(),
-	whatsapp_phone_operator: z.string().optional(),
-
-	// Organization and Contacts
-	contacts: z.object({ value: z.number(), label: z.string() }).optional(),
-	organization_type: z
-		.object({ value: z.number(), label: z.string() })
-		.optional(),
-	industry: z.object({ value: z.number(), label: z.string() }).optional(),
-
-	// Preferences / Other
-	frequency: z.object({ value: z.number(), label: z.string() }).optional(),
-	media_type: z.object({ value: z.number(), label: z.string() }).optional(),
-	language: z.string().optional(),
-	tag: z.string().optional(),
-	tag_operator: z.string().optional(),
-	description: z.string().optional(),
-	description_operator: z.string().optional(),
-	sources: z.object({ value: z.number(), label: z.string() }).optional(),
+// Enhanced filter schema with grouping and logic
+const filterGroupSchema = z.object({
+	id: z.string(),
+	logic: z.enum(["AND", "OR"]).default("AND"),
+	filters: z.record(z.any()).optional(), // Individual filters within this group
 });
 
-type FilterValues = z.infer<typeof filterSchema>;
+const FilterSchema = z.object({
+	groups: z.array(filterGroupSchema),
+	groupLogic: z.enum(["AND", "OR"]).default("AND"), // Logic between groups
+});
 
-function getActiveCount(
-	keys: (keyof FilterValues)[],
-	values: FilterValues,
-): number {
-	return keys.filter((k) => {
-		const v = values[k];
-		return v !== undefined && v !== "";
-	}).length;
+export type FilterValues = z.infer<typeof FilterSchema>;
+export type FilterGroup = z.infer<typeof filterGroupSchema>;
+
+interface AdvancedFiltersProps {
+	session?: Session | null;
+	onSubmitComplete?: (filters: any, search?: string) => void;
+	onSearchChange?: (search: string, filters?: any) => void;
+	showTrigger?: boolean;
+	mode?: "search" | "mass-action";
+	onClose?: (val: boolean) => void;
+	isLoading?: boolean;
+	entityType?: "contacts" | "organizations";
+	currentSearch?: string;
 }
 
-function FilterSection({
-	title,
-	activeCount,
-	children,
-}: {
-	title: string;
-	activeCount: number;
-	children: React.ReactNode;
-}) {
-	return (
-		<details className="mb-4 rounded border">
-			<summary className="cursor-pointer p-4 font-medium">
-				{title} <span className="text-sm">({activeCount})</span>
-			</summary>
-			<div className="p-4">{children}</div>
-		</details>
-	);
-}
-
-// --- Component ---
-export default function AdvancedFilters() {
-	const router = useRouter();
-	const searchParams = useSearchParams();
-	const [open, setOpen] = React.useState(false);
-
-	const defaultValues = React.useMemo(
-		() => parseQueryToFilterValues<FilterValues>(searchParams),
-		[searchParams],
-	);
+const AdvancedFilters = forwardRef<
+	{ openDrawer: () => void },
+	AdvancedFiltersProps
+>(function AdvancedFilters(
+	{
+		session,
+		onSubmitComplete,
+		onSearchChange,
+		showTrigger = true,
+		mode = "search",
+		onClose,
+		isLoading = false,
+		entityType = "organizations",
+		currentSearch,
+	},
+	ref,
+) {
+	const [open, setOpenState] = React.useState(false);
+	const [isSubmitting, setIsSubmitting] = React.useState(false);
+	const [isResetting, setIsResetting] = React.useState(false);
 
 	const form = useForm<FilterValues>({
-		resolver: zodResolver(filterSchema),
-		defaultValues: defaultValues ?? {},
+		resolver: zodResolver(FilterSchema),
+		defaultValues: {
+			groups: [{ id: "group-1", logic: "AND", filters: {} }],
+			groupLogic: "AND",
+		},
 	});
 
-	const values = form.watch();
+	const {
+		fields: groups,
+		append: addGroup,
+		remove: removeGroup,
+		replace,
+	} = useFieldArray({
+		control: form.control,
+		name: "groups",
+		keyName: "key",
+	});
 
-	const generalFields: (keyof FilterValues)[] = ["name", "email", "url"];
-	const addressFields: (keyof FilterValues)[] = [
-		"address_line1",
-		"contact_person",
-		"location",
-		"country",
-		"zip",
-		"canton",
-	];
-	const socialFields: (keyof FilterValues)[] = [
-		"twitter_url",
-		"facebook_url",
-		"whatsapp_channel",
-		"linkedin_url",
-		"telegram_url",
-		"telegram_channel",
-		"instagram_url",
-		"tiktok_url",
-		"whatsapp_phone",
-	];
-	const organizationFields: (keyof FilterValues)[] = [
-		"contacts",
-		"organization_type",
-		"industry",
-	];
-	const preferencesFields: (keyof FilterValues)[] = [
-		"frequency",
-		"media_type",
-		"language",
-		"tag",
-		"description",
-		"sources",
-	];
+	// Load filters from localStorage on mount
+	React.useEffect(() => {
+		const saved = loadFiltersFromStorage<FilterValues>(entityType, session);
+		if (!saved) {
+			setActiveFiltersCount(0);
+			return;
+		}
+		// Basic shape guard
+		if (saved && Array.isArray(saved.groups) && saved.groupLogic) {
+			// Use queueMicrotask to ensure form state is properly updated
+			queueMicrotask(() => {
+				form.reset(saved);
+				replace(saved.groups);
+				// Calculate active filters count after loading from localStorage
+				setTimeout(() => {
+					setActiveFiltersCount(calculateActiveFilters());
+				}, 50);
+			});
+		} else {
+			setActiveFiltersCount(0);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [session, replace]);
 
-	function onSubmit(vals: FilterValues) {
-		const qs = parseFormIntoUrlFilters(vals);
-		router.push(`?${qs}`);
-		setOpen(false);
-	}
+	const groupLogic = form.watch("groupLogic");
+	const watchedGroups = form.watch("groups");
 
-	function handleReset() {
-		form.reset({});
-		router.push("?page=1");
-		setOpen(false);
-	}
+	React.useImperativeHandle(ref, () => ({
+		openDrawer: () => {
+			(document.activeElement as HTMLElement)?.blur?.();
+			setOpenState(true);
+		},
+	}));
 
-	const hasActiveFilters = Object.entries(values).some(
-		([_, value]) =>
-			value !== undefined &&
-			value !== null &&
-			value !== "" &&
-			!(typeof value === "object" && Object.keys(value).length === 0),
+	const handleAddGroup = () => {
+		addGroup({
+			id: `group-${Date.now()}`,
+			logic: "AND",
+			filters: {},
+		});
+	};
+
+	const handleUpdateGroup = React.useCallback(
+		(groupIndex: number, updates: Partial<FilterGroup>) => {
+			const currentGroup = form.getValues(`groups.${groupIndex}`);
+			// Properly merge filters if they exist in updates
+			const mergedGroup: FilterGroup = {
+				...currentGroup,
+				...updates,
+				logic: (updates.logic as "AND" | "OR") || currentGroup.logic,
+				...(updates.filters
+					? { filters: { ...currentGroup.filters, ...updates.filters } }
+					: {}),
+			};
+			form.setValue(`groups.${groupIndex}`, mergedGroup, {
+				shouldDirty: true,
+				shouldValidate: false,
+			});
+		},
+		[form],
 	);
+
+	const handleRemoveGroup = (groupIndex: number) => {
+		if (groups.length > 1) {
+			removeGroup(groupIndex);
+		}
+	};
+
+	const calculateActiveFilters = React.useCallback(() => {
+		const currentValues = form.getValues();
+		return currentValues.groups.reduce((total, group) => {
+			const keys = Object.keys(group.filters || {}).filter(
+				(k) => !k.endsWith("_operator"),
+			);
+			const count = keys.filter((k) => {
+				const val = group.filters?.[k];
+				const op = group.filters?.[`${k}_operator`];
+				const isNullOp = op === "$null" || op === "$notNull";
+				return isNullOp || (val !== "" && val != null);
+			}).length;
+			return total + count;
+		}, 0);
+	}, [form]);
+
+	const [activeFiltersCount, setActiveFiltersCount] = React.useState(0);
+
+	// Calculate active filters count whenever groups change
+	React.useEffect(() => {
+		const count = calculateActiveFilters();
+		setActiveFiltersCount(count);
+	}, [watchedGroups, calculateActiveFilters]);
+
+	// Reload filters from localStorage when dialog opens (only for search mode)
+	React.useEffect(() => {
+		if (open && mode === "search") {
+			const saved = loadFiltersFromStorage<FilterValues>(entityType, session);
+			if (saved && Array.isArray(saved.groups) && saved.groupLogic) {
+				// Use queueMicrotask to ensure form state is properly updated
+				queueMicrotask(() => {
+					form.reset(saved);
+					replace(saved.groups);
+					// Update count after form is reset
+					setTimeout(() => {
+						setActiveFiltersCount(calculateActiveFilters());
+					}, 50);
+				});
+			} else {
+				setActiveFiltersCount(0);
+			}
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [open, session, replace]);
+
+	async function onSubmit(vals: FilterValues) {
+		setIsSubmitting(true);
+		try {
+			// Transform to Strapi filters
+			const strapiFilters = transformFilters(vals);
+
+			if (mode === "mass-action") {
+				// For mass actions, don't save to localStorage and just pass filters to parent
+				if (onSubmitComplete) {
+					onSubmitComplete(strapiFilters);
+				}
+				// Don't close dialog automatically in mass-action mode
+			} else {
+				// Save to localStorage (user-specific) - save the UI form values
+				saveFiltersToStorage(entityType, vals, session);
+
+				// Auto-save to search history (without name - unnamed search)
+				if (session && entityType) {
+					try {
+						const filtersPayload = JSON.stringify({
+							ui: vals,
+							strapiFilters: strapiFilters,
+						});
+						const queryPayload = JSON.stringify(currentSearch || "");
+
+						await createSearch(
+							"", // Empty name for auto-saved searches
+							entityType,
+							filtersPayload,
+							queryPayload,
+						);
+					} catch (error) {
+						// Silently fail - search history save is not critical
+						console.error("Failed to auto-save search history:", error);
+					}
+				}
+
+				// Update active filters count immediately
+				const count = calculateActiveFilters();
+				setActiveFiltersCount(count);
+
+				// Notify parent component
+				if (onSubmitComplete) {
+					onSubmitComplete(strapiFilters, currentSearch);
+				}
+
+				setOpenState(false);
+			}
+		} catch (e) {
+			console.error("Error while applying filters", e);
+		} finally {
+			setIsSubmitting(false);
+		}
+	}
+
+	async function handleReset() {
+		setIsResetting(true);
+		try {
+			const blank = {
+				groups: [{ id: "group-1", logic: "AND", filters: {} }],
+				groupLogic: "AND",
+			} as FilterValues;
+			form.reset(blank);
+			replace(blank.groups);
+
+			if (mode === "mass-action") {
+				// For mass actions, don't save to localStorage
+				setActiveFiltersCount(0);
+				// Inform parent that filters cleared - pass empty object
+				if (onSubmitComplete) {
+					onSubmitComplete({}, currentSearch);
+				}
+			} else {
+				clearFiltersFromStorage(entityType, session);
+				setActiveFiltersCount(0);
+				// Inform parent that filters cleared - pass empty object
+				if (onSubmitComplete) {
+					onSubmitComplete({}, currentSearch);
+				}
+				setOpenState(false);
+			}
+		} catch (e) {
+			console.error("Error while resetting filters", e);
+		} finally {
+			setIsResetting(false);
+		}
+	}
 
 	return (
 		<div className="ml-1">
-			<Drawer open={open} onOpenChange={setOpen}>
-				<DrawerTrigger asChild>
-					{/* Responsive filter button */}
-					<Button
-						variant="outline"
-						className="relative flex items-center bg-card text-muted-foreground hover:border-accent-foreground/25 hover:bg-accent"
-					>
-						{/* Icon only on small screens */}
-						<span className="block md:hidden">
-							<Filter className="h-5 w-5" />
-							{hasActiveFilters && (
-								<span className="-top-1 -right-1 absolute h-2 w-2 rounded-full bg-primary ring-2 ring-background" />
-							)}
-						</span>
-						{/* Text only on medium+ screens */}
-						<span className="hidden md:inline">Advanced Filters</span>
-					</Button>
-				</DrawerTrigger>
-				<DrawerContent className="flex h-[95vh] flex-col">
-					<DrawerHeader>
-						<DrawerTitle>Advanced Filters</DrawerTitle>
-						<DrawerDescription>
+			{showTrigger && (
+				<Button
+					variant="outline"
+					size="sm"
+					onClick={() => setOpenState(true)}
+					className="h-10"
+				>
+					<Filter className="mr-2 h-4 w-4" />
+					<span className="hidden md:inline">Advanced Filters</span>
+					{activeFiltersCount > 0 && (
+						<Badge variant="secondary" className="ml-2">
+							{activeFiltersCount}
+						</Badge>
+					)}
+				</Button>
+			)}
+
+			<Dialog open={open} onOpenChange={setOpenState}>
+				<DialogContent className="flex h-[95vh] min-w-[95vw] flex-col">
+					<DialogHeader>
+						<DialogTitle>Advanced Filters</DialogTitle>
+						<DialogDescription>
 							Apply advanced filters to refine your search
-						</DrawerDescription>
-					</DrawerHeader>
-					<div className="flex-1 overflow-y-auto px-4">
-						<Form {...form}>
-							<form
-								onSubmit={form.handleSubmit(onSubmit)}
-								className="space-y-4"
-							>
-								{/* General Information */}
-								<FilterSection
-									title="General Information"
-									activeCount={getActiveCount(generalFields, values)}
-								>
-									<div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-										{/* Name */}
-										<FormField
-											control={form.control}
-											name="name"
-											render={({ field }) => (
-												<FormItem className="flex flex-col">
-													<FormLabel>Name</FormLabel>
-													<div className="flex items-center gap-2">
-														<OperatorSelect
-															fieldName="name"
-															value={form.watch("name_operator")}
-															onChange={(v) =>
-																form.setValue("name_operator", v)
-															}
-														/>
-														<FormControl>
-															<Input placeholder="Enter name" {...field} />
-														</FormControl>
-													</div>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										{/* Email */}
-										<FormField
-											control={form.control}
-											name="email"
-											render={({ field }) => (
-												<FormItem className="flex flex-col">
-													<FormLabel>Email</FormLabel>
-													<div className="flex items-center gap-2">
-														<OperatorSelect
-															fieldName="email"
-															value={form.watch("email_operator")}
-															onChange={(v) =>
-																form.setValue("email_operator", v)
-															}
-														/>
-														<FormControl>
-															<Input placeholder="Enter email" {...field} />
-														</FormControl>
-													</div>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										{/* URL */}
-										<FormField
-											control={form.control}
-											name="url"
-											render={({ field }) => (
-												<FormItem className="flex flex-col">
-													<FormLabel>Website URL</FormLabel>
-													<div className="flex items-center gap-2">
-														<OperatorSelect
-															fieldName="url"
-															value={form.watch("url_operator")}
-															onChange={(v) => form.setValue("url_operator", v)}
-														/>
-														<FormControl>
-															<Input placeholder="Enter URL" {...field} />
-														</FormControl>
-													</div>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-									</div>
-								</FilterSection>
+						</DialogDescription>
+					</DialogHeader>
 
-								{/* Address Information */}
-								<FilterSection
-									title="Address Information"
-									activeCount={getActiveCount(addressFields, values)}
-								>
-									<div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-										{/* Address Line 1 */}
-										<FormField
-											control={form.control}
-											name="address_line1"
-											render={({ field }) => (
-												<FormItem className="flex flex-col">
-													<FormLabel>Address Line 1</FormLabel>
-													<div className="flex items-center gap-2">
-														<OperatorSelect
-															fieldName="address_line1"
-															value={form.watch("address_line1_operator")}
-															onChange={(v) =>
-																form.setValue("address_line1_operator", v)
-															}
-														/>
-														<FormControl>
-															<Input placeholder="Enter address" {...field} />
-														</FormControl>
-													</div>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										{/* Contact Person */}
-										<FormField
-											control={form.control}
-											name="contact_person"
-											render={({ field }) => (
-												<FormItem className="flex flex-col">
-													<FormLabel>Contact Person</FormLabel>
-													<div className="flex items-center gap-2">
-														<OperatorSelect
-															fieldName="contact_person"
-															value={form.watch("contact_person_operator")}
-															onChange={(v) =>
-																form.setValue("contact_person_operator", v)
-															}
-														/>
-														<FormControl>
-															<Input
-																placeholder="Enter contact person"
-																{...field}
-															/>
-														</FormControl>
-													</div>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										{/* Location */}
-										<FormField
-											control={form.control}
-											name="location"
-											render={({ field }) => (
-												<FormItem className="flex flex-col">
-													<FormLabel>Location</FormLabel>
-													<div className="flex items-center gap-2">
-														<OperatorSelect
-															fieldName="location"
-															value={form.watch("location_operator")}
-															onChange={(v) =>
-																form.setValue("location_operator", v)
-															}
-														/>
-														<FormControl>
-															<Input placeholder="Enter location" {...field} />
-														</FormControl>
-													</div>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										{/* Country */}
-										<FormField
-											control={form.control}
-											name="country"
-											render={({ field }) => (
-												<FormItem className="flex flex-col">
-													<FormLabel>Country</FormLabel>
-													<div className="flex items-center gap-2">
-														<OperatorSelect
-															fieldName="country"
-															value={form.watch("country_operator")}
-															onChange={(v) =>
-																form.setValue("country_operator", v)
-															}
-														/>
-														<FormControl>
-															<Input placeholder="Enter country" {...field} />
-														</FormControl>
-													</div>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										{/* ZIP */}
-										<FormField
-											control={form.control}
-											name="zip"
-											render={({ field }) => (
-												<FormItem className="flex flex-col">
-													<FormLabel>ZIP</FormLabel>
-													<div className="flex items-center gap-2">
-														<OperatorSelect
-															fieldName="zip"
-															value={form.watch("zip_operator")}
-															onChange={(v) => form.setValue("zip_operator", v)}
-														/>
-														<FormControl>
-															<Input placeholder="Enter ZIP code" {...field} />
-														</FormControl>
-													</div>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										{/* Canton */}
-										<FormField
-											control={form.control}
-											name="canton"
-											render={({ field }) => (
-												<FormItem className="flex flex-col">
-													<FormLabel>Canton</FormLabel>
-													<div className="flex items-center gap-2">
-														<OperatorSelect
-															fieldName="canton"
-															value={form.watch("canton_operator")}
-															onChange={(v) =>
-																form.setValue("canton_operator", v)
-															}
-														/>
-														<FormControl>
-															<Input placeholder="Enter canton" {...field} />
-														</FormControl>
-													</div>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-									</div>
-								</FilterSection>
+					<div className="flex flex-1 overflow-hidden">
+						{/* Search History Sidebar */}
+						{mode === "search" && entityType && (
+							<div className="w-80 shrink-0">
+								<SearchHistoryPanel
+									entityType={entityType}
+									onLoadFilters={(filterValues) => {
+										// Load the saved filter values into the form
+										if (
+											filterValues &&
+											Array.isArray(filterValues.groups) &&
+											filterValues.groupLogic
+										) {
+											// Save to localStorage first so filters persist
+											saveFiltersToStorage(entityType, filterValues, session);
+											// Reset form with loaded values
+											form.reset(filterValues);
+											replace(filterValues.groups);
+											// Update active filters count
+											setTimeout(() => {
+												setActiveFiltersCount(calculateActiveFilters());
+											}, 50);
+										}
+									}}
+									onApplySearch={(filters, search) => {
+										// When applying a saved search, update search term first if provided
+										// This updates the state
+										if (search !== undefined && onSearchChange) {
+											onSearchChange(search, filters);
+										}
+										// Then apply filters to parent - pass search along so fetchData can use it
+										// This triggers the fetch with both filters and search
+										if (onSubmitComplete) {
+											onSubmitComplete(filters, search);
+										}
+										// Keep dialog open so user can see the loaded filters
+									}}
+								/>
+							</div>
+						)}
 
-								{/* Social Media */}
-								<FilterSection
-									title="Social Media"
-									activeCount={getActiveCount(socialFields, values)}
+						{/* Filters Content */}
+						<div className="flex-1 overflow-y-auto px-6 pb-6">
+							<Form {...form}>
+								<form
+									onSubmit={form.handleSubmit(onSubmit)}
+									className="space-y-4"
 								>
-									<div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-										{/* Twitter */}
-										<FormField
-											control={form.control}
-											name="twitter_url"
-											render={({ field }) => (
-												<FormItem className="flex flex-col">
-													<FormLabel>Twitter (X) URL</FormLabel>
-													<div className="flex items-center gap-2">
-														<OperatorSelect
-															fieldName="twitter_url"
-															value={form.watch("twitter_url_operator")}
-															onChange={(v) =>
-																form.setValue("twitter_url_operator", v)
-															}
-														/>
-														<FormControl>
-															<Input
-																placeholder="Enter Twitter URL"
-																{...field}
-															/>
-														</FormControl>
-													</div>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										{/* Facebook */}
-										<FormField
-											control={form.control}
-											name="facebook_url"
-											render={({ field }) => (
-												<FormItem className="flex flex-col">
-													<FormLabel>Facebook URL</FormLabel>
-													<div className="flex items-center gap-2">
-														<OperatorSelect
-															fieldName="facebook_url"
-															value={form.watch("facebook_url_operator")}
-															onChange={(v) =>
-																form.setValue("facebook_url_operator", v)
-															}
-														/>
-														<FormControl>
-															<Input
-																placeholder="Enter Facebook URL"
-																{...field}
-															/>
-														</FormControl>
-													</div>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										{/* WhatsApp Channel */}
-										<FormField
-											control={form.control}
-											name="whatsapp_channel"
-											render={({ field }) => (
-												<FormItem className="flex flex-col">
-													<FormLabel>WhatsApp Channel</FormLabel>
-													<div className="flex items-center gap-2">
-														<OperatorSelect
-															fieldName="whatsapp_channel"
-															value={form.watch("whatsapp_channel_operator")}
-															onChange={(v) =>
-																form.setValue("whatsapp_channel_operator", v)
-															}
-														/>
-														<FormControl>
-															<Input
-																placeholder="Enter WhatsApp Channel"
-																{...field}
-															/>
-														</FormControl>
-													</div>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										{/* LinkedIn */}
-										<FormField
-											control={form.control}
-											name="linkedin_url"
-											render={({ field }) => (
-												<FormItem className="flex flex-col">
-													<FormLabel>LinkedIn URL</FormLabel>
-													<div className="flex items-center gap-2">
-														<OperatorSelect
-															fieldName="linkedin_url"
-															value={form.watch("linkedin_url_operator")}
-															onChange={(v) =>
-																form.setValue("linkedin_url_operator", v)
-															}
-														/>
-														<FormControl>
-															<Input
-																placeholder="Enter LinkedIn URL"
-																{...field}
-															/>
-														</FormControl>
-													</div>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										{/* Telegram URL */}
-										<FormField
-											control={form.control}
-											name="telegram_url"
-											render={({ field }) => (
-												<FormItem className="flex flex-col">
-													<FormLabel>Telegram URL</FormLabel>
-													<div className="flex items-center gap-2">
-														<OperatorSelect
-															fieldName="telegram_url"
-															value={form.watch("telegram_url_operator")}
-															onChange={(v) =>
-																form.setValue("telegram_url_operator", v)
-															}
-														/>
-														<FormControl>
-															<Input
-																placeholder="Enter Telegram URL"
-																{...field}
-															/>
-														</FormControl>
-													</div>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										{/* Telegram Channel */}
-										<FormField
-											control={form.control}
-											name="telegram_channel"
-											render={({ field }) => (
-												<FormItem className="flex flex-col">
-													<FormLabel>Telegram Channel</FormLabel>
-													<div className="flex items-center gap-2">
-														<OperatorSelect
-															fieldName="telegram_channel"
-															value={form.watch("telegram_channel_operator")}
-															onChange={(v) =>
-																form.setValue("telegram_channel_operator", v)
-															}
-														/>
-														<FormControl>
-															<Input
-																placeholder="Enter Telegram Channel"
-																{...field}
-															/>
-														</FormControl>
-													</div>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										{/* Instagram */}
-										<FormField
-											control={form.control}
-											name="instagram_url"
-											render={({ field }) => (
-												<FormItem className="flex flex-col">
-													<FormLabel>Instagram URL</FormLabel>
-													<div className="flex items-center gap-2">
-														<OperatorSelect
-															fieldName="instagram_url"
-															value={form.watch("instagram_url_operator")}
-															onChange={(v) =>
-																form.setValue("instagram_url_operator", v)
-															}
-														/>
-														<FormControl>
-															<Input
-																placeholder="Enter Instagram URL"
-																{...field}
-															/>
-														</FormControl>
-													</div>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										{/* TikTok */}
-										<FormField
-											control={form.control}
-											name="tiktok_url"
-											render={({ field }) => (
-												<FormItem className="flex flex-col">
-													<FormLabel>TikTok URL</FormLabel>
-													<div className="flex items-center gap-2">
-														<OperatorSelect
-															fieldName="tiktok_url"
-															value={form.watch("tiktok_url_operator")}
-															onChange={(v) =>
-																form.setValue("tiktok_url_operator", v)
-															}
-														/>
-														<FormControl>
-															<Input
-																placeholder="Enter TikTok URL"
-																{...field}
-															/>
-														</FormControl>
-													</div>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										{/* WhatsApp Phone */}
-										<FormField
-											control={form.control}
-											name="whatsapp_phone"
-											render={({ field }) => (
-												<FormItem className="flex flex-col">
-													<FormLabel>WhatsApp Phone</FormLabel>
-													<div className="flex items-center gap-2">
-														<OperatorSelect
-															fieldName="whatsapp_phone"
-															value={form.watch("whatsapp_phone_operator")}
-															onChange={(v) =>
-																form.setValue("whatsapp_phone_operator", v)
-															}
-														/>
-														<FormControl>
-															<Input
-																placeholder="Enter WhatsApp Phone"
-																{...field}
-															/>
-														</FormControl>
-													</div>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-									</div>
-								</FilterSection>
+									{/* Group Logic Selector */}
+									{groups.length > 1 && (
+										<div className="flex items-center gap-2 rounded-lg border p-3">
+											<span className="font-medium text-sm">
+												Combine groups with:
+											</span>
+											<Select
+												value={groupLogic}
+												onValueChange={(value: "AND" | "OR") =>
+													form.setValue("groupLogic", value)
+												}
+											>
+												<SelectTrigger className="h-8 w-24">
+													<SelectValue />
+												</SelectTrigger>
+												<SelectContent>
+													<SelectItem value="AND">AND</SelectItem>
+													<SelectItem value="OR">OR</SelectItem>
+												</SelectContent>
+											</Select>
+										</div>
+									)}
 
-								{/* Organization and Contacts */}
-								<FilterSection
-									title="Organization and Contacts"
-									activeCount={getActiveCount(organizationFields, values)}
-								>
-									<div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-										{/* <AsyncSelectField
-                      form={form}
-                      name="contacts"
-                      serviceName="contactService"
-                      label="Contacts"
-                      useFormClear={true}
-                    /> */}
-										<AsyncSelectField
-											form={form}
-											name="organization_type"
-											serviceName="organizationTypesService"
-											label="Organization Type"
-											useFormClear={true}
-										/>
-										<AsyncSelectField
-											form={form}
-											name="industry"
-											serviceName="industriesService"
-											label="Industry"
-											useFormClear={true}
-										/>
+									{/* Filter Groups */}
+									<div className="space-y-1">
+										{groups.map((group, index) => (
+											<div
+												key={
+													typeof group.key === "string" ? group.key : group.id
+												}
+												className="relative"
+											>
+												<FilterGroupComponent
+													form={form}
+													groupIndex={index}
+													control={form.control}
+													onUpdateGroup={(updates) =>
+														handleUpdateGroup(
+															index,
+															updates as Partial<FilterGroup>,
+														)
+													}
+													onRemoveGroup={() => handleRemoveGroup(index)}
+													config={{
+														FIELD_TYPES,
+														FILTER_CATEGORIES,
+														RELATION_META,
+													}}
+												/>
+												{/* Logic connector between groups */}
+												{index < groups.length - 1 && (
+													<div className="flex justify-center p-2">
+														<Badge variant="outline" className="bg-background">
+															{groupLogic}
+														</Badge>
+													</div>
+												)}
+											</div>
+										))}
 									</div>
-								</FilterSection>
 
-								{/* Preferences / Other */}
-								<FilterSection
-									title="Preferences / Other"
-									activeCount={getActiveCount(preferencesFields, values)}
-								>
-									<div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-										<AsyncSelectField
-											form={form}
-											name="frequency"
-											serviceName="frequenciesService"
-											label="Frequency"
-											useFormClear={true}
-										/>
-										<AsyncSelectField
-											form={form}
-											name="media_type"
-											serviceName="mediaTypesService"
-											label="Media Type"
-											useFormClear={true}
-										/>
-										{/* Language (no operator) */}
-										<FormField
-											control={form.control}
-											name="language"
-											render={({ field }) => (
-												<FormItem className="flex flex-col">
-													<FormLabel>Language</FormLabel>
-													<FormControl>
-														<Select
-															onValueChange={field.onChange}
-															value={field.value}
-														>
-															<SelectTrigger>
-																<SelectValue placeholder="Select language" />
-															</SelectTrigger>
-															<SelectContent>
-																<SelectItem value="en">English</SelectItem>
-																<SelectItem value="de">Deutsch</SelectItem>
-																<SelectItem value="fr">Français</SelectItem>
-																<SelectItem value="it">Italiano</SelectItem>
-															</SelectContent>
-														</Select>
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										{/* Tag */}
-										<FormField
-											control={form.control}
-											name="tag"
-											render={({ field }) => (
-												<FormItem className="flex flex-col">
-													<FormLabel>Tag</FormLabel>
-													<div className="flex items-center gap-2">
-														<OperatorSelect
-															fieldName="tag"
-															value={form.watch("tag_operator")}
-															onChange={(v) => form.setValue("tag_operator", v)}
-														/>
-														<FormControl>
-															<Input placeholder="Enter tag" {...field} />
-														</FormControl>
-													</div>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										{/* Description */}
-										<FormField
-											control={form.control}
-											name="description"
-											render={({ field }) => (
-												<FormItem className="flex flex-col">
-													<FormLabel>Description</FormLabel>
-													<div className="flex items-center gap-2">
-														<OperatorSelect
-															fieldName="description"
-															value={form.watch("description_operator")}
-															onChange={(v) =>
-																form.setValue("description_operator", v)
-															}
-														/>
-														<FormControl>
-															<Input
-																placeholder="Enter description"
-																{...field}
-															/>
-														</FormControl>
-													</div>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										<AsyncSelectField
-											form={form}
-											name="sources"
-											serviceName="sourcesService"
-											label="Sources"
-											useFormClear={true}
-										/>
-									</div>
-								</FilterSection>
-							</form>
-						</Form>
+									{/* Add Group Button */}
+									<Button
+										type="button"
+										variant="outline"
+										onClick={handleAddGroup}
+										className="w-full border-dashed"
+									>
+										<Plus className="mr-2 h-4 w-4" />
+										Add Filter Group
+									</Button>
+								</form>
+							</Form>
+						</div>
 					</div>
 
-					<DrawerFooter>
-						<div className="flex items-center justify-between">
-							<DrawerClose asChild>
-								<Button variant="outline">Cancel</Button>
-							</DrawerClose>
-							<div className="flex gap-2">
-								<Button onClick={form.handleSubmit(onSubmit)}>
-									Apply Filters
-								</Button>
-								<Button variant="outline" onClick={handleReset}>
-									Reset Filters
-								</Button>
-							</div>
-						</div>
-					</DrawerFooter>
-				</DrawerContent>
-			</Drawer>
+					{/* Footer Actions */}
+					<FilterDialogFooter
+						onCancel={() => setOpenState(false)}
+						onReset={handleReset}
+						onApply={form.handleSubmit(onSubmit)}
+						isSubmitting={isSubmitting}
+						isResetting={isResetting}
+					/>
+				</DialogContent>
+			</Dialog>
 		</div>
 	);
-}
+});
+
+export default AdvancedFilters;

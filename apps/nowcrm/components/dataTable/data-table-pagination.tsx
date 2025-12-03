@@ -59,7 +59,7 @@ export function DataTablePagination<TData>({
 							);
 						}}
 					>
-						<SelectTrigger className="h-8 w-[70px] cursor-pointer bg-card bg-card font-medium text-muted-foreground hover:border-accent-foreground/25">
+						<SelectTrigger className="h-8 w-[70px] cursor-pointer bg-card font-medium text-muted-foreground hover:border-accent-foreground/25">
 							<SelectValue placeholder={pageSize} />
 						</SelectTrigger>
 						<SelectContent side="top">
@@ -79,7 +79,7 @@ export function DataTablePagination<TData>({
 					<Button
 						type="button"
 						variant="outline"
-						className="hidden h-8 w-8 bg-card bg-card p-0 text-muted-foreground hover:border-accent-foreground/25 lg:flex"
+						className="hidden h-8 w-8 bg-card p-0 text-muted-foreground hover:border-accent-foreground/25 lg:flex"
 						onClick={() => {
 							table.setPageIndex(0);
 							handleSearch(
@@ -96,7 +96,7 @@ export function DataTablePagination<TData>({
 					<Button
 						type="button"
 						variant="outline"
-						className="h-8 w-8 bg-card bg-card p-0 text-muted-foreground hover:border-accent-foreground/25"
+						className="h-8 w-8 bg-card p-0 text-muted-foreground hover:border-accent-foreground/25"
 						onClick={() => {
 							table.previousPage();
 							handleSearch(
@@ -115,7 +115,7 @@ export function DataTablePagination<TData>({
 					<Button
 						type="button"
 						variant="outline"
-						className="h-8 w-8 bg-card bg-card p-0 text-muted-foreground hover:border-accent-foreground/25"
+						className="h-8 w-8 bg-card p-0 text-muted-foreground hover:border-accent-foreground/25"
 						onClick={() => {
 							table.nextPage();
 							handleSearch(
@@ -135,7 +135,7 @@ export function DataTablePagination<TData>({
 					<Button
 						type="button"
 						variant="outline"
-						className="hidden h-8 w-8 bg-card bg-card p-0 text-muted-foreground hover:border-accent-foreground/25 lg:flex"
+						className="hidden h-8 w-8 bg-card p-0 text-muted-foreground hover:border-accent-foreground/25 lg:flex"
 						onClick={() => {
 							table.setPageIndex(pagination.pageCount - 1);
 							handleSearch(

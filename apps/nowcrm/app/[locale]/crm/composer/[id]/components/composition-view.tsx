@@ -52,6 +52,7 @@ const formSchema = z.object({
 	composition_items: z.array(
 		z.object({
 			id: z.number().optional(),
+			documentId: z.string().optional(),
 			additional_prompt: z.string().optional(),
 			result: z.string().optional(),
 			channel: z.any(), //tempo any untill create function which create zod schemas out of types
@@ -80,7 +81,7 @@ export function CompositionView({ composition }: { composition: Composition }) {
 			reference_prompt: composition.reference_prompt || "",
 			reference_result: composition.reference_result || "",
 			composition_items: composition.composition_items.map((item) => ({
-				id: item.id,
+				documentId: item.documentId,
 				additional_prompt: item.additional_prompt || "",
 				result: item.result,
 				channel: item.channel,
@@ -217,7 +218,6 @@ export function CompositionView({ composition }: { composition: Composition }) {
 		await updateCompositionItem(itemId, {
 			result: rez.data as string,
 		});
-
 		// Update the form state directly
 		form.setValue(
 			`composition_items.${formItemIndex}.result`,
@@ -283,7 +283,7 @@ export function CompositionView({ composition }: { composition: Composition }) {
 					reference_result: updatedComposition.reference_result || "",
 					composition_items: updatedComposition.composition_items.map(
 						(item) => ({
-							id: item.id,
+							documentId: item.documentId,
 							additional_prompt: item.additional_prompt || "",
 							result: item.result,
 							channel: item.channel,
@@ -322,7 +322,7 @@ export function CompositionView({ composition }: { composition: Composition }) {
 			reference_prompt: composition.reference_prompt || "",
 			reference_result: composition.reference_result || "",
 			composition_items: composition.composition_items.map((item) => ({
-				id: item.id,
+				documentId: item.documentId,
 				additional_prompt: item.additional_prompt || "",
 				result: item.result,
 				channel: item.channel,
@@ -478,16 +478,17 @@ export async function handleCompositionSubmit(
 
 		await Promise.all(
 			data.composition_items.map(async (item: any) => {
-				if (item.id) {
-					item.attached_files = undefined;
-					item.new_files = undefined;
-					item.files_to_delete = undefined;
-
+				if (item.documentId) {
+					const item_id = item.documentId;
+					delete item.documentId;
+					delete item.id;
+					delete item.channel;
+					delete item.files_to_delete;
+					delete item.new_files;
 					const { updateCompositionItem } = await import(
 						"@/lib/actions/composer/composerItems/update-composition-item"
 					);
-
-					await updateCompositionItem(item.id, item);
+					await updateCompositionItem(item_id, item);
 				}
 			}),
 		);

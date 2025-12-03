@@ -14,12 +14,12 @@ export class AddToListModal {
 
     constructor(page: Page) {
         this.page = page;
-        this.dialog = page.getByRole('dialog', { name: 'Add contacts to list' }); // EXACT NAME
-        this.createNewTab = this.dialog.getByRole('tab', { name: 'Create New' });
-        this.selectListTab = this.dialog.getByRole('tab', { name: 'Select List' });
-        // Create New
-        this.listNameInput = this.dialog.getByRole('textbox', { name: 'List Name' });
-        this.createListButton = this.dialog.getByRole('button', { name: 'Create List' });
+        this.dialog = page.getByRole('dialog', { name: /Add contacts to list/i }); // Use regex for flexibility
+        this.createNewTab = this.dialog.getByRole('tab', { name: /Create New List/i });
+        this.selectListTab = this.dialog.getByRole('tab', { name: /Select Existing List/i });
+        // Create New - use placeholder since there's no label
+        this.listNameInput = this.dialog.getByPlaceholder('Enter a descriptive name for your list...');
+        this.createListButton = this.dialog.getByRole('button', { name: /Create/i });
         // Select List - Use exact placeholder from screenshot, scoped to dialog
         this.searchInput = this.dialog.getByPlaceholder('Search list...'); // <<< CORRECTED PLACEHOLDER
         // Common
@@ -32,8 +32,11 @@ export class AddToListModal {
     }
 
     async createNewList(listName: string) {
+        await expect(this.createNewTab).toBeVisible({ timeout: 5000 });
         await this.createNewTab.click();
-        await expect(this.listNameInput).toBeVisible();
+        // Wait for tab to be active and input to appear
+        await this.page.waitForTimeout(300);
+        await expect(this.listNameInput, 'List Name input should be visible after clicking Create New tab').toBeVisible({ timeout: 10000 });
         await this.listNameInput.fill(listName);
         await this.createListButton.click();
         await this.page.waitForTimeout(500); // Keep small delay
@@ -41,7 +44,10 @@ export class AddToListModal {
 
     /** Corrected selectExistingList with correct placeholder and direct wait */
     async selectExistingList(listName: string) {
+        await expect(this.selectListTab).toBeVisible({ timeout: 5000 });
         await this.selectListTab.click();
+        // Wait for tab to be active
+        await this.page.waitForTimeout(300);
 
         // Wait directly for the corrected search input locator to be visible AND enabled
         await expect(this.searchInput, 'Search input should be visible in Select List tab').toBeVisible({ timeout: 15000 });

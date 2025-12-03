@@ -20,6 +20,10 @@ const FIELD_OVERRIDES: Record<string, string[]> = {
 	tags: ["name"],
 	salutation: ["name"],
 	title: ["name"],
+	// Organization relation fields - filter by name field on related entity (Strapi v5 requires nested field path)
+	organization_type: ["name"],
+	frequency: ["name"],
+	media_type: ["name"],
 };
 
 const FIELD_ALIASES: Record<string, string> = {
@@ -98,7 +102,7 @@ const isRelArray = (v: any) =>
 
 /* Build a single Strapi condition object for a field */
 function buildFieldCondition(key: string, rawValue: any, operator?: string) {
-	let op = operator || "$eq";
+	let op = operator || "$eqi";
 	const cond: any = {};
 
 	// handle null / notNull operators that ignore value

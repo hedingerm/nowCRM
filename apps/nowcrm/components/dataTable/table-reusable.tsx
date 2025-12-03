@@ -121,14 +121,21 @@ export function ReusableTable<T extends Record<string, any>>({
 									key={`row-${startIndex + index}`}
 									className="border-b transition-colors hover:bg-muted/50"
 								>
-									{columns.map((column) => (
-										<td
-											key={`cell-${startIndex + index}-${column.key}`}
-											className="px-4 py-3 text-sm"
-										>
-											{column.render ? column.render(item) : item[column.key]}
-										</td>
-									))}
+									{columns.map((column) => {
+										const isEmailColumn = column.key === "email";
+										return (
+											<td
+												key={`cell-${startIndex + index}-${column.key}`}
+												className={`px-4 py-3 text-sm ${
+													isEmailColumn
+														? "min-w-[200px] max-w-none whitespace-normal break-all"
+														: ""
+												}`}
+											>
+												{column.render ? column.render(item) : item[column.key]}
+											</td>
+										);
+									})}
 								</tr>
 							))
 						) : (

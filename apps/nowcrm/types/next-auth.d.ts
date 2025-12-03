@@ -27,6 +27,7 @@ declare module "next-auth" {
 			image: any;
 			role: any;
 			strapi_id: number;
+			documentId: DocumentId;
 			twoFARequired?: boolean;
 			twoFAEnabled?: boolean;
 			totpSecret?: string;
