@@ -428,10 +428,50 @@ jobs:
           cache-to: type=gha,mode=max
 
 
+  build-and-push-nowcrm:
+    name: Build and Push nowCRM Docker Image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    if: github.event.pull_request.merged == true
+    needs: [create_release]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          platforms: linux/amd64,linux/arm64
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image for nowCRM
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./apps/nowcrm/Dockerfile
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_REPO }}/nowcrm:latest
+            ${{ env.REGISTRY }}/${{ env.IMAGE_REPO }}/nowcrm:${{ needs.create_release.outputs.tag_name }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
   notify_success:
     name: Send Success Notification
     if: github.event.pull_request.merged && success()
-    needs: [create_release, build-and-push-composer, build-and-push-journeys, build-and-push-dal, build-and-push-strapi, build-and-push-wiki]
+    needs: [create_release, build-and-push-composer, build-and-push-journeys, build-and-push-dal, build-and-push-strapi, build-and-push-wiki, build-and-push-nowcrm]
     runs-on: ubuntu-latest
     steps:
       - name: Send Telegram Success Notification
@@ -444,7 +484,7 @@ jobs:
   notify_failure:
     name: Send Failure Notification
     if: github.event.pull_request.merged && failure()
-    needs: [create_release, build-and-push-composer, build-and-push-journeys, build-and-push-dal, build-and-push-strapi, build-and-push-wiki]
+    needs: [create_release, build-and-push-composer, build-and-push-journeys, build-and-push-dal, build-and-push-strapi, build-and-push-wiki, build-and-push-nowcrm]
     runs-on: ubuntu-latest
     steps:
       - name: Send Telegram Failure Notification
@@ -458,12 +498,12 @@ jobs:
             🔗 View full logs:
             ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
-            📋 Check the "build-and-push-composer" or "build-and-push-journeys" or "build-and-push-dal" or "build-and-push-strapi" job for Docker build error details
+            📋 Check the "build-and-push-composer" or "build-and-push-journeys" or "build-and-push-dal" or "build-and-push-strapi" or "build-and-push-nowcrm" job for Docker build error details
 
   release_created:
     name: Send Release Created Notification
     if: github.event.pull_request.merged && success()
-    needs: [create_release, build-and-push-composer, build-and-push-journeys, build-and-push-dal, build-and-push-strapi, build-and-push-wiki]
+    needs: [create_release, build-and-push-composer, build-and-push-journeys, build-and-push-dal, build-and-push-strapi, build-and-push-wiki, build-and-push-nowcrm]
     runs-on: ubuntu-latest
     steps:
       - name: 👌 Release Created
